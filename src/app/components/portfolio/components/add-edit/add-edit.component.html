@@ -1,0 +1,83 @@
+<div class="p-card p-4 shadow-2 border-round xl:w-50 md:w-100"
+     [style]="{height:'100%'}">
+    <div class="text-center mb-1">
+        <div class="text-900 text-xl font-medium mb-3">
+            <ng-container *ngIf="mode === 'update';else addNewItem">
+                <span> <i class="fa fas fa-edit"></i> Update Portfolio Asset </span>
+            </ng-container>
+            <ng-template #addNewItem>
+                <span> <i class="fa fa-plus"></i> New Portfolio Asset</span>
+            </ng-template>
+        </div>
+    </div>
+
+    <div class="p-fluid grid formgrid w-100">
+        <form [formGroup]="editForm"
+              class="w-100">
+            <!-- Search Dropdown Panel -->
+            <p-overlayPanel #searchAssets
+                            [showCloseIcon]="true"
+                            autoZIndex="true"
+                            [dismissable]="true">
+                <ng-template pTemplate>
+                    <app-search [scrollHeight]="200"></app-search>
+                </ng-template>
+            </p-overlayPanel>
+            <div #searchFieldBox
+                 class="field"
+                 (click)="showSearchOverlay($event)">
+                <label for="assetName"
+                       class="block text-900 font-medium">Search and Select asset</label>
+                <input pInputText
+                       type="text"
+                       inputId="assetName"
+                       [value]="assetId"
+                       formControlName="searchAssetField"
+                       name="searchAssetFieldInput"
+                       id="searchAssetId"
+                       autocomplete="off"
+                       placeholder="Start Typing.. (Ex. Bitcoin)"
+                       aria-describedby="helpId"
+                       autocomplete="off"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="quantity"
+                       class="block text-900 font-medium">Quantity</label>
+                <p-inputNumber formControlName="quantity"
+                               id="quantity"
+                               step="0.001"
+                               incrementButtonClass="bg-transparent text-white"
+                               decrementButtonClass="bg-transparent text-white"
+                               [showButtons]="true"
+                               placeholder="Enter Quantity"
+                               type="number"
+                               class="w-full"
+                               required></p-inputNumber>
+
+            </div>
+            <div class="field">
+                <label for="costBasis"
+                       class="block text-900 font-medium">Cost Basis</label>
+                <p-inputNumber formControlName="costBasis"
+                               id="costBasis"
+                               mode="currency"
+                               currency="USD"
+                               locale="en-US"
+                               placeholder="Unit Asset Price"
+                               type="number"
+                               inputId="costBasis"
+                               class="w-full"></p-inputNumber>
+            </div>
+        </form>
+
+    </div>
+
+    <button pButton
+            pRipple
+            [disabled]="hasErrors(editForm)"
+            label="Save Changes"
+            class="w-full"
+            (click)="submitHandler($event)"></button>
+</div>

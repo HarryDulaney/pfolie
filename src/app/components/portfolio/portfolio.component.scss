@@ -1,0 +1,34 @@
+#portfolio-container {
+    height: 100% !important;
+    width: 100% !important;
+    overflow: hidden;
+}
+
+:host ::ng-deep .p-datatable-responsive-scroll > .p-datatable-wrapper {
+    min-height: 25vh !important;
+}
+
+:host ::ng-deep .p-component-overlay {
+    display: none !important;
+}
+:host ::ng-deep .p-component-overlay-enter {
+    display: none !important;
+}
+
+:host ::ng-deep .p-sidebar-mask {
+    display: none !important;
+}
+:host ::ng-deep .p-sidebar-right {
+    top: 7rem !important;
+}
+
+:host ::ng-deep .p-sidebar .p-sidebar-content {
+    background: var(--surface-b) !important;
+    min-height: 100% !important;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+:host ::ng-deep .p-sidebar .p-sidebar-header {
+    display: none;
+}

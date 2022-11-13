@@ -1,0 +1,239 @@
+@import "~primeng/resources/themes/lara-dark-blue/theme.css";
+@import "~primeng/resources/primeng.min.css";
+@import "~@angular/material/prebuilt-themes/purple-green.css";
+@import "~font-awesome/css/font-awesome.css";
+@import "~bootstrap/dist/css/bootstrap.css";
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  // scrollbar-color: rgb(127, 9, 246) rgb(84, 255, 84) !important;
+}
+
+.card {
+  box-shadow: 1px 1px 1px var(--surface-border);
+  background: var(--surface-card);
+  padding: 0.3rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.header-text-md {
+  color: #ffffff;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.cell-class-md {
+  color: #ffffff;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.caption-label-md {
+  color: #ffffff;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.header-text {
+  color: #ffffff;
+  font-size: small;
+  font-weight: bold;
+}
+
+.header-text-expand {
+  color: #ffffff;
+  font-size: small;
+}
+
+.cell-class {
+  color: #ffffff;
+  font-size: small;
+  font-weight: bold;
+}
+
+.caption-label {
+  color: #ffffff;
+  font-size: small;
+  font-weight: bold;
+}
+
+.header-box-special {
+  height: 2rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.header-box-special th {
+  height: 2rem;
+  font-size: 0.9rem;
+  padding: 1rem 1rem;
+}
+
+.header-box-special-trans {
+  height: 2rem;
+  color: #ffffff;
+  font-size: 0.9rem;
+  background-color: var(--surface-b);
+}
+
+.header-box-special-trans > th {
+  height: 2rem;
+  font-size: 0.9rem;
+  background: transparent;
+  padding: 0.5rem 0.5rem;
+}
+
+.table-spinner {
+  position: relative;
+  vertical-align: middle;
+  align-self: center;
+  margin: 0 auto;
+  margin-top: 5rem;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.navbar-message {
+  flex: 1 1 auto;
+}
+
+.is-mobile .main-toolbar {
+  position: fixed;
+  /* Make sure the toolbar will stay on top of the content as it scrolls past. */
+  z-index: 2;
+}
+
+.sidenav-container {
+  /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
+       causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */
+  flex: 1;
+}
+
+.is-mobile .sidenav-container {
+  /* When the sidenav is fixed, don't constrain the height of the sidenav container. This allows the
+       `<body>` to be our scrolling element for mobile layouts. */
+  flex: 1 0 auto;
+}
+
+.mat-button {
+  color: #fafafa !important;
+}
+
+.mat-button :hover {
+  color: #fafafa !important;
+}
+
+.inline--text-description a {
+  color: var(--blue-400) !important;
+}
+
+a {
+  color: #fff !important;
+}
+
+a :hover {
+  color: #fff !important;
+}
+
+p-header {
+  font-size: 1.5rem;
+  padding: 1rem;
+}
+
+.nav-title {
+  font-size: x-large !important;
+  font-weight: bold !important;
+}
+
+.mat-drawer {
+  background-color: var(--surface-ground);
+}
+
+.mat-drawer-content {
+  background-color: var(--surface-ground);
+}
+
+.nav-scroller {
+  position: relative;
+  z-index: 2;
+  height: 2.75rem;
+  overflow-y: auto;
+}
+
+.nav-scroller .nav {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  padding-bottom: 1rem;
+  margin-top: -1px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.nav-scroller .nav-link {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.dragdrop-icon {
+  cursor: grab;
+}
+
+.increased {
+  color: #00ff59;
+}
+
+.decreased {
+  color: #ff1100;
+}
+
+@keyframes p-progress-spinner-color {
+  100%,
+  0% {
+    stroke: #d62d20;
+  }
+  40% {
+    stroke: var(--primary-color);
+  }
+  66% {
+    stroke: #008744;
+  }
+  80%,
+  90% {
+    stroke: #ffa700;
+  }
+}
+
+.custom-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.p-datatable .p-datatable-header {
+  padding: 0.5rem 0.5rem !important;
+}
+
+.caption-label-special {
+  color: #e3e3e3;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.caption-label-data {
+  color: var(--blue-100);
+  font-size: medium;
+  font-weight: bold;
+}

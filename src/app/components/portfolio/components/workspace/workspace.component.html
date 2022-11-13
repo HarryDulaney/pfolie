@@ -1,0 +1,47 @@
+<div class="workspace--style">
+    <div class="grid-nogutter p-1">
+        <div class="row row-cols-xl-4 row-cols-lg-2 workgrid--totals">
+            <!-- Portfolio Totals Card -->
+            <div class="col">
+                <div class="caption-label-special">Total Balance:
+                    <span class="caption-label-data">
+                        {{ calculatedValues.totalCurrentValue |
+                        currency:'USD':'$':'1.2-2'}}
+                    </span>
+                </div>
+
+            </div>
+            <div class="col">
+                <div class="caption-label-special">Total Cost Basis:
+                    <span class="caption-label-data">
+                        {{calculatedValues.totalCostBasis |
+                        currency:'USD':'$':'1.2-2'}}
+                    </span>
+                </div>
+            </div>
+            <div class="col">
+
+                <div class="caption-label-special">Total Gain/Loss:
+                    <span class="caption-label-data">
+                        <span [class]="calculatedValues.totalProfitLoss < 0 ? 'decreased' :'increased'">
+                            {{calculatedValues.totalProfitLoss |
+                            currency:'USD':'$':'1.2-2'}}</span>
+                    </span>
+                </div>
+
+            </div>
+            <div class="col">
+
+                <div class="caption-label-special">Total Assets:
+                    <span class="caption-label-data">
+                        {{getAssetCount()}}
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Portfolio Allocation Pie Chart -->
+    <app-allocation-chart [title]="'Allocation'"></app-allocation-chart>
+
+</div>

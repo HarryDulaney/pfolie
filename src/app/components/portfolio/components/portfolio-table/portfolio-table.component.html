@@ -1,0 +1,331 @@
+<div class="grid-nogutter w-100">
+    <ng-container *ngIf="isLoading">
+        <div class="container d-flex justify-content-center align-items-center"
+             [style]="{height:'100%',width:'100%','margin-top':'1vh'}">
+            <p-progressSpinner [style]="{height:'20rem',width:'20rem'}"
+                               [strokeWidth]='2'
+                               fill="transparent"
+                               animationDuration=".1s"></p-progressSpinner>
+        </div>
+    </ng-container>
+    <div [hidden]="isLoading">
+        <div class="col-12 w-100">
+            <p-dialog #assetSearchDialog
+                      header="Select An Asset"
+                      [(visible)]="showAssetSearchDialog"
+                      [position]="'top'"
+                      [baseZIndex]="9999999"
+                      [responsive]="true"
+                      appendTo="body"
+                      [dismissableMask]="true"
+                      [closeOnEscape]="true"
+                      [modal]="true"
+                      [style]="{ 'width': '100vw', 'height': 'auto' }"
+                      [draggable]="false"
+                      [closable]="true"
+                      [focusTrap]="true"
+                      [resizable]="false">
+                <app-search-select [scrollHeight]="searchScrollHeight"
+                                   (selected)="handleAddNewAsset($event)">
+                </app-search-select>
+            </p-dialog>
+            <div class="card">
+                <p-table #pdt
+                         id="portfolioDataTable"
+                         dataKey="id"
+                         [style]="{'width':'100%'}"
+                         [sortField]="sortField"
+                         [sortOrder]="sortOrder"
+                         [defaultSortOrder]="defaultSortOrder"
+                         [value]="view"
+                         [showLoader]="true"
+                         [loading]="isLoading"
+                         [expandedRowKeys]="expandedRowKeys"
+                         [paginator]="true"
+                         responsiveLayout="scroll"
+                         responsive="true"
+                         [scrollable]="true"
+                         [scrollDirection]="'vertical'"
+                         [rows]="20"
+                         [rowsPerPageOptions]="[5,20,50,100]"
+                         [showCurrentPageReport]="true"
+                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} assets">
+                    <ng-template pTemplate="caption"
+                                 let-editing="editing">
+                        <div class="flex align-items-center justify-content-between">
+                            <span>
+                                <div class="text-white"
+                                     style="font-size:0.9rem;font-weight:bold;">Portfolio Assets</div>
+                            </span>
+                            <a mat-flat-button
+                               (click)="showAssetSearchContainer($event)"
+                               type="button"
+                               class="text-white font-bold bg-transparent"
+                               tooltipPosition="left">
+                                <i class="pi pi-plus"
+                                   style="font-size: 1.2rem;"></i>
+                                <span class="caption-label">New Asset</span>
+                                <p-overlayPanel #assetSearchOverlay
+                                                [baseZIndex]="9999999"
+                                                [style]="{ 'width': '30vw', 'height': 'auto' }"
+                                                [dismissable]="true">
+                                    <ng-template pTemplate>
+                                        <app-search-select [scrollHeight]="searchScrollHeight"
+                                                           (selected)="handleAddNewAsset($event)">
+                                        </app-search-select>
+                                    </ng-template>
+                                </p-overlayPanel>
+                            </a>
+                        </div>
+
+                    </ng-template>
+                    <ng-template pTemplate="colgroup">
+                        <colgroup>
+                            <!-- Expand Icon -->
+                            <col style="min-width:1.33333%;">
+                            <!-- Image -->
+                            <col style="min-width:5.33333%;">
+                            <!-- Asset Name -->
+                            <col style="min-width:12.33333%;">
+                            <!-- Current Price -->
+                            <col style="min-width:10.33333%;">
+                            <!-- 7d Change -->
+                            <col style="min-width:8.33333%;">
+                            <!-- Balance -->
+                            <col style="min-width:9.33333%;">
+                            <!-- Total Quantity -->
+                            <col style="min-width:10.33333%;">
+                            <!-- Avg Unit Cost -->
+                            <col style="min-width:11.33333%;">
+                            <!-- Total Cost -->
+                            <col style="min-width:9.33333%;">
+                            <!-- Gain/Loss -->
+                            <col style="min-width:9.33333%;">
+                            <!-- Allocation -->
+                            <col style="min-width:9.33333%;">
+                            <!-- Actions -->
+                            <col style="min-width:3.33333%;">
+                        </colgroup>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr class="header-box-special">
+                            <!-- Expand Header -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem">
+                                <!-- Asset Image Header -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Image
+                            </th>
+                            <!-- Asset Name Header -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Asset
+                            </th>
+                            <!-- Current Price Header -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Price
+                            </th>
+                            <!-- 7d Change Header -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                7d <delta-icon></delta-icon>
+                            </th>
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Balance
+                            </th>
+                            <!-- Total Units (Quantity) Held -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Total Quantity
+                            </th>
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Avg. Unit Cost
+                            </th>
+                            <!-- Total Amount invested (Cost of Total Quantity) -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Total Cost
+                            </th>
+                            <!-- Asset Gain/Loss -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Gain/Loss
+                            </th>
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Allocation
+                            </th>
+                            <!-- Row Actions Header -->
+                            <th style="padding:0.3rem 0.3rem;font-size: 0.8rem;">
+                                Actions
+                            </th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body"
+                                 let-expanded="expanded"
+                                 let-rowIndex="rowIndex"
+                                 let-rowData>
+                        <tr [pEditableRow]="rowData"
+                            class="cell-box-special">
+                            <!-- Expand Icon -->
+                            <td style="padding: 0.3rem 0.3rem;">
+                                <a mat-flat-button
+                                   [pRowToggler]="rowData"
+                                   class="bg-transparent"><i
+                                       [class]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                                       style="font-size: 0.7rem;"></i>
+                                </a>
+                            </td>
+                            <!-- Asset Image/ Thumbnail/ Icon -->
+                            <td style="padding:0.3rem 0.3rem;">
+                                <img [src]="rowData.coinFullInfo.image.small"
+                                     alt="rowData-thumbnail"
+                                     style="height:24px;width:24px;" />
+                            </td>
+                            <!-- Name -->
+                            <td style="padding:0.3rem 0.3rem">
+                                <div> {{rowData.coinFullInfo.name}}</div>
+                            </td>
+                            <!-- Current Price -->
+                            <td style="padding:0.3rem 0.3rem;">
+                                <div> {{rowData.coinFullInfo['market_data']['current_price']['usd'] |
+                                    currency:'USD':'$':'1.1-12'}}</div>
+                            </td>
+                            <!-- 7d Change -->
+                            <td style="padding:0.3rem 0.3rem;">
+                                <div
+                                     [class]="rowData.coinFullInfo['market_data']['price_change_percentage_7d_in_currency']['usd'] < 0 ? 'decreased' :'increased'">
+                                    {{formatPercent(rowData.coinFullInfo['market_data']['price_change_percentage_7d_in_currency']['usd'])}}
+                                </div>
+                            </td>
+                            <!-- Balance -->
+                            <td style="padding:0.3rem 0.3rem;">
+                                <div> {{formatBalance(rowData.balance)}}</div>
+
+                            </td>
+                            <!-- Total Quantity -->
+                            <td style="padding:0.3rem 0.3rem;">
+                                <div> {{rowData.totalQuantity}}</div>
+                            </td>
+
+                            <!-- Average Unit Cost Basis -->
+                            <td style="padding:0.3rem 0.3rem;width: 12rem;">
+                                <div> {{formatCurrency(rowData.averageUnitCost)}}</div>
+                            </td>
+                            <!-- Asset Total Cost Basis -->
+                            <td style="padding:0.3rem 0.3rem;">
+                                <div> {{formatCurrency(rowData.totalCostBasis)}}</div>
+                            </td>
+                            <!-- Asset Gain/Loss -->
+                            <td style="padding:0.3rem 0.3rem;">
+                                <div
+                                     [class]="(rowData.balance - rowData.totalCostBasis) < 0 ? 'decreased' :'increased'">
+                                    {{formatCurrency(rowData.balance - rowData.totalCostBasis)}}</div>
+
+                            </td>
+                            <!-- Allocation -->
+                            <td style="padding:0.3rem 0.3rem;">
+                                <div> {{formatPercent(rowData.allocation)}}</div>
+
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="m-0 p-0"
+                                style="padding:0.3rem 0.3rem; cursor: pointer;">
+                                <a #rowOptionsIcon
+                                   mat-flat-button
+                                   *ngIf="!editing"
+                                   (click)="rowPanel.toggle($event)"
+                                   class="cursor-pointer bg-transparent">
+                                    <i class="pi pi-ellipsis-v"
+                                       [style]="{'font-size':'1.2rem','cursor':'pointer'}">
+                                    </i>
+                                </a>
+                            </td>
+
+                            <!-- Actions/Options Overlay -->
+                            <p-overlayPanel #rowPanel
+                                            appendTo="body"
+                                            class="cursor-pointer"
+                                            [showTransitionOptions]="'0.9ms'"
+                                            [hideTransitionOptions]="'0.9ms'"
+                                            [dismissable]="true"
+                                            [baseZIndex]="1000001">
+                                <ng-template pTemplate>
+                                    <ul style="list-style: none;"
+                                        class="p-0 m-0">
+                                        <li class="p-0 m-0">
+                                            <a mat-flat-button
+                                               type="button"
+                                               class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                               (click)="onAddNewTransaction(rowData,rowIndex,$event)">
+                                                <i class="pi pi-plus-circle">
+                                                </i>
+                                                Add Transaction
+                                            </a>
+                                        </li>
+
+                                        <li class="p-0 m-0">
+                                            <a mat-flat-button
+                                               class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                               type="button"
+                                               (click)="onRowRemove(rowData,rowIndex)">
+                                                <i class="pi pi-trash"
+                                                   [style]="{'font-size':'1.2rem','cursor':'pointer'}">
+                                                </i>
+                                                Delete
+                                            </a>
+                                        </li>
+
+                                        <li class="p-0 m-0">
+                                            <a mat-flat-button
+                                               class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                               type="button"
+                                               (click)="openAssetInfo(rowData)">
+                                                <i class="pi pi-external-link"
+                                                   [style]="{'font-size':'1.1rem','cursor':'pointer'}">
+                                                </i>
+                                                Asset Info
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </ng-template>
+                            </p-overlayPanel>
+                        </tr>
+                    </ng-template>
+                    <!-- --------------------- Row Expansion --------------------- -->
+                    <ng-template pTemplate="rowexpansion"
+                                 let-rowData
+                                 let-rowIndex="rowIndex">
+                        <tr aria-colspan="12">
+                            <td colspan="12">
+                                <div class="p-1 w-100">
+                                    <app-portfolio-table-expand #expandTable
+                                                                [parentData]="rowData"
+                                                                [rowIndex]="rowIndex"
+                                                                [isMobile]="isMobile"
+                                                                [expandedRowKeys]="expandedRowKeys"
+                                                                [service]="transactionService"
+                                                                [portfolio]="portfolio">
+                                    </app-portfolio-table-expand>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="summary">
+                        <div class="flex align-items-center justify-content-between">
+                            <span style="font-size: 0.7rem;"> Updated: {{currentDate | date: 'short'}}</span>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr style="height: 20vh;width: 100%"
+                            class="text-center">
+                            <th rowspan="8"
+                                colspan="8"
+                                class="text-center"
+                                style="white-space: nowrap; font-size: x-large;margin:0 auto;vertical-align:middle;">
+                                <span>
+                                    + Add New assets to this portfolio to get started.
+                                </span>
+                            </th>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

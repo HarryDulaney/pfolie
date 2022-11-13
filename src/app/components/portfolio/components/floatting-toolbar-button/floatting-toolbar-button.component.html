@@ -1,0 +1,13 @@
+<div [hidden]="hidden | async"
+     [style.z-index]="10000">
+    <a mat-flat-button
+       [style.z-index]="10000"
+       id='float-button'
+       pRipple
+       type="button"
+       (click)="clicked($event)"
+       class="bg-transparent cursor-pointer"
+       pTooltip="Add Component"><i class="fa fa-plus"
+           style="font-size: xx-large;">
+        </i></a>
+</div>

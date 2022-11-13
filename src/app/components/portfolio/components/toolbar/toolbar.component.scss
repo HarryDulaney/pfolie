@@ -1,0 +1,68 @@
+.toolbar-wrapper-nav-contracted {
+    position: fixed;
+    top: calc(5px + 7vh);
+    z-index: 5000;
+    right: 0;
+    left: 0;
+    width: auto;
+    margin-bottom: 2rem;
+}
+
+.toolbar-wrapper-nav-expanded {
+    position: fixed;
+    top: calc(5px + 7vh);
+    z-index: 5000;
+    right: 0;
+    left: calc(200px);
+    max-width: 100%;
+    margin-bottom: 2rem;
+}
+
+.toolbar-wrapper-mobile {
+    position: fixed;
+    top: calc(5px + 7vh);
+    z-index: 5000;
+    right: 0;
+    left: 0;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+:host ::ng-deep .p-menubar {
+    height: fit-content !important;
+    background-color: var(--surface-ground);
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list {
+    background: var(--surface-ground) !important;
+}
+
+:host ::ng-deep .p-menubar .p-menuitem.p-menuitem-active > .p-menuitem-link {
+    background: #4242424a !important;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-content {
+    background: transparent;
+}
+
+#hide--button {
+    z-index: 99999 !important;
+    color: #ffffff !important;
+    border: 1px solid var(--primary-color);
+}
+
+#hide--button :hover {
+    color: var(--primary-color) !important;
+}
+
+:host ::ng-deep .p-button-icon-only {
+    max-height: 2rem;
+    padding: 0.3rem;
+    border: none;
+    background-color: transparent !important;
+}
+
+:host ::ng-deep .p-button-icon-only:hover {
+    border: none;
+    background-color: #4242424a !important;
+}

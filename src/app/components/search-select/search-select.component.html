@@ -1,0 +1,34 @@
+<div [style]="{'height':'100%','width':'100%'}">
+    <input type="text"
+           pInputText
+           [formControl]="searchField"
+           name="searhField"
+           id="search"
+           class="p-component p-inputtext-sm text-white form-control bg-black mb-1"
+           placeholder="Search"
+           autocomplete="off">
+    <div class="container w-100 h-100 p-1 m-0"
+         [style]="{'width': '100%',  'height':'100%'}">
+        <div class="scrollbox-wrapper">
+            <p-virtualScroller #vs
+                               [value]="filteredCoins"
+                               [scrollHeight]="scrollHeight"
+                               [itemSize]="45"
+                               [rows]="45"
+                               [maxBufferPx]="1200"
+                               [minBufferPx]="1200"
+                               [style]="vScrollStyle">
+                <ng-template pTemplate="item"
+                             let-item
+                             let-i="index"
+                             let-c="count"
+                             style="width:100%">
+                    <div (click)="select(item.id)"
+                         class="scroll-item">
+                        <div class="cursor-pointer">{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-virtualScroller>
+        </div>
+    </div>
+</div>

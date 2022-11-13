@@ -1,0 +1,25 @@
+.scrollbox-wrapper {
+    position: relative;
+    text-align: center;
+    max-width: auto !important;
+    max-height: auto !important;
+    min-width: fit-content !important;
+    min-height: fit-content !important;
+}
+
+.scroll-item-portfolio {
+    display: inline-block;
+    position: relative;
+    padding: 0.6rem;
+    width: 100%;
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+    font-size: medium;
+    font-family: monospace;
+    color: #fff;
+    font-weight: normal;
+}
+
+.scroll-item-portfolio :hover {
+    cursor: pointer;
+}

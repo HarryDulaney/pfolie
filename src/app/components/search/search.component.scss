@@ -1,0 +1,40 @@
+.scrollbox-wrapper {
+  position: relative;
+  text-align: center;
+  max-width: auto !important;
+  max-height: auto !important;
+  min-width: fit-content !important;
+  min-height: fit-content !important;
+}
+
+.scroll-item {
+  display: inline-block;
+  position: relative;
+  padding: 0.6rem;
+  width: 100%;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+  font-size: large;
+  cursor: pointer;
+}
+
+.scroll-item :hover {
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.scroll-item-style-2 {
+  display: inline-block;
+  position: relative;
+  padding: 0.6rem;
+  width: 100%;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+  font-size: medium;
+  color: #fff;
+}
+
+.scroll-item-style-2 :hover {
+  color: var(--text-color);
+  cursor: pointer;
+}

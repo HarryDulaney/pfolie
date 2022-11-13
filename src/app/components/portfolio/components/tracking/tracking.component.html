@@ -1,0 +1,229 @@
+<div class="mt-5 ps-3 pe-3"
+     id="tracking-container">
+    <div class="col-12"
+         style="height: 2vh; margin-top: 2rem;">
+    </div>
+
+    <div class="grid-nogutter w-100">
+        <ng-container *ngIf="isLoading">
+            <div class="container d-flex justify-content-center align-items-center"
+                 [style]="{height:'90vh',width:'95vw','margin-top':'-5vh'}">
+                <p-progressSpinner [style]="{height:'20rem',width:'20rem'}"
+                                   [strokeWidth]='2'
+                                   fill="transparent"
+                                   animationDuration=".1s"></p-progressSpinner>
+            </div>
+        </ng-container>
+        <div [hidden]="isLoading">
+            <div class="grid-nogutter p-1">
+                <div class="col-12">
+                    <div class="caption-label-special">Total Assets:
+                        <span class="caption-label-data">
+                            {{getTrackedCount()}}
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-12 w-100">
+                <p-dialog #assetSearchDialog
+                          header="Select An Asset"
+                          [(visible)]="showAssetSearchDialog"
+                          [position]="'top'"
+                          [baseZIndex]="9999999"
+                          [responsive]="true"
+                          [closeOnEscape]="true"
+                          appendTo="body"
+                          [dismissableMask]="true"
+                          [modal]="true"
+                          [style]="{ 'width': '100vw', 'height': 'auto' }"
+                          [draggable]="false"
+                          [closable]="true"
+                          [focusTrap]="true"
+                          [resizable]="false">
+                    <app-search-select [scrollHeight]="scrollHeight"
+                                       (selected)="addTrackSelected($event)">
+                    </app-search-select>
+                </p-dialog>
+                <div class="card">
+                    <p-table #trackedAssetTable
+                             [value]="view"
+                             [paginator]="true"
+                             responsive="true"
+                             responsiveLayout="scroll"
+                             [rows]="20"
+                             [rowsPerPageOptions]="[5,20,50,100]"
+                             [showCurrentPageReport]="true"
+                             [loading]="isLoading"
+                             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                             [style]="{width:'100%'}">
+                        <ng-template pTemplate="caption">
+                            <div class="flex align-items-center justify-content-between">
+                                <h2 id="tracking-list-header"
+                                    class="caption-label">
+                                    Tracking (Watch List)</h2>
+                                <a mat-flat-button
+                                   (click)="showAssetSearchContainer($event)"
+                                   type="button"
+                                   class="text-white font-bold bg-transparent"
+                                   tooltipPosition="left">
+                                    <i class="pi pi-plus"
+                                       style="font-size: 1.2rem;"></i>
+                                    <span class="caption-label"> Track New</span>
+                                    <p-overlayPanel #assetSearchOverlay
+                                                    [baseZIndex]="9999999"
+                                                    [style]="{ 'width': '30vw', 'height': 'auto' }"
+                                                    [dismissable]="true">
+                                        <ng-template pTemplate>
+                                            <app-search-select [scrollHeight]="scrollHeight"
+                                                               (selected)="addTrackSelected($event)">
+                                            </app-search-select>
+                                        </ng-template>
+                                    </p-overlayPanel>
+                                </a>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="colgroup">
+                            <colgroup>
+                                <col style="max-width:16.667%">
+                                <col style="max-width:16.667%">
+                                <col style="max-width:16.667%">
+                                <col style="max-width:16.667%">
+                                <col style="max-width:16.667%">
+                                <col style="max-width:16.667%">
+                            </colgroup>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr class="header-box-special">
+                                <th [width]="100"
+                                    class="header-text">
+                                </th>
+                                <th [width]="160"
+                                    class="header-text"
+                                    pSortableColumn="name">
+                                    Name
+                                    <p-sortIcon field="name">
+                                    </p-sortIcon>
+                                </th>
+                                <th class="header-text">
+                                    Price
+                                </th>
+                                <th class="header-text">
+                                    24hr <delta-icon></delta-icon>
+                                </th>
+                                <th class="header-text">
+                                    1hr <delta-icon></delta-icon>
+                                </th>
+                                <th class="header-text">
+                                    7d <delta-icon></delta-icon>
+                                </th>
+                                <th class="header-text">
+                                    Action
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body"
+                                     let-rowData>
+                            <tr>
+                                <td style="padding:0.3rem 0.3rem"><img [src]="rowData['image']['small']"
+                                         alt="asset--image-thumb"
+                                         style="height:24px;width:auto;" /> </td>
+                                <td style='padding:0.3rem 0.3rem'>
+                                    <div>{{rowData['name']}}</div>
+                                </td>
+                                <td style="padding:0.3rem 0.3rem">
+                                    <div> {{rowData['market_data']['current_price']['usd'] |
+                                        currency:'USD':'$':'1.1-12'}}</div>
+                                </td>
+                                <td style="padding:0.3rem 0.3rem">
+                                    <span
+                                          [class]="rowData['market_data']['price_change_percentage_24h_in_currency']['usd'] < 0 ? 'decreased' :'increased'">
+                                        {{formatPercentData(rowData,'24hr')}}</span>
+                                </td>
+                                <td style="padding:0.3rem 0.3rem">
+                                    <span
+                                          [class]="rowData['market_data']['price_change_percentage_1h_in_currency']['usd'] < 0 ? 'decreased' :'increased'">
+                                        {{formatPercentData(rowData,'1hr')}}</span>
+                                </td>
+                                <td style="padding:0.3rem 0.3rem">
+                                    <span
+                                          [class]="rowData['market_data']['price_change_percentage_7d_in_currency']['usd'] < 0 ? 'decreased' :'increased'">
+                                        {{formatPercentData(rowData,'7d')}}</span>
+                                </td>
+                                <!-- Actions -->
+                                <td style="padding:0.3rem 0.3rem; cursor: pointer;">
+                                    <a #rowOptionsIcon
+                                       mat-flat-button
+                                       (click)="rowPanel.toggle($event)"
+                                       class="cursor-pointer text-2xl bg-transparent">
+                                        <i class="pi pi-ellipsis-v"
+                                           [style]="{'font-size':'1.2rem','cursor':'pointer'}">
+                                        </i>
+                                    </a>
+                                </td>
+
+                                <!-- Actions/Options Overlay -->
+                                <p-overlayPanel #rowPanel
+                                                appendTo="body"
+                                                class="cursor-pointer"
+                                                [showTransitionOptions]="'0.9ms'"
+                                                [hideTransitionOptions]="'0.9ms'"
+                                                [dismissable]="true"
+                                                [baseZIndex]="1000001">
+                                    <ng-template pTemplate>
+                                        <ul style="list-style: none;"
+                                            class="p-0 m-0">
+
+                                            <li class="p-0 m-0">
+                                                <a mat-flat-button
+                                                   class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                   type="button"
+                                                   (click)="deleteTrackedAsset(rowData)">
+                                                    <i class="pi pi-trash"
+                                                       [style]="{'font-size':'1.2rem','cursor':'pointer'}">
+                                                    </i>
+                                                    Delete
+                                                </a>
+                                            </li>
+
+                                            <li class="p-0 m-0">
+                                                <a mat-flat-button
+                                                   class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                   type="button"
+                                                   (click)="openAssetInfo(rowData)">
+                                                    <i class="pi pi-external-link"
+                                                       [style]="{'font-size':'1.1rem','cursor':'pointer'}">
+                                                    </i>
+                                                    Asset Info
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </ng-template>
+                                </p-overlayPanel>
+
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="summary">
+                            <div class="flex align-items-center justify-content-between">
+                                <span style="font-size: 0.7rem;"> Updated: {{currentDate | date: 'short'}}</span>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr style="height: 20vh;width: 100%"
+                                class="text-center">
+                                <th rowspan="6"
+                                    colspan="6"
+                                    class="text-center"
+                                    style="white-space: nowrap; font-size: x-large;justify-content: center; align-items: center;">
+                                    <span>
+                                        Add assets to your watchlist to get started.
+                                    </span>
+                                </th>
+                            </tr>
+                        </ng-template>
+
+                    </p-table>
+                </div>
+            </div>
+        </div>
+    </div>

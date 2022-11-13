@@ -1,0 +1,40 @@
+#tracking-container {
+    margin-top: 5rem;
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 81vh !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.4rem 0.4rem !important;
+}
+
+:host ::ng-deep .p-component-overlay {
+    display: none !important;
+}
+:host ::ng-deep .p-component-overlay-enter {
+    display: none !important;
+}
+
+:host ::ng-deep .p-sidebar-mask {
+    display: none !important;
+}
+
+.p-datatable .p-datatable-header {
+    padding: 0.4rem 0.4rem !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    padding: 0.2rem 0.2rem !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    padding: 0.4rem 0.4rem !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-footer {
+    background: transparent;
+}

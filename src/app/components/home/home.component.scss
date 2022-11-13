@@ -1,0 +1,133 @@
+mat-toolbar {
+  position: fixed;
+  position: -webkit-sticky;
+  background-color: var(--surface-ground);
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 1000;
+}
+
+#nav--menu-main {
+  background-color: var(--surface-ground);
+}
+
+:host ::ng-deep .p-panelmenu .p-menuitem-link {
+  text-align: start !important;
+  justify-content: start !important;
+  font-size: 1.5rem !important;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-header > a {
+  background: transparent !important;
+  font-size: 0.9rem !important;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-header > a:hover {
+  background: #4242424a !important;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link {
+  background: transparent !important;
+  font-size: 0.9rem !important;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:hover {
+  background: #4242424a !important;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-content {
+  background: transparent;
+  font-size: 0.9rem !important;
+}
+
+.signed-in {
+  color: #00df259e;
+}
+
+.signed-out {
+  color: #ff00007a;
+}
+
+#search {
+  background-color: var(--surface-ground);
+}
+
+button {
+  background-color: transparent;
+  color: #ffffff;
+}
+
+mat-toolbar > button:hover {
+  background-color: #8a9ab21d;
+}
+
+i {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.div-scrollable {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+.mobile--side-nav {
+  min-width: 100% !important;
+  min-height: 100% !important;
+}
+
+.non-mobile--side-nav {
+  width:200px !important;
+  max-width: 210px !important;
+  max-height: 100% !important;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-panel :hover {
+  background-color: transparent;
+}
+
+.nav-action-link {
+  font-size: large;
+  font-weight: normal;
+}
+
+:host ::ng-deep .p-button {
+  margin: 0 0.5rem 0 0;
+}
+
+p {
+  margin: 0;
+}
+
+.confirmation-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .p-dialog {
+  margin-top: 4rem;
+}
+
+:host ::ng-deep .p-dialog {
+  margin-top: 4rem;
+}
+
+:host ::ng-deep .p-toast-message-custom {
+  background-color: #e1a1ff;
+  border-radius: 3px 3px 3px 3px;
+  color: #060d3a;
+}
+
+:host ::ng-deep .p-toast-icon-close {
+  color: #0882a4;
+  border-radius: 3px 3px 3px 3px;
+}

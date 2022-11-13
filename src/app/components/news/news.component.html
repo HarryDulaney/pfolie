@@ -1,0 +1,45 @@
+<div class="p-component container mt-3">
+    <div class="row text-center mb-1 w-100">
+        <p-header class="text-decoration-none text-2xl font-bold">Trending News</p-header>
+        <div class="flex: 0 0 100%; mt-1">
+            <span class="text-gray-400 text-md font-bold p-1">Sources:</span>
+            <span *ngFor="let c of allCategories">
+                <a #c
+                    (click)="newsSourceSelected(c)">
+                    <p-chip [label]=c
+                        class="m-1 cursor-pointer"
+                        [styleClass]="getStyleClass(c)">
+                    </p-chip>
+                </a>
+            </span>
+            <a (click)="selectAllSources()">
+                <p-chip [label]='"All"'
+                    [styleClass]="filterBy === '' ?'bg-blue-300' :'bg-gray-600'"
+                    class="m-1 cursor-pointer">
+                </p-chip>
+            </a>
+        </div>
+    </div>
+    <div class="grid-nogutter w-100">
+        <ng-container *ngIf="isLoading">
+            <div class="container d-flex justify-content-center align-items-center"
+                [style]="{height:'90vh',width:'95vw','margin-top':'-5vh'}">
+                <p-progressSpinner [style]="{height:'20rem',width:'20rem'}"
+                    [strokeWidth]='2'
+                    fill="transparent"
+                    animationDuration=".1s"></p-progressSpinner>
+            </div>
+        </ng-container>
+        <div [hidden]="isLoading">
+            <div class="row row-cols-xl-4 row-cols-lg-2">
+                <div *ngFor="let item of displayedFeed | async; index as i; count as c;">
+                    <article-card (open)="openHandler($event)"
+                        [rss-item]="item"
+                        [isCarousel]="false">
+                    </article-card>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

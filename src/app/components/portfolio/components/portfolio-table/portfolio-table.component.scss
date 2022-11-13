@@ -1,0 +1,15 @@
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+.header-text {
+    color: #ffffff;
+    font-size: medium;
+    font-weight: bold;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+}

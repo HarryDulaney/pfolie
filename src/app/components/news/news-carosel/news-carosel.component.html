@@ -1,0 +1,39 @@
+<div class="text-center">
+    <p-header style="font-size: 1rem;">Crypto Community News</p-header>
+</div>
+<div class="m-0 p-0">
+    <div [hidden]="!isLoading"
+         class="text-center"
+         [style]="{height:'100%',width:'100%'}">
+        <p-progressSpinner [style]="{height:'10rem',width:'10rem','margin-top':'7rem','margin-bottom':'7rem'}"
+                           [strokeWidth]='6'
+                           fill="transparent"
+                           animationDuration=".1s"></p-progressSpinner>
+    </div>
+
+    <div [hidden]="isLoading">
+        <p-carousel [value]="feedItems"
+                    [numVisible]="3"
+                    [numScroll]="1"
+                    [circular]="true"
+                    [autoplayInterval]="7000"
+                    [showNavigators]="false"
+                    [responsiveOptions]="responsiveOptions"
+                    [showIndicators]="showIndicators">
+            <ng-template pTemplate="header">
+                <h2 class="text-center text-white text-2xl font-bold"
+                    style="margin:0 auto;"></h2>
+            </ng-template>
+            <ng-template let-feedItem
+                         pTemplate="item">
+                <div class="p-1 m-1 pb-0 mb-0 ">
+                    <article-card (open)="openHandler($event)"
+                                  [rss-item]="feedItem"
+                                  [isCarousel]="true">
+                    </article-card>
+                </div>
+            </ng-template>
+        </p-carousel>
+
+    </div>
+</div>

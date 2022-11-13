@@ -1,0 +1,83 @@
+.favorite--button-wrapper {
+  cursor: pointer;
+  float: right;
+}
+
+#favorite--icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: rgb(252, 255, 81) !important;
+}
+
+.p-card {
+  height: fit-content;
+  width: auto;
+  text-decoration: none;
+}
+
+.p-card:hover {
+  transform: none !important;
+}
+
+.token-header-image {
+  height: auto;
+  width: auto;
+  max-height: calc(3rem + 1.7vw);
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-content {
+  font-weight: bold;
+  color: var(--blue-50);
+}
+
+.dynamic-content {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--blue-50);
+}
+
+.coin-resource-title-content {
+  font-size: calc(1.9rem + 2vw);
+  color: var(--blue-50);
+}
+
+.coin-header-description {
+  font-size: medium;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  opacity: 80%;
+  color: var(--blue-200);
+}
+
+.med-card-content {
+  font-size: medium;
+  font-weight: bold;
+  color: var(--blue-200);
+}
+
+.lrg-card-content {
+  font-size: 1rem;
+  color: var(--gray-200);
+}
+
+.sm-card-content {
+  font-size: small;
+  font-weight: normal;
+}
+
+.basic-card-link {
+  font-weight: bold;
+  color: var(--blue-700);
+  text-decoration: none;
+}

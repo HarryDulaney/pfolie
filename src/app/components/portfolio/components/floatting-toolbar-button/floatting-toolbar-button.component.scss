@@ -1,0 +1,9 @@
+#float-button {
+    z-index: 99999 !important;
+    color: #ffffff !important;
+    border: 1px solid var(--primary-color);
+}
+
+#float-button :hover {
+    color: var(--primary-color) !important;
+}

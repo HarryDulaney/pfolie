@@ -1,0 +1,17 @@
+<a (click)="openArticle($event)" class="cursor-pointer">
+    <p-card id="article-card" class="p-component feature-card m-1"
+        [hidden]="showArticle">
+        <ng-template pTemplate="header">
+            <div id="article-date" class="text-gray-100 text-500 float-end p-2">{{feedContent.publishedDate | date: 'fullDate'}}
+            </div>
+            <div *ngIf="feedContent.featureImageUrl !== ''">
+                <img class="w-6rem h-auto border-round" alt="news-item-img" [src]="feedContent.featureImageUrl"
+                    [style]="{'max-width':'6rem'}">
+            </div>
+            <div class="text-white float-end m-1">{{feedContent.subTitle}}</div>
+        </ng-template>
+        <ng-template pTemplate="body">
+            <div class="text-white center">{{feedContent.title}}</div>
+        </ng-template>
+    </p-card>
+</a>

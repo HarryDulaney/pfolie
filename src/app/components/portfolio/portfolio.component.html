@@ -1,0 +1,101 @@
+<!-- Top Toolbar drawer -->
+<app-toolbar #toolbar
+             [isNavExpanded]="isNavExpanded"
+             [screenSize]="screenSize"></app-toolbar>
+
+
+<!-- ----------------------- Drag In Component Palette Sidebar ---------------------------- -->
+<!-- <p-sidebar #paletteSideBar
+           [baseZIndex]="100000"
+           [position]="sidebarPostion"
+           [(visible)]="showPalette"
+           [dismissible]="true"
+           [showCloseIcon]="true"
+           [modal]="false">
+    <div style="height: 100%;width:100%;"
+         class="sidebar--palette">
+        <label class="text-xl text-white mt-1 mb-2">Drag Into Your Workspace</label>
+        <div class="grid-nogutter">
+            <div *ngFor="let item of paletteItems"
+                 class="flex-wrap">
+                <span class="mt-1 mb-1">{{item.label}}</span>
+                <div [dndDraggable]="item['componentId']"
+                     [dndEffectAllowed]="'copy'"
+                     (dndStart)="onDragStart($event)"
+                     (dndCopied)="onDraggableCopied($event)"
+                     (dndLinked)="onDraggableLinked($event)"
+                     (dndMoved)="onDraggableMoved($event)"
+                     (dndCanceled)="onDragCanceled($event)"
+                     (dndEnd)="onDragEnd($event)">
+                    <div dndDragImageRef
+                         class="dragdrop-icon">
+                        <img [src]="item['iconSrc']"
+                             [style.width.px]="item['iconWidth']"
+                             [style.height.px]="item['iconHeight']">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</p-sidebar> -->
+
+<!-- ----------------------- Select Portfolio Modal ---------------------------- -->
+<!-- <p-dialog [baseZIndex]="9999999"
+          [(visible)]="portfolioService.showSelectModal"
+          [modal]="true"
+          [closable]="false"
+          [style]="isMobile ? {width:'100vw'} : {width:'50vw'}"
+          [draggable]="false"
+          [resizable]="false">
+    <app-portfolio-modal #modal></app-portfolio-modal>
+</p-dialog> -->
+
+<!-- <p-dialog #addEditDialog
+          [baseZIndex]="1000001"
+          [(visible)]="showAddEditDialog"
+          [closable]="true"
+          [style]="isMobile ? {width:'100 vw'} : {width:'50vw'}"
+          [draggable]="false"
+          [closeOnEscape]="true"
+          [resizable]="false">
+    <app-add-edit #addEditComponent></app-add-edit>
+</p-dialog> -->
+
+<ng-container *ngIf="portfolioService.isLoading">
+    <div class="container d-flex justify-content-center align-items-center"
+         [style]="{height:'90vh',width:'95vw'}">
+        <p-progressSpinner [style]="{height:'20rem',width:'20rem'}"
+                           [strokeWidth]='6'
+                           fill="transparent"
+                           animationDuration=".1s"></p-progressSpinner>
+    </div>
+</ng-container>
+<!-- Portfolio Container (Tables/Workspace/Cards) -->
+<div id="portfolio-container"
+     class="grid-nogutter ps-3 pe-3"
+     [hidden]="portfolioService.isLoading"
+     (click)="onContainerClick($event)">
+
+    <div class="col-12"
+         style="height: 2vh; margin-top: 2rem;">
+    </div>
+    <!-- Workspace for custom portfolio parts/ componenets to render -->
+    <app-workspace #workspace
+                   [view]="portfolioView"
+                   [calculatedValues]="calculatedValues"
+                   [screenSize]="screenSize"
+                   [isNavExpanded]="isNavExpanded">
+    </app-workspace>
+
+    <div class="col-12 mt-5 mb-5 bg-transparent">
+        <div class="mt-5 mb-5 bg-transparent">
+            <app-portfolio-table #portfolioTable
+                                 [view]="portfolioView"
+                                 [portfolio]="getPortfolio()"
+                                 [calculatedValues]="calculatedValues"
+                                 [screenSize]="screenSize"
+                                 selectionMode="single"></app-portfolio-table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+#dash {
+    height: 100% !important;
+    width: 100% !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+tr td {
+    padding: 0.5rem 0.5rem;
+}
+
+#chart {
+    max-width: 350px;
+    margin: 1px auto;
+}
+
+:host ::ng-deep .special-card > p-card .p-card-content {
+    padding: 0.1rem !important;
+}
+
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    color: #ffffff;
+    font-size: medium;
+    font-weight: bold;
+    white-space: nowrap !important;
+    text-overflow: ellipsis;
+}
+
+:host ::ng-deep .p-card {
+    height: fit-content;
+    width: auto;
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+
+:host ::ng-deep .p-card:hover {
+    transform: scale(1.05);
+}

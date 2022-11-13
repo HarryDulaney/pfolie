@@ -1,0 +1,68 @@
+<footer class="align-baseline mb-0 mt-5 w-100 p-5">
+  <hr>
+  <div class="grid">
+    <div class="col-12 md:col-6 lg:col-3">
+      <h4>Company</h4>
+      <ul class="list-group list-unstyled">
+        <li><a class="footer-link"
+             target="_blank"
+             [href]="aboutUsLink">About Us</a></li>
+        <li>
+          <a class="footer-link"
+             [href]="devAboutLink"
+             target="_blank">
+            Contact Us
+          </a>
+        </li>
+        <li><a class="footer-link"
+          [routerLink]="['/privacy-policy']">Privacy Policy</a></li>
+      </ul>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <h4>Products</h4>
+      <ul class="list-group list-unstyled">
+        <li><a class="footer-link"
+             [routerLink]="['/home']">Pfolie (Home)</a></li>
+        <li>
+          <a class="footer-link"
+             [routerLink]="['/portfolio']"> Portfolio Manager
+          </a>
+        </li>
+        <li>
+          <a class="footer-link"
+             [routerLink]="['/tracking']">
+            Watch List
+          </a>
+        </li>
+        <li>
+          <a class="footer-link"
+             [routerLink]="['/news']">
+            News Aggregator
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-12 md:col-6 lg:col-3">
+      <h4>Support</h4>
+      <ul class="list-group list-unstyled">
+        <li>
+          <a class="footer-link"
+             [href]="issuesLink"
+             target="_blank">
+            Report Issues
+          </a>
+        </li>
+  
+      </ul>
+    </div>
+
+    <div class="col-12">
+      <div class="text-center">
+        <h5>2021-2022 © Pfolie</h5>
+      </div>
+    </div>
+  </div>
+
+</footer>

@@ -1,0 +1,27 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "This is the Rest API backend for Pfolie",
+  "main": "server.js",
+  "scripts": {
+    "start:backend": "node server.js",
+    "start:backend:dev": "nodemon --watch dist --watch api ./server.js"
+  },
+  "author": "Harry Dulaney",
+  "license": "GNUv3",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "express-promise-router": "^4.1.1",
+    "medium-rss-to-json": "^2.0.3",
+    "path": "^0.12.7",
+    "pg": "^8.7.3",
+    "rss-to-json": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}

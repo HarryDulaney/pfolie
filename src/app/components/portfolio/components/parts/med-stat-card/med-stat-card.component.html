@@ -1,0 +1,37 @@
+<p-card class="p-component feature-card m-1">
+    <ng-template pTemplate="header">
+        <div *ngIf="price_change_24h >= 0"
+             id="article-date"
+             class="increased text-xl float-end p-2">
+            <span>{{price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
+
+        </div>
+        <div *ngIf="price_change_24h < 0"
+             id="article-date"
+             class="decreased text-xl float-end p-2">
+            <span>{{price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
+        </div>
+        <div>
+            <img class="w-4rem h-auto border-round p-2"
+                 alt="trending-item-img"
+                 [src]="image"
+                 [style]="{'max-width':'4rem'}">
+        </div>
+        <div class="text-white float-end m-1 p-2 text-4xl">{{name}}</div>
+        <div class="center float-start m-1 p-2 text-xl">
+            <div [class]="price_change_24h < 0 ? 'decreased':'increased'">{{current_price}}
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="body">
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="center">
+            <app-sparkline [maxWidth]="'100%'"
+                           [maxHeight]="'6rem'"
+                           [chart-data]="t.sparkline"
+                           [xaxis-labels]="coinDataService.sparklineXAxisLabels">
+            </app-sparkline>
+        </div>
+    </ng-template>
+</p-card>

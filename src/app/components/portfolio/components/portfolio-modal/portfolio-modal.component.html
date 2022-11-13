@@ -1,0 +1,25 @@
+<div class="p-card p-4 shadow-2 border-round xl:w-50 md:w-100" [style]="{height:'100%'}">
+    <div class="text-center mb-1">
+        <div class="text-900 text-3xl font-medium mb-3">Select a Portfolio</div>
+    </div>
+        <p-listbox 
+            [style]="{height:'100%',width:'100%'}" 
+            [options]="portfolios" 
+            [(ngModel)]="selectedPortfolio"
+            optionLabel="name" 
+            optionDisabled="inactive">
+            <ng-template let-portfolio pTemplate="item">
+                <div class="text-white font-bold text-xl text-center font-monospace w-100">
+                    <div>{{portfolio.portfolioName}}</div>
+                </div>
+            </ng-template>
+        </p-listbox>
+    <button 
+        pButton 
+        pRipple 
+        label="Open Selected" 
+        class="w-full"
+        [disabled]="!selectedPortfolio"
+        (click)="selectHandler($event)">
+    </button>
+</div>
