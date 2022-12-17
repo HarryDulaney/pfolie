@@ -2,6 +2,10 @@ const express = require("express"), env = process.env.NODE_ENV || 'development';
 const cors = require("cors");
 const path = require('path');
 const bodyParser = require('body-parser');
+const news = require("../controllers/news.controller");
+const config = require("../controllers/config.controller");
+const portfolioController = require("../controllers/portfolio.controller");
+const partsController = require("../controllers/parts.controller");
 
 var root = path.dirname(__dirname);
 
@@ -41,11 +45,33 @@ if (env === 'production') {
   corsOptions['origin'] = process.env.CORS_CONFIG_LOCAL;
 }
 
-
-app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)) // include before other routes
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api', routes);
+// app.use('/api', routes);
+
+
+
+
+/* ---------------------- Configuration ----------------------- */
+app.get('/api/config', cors(corsOptions), config.envConfig);
+
+/* ---------------------- Portfolios ----------------------- */
+app.get('/api/portfolio/:uid',cors(corsOptions), portfolioController.findAllPortfoliosByUserId);
+app.get('/api/portfolio/ids/:uid',cors(corsOptions), portfolioController.findAllPortfolioIdsByUserId);
+app.get('/api/portfolio/:pid',cors(corsOptions), portfolioController.findPortfolioByPortfolioId);
+app.put('/api/portfolio',cors(corsOptions), portfolioController.createPortfolio);
+app.post('/api/portfolio',cors(corsOptions), portfolioController.updatePortfolio);
+app.delete('/portfolio',cors(corsOptions), portfolioController.deletePortfolio);
+
+/* ---------------------- Portfolio Parts ----------------------- */
+app.get('/api/portfolio/part/:cid',cors(corsOptions), partsController.findPartByComponentId);
+app.post('/api/portfolio/part',cors(corsOptions), partsController.updatePart);
+app.put('/api/portfolio/part',cors(corsOptions), partsController.createPart);
+
+
+/* ---------------------- News/RSS Feeds ----------------------- */
+app.post('/api/news/fetch-feed',cors(corsOptions), news.parseRssFeed);
 
 app.use(express.static(root + '/dist/pfolie'));
 
