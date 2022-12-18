@@ -21,7 +21,6 @@ import { environment } from 'src/environments/environment';
 
 /* Components */
 import { AppComponent } from './app.component';
-import { ApiService } from './services/api.service';
 import { FooterComponent } from './components/footer/footer.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { SearchComponent } from './components/search/search.component';
@@ -40,13 +39,8 @@ import { SparklineComponent } from './components/charts/sparkline/sparkline.comp
 import { CoinChartComponent } from './components/charts/coin-chart/coin-chart.component'
 
 /* Services */
-import { CoinDataService } from './services/coin-data.service';
-import { NavService } from './services/nav.service';
 import { ConfigService } from './services/config.service';
-import { NewsService } from './components/news/news.service';
 import { SessionService } from './services/session.service';
-import { UtilityService } from './services/utility.service';
-import { ArticleService } from './components/news/article.service';
 import { CacheService } from './services/cache.service';
 /* PrimeNg Service */
 import { MessageService } from 'primeng/api';
@@ -58,7 +52,6 @@ import { FloattingToolbarButtonComponent } from './components/portfolio/componen
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { WorkspaceComponent } from './components/portfolio/components/workspace/workspace.component';
 import { FragmentDirective } from './components/builder/portfolio-part/fragment.directive';
-import { PortfolioBuilderService } from './components/portfolio/services/portfolio-builder.service';
 import { CustomComponent } from './components/builder/custom/custom.component';
 import { PartsPaletteComponent } from './components/portfolio/components/parts-palette/parts-palette.component';
 import { MedStatCardComponent } from './components/portfolio/components/parts/med-stat-card/med-stat-card.component';
@@ -66,7 +59,6 @@ import { SmStatCardComponent } from './components/portfolio/components/parts/sm-
 import { DeltaIcon } from './components/icons/change-icon/delta.component';
 import { PartHostDirective } from './components/portfolio/components/parts-palette/part-host.directive';
 import { SelectComponent } from './components/portfolio/components/select/select.component';
-import { ComponentService } from './components/portfolio/services/component.service';
 import { TrackingComponent } from './components/portfolio/components/tracking/tracking.component';
 import { AddEditComponent } from './components/portfolio/components/add-edit/add-edit.component';
 import { PortfolioTableComponent } from './components/portfolio/components/portfolio-table/portfolio-table.component';
@@ -75,7 +67,6 @@ import { AllocationChartComponent } from './components/portfolio/components/allo
 import { AssetSearchSelect } from './components/search-select/search-select.component';
 import { PieChartComponent } from './components/charts/pie-chart/pie-chart.component';
 import { MobileCheckComponent } from './components/mobile-check/mobile-check.component';
-import { ScreenService } from './services/screen.service';
 
 
 export function initializeServices(configService: ConfigService) {
@@ -136,7 +127,7 @@ export function initializeServices(configService: ConfigService) {
     FormsModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    AngularFireModule.initializeApp(environment.config.firebaseConfig)
+    AngularFireModule.initializeApp(environment.firebaseConfig)
   ],
   providers: [
     MessageService,

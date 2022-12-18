@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { BasicCoin } from "../models/coin-gecko";
 import { ApiService } from "./api.service";
 import { SessionService } from "./session.service";
 import { CacheService } from "./cache.service";
-import { AppEvent } from "../models/events";
 import { PreferencesService, UserPreferences } from "./preferences.service";
 
 @Injectable({

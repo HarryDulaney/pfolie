@@ -74,18 +74,6 @@ export class ApiService {
     return this.delete<any>('portfolio', portfolio);
   }
 
-  /* --------------------- Portfolio UI Components (Parts) -------------------- */
-/*   getPortfolioPart(componentId: number): Observable<PortfolioPart> {
-    return this.get<PortfolioPart>(`portolio/part/${componentId}`);
-  }
-
-  createPortfolioPart(part: PortfolioPart): Observable<PortfolioPart> {
-    return this.put<PortfolioPart>('portfolio/part', part);
-  }
-
-  updatePortfolioPart(part: PortfolioPart): Observable<PortfolioPart> {
-    return this.post<PortfolioPart>('portolio/part', part);
-  } */
 
   /* ---------------------------------------------- RSS Feed API Endpoints ---------------------------------------------- */
 
