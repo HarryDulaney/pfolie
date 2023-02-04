@@ -59,8 +59,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   searchForm: FormGroup;
   toast: Toast;
   private user: firebase.User = null;
-  private readonly issuesLink = "https://github.com/HarryDulaney/pfolie/issues";
-  private readonly aboutPageLink = "https://github.com/HarryDulaney/pfolie";
+  private readonly issuesLink = "https://github.com/HarryDulaney/pfolie-public/issues";
+  private readonly aboutPageLink = "https://github.com/HarryDulaney/pfolie-public";
   title = 'Pfolie';
   navbarTitle: string = this.title;
   isLoading: boolean;
