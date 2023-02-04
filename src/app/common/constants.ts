@@ -102,6 +102,12 @@ export const API_ROUTES = {
 
 }
 
+export const PROJECT_LINKS = {
+  CONTACT: 'https://harrydulaney.com',
+  ABOUT: 'https://github.com/HarryDulaney/pfolie-public',
+  ISSUES: 'https://github.com/HarryDulaney/pfolie-public/issues'
+}
+
 export const SHOW = 'show';
 export const HIDE = 'hide';
 export const CLICKED = 'clicked';

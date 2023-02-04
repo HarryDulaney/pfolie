@@ -19,7 +19,7 @@ import { Subject, timer } from 'rxjs';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { GlobalDataView } from 'src/app/models/coin-gecko';
 import { ScreenService } from 'src/app/services/screen.service';
-import { CONSTANT as Const } from '../../common/constants'
+import { CONSTANT as Const, PROJECT_LINKS } from '../../common/constants'
 
 @Component({
   selector: 'app-home',
@@ -59,8 +59,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   searchForm: FormGroup;
   toast: Toast;
   private user: firebase.User = null;
-  private readonly issuesLink = "https://github.com/HarryDulaney/pfolie-public/issues";
-  private readonly aboutPageLink = "https://github.com/HarryDulaney/pfolie-public";
+  private readonly issuesLink = PROJECT_LINKS.ISSUES;
+  private readonly aboutPageLink = PROJECT_LINKS.ABOUT;
   title = 'Pfolie';
   navbarTitle: string = this.title;
   isLoading: boolean;
