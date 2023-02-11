@@ -25,6 +25,15 @@ export class ConfigService {
         if (!this.sessionService.initialized) {
             this.sessionService.init();
         }
+        /* Reset LocalStorage so will use new storage keys */
+        if (!this.cache.isMigrated() && this.cache.oldCacheExists()) {
+            this.cache.clear();
+            this.cache.migrate();
+        }
+
+        if (!this.cache.isMigrated()) {
+            this.cache.migrate();
+        }
 
         if (this.cache.getTimeStampRaw() == null || !this.cache.isCacheValid()) {
             var promise: Promise<BasicCoin[]> = this.apiService.getListCoins().toPromise();
@@ -71,8 +80,6 @@ export class ConfigService {
         this.globalStore.state$.setState({ filteredCoins: state.basicCoins });
 
     }
-
-
 
     getPreferences(): UserPreferences {
         return this.preferencesService.userPreferences;

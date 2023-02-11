@@ -140,7 +140,7 @@ export function initializeServices(configService: ConfigService) {
     {
       'provide': APP_INITIALIZER,
       'useFactory': initializeServices,
-      'deps': [ConfigService, CacheService, SessionService, PortfolioService],
+      'deps': [ConfigService, CacheService, SessionService, PortfolioService, GlobalStore],
       'multi': true,
     }
   ],
