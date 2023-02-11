@@ -3,7 +3,6 @@ import { MenuItem } from 'primeng/api';
 import { ToolbarEvent } from 'src/app/models/events';
 import { PortfolioService } from '../../services/portfolio.service';
 import * as Const from '../../../../common/constants';
-import { ConfigService } from 'src/app/services/config.service';
 import { Inplace } from 'primeng/inplace';
 import { Menubar } from 'primeng/menubar';
 import { takeUntil } from 'rxjs/operators';
@@ -44,10 +43,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   constructor(
-    private portfolioService: PortfolioService,
-    private configService: ConfigService,
-    private elementRef: ElementRef
-  ) { }
+    private portfolioService: PortfolioService  ) { }
 
   ngOnDestroy(): void {
     this.destroySubject$.next();

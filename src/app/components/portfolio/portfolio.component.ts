@@ -85,7 +85,6 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     public portfolioService: PortfolioService,
     private sessionService: SessionService,
     private navService: NavService,
-    private configService: ConfigService,
     private cd: ChangeDetectorRef,
     private router: Router,
     private screenService: ScreenService,

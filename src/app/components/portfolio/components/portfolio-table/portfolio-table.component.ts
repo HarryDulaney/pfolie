@@ -14,6 +14,10 @@ import { PortfolioService } from '../../services/portfolio.service';
 import * as Const from '../../../../common/constants';
 import { TransactionService } from '../portfolio-table-expand/transaction.service';
 import { Dialog } from 'primeng/dialog';
+import { GlobalStore } from 'src/app/store/global/global.store';
+import { BasicCoin } from 'src/app/models/coin-gecko';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-portfolio-table',
@@ -31,6 +35,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   @Input('calculatedValues') calculatedValues;
   @Input('portfolio') portfolio: Portfolio;
   @Input('screenSize') screenSize: string;
+  @Input('allCoins') allCoins;
 
   @Input('selectionMode')
   set selectionMode(selectMode: string) {
@@ -65,8 +70,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   imagePreviewSrc: string = '../assets/img/image_filler_icon_blank.jpg';
   defaultId: string = '-1';
   currentDate: Date = new Date();
-
-
+  private destroySubject$ = new Subject();
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -81,6 +85,8 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroySubject$.next();
+    this.destroySubject$.complete();
   }
 
   ngAfterViewInit(): void {

@@ -7,13 +7,14 @@ import firebase from 'firebase/compat/app';
 import { FormGroup } from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { NavService } from 'src/app/services/nav.service';
-import { CoinFullInfo } from 'src/app/models/coin-gecko';
+import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
 import { Portfolio, TrackedAsset } from 'src/app/models/portfolio';
 import { PortfolioService } from '../../services/portfolio.service';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { Dialog } from 'primeng/dialog';
 import { AssetSearchSelect } from 'src/app/components/search-select/search-select.component';
+import { GlobalStore } from 'src/app/store/global/global.store';
 
 @Component({
   selector: 'app-tracking',
@@ -38,7 +39,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   currentDate: Date = new Date();
   scrollHeight: string = "500px";
   showAssetSearchDialog: boolean;
-
+  allCoins: BasicCoin[] = [];
   destroySubject$ = new Subject();
 
   mobileQuery: MediaQueryList;
@@ -47,6 +48,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   constructor(
     public coinDataService: CoinDataService,
     private sessionService: SessionService,
+    private globalStore: GlobalStore,
     private navService: NavService,
     public decimalPipe: DecimalPipe,
     public portfolioService: PortfolioService,
@@ -83,6 +85,9 @@ export class TrackingComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.sessionService.getAuth().pipe(takeUntil(this.destroySubject$)).subscribe(
       (user) => this.user = user
+    );
+    this.globalStore.state$.select('basicCoins').pipe(takeUntil(this.destroySubject$)).subscribe(
+      (coins) => this.allCoins = coins
     );
 
     this.isLoading = true;
