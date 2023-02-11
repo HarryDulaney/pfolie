@@ -1,7 +1,9 @@
 <!-- Top Toolbar drawer -->
-<app-toolbar #toolbar
-             [isNavExpanded]="isNavExpanded"
-             [screenSize]="screenSize"></app-toolbar>
+<app-toolbar
+    #toolbar
+    [isNavExpanded]="isNavExpanded"
+    [screenSize]="screenSize"
+></app-toolbar>
 
 
 <!-- ----------------------- Drag In Component Palette Sidebar ---------------------------- -->
@@ -63,39 +65,52 @@
 </p-dialog> -->
 
 <ng-container *ngIf="portfolioService.isLoading">
-    <div class="container d-flex justify-content-center align-items-center"
-         [style]="{height:'90vh',width:'95vw'}">
-        <p-progressSpinner [style]="{height:'20rem',width:'20rem'}"
-                           [strokeWidth]='6'
-                           fill="transparent"
-                           animationDuration=".1s"></p-progressSpinner>
+    <div
+        class="container d-flex justify-content-center align-items-center"
+        [style]="{height:'90vh',width:'95vw'}"
+    >
+        <p-progressSpinner
+            [style]="{height:'20rem',width:'20rem'}"
+            [strokeWidth]='6'
+            fill="transparent"
+            animationDuration=".1s"
+        ></p-progressSpinner>
     </div>
 </ng-container>
 <!-- Portfolio Container (Tables/Workspace/Cards) -->
-<div id="portfolio-container"
-     class="grid-nogutter ps-3 pe-3"
-     [hidden]="portfolioService.isLoading"
-     (click)="onContainerClick($event)">
+<div
+    id="portfolio-container"
+    class="grid-nogutter ps-3 pe-3"
+    [hidden]="portfolioService.isLoading"
+    (click)="onContainerClick($event)"
+>
 
-    <div class="col-12"
-         style="height: 2vh; margin-top: 2rem;">
+    <div
+        class="col-12"
+        style="height: 2vh; margin-top: 2rem;"
+    >
     </div>
     <!-- Workspace for custom portfolio parts/ componenets to render -->
-    <app-workspace #workspace
-                   [view]="portfolioView"
-                   [calculatedValues]="calculatedValues"
-                   [screenSize]="screenSize"
-                   [isNavExpanded]="isNavExpanded">
+    <app-workspace
+        #workspace
+        [view]="portfolioView"
+        [calculatedValues]="calculatedValues"
+        [screenSize]="screenSize"
+        [isNavExpanded]="isNavExpanded"
+    >
     </app-workspace>
 
     <div class="col-12 mt-5 mb-5 bg-transparent">
         <div class="mt-5 mb-5 bg-transparent">
-            <app-portfolio-table #portfolioTable
-                                 [view]="portfolioView"
-                                 [portfolio]="getPortfolio()"
-                                 [calculatedValues]="calculatedValues"
-                                 [screenSize]="screenSize"
-                                 selectionMode="single"></app-portfolio-table>
+            <app-portfolio-table
+                #portfolioTable
+                [view]="portfolioView"
+                [allCoins]="portfolioService.getAllCoins() | async"
+                [portfolio]="getPortfolio()"
+                [calculatedValues]="calculatedValues"
+                [screenSize]="screenSize"
+                selectionMode="single"
+            ></app-portfolio-table>
         </div>
     </div>
 </div>

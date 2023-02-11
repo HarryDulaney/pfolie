@@ -67,6 +67,7 @@ import { AllocationChartComponent } from './components/portfolio/components/allo
 import { AssetSearchSelect } from './components/search-select/search-select.component';
 import { PieChartComponent } from './components/charts/pie-chart/pie-chart.component';
 import { MobileCheckComponent } from './components/mobile-check/mobile-check.component';
+import { GlobalStore } from './store/global/global.store';
 
 
 export function initializeServices(configService: ConfigService) {
@@ -130,6 +131,7 @@ export function initializeServices(configService: ConfigService) {
     AngularFireModule.initializeApp(environment.firebaseConfig)
   ],
   providers: [
+    GlobalStore,
     MessageService,
     DatePipe,
     CurrencyPipe,

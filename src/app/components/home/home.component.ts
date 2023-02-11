@@ -17,10 +17,10 @@ import { NavService } from 'src/app/services/nav.service';
 import { mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { Subject, timer } from 'rxjs';
 import { DashboardService } from '../dashboard/dashboard.service';
-import { GlobalDataView } from 'src/app/models/coin-gecko';
+import { BasicCoin, GlobalDataView } from 'src/app/models/coin-gecko';
 import { ScreenService } from 'src/app/services/screen.service';
 import { CONSTANT as Const, PROJECT_LINKS } from '../../common/constants'
-
+import { Observable } from "rxjs"
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -78,7 +78,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   imagePreviewSrc: string = '../assets/img/image_filler_icon_blank.jpg';
 
-
+  allCoins: BasicCoin[] = [];
 
   constructor(
     private router: Router,
@@ -153,6 +153,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
+    this.configService.getGlobalStore().state$.select('basicCoins')
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(
+        coins => this.allCoins = coins
+      );
+
     if (this.screenSize === Const.SCREEN_SIZE.XS) {
       this.navService.navExpandedSource$.next(false);
     } else {
@@ -200,6 +206,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.destroySubject$.complete();
   }
 
+  getFilteredCoins(): Observable<BasicCoin[]> {
+    return this.configService.getGlobalStore().state$.select('filteredCoins');
+  }
 
   initNavMenus() {
     this.signedInNavItems = [

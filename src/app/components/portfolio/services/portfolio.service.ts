@@ -10,6 +10,8 @@ import { FloatingButtonService } from '../components/floatting-toolbar-button/fl
 import firebase from 'firebase/compat/app';
 import { PortfolioBuilderService } from './portfolio-builder.service';
 import { AppEvent } from 'src/app/models/events';
+import { GlobalStore } from 'src/app/store/global/global.store';
+import { BasicCoin } from 'src/app/models/coin-gecko';
 
 
 @Injectable({
@@ -55,7 +57,8 @@ export class PortfolioService {
     private builder: PortfolioBuilderService,
     private floatingButton: FloatingButtonService,
     private toast: ToastService,
-    private apiService: ApiService) {
+    private apiService: ApiService,
+    private globalStore: GlobalStore) {
   }
 
 
@@ -385,6 +388,10 @@ export class PortfolioService {
 
   removeTrackedFromCurrentUserPortfolio(id: string): Promise<any> {
     return this.deleteTracked(id);
+  }
+
+  getAllCoins(): Observable<BasicCoin[]> {
+    return this.globalStore.state$.select('basicCoins');
   }
 
 }

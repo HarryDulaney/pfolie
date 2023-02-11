@@ -1,5 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, Input, EventEmitter, Output, OnDestroy } from '@angular/core';
+import { BasicCoin } from 'src/app/models/coin-gecko';
 import { ConfigService } from 'src/app/services/config.service';
 import { NavService } from 'src/app/services/nav.service';
 
@@ -27,10 +28,10 @@ export class SearchComponent implements OnDestroy {
     }
   }
 
+  @Input() selectOptions: BasicCoin[] = [];
 
   @Output('selected')
   selected: EventEmitter<string> = new EventEmitter();
-
 
   scrollableHeight: string;
   dropdownStyle: string;

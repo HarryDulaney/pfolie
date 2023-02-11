@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { CurrencyPipe } from '@angular/common';
 import { UtilityService } from './utility.service';
+import { GlobalStore } from '../store/global/global.store';
 @Injectable({
   providedIn: 'root',
 })
@@ -25,7 +26,7 @@ export class CoinDataService {
 
   constructor(private apiService: ApiService,
     public currencyPipe: CurrencyPipe,
-    public utilityService: UtilityService,
+    public utilityService: UtilityService
   ) {
     this.defaultCurrency = this.currencies[0];
 
@@ -78,5 +79,6 @@ export class CoinDataService {
   getChartOHLC(coinId: string, vsCurrency: string, days: number): Observable<Array<Array<number>>> {
     return this.apiService.getOHLCByIdAndDays(coinId, vsCurrency, days);
   }
+
 
 }

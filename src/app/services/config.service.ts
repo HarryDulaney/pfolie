@@ -1,28 +1,23 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
 import { BasicCoin } from "../models/coin-gecko";
 import { ApiService } from "./api.service";
 import { SessionService } from "./session.service";
 import { CacheService } from "./cache.service";
 import { PreferencesService, UserPreferences } from "./preferences.service";
+import { GlobalStore } from "../store/global/global.store";
 
 @Injectable({
     providedIn: 'root'
 })
-export class ConfigService extends BehaviorSubject<BasicCoin[]> {
-    baseCoins: BasicCoin[] = [];
-    filteredCoins: BasicCoin[] = [];
-
-    private basicCoins$: BehaviorSubject<BasicCoin[]> = new BehaviorSubject<BasicCoin[]>(null);
-    basicCoinsSource$ = this.basicCoins$.asObservable();
+export class ConfigService {
 
     constructor(
+        private globalStore: GlobalStore,
         private apiService: ApiService,
         private cache: CacheService,
         private sessionService: SessionService,
         private preferencesService: PreferencesService
     ) {
-        super([]);
     }
 
 
@@ -35,40 +30,46 @@ export class ConfigService extends BehaviorSubject<BasicCoin[]> {
             var promise: Promise<BasicCoin[]> = this.apiService.getListCoins().toPromise();
             promise.then(
                 (result) => {
-                    this.baseCoins = result;
-                    this.filteredCoins.push(...this.baseCoins);
-                    this.basicCoins$.next(this.baseCoins);
-                    super.next(this.filteredCoins);
-                    this.cache.cacheCoinList(this.baseCoins);
+                    if (result) {
+                        let baseCoins: BasicCoin[] = result;
+                        let filteredCoins = [];
+                        filteredCoins.push(...baseCoins);
+                        this.cache.cacheCoinList(baseCoins);
+                        this.globalStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
+                    }
+
                 }).finally(() => {
                     this.cache.setTimeStampCachedCoinList();
                 });
 
         } else {
             let cachedCoins = this.cache.getCachedCoinsList();
-            this.baseCoins = JSON.parse(cachedCoins);
-            this.filteredCoins.push(...this.baseCoins);
-            this.basicCoins$.next(this.baseCoins);
-            super.next(this.filteredCoins);
+            const baseCoins = JSON.parse(cachedCoins);
+            let filteredCoins = [];
+            filteredCoins.push(...baseCoins);
+            this.globalStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
         }
 
 
     }
 
     filter(word: string) {
+        let filterCoins = [];
+        let state = this.globalStore.state$.getCurrentValue();
         if (word && word !== '') {
-            this.filteredCoins = this.baseCoins.filter(v => {
+            filterCoins = state.basicCoins.filter(v => {
                 return v.name.toLowerCase().startsWith(word.toLowerCase())
             });
         } else {
-            this.filteredCoins = this.baseCoins;
+            filterCoins = state.basicCoins;
         }
-        super.next(this.filteredCoins);
+        this.globalStore.state$.setState({ filteredCoins: filterCoins });
     }
 
     resetFilter() {
-        this.filteredCoins = this.baseCoins;
-        super.next(this.filteredCoins);
+        let state = this.globalStore.state$.getCurrentValue();
+        this.globalStore.state$.setState({ filteredCoins: state.basicCoins });
+
     }
 
 
@@ -76,6 +77,12 @@ export class ConfigService extends BehaviorSubject<BasicCoin[]> {
     getPreferences(): UserPreferences {
         return this.preferencesService.userPreferences;
     }
+
+
+    getGlobalStore(): GlobalStore {
+        return this.globalStore;
+    }
+
 
 }
 

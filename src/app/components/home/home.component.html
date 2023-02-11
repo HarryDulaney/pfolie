@@ -1,36 +1,52 @@
-<mat-toolbar class="main-toolbar"
-             role="heading">
-  <button class="p-1"
-          mat-flat-button
-          type="button"
-          (click)="snav.toggle()">
+<mat-toolbar
+  class="main-toolbar"
+  role="heading"
+>
+  <button
+    class="p-1"
+    mat-flat-button
+    type="button"
+    (click)="snav.toggle()"
+  >
     <i class="pi pi-bars"></i>
   </button>
-  <button mat-flat-button
-          type="button"
-          (click)="home()">
+  <button
+    mat-flat-button
+    type="button"
+    (click)="home()"
+  >
     <span class="p-component nav-title p-1">{{navbarTitle}}</span>
   </button>
   <span class="navbar-message">
-    <span class="font-bold"
-          style="font-size: 0.7rem;"
-          [hidden]="(screenSize === 'XSmall' || screenSize === 'Small')">
+    <span
+      class="font-bold"
+      style="font-size: 0.7rem;"
+      [hidden]="(screenSize === 'XSmall' || screenSize === 'Small')"
+    >
       <span class="text-blue-200">Market Cap:</span>
       <span class="text-white">
         {{globalDataView.total_market_cap_usd_formated}}
       </span>
-      <span *ngIf="globalDataView.market_cap_change_percentage_24h_usd >= 0"
-            class="increased">
+      <span
+        *ngIf="globalDataView.market_cap_change_percentage_24h_usd >= 0"
+        class="increased"
+      >
         <span> {{globalDataView.market_cap_change_percentage_24h_usd_formated}}
-          <i class="fa fa-arrow-up"
-             style="font-size: 0.7rem;"></i></span>
+          <i
+            class="fa fa-arrow-up"
+            style="font-size: 0.7rem;"
+          ></i></span>
 
       </span>
-      <span *ngIf="globalDataView.market_cap_change_percentage_24h_usd < 0"
-            class="decreased">
+      <span
+        *ngIf="globalDataView.market_cap_change_percentage_24h_usd < 0"
+        class="decreased"
+      >
         <span> {{globalDataView.market_cap_change_percentage_24h_usd_formated}}
-          <i class="fa fa-arrow-down"
-             style="font-size: 0.7rem;"></i></span>
+          <i
+            class="fa fa-arrow-down"
+            style="font-size: 0.7rem;"
+          ></i></span>
       </span>
       <span class="mx-2"></span>
       <span class="text-blue-200">24hr Volume:</span>
@@ -40,59 +56,77 @@
     </span>
   </span>
 
-  <span (click)="searchPanel.toggle($event)"
-        class="float-start"
-        [hidden]="screenSize === 'XSmall'">
-    <form #searchForm
-          id="searchForm">
+  <span
+    (click)="searchPanel.toggle($event)"
+    class="float-start"
+    [hidden]="screenSize === 'XSmall'"
+  >
+    <form
+      #searchForm
+      id="searchForm"
+    >
       <span #searchInputWrapper>
-        <input pInputText
-               type="text"
-               [formControl]="searchField"
-               name="searchInput"
-               id="search"
-               [style.max-width]="screenSize === 'XSmall' ? '150px' : '300px'"
-               class="p-component p-inputtext-sm text-white form-control"
-               placeholder="Search tokens"
-               aria-describedby="helpId"
-               autocomplete="off">
+        <input
+          pInputText
+          type="text"
+          [formControl]="searchField"
+          name="searchInput"
+          id="search"
+          [style.max-width]="screenSize === 'XSmall' ? '150px' : '300px'"
+          class="p-component p-inputtext-sm text-white form-control"
+          placeholder="Search tokens"
+          aria-describedby="helpId"
+          autocomplete="off"
+        >
       </span>
     </form>
   </span>
   <div class="p-1 mt-2 ms-5">
-    <button mat-icon-button
-            type="button"
-            (click)="accountPanel.toggle($event)"
-            class="float-start me-1">
+    <button
+      mat-icon-button
+      type="button"
+      (click)="accountPanel.toggle($event)"
+      class="float-start me-1"
+    >
       <span>
         <ng-container *ngIf="!sessionService.authenticated || userProfilePictureSource === null">
-          <i class="fa fa-user-circle"
-             style="font-size: 1.5rem;vertical-align: unset;"></i>
+          <i
+            class="fa fa-user-circle"
+            style="font-size: 1.5rem;vertical-align: unset;"
+          ></i>
         </ng-container>
         <ng-container *ngIf="sessionService.authenticated && userProfilePictureSource !== null">
-          <img [src]="userProfilePictureSource"
-               style="height:34px;width:34px;border-radius: 50px; vertical-align: unset;">
+          <img
+            [src]="userProfilePictureSource"
+            style="height:34px;width:34px;border-radius: 50px; vertical-align: unset;"
+          >
         </ng-container>
       </span>
     </button>
   </div>
 </mat-toolbar>
-<mat-sidenav-container class="sidenav-container"
-                       [style.marginTop.px]="screenSize === 'XSmall' ? 56 : 0"
-                       id="nav-container">
+<mat-sidenav-container
+  class="sidenav-container"
+  [style.marginTop.px]="screenSize === 'XSmall' ? 56 : 0"
+  id="nav-container"
+>
 
-  <mat-sidenav #snav
-               [class]="getMainNavStyleClass()"
-               [mode]="screenSize === 'XSmall' ? 'over':'side'"
-               [opened]="navOpened"
-               (openedChange)="navMenuOpenedChange($event)"
-               [fixedTopGap]="screenSize === 'XSmall' ? 56 : 62"
-               [style.z-index]="1000"
-               [fixedInViewport]="true">
+  <mat-sidenav
+    #snav
+    [class]="getMainNavStyleClass()"
+    [mode]="screenSize === 'XSmall' ? 'over':'side'"
+    [opened]="navOpened"
+    (openedChange)="navMenuOpenedChange($event)"
+    [fixedTopGap]="screenSize === 'XSmall' ? 56 : 62"
+    [style.z-index]="1000"
+    [fixedInViewport]="true"
+  >
 
-    <p-panelMenu id="nav--menu-main"
-                 [style]="{'width': 'auto','height':'auto'}"
-                 [model]="sessionService.authenticated ? signedInNavItems : signedOutNavItems">
+    <p-panelMenu
+      id="nav--menu-main"
+      [style]="{'width': 'auto','height':'auto'}"
+      [model]="sessionService.authenticated ? signedInNavItems : signedOutNavItems"
+    >
     </p-panelMenu>
     <div class="font-monospace">
       <div [hidden]="sessionService.authenticated">
@@ -101,28 +135,42 @@
             <div class="text-blue-300 font-bold mb-1"><i class="pi pi-lock-open">
               </i>&nbsp;SIGN IN TO TRACK AND MANAGE YOUR PORTFOLIO</div>
             <div class="text-center mb-2 mt-2">
-              <a class="font-medium no-underline ml-2 text-green-500 cursor-pointer"
-                 (click)="googleSignIn()">
-                <i class="pi pi-google"
-                   style="font-size:xx-large"></i>
+              <a
+                class="font-medium no-underline ml-2 text-green-500 cursor-pointer"
+                (click)="googleSignIn()"
+              >
+                <i
+                  class="pi pi-google"
+                  style="font-size:xx-large"
+                ></i>
               </a>
-              <a class="font-medium no-underline ml-2 text-blue-300 cursor-pointer"
-                 (click)="facebookSignIn()">
-                <i class="pi pi-facebook"
-                   style="font-size:xx-large"></i>
+              <a
+                class="font-medium no-underline ml-2 text-blue-300 cursor-pointer"
+                (click)="facebookSignIn()"
+              >
+                <i
+                  class="pi pi-facebook"
+                  style="font-size:xx-large"
+                ></i>
               </a>
-              <a class="font-medium no-underline ml-2 text-black-300 cursor-pointer"
-                 (click)="githubSignIn()">
-                <i class="pi pi-github"
-                   style="font-size:xx-large"></i>
+              <a
+                class="font-medium no-underline ml-2 text-black-300 cursor-pointer"
+                (click)="githubSignIn()"
+              >
+                <i
+                  class="pi pi-github"
+                  style="font-size:xx-large"
+                ></i>
               </a>
             </div>
-            <button type="button"
-                    pButton
-                    label="Email Address"
-                    icon="fa fa-envelope"
-                    (click)="createAccount($event)"
-                    class="font-bold px-3 py-2 p-button-sm p-button-raised p-button-rounded white-space-nowrap"></button>
+            <button
+              type="button"
+              pButton
+              label="Email Address"
+              icon="fa fa-envelope"
+              (click)="createAccount($event)"
+              class="font-bold px-3 py-2 p-button-sm p-button-raised p-button-rounded white-space-nowrap"
+            ></button>
           </div>
         </div>
       </div>
@@ -133,62 +181,85 @@
 
   <mat-sidenav-content>
     <!-- Bottom-right Toast Message -->
-    <p-toast position="bottom-right"
-             key="toast"></p-toast>
+    <p-toast
+      position="bottom-right"
+      key="toast"
+    ></p-toast>
     <!-- Center Toast with Prompt -->
-    <p-toast position="center"
-             key="prompt-toast"
-             (onClose)="onPromptToastReject($event)">
-      <ng-template let-message
-                   pTemplate="message">
-        <div class="flex flex-column"
-             style="flex: 1">
+    <p-toast
+      position="center"
+      key="prompt-toast"
+      (onClose)="onPromptToastReject($event)"
+    >
+      <ng-template
+        let-message
+        pTemplate="message"
+      >
+        <div
+          class="flex flex-column"
+          style="flex: 1"
+        >
           <div class="text-center">
-            <i class="pi pi-exclamation-triangle"
-               style="font-size: 3rem"></i>
+            <i
+              class="pi pi-exclamation-triangle"
+              style="font-size: 3rem"
+            ></i>
             <h4>{{message.summary}}</h4>
             <p>{{message.detail}}</p>
           </div>
           <div class="grid p-fluid">
             <div class="col-6">
-              <button type="button"
-                      pButton
-                      (click)="onPromptToastConfirm($event)"
-                      label="Yes"
-                      class="p-button-success"></button>
+              <button
+                type="button"
+                pButton
+                (click)="onPromptToastConfirm($event)"
+                label="Yes"
+                class="p-button-success"
+              ></button>
             </div>
             <div class="col-6">
-              <button type="button"
-                      pButton
-                      (click)="onPromptToastReject($event)"
-                      label="No"
-                      class="p-button-secondary"></button>
+              <button
+                type="button"
+                pButton
+                (click)="onPromptToastReject($event)"
+                label="No"
+                class="p-button-secondary"
+              ></button>
             </div>
           </div>
         </div>
       </ng-template>
     </p-toast>
     <!-- Search Dropdown Panel -->
-    <p-overlayPanel #searchPanel
-                    [dismissable]="true">
+    <p-overlayPanel
+      #searchPanel
+      [dismissable]="true"
+    >
       <ng-template pTemplate>
-        <app-search #appSearch
-                    [scrollHeight]="410"
-                    [ddStyleClass]=""></app-search>
+        <app-search
+          #appSearch
+          [selectOptions]="getFilteredCoins() | async"
+          [scrollHeight]="410"
+          [ddStyleClass]=""
+        ></app-search>
       </ng-template>
     </p-overlayPanel>
     <!-- Account Menu Dropdown Panel -->
-    <p-overlayPanel #accountPanel
-                    (onShow)="onShowAccountMenu($event)"
-                    [style]="{'background-color':'var(--surface-a)'}">
+    <p-overlayPanel
+      #accountPanel
+      (onShow)="onShowAccountMenu($event)"
+      [style]="{'background-color':'var(--surface-a)'}"
+    >
       <ng-template pTemplate>
-        <p-menu [model]="sessionService.authenticated ? accountMenuItems: signedOutAccountMenuItems"
-                class="container w-100 h-100 p-0 m-0"
-                [style]="{
+        <p-menu
+          [model]="sessionService.authenticated ? accountMenuItems: signedOutAccountMenuItems"
+          class="container w-100 h-100 p-0 m-0"
+          [style]="{
             'width': '100%',
             'height':'100%',
             'background-color':'var(--surface-a)'
-          }">
+          }"
+        >
         </p-menu>
       </ng-template>
     </p-overlayPanel>
@@ -196,23 +267,29 @@
     </router-outlet>
 
     <!-- Login Popup Modal -->
-    <p-dialog [(visible)]="sessionService.showLoginModal"
-              [modal]="true"
-              [style]="(screenSize === 'XSmall' || screenSize === 'Small') ? {width:'100vw'} : {width:'50vw'}"
-              [draggable]="false"
-              [resizable]="false">
+    <p-dialog
+      [(visible)]="sessionService.showLoginModal"
+      [modal]="true"
+      [style]="(screenSize === 'XSmall' || screenSize === 'Small') ? {width:'100vw'} : {width:'50vw'}"
+      [draggable]="false"
+      [resizable]="false"
+    >
       <!-- Bottom-right Toast Message -->
-      <p-toast position="top-center"
-               key="login-toast">
+      <p-toast
+        position="top-center"
+        key="login-toast"
+      >
       </p-toast>
       <app-login #login></app-login>
     </p-dialog>
     <!-- Registration Popup Modal -->
-    <p-dialog [(visible)]="sessionService.showRegisterModal"
-              [modal]="true"
-              [style]="(screenSize === 'XSmall' || screenSize === 'Small') ? {width:'100vw'} : {width:'50vw'}"
-              [draggable]="false"
-              [resizable]="false">
+    <p-dialog
+      [(visible)]="sessionService.showRegisterModal"
+      [modal]="true"
+      [style]="(screenSize === 'XSmall' || screenSize === 'Small') ? {width:'100vw'} : {width:'50vw'}"
+      [draggable]="false"
+      [resizable]="false"
+    >
       <app-register #register></app-register>
     </p-dialog>
     <app-footer></app-footer>
