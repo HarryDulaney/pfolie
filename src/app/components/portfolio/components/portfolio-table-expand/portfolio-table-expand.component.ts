@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { OwnedAsset, OwnedAssetView, Portfolio, Transaction } from 'src/app/models/portfolio';
-import * as Const from '../../../../common/constants';
+import * as Const from '../../../../constants';
 import { PortfolioBuilderService } from '../../services/portfolio-builder.service';
 import { PortfolioService } from '../../services/portfolio.service';
 import { TransactionService } from './transaction.service';

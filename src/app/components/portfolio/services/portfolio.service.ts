@@ -10,7 +10,7 @@ import { FloatingButtonService } from '../components/floatting-toolbar-button/fl
 import firebase from 'firebase/compat/app';
 import { PortfolioBuilderService } from './portfolio-builder.service';
 import { AppEvent } from 'src/app/models/events';
-import { GlobalStore } from 'src/app/store/global/global.store';
+import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { BasicCoin } from 'src/app/models/coin-gecko';
 
 
@@ -58,7 +58,7 @@ export class PortfolioService {
     private floatingButton: FloatingButtonService,
     private toast: ToastService,
     private apiService: ApiService,
-    private globalStore: GlobalStore) {
+    private globalStore: BasicCoinInfoStore) {
   }
 
 

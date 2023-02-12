@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { BasicCoin, CoinFullInfo, CoinMarket, CoinMarketChartResponse, GlobalData, SimplePriceResponse, TrendingResponse } from '../models/coin-gecko';
 import { environment } from 'src/environments/environment';
-import { API_ROUTES, API_ROUTES as COINAPI } from '../common/constants';
+import { API_ROUTES, API_ROUTES as COINAPI, CONSTANT, IP_SERVICE_URI } from '../constants';
 import { RssFeed } from '../models/rssfeed';
-import { API_ROOTS } from '../common/constants'
+import { API_ROOTS } from '../constants'
 import { Portfolio } from '../models/portfolio';
 import { catchError } from 'rxjs/operators';
 import { ToastService } from './toast.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class ApiService {
   private readonly APP_API_ROOT = environment.APP_API_ROOT;
 
@@ -170,6 +170,10 @@ export class ApiService {
   ): Observable<Array<Array<number>>> {
     return this.http.get<Array<Array<number>>>
       (`${API_ROOTS.COINGECKO}/coins/${id}/ohlc?vs_currency=${vsCurrency}&days=${days}`);
+  }
+
+  getUserIdentifier(): Observable<any> {
+    return this.http.get(IP_SERVICE_URI);
   }
 
 }

@@ -4,9 +4,7 @@ import { SessionService } from './session.service';
 import { MessageService } from 'primeng/api';
 import { Observable, Subject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ToastService {
   public messageEmitter: Subject<any> = new Subject();
   public messageResultEmitter: Subject<boolean> = new Subject();

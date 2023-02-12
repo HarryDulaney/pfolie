@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { FloatingButtonService } from './floating-button.service';
-import * as Constants from '../../../../common/constants';
+import * as Constants from '../../../../constants';
 
 
 /**

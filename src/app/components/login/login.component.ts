@@ -11,6 +11,7 @@ export class LoginComponent {
   email: string;
   password: string
   currentRoute: string;
+  googleIconSrc = '../../../assets/img/google-icon-org.svg';
 
   constructor(
     private sessionService: SessionService,

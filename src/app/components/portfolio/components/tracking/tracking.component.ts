@@ -14,7 +14,7 @@ import { mergeMap, takeUntil } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { Dialog } from 'primeng/dialog';
 import { AssetSearchSelect } from 'src/app/components/search-select/search-select.component';
-import { GlobalStore } from 'src/app/store/global/global.store';
+import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 
 @Component({
   selector: 'app-tracking',
@@ -48,7 +48,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   constructor(
     public coinDataService: CoinDataService,
     private sessionService: SessionService,
-    private globalStore: GlobalStore,
+    private globalStore: BasicCoinInfoStore,
     private navService: NavService,
     public decimalPipe: DecimalPipe,
     public portfolioService: PortfolioService,

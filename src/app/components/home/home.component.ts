@@ -19,7 +19,7 @@ import { Subject, timer } from 'rxjs';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { BasicCoin, GlobalDataView } from 'src/app/models/coin-gecko';
 import { ScreenService } from 'src/app/services/screen.service';
-import { CONSTANT as Const, PROJECT_LINKS } from '../../common/constants'
+import { CONSTANT as Const, PROJECT_LINKS } from '../../constants'
 import { Observable } from "rxjs"
 @Component({
   selector: 'app-home',
@@ -77,6 +77,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   isGlobalDataLoading: boolean;
 
   imagePreviewSrc: string = '../assets/img/image_filler_icon_blank.jpg';
+  googleIconSrc = '../../../assets/img/google-icon-org.svg';
 
   allCoins: BasicCoin[] = [];
 

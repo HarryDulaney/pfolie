@@ -67,7 +67,16 @@ import { AllocationChartComponent } from './components/portfolio/components/allo
 import { AssetSearchSelect } from './components/search-select/search-select.component';
 import { PieChartComponent } from './components/charts/pie-chart/pie-chart.component';
 import { MobileCheckComponent } from './components/mobile-check/mobile-check.component';
-import { GlobalStore } from './store/global/global.store';
+import { BasicCoinInfoStore } from './store/global/basic-coins.store';
+import { ScreenService } from './services/screen.service';
+import { ToastService } from './services/toast.service';
+import { UtilityService } from './services/utility.service';
+import { ApiService } from './services/api.service';
+import { CoinDataService } from './services/coin-data.service';
+import { NavMenuService } from './services/nav-menu.service';
+import { NavService } from './services/nav.service';
+import { PreferencesService } from './services/preferences.service';
+import { AuthGuard } from './auth/auth.guard';
 
 
 export function initializeServices(configService: ConfigService) {
@@ -131,16 +140,28 @@ export function initializeServices(configService: ConfigService) {
     AngularFireModule.initializeApp(environment.firebaseConfig)
   ],
   providers: [
-    GlobalStore,
+    BasicCoinInfoStore,
+    ScreenService,
+    SessionService,
+    ToastService,
+    UtilityService,
+    ApiService,
+    CacheService,
+    CoinDataService,
+    ConfigService,
+    NavMenuService,
+    NavService,
+    PreferencesService,
     MessageService,
     DatePipe,
     CurrencyPipe,
     PercentPipe,
     DecimalPipe,
+    AuthGuard,
     {
       'provide': APP_INITIALIZER,
       'useFactory': initializeServices,
-      'deps': [ConfigService, CacheService, SessionService, PortfolioService, GlobalStore],
+      'deps': [ConfigService, CacheService, SessionService, PortfolioService, BasicCoinInfoStore],
       'multi': true,
     }
   ],

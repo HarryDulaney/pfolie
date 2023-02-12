@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import * as Constants from '../../../../common/constants';
+import * as Constants from '../../../../constants';
 
 @Injectable({
   providedIn: 'root'

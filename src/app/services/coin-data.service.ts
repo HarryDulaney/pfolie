@@ -5,10 +5,8 @@ import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { CurrencyPipe } from '@angular/common';
 import { UtilityService } from './utility.service';
-import { GlobalStore } from '../store/global/global.store';
-@Injectable({
-  providedIn: 'root',
-})
+import { BasicCoinInfoStore } from '../store/global/basic-coins.store';
+@Injectable()
 export class CoinDataService {
   globalMarketData: BehaviorSubject<GlobalData> = new BehaviorSubject<GlobalData>({} as GlobalData);
 

@@ -17,9 +17,7 @@ export interface TimeStamp {
     timeInMillis: number;
 }
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class CacheService {
     private readonly CACHE_VALID_PERIOD = 86400000; // Milliseconds in one day
 
@@ -59,8 +57,7 @@ export class CacheService {
     }
 
     public getCachedCoinsList() {
-        const cachedCoinsList = localStorage.getItem(this.COINLIST_STORE_KEY);
-        return cachedCoinsList;
+        return localStorage.getItem(this.COINLIST_STORE_KEY);
     }
 
     public cacheLastCoinViewed(coinId: string, coinName: string) {
@@ -118,12 +115,10 @@ export class CacheService {
 
     /* ----------------------------- Helper Methods ---------------------------------- */
     migrate() {
-        const isMigratedValue = { migrated: 'true' };
-        localStorage.setItem(this.MIGRATED_KEY, JSON.stringify(isMigratedValue));
-    }
-
-    isMigrated(): boolean {
-        return localStorage.getItem(this.MIGRATED_KEY) !== null;
+        localStorage.removeItem(this.OLD_LAST_PORTFOLIO_WORKSPACE_KEY);
+        localStorage.removeItem(this.OLD_COINLIST_STORE_KEY);
+        localStorage.removeItem(this.OLD_COINLIST_STORE_TIMESTAMP_KEY);
+        localStorage.removeItem(this.OLD_LAST_COIN_VIEWED_KEY);
     }
 
     public hasOldLastWorkspace(): boolean {

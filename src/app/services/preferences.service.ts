@@ -7,9 +7,7 @@ export interface UserPreferences {
 }
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PreferencesService {
   private _userPreferences: UserPreferences = { sideNav: 'expand' } as UserPreferences;
 
