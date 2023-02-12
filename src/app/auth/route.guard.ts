@@ -3,9 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } fro
 import { Observable } from 'rxjs';
 import { FloatingButtonService } from '../components/portfolio/components/floatting-toolbar-button/floating-button.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RouteGuard implements CanActivate {
 
   constructor(private floatButtonService: FloatingButtonService) { }

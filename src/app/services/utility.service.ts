@@ -1,10 +1,8 @@
 import { CurrencyPipe, DatePipe, DecimalPipe, PercentPipe } from '@angular/common';
 import { Injectable, OnInit } from '@angular/core';
-import { CONSTANT } from '../common/constants';
+import { CONSTANT } from '../constants';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class UtilityService implements OnInit {
     USD_LONG = '1.2-10';
     USD_SHORT = '1.2-5';

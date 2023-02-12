@@ -12,7 +12,7 @@ import { ConfigService } from 'src/app/services/config.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { NavService } from 'src/app/services/nav.service';
 import { SessionService } from 'src/app/services/session.service';
-import * as Const from '../../common/constants';
+import * as Const from '../../constants';
 import { PortfolioTableComponent } from './components/portfolio-table/portfolio-table.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';

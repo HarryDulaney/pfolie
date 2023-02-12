@@ -136,13 +136,13 @@
               </i>&nbsp;SIGN IN TO TRACK AND MANAGE YOUR PORTFOLIO</div>
             <div class="text-center mb-2 mt-2">
               <a
-                class="font-medium no-underline ml-2 text-green-500 cursor-pointer"
+                class="no-underline ml-2 cursor-pointer"
                 (click)="googleSignIn()"
               >
-                <i
-                  class="pi pi-google"
-                  style="font-size:xx-large"
-                ></i>
+                <img
+                  [src]="googleIconSrc"
+                  class="google-org-icon"
+                />
               </a>
               <a
                 class="font-medium no-underline ml-2 text-blue-300 cursor-pointer"
@@ -150,7 +150,7 @@
               >
                 <i
                   class="pi pi-facebook"
-                  style="font-size:xx-large"
+                  style="font-size:xx-large;vertical-align: middle;"
                 ></i>
               </a>
               <a
@@ -159,7 +159,7 @@
               >
                 <i
                   class="pi pi-github"
-                  style="font-size:xx-large"
+                  style="font-size:xx-large;vertical-align: middle;"
                 ></i>
               </a>
             </div>

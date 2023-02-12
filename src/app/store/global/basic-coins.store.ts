@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { GlobalState } from "src/app/models/global";
+import { CoinsState } from "src/app/models/basic-coins.state";
 import { Store } from "../store";
 
 
 @Injectable()
-export class GlobalStore {
-    state$: Store<GlobalState> = new Store<GlobalState>({
+export class BasicCoinInfoStore {
+    state$: Store<CoinsState> = new Store<CoinsState>({
         basicCoins: [],
         filteredCoins: []
     });

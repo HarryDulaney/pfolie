@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AfterContentChecked, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { CONSTANT as Const } from '../../common/constants'
+import { CONSTANT as Const } from '../../constants'
 import { ScreenService as ScreenService } from 'src/app/services/screen.service';
 
 @Component({

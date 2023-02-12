@@ -10,6 +10,10 @@ mat-toolbar {
   z-index: 1000;
 }
 
+:host ::ng-deep .p-dialog-content {
+  overflow-y:auto !important;
+}
+
 #nav--menu-main {
   background-color: var(--surface-ground);
 }
@@ -85,7 +89,7 @@ i {
 }
 
 .non-mobile--side-nav {
-  width:200px !important;
+  width: 200px !important;
   max-width: 210px !important;
   max-height: 100% !important;
 }
@@ -130,4 +134,9 @@ p {
 :host ::ng-deep .p-toast-icon-close {
   color: #0882a4;
   border-radius: 3px 3px 3px 3px;
+}
+
+.google-org-icon {
+  width: 2.1rem;
+  height: 2.1rem;
 }

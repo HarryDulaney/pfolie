@@ -4,15 +4,13 @@ import { ApiService } from "./api.service";
 import { SessionService } from "./session.service";
 import { CacheService } from "./cache.service";
 import { PreferencesService, UserPreferences } from "./preferences.service";
-import { GlobalStore } from "../store/global/global.store";
+import { BasicCoinInfoStore } from "../store/global/basic-coins.store";
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class ConfigService {
 
     constructor(
-        private globalStore: GlobalStore,
+        private basicCoinInfoStore: BasicCoinInfoStore,
         private apiService: ApiService,
         private cache: CacheService,
         private sessionService: SessionService,
@@ -26,12 +24,7 @@ export class ConfigService {
             this.sessionService.init();
         }
         /* Reset LocalStorage so will use new storage keys */
-        if (!this.cache.isMigrated() && this.cache.oldCacheExists()) {
-            this.cache.clear();
-            this.cache.migrate();
-        }
-
-        if (!this.cache.isMigrated()) {
+        if (this.cache.oldCacheExists()) {
             this.cache.migrate();
         }
 
@@ -44,7 +37,7 @@ export class ConfigService {
                         let filteredCoins = [];
                         filteredCoins.push(...baseCoins);
                         this.cache.cacheCoinList(baseCoins);
-                        this.globalStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
+                        this.basicCoinInfoStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
                     }
 
                 }).finally(() => {
@@ -56,7 +49,7 @@ export class ConfigService {
             const baseCoins = JSON.parse(cachedCoins);
             let filteredCoins = [];
             filteredCoins.push(...baseCoins);
-            this.globalStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
+            this.basicCoinInfoStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
         }
 
 
@@ -64,7 +57,7 @@ export class ConfigService {
 
     filter(word: string) {
         let filterCoins = [];
-        let state = this.globalStore.state$.getCurrentValue();
+        let state = this.basicCoinInfoStore.state$.getCurrentValue();
         if (word && word !== '') {
             filterCoins = state.basicCoins.filter(v => {
                 return v.name.toLowerCase().startsWith(word.toLowerCase())
@@ -72,12 +65,12 @@ export class ConfigService {
         } else {
             filterCoins = state.basicCoins;
         }
-        this.globalStore.state$.setState({ filteredCoins: filterCoins });
+        this.basicCoinInfoStore.state$.setState({ filteredCoins: filterCoins });
     }
 
     resetFilter() {
-        let state = this.globalStore.state$.getCurrentValue();
-        this.globalStore.state$.setState({ filteredCoins: state.basicCoins });
+        let state = this.basicCoinInfoStore.state$.getCurrentValue();
+        this.basicCoinInfoStore.state$.setState({ filteredCoins: state.basicCoins });
 
     }
 
@@ -86,8 +79,8 @@ export class ConfigService {
     }
 
 
-    getGlobalStore(): GlobalStore {
-        return this.globalStore;
+    getGlobalStore(): BasicCoinInfoStore {
+        return this.basicCoinInfoStore;
     }
 
 

@@ -19,6 +19,9 @@ export const CONSTANT = {
 
 };
 
+export const IP_SERVICE_URI = 'https://api.ipify.org/?format=json';
+export const SIGN_IN_PERSISTENCE_LEVEL = 'local';
+
 export const GLOBAL_EVENT = {
   MOBILE_CHANGE: 'mobile-change'
 }

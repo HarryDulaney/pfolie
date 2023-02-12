@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FeedItem, ParsedFeedItem, RssFeed } from 'src/app/models/rssfeed';
 import { NewsService } from 'src/app/components/news/news.service';
-import { FEED_SOURCES } from '../../common/constants';
+import { FEED_SOURCES } from '../../constants';
 import { ArticleService } from './article.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RssFeed } from 'src/app/models/rssfeed';
 import { ApiService } from '../../services/api.service';
-import { RSS_FEEDS } from 'src/app/common/constants';
+import { RSS_FEEDS } from 'src/app/constants';
 import { catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 

@@ -6,8 +6,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NewsComponent } from './components/news/news.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { FeatureComponent } from './components/news/feature/feature.component';
-import { AuthGuard } from './services/auth/auth.guard';
-import { RouteGuard } from './services/route.guard';
+import { AuthGuard } from './auth/auth.guard';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { SmStatCardComponent } from './components/portfolio/components/parts/sm-stat-card/sm-stat-card.component';
 import { MedStatCardComponent } from './components/portfolio/components/parts/med-stat-card/med-stat-card.component';
@@ -29,7 +28,7 @@ const appRoutes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes, {scrollPositionRestoration: 'top' })],
+  imports: [RouterModule.forRoot(appRoutes, { scrollPositionRestoration: 'top' })],
   exports: [RouterModule],
   providers: []
 })

@@ -7,7 +7,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ChartService } from '../charts/chart.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { PortfolioService } from '../portfolio/services/portfolio.service';
-import * as Const from '../../common/constants';
+import * as Const from '../../constants';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({

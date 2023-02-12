@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { PROJECT_LINKS } from "src/app/common/constants";
+import { PROJECT_LINKS } from "src/app/constants";
 
 @Component({
   selector: 'app-footer',

@@ -1,17 +1,15 @@
-import { Injectable, OnInit } from '@angular/core';
-import { ActivatedRouteSnapshot, provideRoutes, Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
 import { Observable } from 'rxjs';
 import { ToastService } from './toast.service';
-import { Portfolio } from '../models/portfolio';
 import { PortfolioService } from '../components/portfolio/services/portfolio.service';
+import { SIGN_IN_PERSISTENCE_LEVEL } from '../constants';
 
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class SessionService {
     public static isAuthenticated: boolean = false;
     private user: firebase.User = null;
@@ -31,7 +29,7 @@ export class SessionService {
     }
 
     init(): void {
-        this.auth.setPersistence('session').then(
+        this.auth.setPersistence(SIGN_IN_PERSISTENCE_LEVEL).then(
             () => {
                 this.auth.user.subscribe((user) => {
                     if (user) {

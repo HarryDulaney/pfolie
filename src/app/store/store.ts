@@ -1,5 +1,3 @@
-import { Injectable } from '@angular/core';
-// Import the core angular services.
 import { BehaviorSubject } from "rxjs";
 import { distinctUntilChanged } from "rxjs/operators";
 import { Observable } from "rxjs";
@@ -23,7 +21,6 @@ export class Store<StoreType = any> {
 
 
   public select<K extends keyof StoreType>(key: K): Observable<StoreType[K]> {
-
     var selectStream = this.state$.pipe(
       map(
         (state: StoreType) => {
@@ -33,7 +30,6 @@ export class Store<StoreType = any> {
       distinctUntilChanged()
     );
     return (selectStream);
-
   }
 
   public setState(_callback: SetStateCallback<StoreType>): void;

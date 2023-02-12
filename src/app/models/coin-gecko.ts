@@ -1,4 +1,4 @@
-import { PLATFORMS } from '../common/constants';
+import { PLATFORMS } from '../constants';
 
 export interface GlobalDataView {
     total_market_cap_usd: number

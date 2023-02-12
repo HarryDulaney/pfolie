@@ -7,9 +7,7 @@ import { CacheService } from "./cache.service";
 import { ChartService } from "../components/charts/chart.service";
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NavService extends BehaviorSubject<CoinFullInfo> {
   navExpandedSource$: Subject<boolean> = new Subject();
 

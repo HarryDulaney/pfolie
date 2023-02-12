@@ -1,6 +1,6 @@
 import { BasicCoin } from "./coin-gecko";
 
-export interface GlobalState {
+export interface CoinsState {
     basicCoins: BasicCoin[];
     filteredCoins: BasicCoin[];
 }
