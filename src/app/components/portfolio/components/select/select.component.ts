@@ -1,6 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { CoinFullInfo } from 'src/app/models/coin-gecko';
 import { ComponentService } from '../../services/component.service';
@@ -16,8 +16,8 @@ export class SelectComponent implements OnInit, AfterViewInit {
   @ViewChild('trackedAssetPanel') trackedAssetPanel: OverlayPanel;
   @Input('hide') hideSelectDropdown: boolean;
 
-  searchField: FormControl = new FormControl('');
-  searchForm: FormGroup;
+  searchField: UntypedFormControl = new UntypedFormControl('');
+  searchForm: UntypedFormGroup;
 
   public scrollHeight = () => {
     if (this.mobileQuery.matches) {
@@ -35,7 +35,7 @@ export class SelectComponent implements OnInit, AfterViewInit {
     private cd: ChangeDetectorRef,
     media: MediaMatcher,
     public componentService: ComponentService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {
     this.searchForm = this.fb.group({
       searchField: this.searchField

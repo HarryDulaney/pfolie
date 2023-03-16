@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, 
 import { Router } from "@angular/router";
 import { MatSidenav } from '@angular/material/sidenav';
 import { MenuItem, MessageService } from 'primeng/api';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ConfigService } from 'src/app/services/config.service';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { SessionService } from 'src/app/services/session.service';
@@ -55,8 +55,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   screenSize: string;
   navOpened: boolean;
 
-  searchField: FormControl = new FormControl('');
-  searchForm: FormGroup;
+  searchField: UntypedFormControl = new UntypedFormControl('');
+  searchForm: UntypedFormGroup;
   toast: Toast;
   private user: firebase.User = null;
   private readonly issuesLink = PROJECT_LINKS.ISSUES;
@@ -89,7 +89,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private screenService: ScreenService,
     private toastService: ToastService,
     private cd: ChangeDetectorRef,
-    fb: FormBuilder,
+    fb: UntypedFormBuilder,
     private dashboardService: DashboardService,
     private messageService: MessageService) {
 

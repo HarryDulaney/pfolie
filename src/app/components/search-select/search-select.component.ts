@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/cor
 import { EventEmitter, Output } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
 import { BasicCoin } from 'src/app/models/coin-gecko';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -20,14 +20,14 @@ export class AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   filteredAssets: BasicCoin[] = [];
   isMobile: boolean;
   vScrollStyle = { 'text-align': 'center', 'width': '100%' };
-  searchForm: FormGroup;
-  searchField: FormControl = new FormControl('');
+  searchForm: UntypedFormGroup;
+  searchField: UntypedFormControl = new UntypedFormControl('');
   destroySubject$ = new Subject();
 
 
   constructor(
     public configService: ConfigService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {
     this.searchForm = this.formBuilder.group({
       searchField: this.searchField

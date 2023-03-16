@@ -4,7 +4,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { SessionService } from 'src/app/services/session.service';
 import firebase from 'firebase/compat/app';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { NavService } from 'src/app/services/nav.service';
 import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
@@ -35,7 +35,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   chartData: any;
   chartOptions: any;
   percentFormat: string = '1.2-6';
-  renamePortfolioFormGroup: FormGroup;
+  renamePortfolioFormGroup: UntypedFormGroup;
   currentDate: Date = new Date();
   scrollHeight: string = "500px";
   showAssetSearchDialog: boolean;
