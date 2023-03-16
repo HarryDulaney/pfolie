@@ -62,7 +62,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   
   ngOnDestroy(): void {
     this.chartService.masterData.next({} as CoinMarketChartResponse);
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 
