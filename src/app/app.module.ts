@@ -1,6 +1,5 @@
 /* Core Modules */
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -77,6 +76,7 @@ import { NavMenuService } from './services/nav-menu.service';
 import { NavService } from './services/nav.service';
 import { PreferencesService } from './services/preferences.service';
 import { AuthGuard } from './auth/auth.guard';
+import { BrowserModule } from '@angular/platform-browser';
 
 
 export function initializeServices(configService: ConfigService) {
