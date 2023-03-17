@@ -42,7 +42,6 @@
     "highcharts": "^10.1.0",
     "highcharts-angular": "^3.0.0",
     "jquery": "^3.6.0",
-    "mobile-drag-drop": "^3.0.0-beta.0",
     "ng2-charts": "^3.0.0-rc.7",
     "path": "^0.12.7",
     "primeflex": "^3.1.3",

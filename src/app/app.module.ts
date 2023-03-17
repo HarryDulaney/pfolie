@@ -157,7 +157,6 @@ export function initializeServices(configService: ConfigService) {
     CurrencyPipe,
     PercentPipe,
     DecimalPipe,
-    AuthGuard,
     {
       'provide': APP_INITIALIZER,
       'useFactory': initializeServices,
