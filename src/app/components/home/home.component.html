@@ -92,13 +92,12 @@
         <ng-container *ngIf="!sessionService.authenticated || userProfilePictureSource === null">
           <i
             class="fa fa-user-circle"
-            style="font-size: 1.5rem;vertical-align: unset;"
           ></i>
         </ng-container>
         <ng-container *ngIf="sessionService.authenticated && userProfilePictureSource !== null">
           <img
             [src]="userProfilePictureSource"
-            style="height:34px;width:34px;border-radius: 50px; vertical-align: unset;"
+            class="profile-picture-icon"
           >
         </ng-container>
       </span>

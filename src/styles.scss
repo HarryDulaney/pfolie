@@ -14,6 +14,30 @@ body {
   overflow-x: hidden;
 }
 
+/* ========================== Custom Scrollbar Styling ============================ */
+/* width */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--surface-ground);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #24273a;
+  border-radius: 10px 10px 10px 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #31354e;
+}
+
+/* ========================== Cards ============================ */
+
 .card {
   box-shadow: 1px 1px 1px var(--surface-border);
   background: var(--surface-card);
