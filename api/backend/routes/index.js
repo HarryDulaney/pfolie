@@ -1,7 +1,6 @@
 const news = require("../controllers/news.controller");
 const portfolioController = require("../controllers/portfolio.controller");
 const partsController = require("../controllers/parts.controller");
-const coins = require("../controllers/coins.controller");
 
 const Router = require('express-promise-router')
 
