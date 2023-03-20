@@ -47,7 +47,7 @@ export class PortfolioTableExpandComponent implements AfterViewInit, OnDestroy {
     private portfolioService: PortfolioService) { }
 
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 

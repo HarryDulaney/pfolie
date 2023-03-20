@@ -7,12 +7,10 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { DndModule } from 'ngx-drag-drop';
 import { NgModule } from '@angular/core';
 
 @NgModule({
     exports: [
-        DndModule,
         MatSidenavModule,
         MatIconModule,
         MatToolbarModule,

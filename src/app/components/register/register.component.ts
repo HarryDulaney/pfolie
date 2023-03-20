@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, NgModel, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, NgModel, Validators } from '@angular/forms';
 import { SessionService } from 'src/app/services/session.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { SessionService } from 'src/app/services/session.service';
 })
 export class RegisterComponent implements OnInit {
 
-  registerForm: FormGroup;
+  registerForm: UntypedFormGroup;
   private e1: string = '';
   private p1: string = '';
   emailMatchError: boolean;
@@ -19,13 +19,13 @@ export class RegisterComponent implements OnInit {
     public cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.registerForm = new FormGroup({
-      email: new FormControl('', [
+    this.registerForm = new UntypedFormGroup({
+      email: new UntypedFormControl('', [
         Validators.required,
         Validators.email]),
-      confirmEmail: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required, Validators.pattern(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)]),
-      confirmPassword: new FormControl('', [Validators.required])
+      confirmEmail: new UntypedFormControl('', [Validators.required]),
+      password: new UntypedFormControl('', [Validators.required, Validators.pattern(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)]),
+      confirmPassword: new UntypedFormControl('', [Validators.required])
     });
 
     this.registerForm.get('email').valueChanges.subscribe(value => {

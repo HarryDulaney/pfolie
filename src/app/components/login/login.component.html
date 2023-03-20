@@ -47,31 +47,36 @@
 
         <ng-container *ngIf="isValid(); else disabledButton">
             <a
-                mat-button
-                class="w-full w-100 no-underline cursor-pointer fed-sign-in-btn-main"
+                mat-flat-button
+                class="fed-sign-in-btn-main"
                 (click)="signInHandler($event)"
             >
-                <i
-                    class="pi pi-user float-start text-white"
-                    style="font-size:xx-large"
-                ></i>
-
-                <div class="text-center font-bold text-white">Sign In</div>
-
+                <span class="float-start">
+                    <i
+                        class="pi pi-user"
+                        style="font-size: large;"
+                    ></i>
+                </span>
+                <span class="float-end">
+                    <div class="text-center font-bold text-white no-wrap pl-2">Sign In</div>
+                </span>
             </a>
         </ng-container>
         <ng-template #disabledButton>
             <a
-                mat-button
+                mat-flat-button
                 disabled
-                class="w-full w-100 no-underline cursor-pointer fed-sign-in-btn"
+                class="fed-sign-in-btn-main"
             >
-                <i
-                    class="pi pi-user float-start text-red-500"
-                    style="font-size:xx-large"
-                ></i>
-
-                <div class="text-center font-bold text-red-500">Sign In</div>
+                <span class="float-start text-red-500">
+                    <i
+                        class="pi pi-user"
+                        style="font-size: large;"
+                    ></i>
+                </span>
+                <span class="float-end pl-1">
+                    <div class="text-center font-bold text-red-500">Sign In</div>
+                </span>
             </a>
         </ng-template>
 
@@ -80,48 +85,58 @@
     <div class="mb-1">
         <span class="row text-400 font-medium justify-content-center mb-1">Or</span>
         <a
-            mat-button
-            class="w-100 no-underline cursor-pointer fed-sign-in-btn"
+            mat-flat-button
+            class="fed-sign-in-btn-main"
             (click)="googleSignIn()"
         >
-            <img
-                class="google-icon-img float-start"
-                [src]="googleIconSrc"
-            >
-            <div class="text-center font-bold">
-                Continue with Google
-            </div>
+            <span class="float-start">
+                <img
+                    class="float-start"
+                    style="font-size: x-large;"
+                    [src]="googleIconSrc"
+                >
+            </span>
+            <span class="float-end pl-2">
+                <div class="text-center font-bold text-white no-wrap">Continue with Google</div>
+            </span>
         </a>
 
+        <span class="row m-1 w-100"></span>
+
         <a
-            mat-button
-            class="w-100 no-underline cursor-pointer fed-sign-in-btn"
+            mat-flat-button
+            class="fed-sign-in-btn-main"
             (click)="facebookSignIn()"
         >
-            <i
-                class="pi pi-facebook float-start"
-                style="font-size:xx-large"
-            ></i>
-
-            <div class="text-center font-bold">
-                Continue with Facebook
-            </div>
+            <span class="float-start">
+                <i
+                    class="pi pi-facebook"
+                    style="font-size: x-large;color:cornflowerblue"
+                ></i>
+            </span>
+            <span class="float-end pl-2">
+                <div class="text-center font-bold text-white no-wrap"> Continue with Facebook</div>
+            </span>
         </a>
+
+        <span class="row m-1 w-100"></span>
 
         <a
-            mat-button
-            class="w-100 no-underline cursor-pointer fed-sign-in-btn"
+            mat-flat-button
+            class="fed-sign-in-btn-main"
             (click)="githubSignIn()"
         >
-            <i
-                class="pi pi-github float-start"
-                style="font-size:xx-large"
-            ></i>
-
-
-            <div class="text-center font-bold">
-                Continue with Github
-            </div>
+            <span class="float-start">
+                <i
+                    class="pi pi-github"
+                    style="font-size: x-large;"
+                ></i>
+            </span>
+            <span class="float-end pl-2">
+                <div class="text-center font-bold text-white no-wrap"> Continue with Github
+                </div>
+            </span>
         </a>
+
     </div>
 </div>

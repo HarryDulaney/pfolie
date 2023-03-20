@@ -12,8 +12,31 @@ body {
 body {
   overflow-y: auto;
   overflow-x: hidden;
-  // scrollbar-color: rgb(127, 9, 246) rgb(84, 255, 84) !important;
 }
+
+/* ========================== Custom Scrollbar Styling ============================ */
+/* width */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--surface-ground);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #24273a;
+  border-radius: 10px 10px 10px 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #31354e;
+}
+
+/* ========================== Cards ============================ */
 
 .card {
   box-shadow: 1px 1px 1px var(--surface-border);
@@ -124,12 +147,14 @@ body {
   flex: 1 0 auto;
 }
 
-.mat-button {
+.mdc-button {
   color: #fafafa !important;
+  background-color: transparent !important;
 }
 
-.mat-button :hover {
+.mdc-button :hover {
   color: #fafafa !important;
+  background-color: inherit !important;
 }
 
 .inline--text-description a {

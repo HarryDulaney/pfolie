@@ -10,8 +10,26 @@ mat-toolbar {
   z-index: 1000;
 }
 
+.fa .fa-user-circle {
+  font-size: 2rem;
+  vertical-align: unset;
+}
+
+.profile-picture-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  padding: 0.2rem !important;
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 50px !important;
+  vertical-align: unset !important;
+}
+
 :host ::ng-deep .p-dialog-content {
-  overflow-y:auto !important;
+  overflow-y: auto !important;
 }
 
 #nav--menu-main {

@@ -1,6 +1,6 @@
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Table } from 'primeng/table';
@@ -57,8 +57,8 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   errorMap: { [s: string]: any } = {};
   expandedRowKeys: { [s: string]: boolean } = {};
   isEditing: boolean;
-  searchForm: FormGroup;
-  searchField: FormControl = new FormControl('');
+  searchForm: UntypedFormGroup;
+  searchField: UntypedFormControl = new UntypedFormControl('');
   rowOptions: MenuItem[];
   responsiveLayout: string;
   selectedAsset: OwnedAssetView;
@@ -85,7 +85,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 

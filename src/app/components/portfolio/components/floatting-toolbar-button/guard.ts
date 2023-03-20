@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { FloatingButtonService } from '../components/portfolio/components/floatting-toolbar-button/floating-button.service';
+import { FloatingButtonService } from './floating-button.service';
 
-@Injectable()
-export class RouteGuard implements CanActivate {
+export class RouteGuard {
 
   constructor(private floatButtonService: FloatingButtonService) { }
 

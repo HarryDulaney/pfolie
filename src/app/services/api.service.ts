@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { BasicCoin, CoinFullInfo, CoinMarket, CoinMarketChartResponse, GlobalData, SimplePriceResponse, TrendingResponse } from '../models/coin-gecko';
 import { environment } from 'src/environments/environment';
@@ -13,6 +13,13 @@ import { ToastService } from './toast.service';
 @Injectable()
 export class ApiService {
   private readonly APP_API_ROOT = environment.APP_API_ROOT;
+  private CG_HEADERS: HttpHeaders = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'x-cg-pro-api-key': environment.CG_API_KEY
+  });
+
+  private CG_OPTIONS = { headers: this.CG_HEADERS };
 
   constructor(
     private http: HttpClient,
@@ -51,7 +58,7 @@ export class ApiService {
     };
   }
 
-  /* ---------------------------------------------- PostgreSql API Endpoints ---------------------------------------------- */
+  /* ---------------------------------------------- PostgreSql API ---------------------------------------------- */
 
   /* ------------------------------ Portfolio ---------------------------- */
   findAllPortfoliosByUser(uid: string): Observable<any[]> {
@@ -75,29 +82,29 @@ export class ApiService {
   }
 
 
-  /* ---------------------------------------------- RSS Feed API Endpoints ---------------------------------------------- */
+  /* ---------------------------------------------- RSS Feed API ---------------------------------------------- */
 
   fetchFeedByUrl(url: string): Observable<RssFeed> {
     return this.http.post<RssFeed>(`${this.APP_API_ROOT}/news/fetch-feed`, { url: url });
   }
 
 
-  /* ---------------------------------------- Connect to CoinGecko API Endpoints ---------------------------------------- */
+  /* ---------------------------------------- CoinGecko API ---------------------------------------- */
 
   getTrendingCoins(): Observable<TrendingResponse> {
-    return this.http.get<TrendingResponse>(`${API_ROOTS.COINGECKO}${COINAPI.SEARCH_TRENDING}`);
+    return this.http.get<TrendingResponse>(`${API_ROOTS.COINGECKO}${COINAPI.SEARCH_TRENDING}`, this.CG_OPTIONS);
   }
 
   getListCoins(): Observable<BasicCoin[]> {
-    return this.http.get<BasicCoin[]>(`${API_ROOTS.COINGECKO}${COINAPI.COIN_LIST}`);
+    return this.http.get<BasicCoin[]>(`${API_ROOTS.COINGECKO}${COINAPI.COIN_LIST}`, this.CG_OPTIONS);
   }
 
   getGlobalDataCrypto(): Observable<any> {
-    return this.http.get<any>(`${API_ROOTS.COINGECKO}${API_ROUTES.GLOBAL}`);
+    return this.http.get<any>(`${API_ROOTS.COINGECKO}${API_ROUTES.GLOBAL}`, this.CG_OPTIONS);
   }
 
   getCoinFullInfo(id: string): Observable<CoinFullInfo> {
-    return this.http.get<CoinFullInfo>(`${API_ROOTS.COINGECKO}/coins/${id}`);
+    return this.http.get<CoinFullInfo>(`${API_ROOTS.COINGECKO}/coins/${id}`, this.CG_OPTIONS);
   }
 
   getSpecificCoinInfo(
@@ -108,11 +115,14 @@ export class ApiService {
     devData: boolean,
     sparkLine: boolean
   ): Observable<CoinFullInfo[]> {
-    return this.http.get<CoinFullInfo[]>(`${API_ROOTS.COINGECKO}/coins/${ids}?tickers=${tickers}&market_data=${marketData}&community_data=${communityData}&developer_data=${devData}&sparkline=${sparkLine}`);
+    return this.http
+      .get<CoinFullInfo[]>(`${API_ROOTS.COINGECKO}/coins/${ids}?tickers=${tickers}&market_data=${marketData}&community_data=${communityData}&developer_data=${devData}&sparkline=${sparkLine}`,
+        this.CG_OPTIONS);
   }
 
   getPriceById(ids: string, currencies: string): Observable<SimplePriceResponse> {
-    return this.http.get<SimplePriceResponse>(`${API_ROOTS.COINGECKO}/simple/price?ids=${ids}&vs_currencies=${currencies}`);
+    return this.http.get<SimplePriceResponse>(`${API_ROOTS.COINGECKO}/simple/price?ids=${ids}&vs_currencies=${currencies}`,
+      this.CG_OPTIONS);
   }
 
   getPagedMarketData(
@@ -124,7 +134,7 @@ export class ApiService {
     priceChangePercentage): Observable<CoinMarket[]> {
     return this.http.get<CoinMarket[]>
       (`${API_ROOTS.COINGECKO}/coins/markets?vs_currency=${vsCurrency}&order=${orderBy}&per_page=${pageSize} &
-    page=${thruPage}&sparkline=${sparkline}&price_change_percentage${priceChangePercentage}`);
+    page=${thruPage}&sparkline=${sparkline}&price_change_percentage${priceChangePercentage}`, this.CG_OPTIONS);
   }
 
   getPagedMarketDataByIds(
@@ -136,7 +146,8 @@ export class ApiService {
     sparkline: boolean,
     priceChangePercentage): Observable<CoinMarket[]> {
     return this.http.get<CoinMarket[]>
-      (`${API_ROOTS.COINGECKO}/coins/markets?ids=${ids}&vs_currency=${vsCurrency}&order=${orderBy}&per_page=${pageSize}&page=${thruPage}&sparkline=${sparkline}&price_change_percentage${priceChangePercentage}`);
+      (`${API_ROOTS.COINGECKO}/coins/markets?ids=${ids}&vs_currency=${vsCurrency}&order=${orderBy}&per_page=${pageSize}&page=${thruPage}&sparkline=${sparkline}&price_change_percentage${priceChangePercentage}`,
+        this.CG_OPTIONS);
   }
 
   /**
@@ -159,7 +170,7 @@ export class ApiService {
     interval: string
   ): Observable<CoinMarketChartResponse> {
     return this.http.get<CoinMarketChartResponse>
-      (`${API_ROOTS.COINGECKO}/coins/${id}/market_chart?vs_currency=${vsCurrency}&days=${days}&interval${interval}`);
+      (`${API_ROOTS.COINGECKO}/coins/${id}/market_chart?vs_currency=${vsCurrency}&days=${days}&interval${interval}`, this.CG_OPTIONS);
   }
 
 
@@ -169,7 +180,7 @@ export class ApiService {
     days: number
   ): Observable<Array<Array<number>>> {
     return this.http.get<Array<Array<number>>>
-      (`${API_ROOTS.COINGECKO}/coins/${id}/ohlc?vs_currency=${vsCurrency}&days=${days}`);
+      (`${API_ROOTS.COINGECKO}/coins/${id}/ohlc?vs_currency=${vsCurrency}&days=${days}`, this.CG_OPTIONS);
   }
 
   getUserIdentifier(): Observable<any> {

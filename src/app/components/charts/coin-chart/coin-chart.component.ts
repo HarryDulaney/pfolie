@@ -34,7 +34,6 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   /** price | marketcap | volume | ohlc */
   @Input('chartDataType') chartDataType: string;
   @Output() loading: EventEmitter<boolean> = new EventEmitter();
-  // @Input('sourceChangedEmitter') sourceChanged: Observable<any>;
 
   chartOptions: any;
   prices: Array<Array<number>>;
@@ -59,10 +58,10 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.reload();
   }
-  
+
   ngOnDestroy(): void {
     this.chartService.masterData.next({} as CoinMarketChartResponse);
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 
@@ -81,22 +80,102 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
     this.loading.emit(true);
     this.chartService.masterData.pipe(
       takeUntil(this.destroySubject$)
-    ).subscribe(
-      (responseData) => {
+    ).subscribe({
+      next: (responseData) => {
         this.setChartData(responseData);
         if (this.chartDataType === 'ohlc') {
           this.chartOptions = this.getOHLCChartOptions();
         } else { // Default to Price/Volume
-          this.chartOptions = this.getPriceAndVolumeChartOptions();
+          this.chartOptions = this.getPriceAreaChartOptions();
         }
-      }, () => {
+      },
+      complete: () => {
         this.loading.emit(false);
-      }, () => {
+      },
+      error: () => {
         this.loading.emit(false);
       }
-    );
+
+
+    });
+
   }
 
+
+  getPriceAreaChartOptions() {
+    return {
+      title: {
+        text: this.chartService.coinName
+      },
+      yAxis: [{
+        labels: {
+          align: 'right',
+          x: -3
+        },
+        title: {
+          text: 'Price'
+        },
+        height: '100%',
+        lineWidth: 2,
+        resize: {
+          enabled: true
+        }
+      }],
+      tooltip: {
+        split: true
+      },
+      responsive: {
+      },
+      series: [{
+        type: 'area',
+        name: '$USD',
+        data: this.prices,
+        tooltip: {
+          valueDecimals: 2
+        }
+      }],
+      rangeSelector: {
+        selected: '1m',
+      },
+    };
+  }
+
+  getVolumeOnlyChartOptions() {
+    return {
+      title: {
+        text: this.chartService.coinName
+      },
+      yAxis: [{
+        labels: {
+          align: 'right',
+          x: -3
+        },
+        title: {
+          text: 'Volume'
+        },
+        top: '80%',
+        height: '20%',
+        offset: 0,
+        lineWidth: 2
+      }],
+
+      tooltip: {
+        split: true
+      },
+      responsive: {
+      },
+      series: [
+        {
+          type: "area",
+          name: 'Total',
+          data: this.total_volumes,
+          yAxis: 1
+        }],
+      rangeSelector: {
+        selected: '1m',
+      },
+    };
+  }
 
   getPriceAndVolumeChartOptions() {
     return {
@@ -136,9 +215,12 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       responsive: {
       },
       series: [{
-        type: 'line',
+        type: 'area',
         name: '$USD',
-        data: this.prices
+        data: this.prices,
+        tooltip: {
+          valueDecimals: 2
+        }
       },
       {
         type: "column",

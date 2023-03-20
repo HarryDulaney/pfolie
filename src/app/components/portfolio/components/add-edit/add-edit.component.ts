@@ -1,6 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormBuilder } from '@angular/forms';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { switchMap } from 'rxjs/operators';
 import { SearchComponent } from 'src/app/components/search/search.component';
@@ -19,9 +19,9 @@ export class AddEditComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(SearchComponent) searchComponent: SearchComponent;
 
 
-  editForm: FormGroup;
+  editForm: UntypedFormGroup;
   public readonly SEARCH_FORM_NAME = 'searchAssetField';
-  searchFormControl: FormControl = new FormControl('', [Validators.required]);
+  searchFormControl: UntypedFormControl = new UntypedFormControl('', [Validators.required]);
 
   private _quantity: number;
 
@@ -115,17 +115,17 @@ export class AddEditComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  createFormGroup(): FormGroup {
-    return new FormGroup({
+  createFormGroup(): UntypedFormGroup {
+    return new UntypedFormGroup({
       searchAssetField: this.searchFormControl,
-      quantity: new FormControl(0, [Validators.required]),
-      sinceDate: new FormControl(new Date(), [Validators.required]),
-      costBasis: new FormControl(0, [Validators.required])
+      quantity: new UntypedFormControl(0, [Validators.required]),
+      sinceDate: new UntypedFormControl(new Date(), [Validators.required]),
+      costBasis: new UntypedFormControl(0, [Validators.required])
     });
   }
 
 
-  hasErrors(editForm: FormGroup): boolean {
+  hasErrors(editForm: UntypedFormGroup): boolean {
     return !editForm.valid || !editForm.touched || this.assetIdError || this.quantityError || this.sinceDateError || this.costBasisError;
   }
 

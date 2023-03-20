@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   APP_API_ROOT: 'https://coinetc.herokuapp.com/api',
+  CG_API_KEY: process.env.NG_APP_CG_API_KEY,
   firebaseConfig: {
     apiKey: process.env.NG_APP_FB_API_KEY,
     authDomain: process.env.NG_APP_FB_AUTH_DOMAIN,
