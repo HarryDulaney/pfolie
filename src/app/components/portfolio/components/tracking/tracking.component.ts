@@ -75,7 +75,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
     this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
 

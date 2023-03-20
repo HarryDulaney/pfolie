@@ -12,7 +12,6 @@ body {
 body {
   overflow-y: auto;
   overflow-x: hidden;
-  // scrollbar-color: rgb(127, 9, 246) rgb(84, 255, 84) !important;
 }
 
 .card {
@@ -124,12 +123,14 @@ body {
   flex: 1 0 auto;
 }
 
-.mat-mdc-button {
+.mdc-button {
   color: #fafafa !important;
+  background-color: transparent !important;
 }
 
-.mat-mdc-button :hover {
+.mdc-button :hover {
   color: #fafafa !important;
+  background-color: inherit !important;
 }
 
 .inline--text-description a {

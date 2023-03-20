@@ -1,5 +1,6 @@
 declare var process: {
   env: {
+    NG_APP_CG_API_KEY: string;
     NG_APP_ENV: string;
     NG_APP_FB_API_KEY: string;
     NG_APP_FB_AUTH_DOMAIN: string;

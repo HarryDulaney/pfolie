@@ -1,6 +1,6 @@
 {
   "name": "pfolie",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "node api/server.js",
@@ -17,7 +17,7 @@
   },
   "author": "Harry Dulaney",
   "license": "GNUv3",
-  "private": false,
+  "private": true,
   "dependencies": {
     "@angular/animations": "^15.2.3",
     "@angular/cdk": "^15.2.3",
@@ -49,9 +49,9 @@
     "primeng": "^15.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.5.0",
-    "typescript": "~5.0.2",
+    "typescript": "~4.8.0",
     "web-animations-js": "^2.3.2",
-    "zone.js": "~0.13.0"
+    "zone.js": "^0.12.0"
   },
   "devDependencies": {
     "@angular-devkit/architect": "0.1502.4",
@@ -59,7 +59,6 @@
     "@angular/cli": "^15.2.4",
     "@angular/compiler-cli": "^15.2.3",
     "@ngx-env/builder": "^15.1.0",
-    "@types/highcharts": "^7.0.0",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^18.15.3",
     "enhanced-resolve": "^5.12.0",

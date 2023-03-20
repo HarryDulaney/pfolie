@@ -15,15 +15,16 @@ export class SparklineComponent implements AfterViewInit {
   @Input('maxWidth') maxWidth: string;
 
 
-  constructor(
-  ) {
-  }
-
   ngAfterViewInit(): void {
-    this.lineChartMethod();
+    this.draw();
   }
 
-  lineChartMethod() {
+
+  afterContentChecked(): void {
+    this.draw();
+  }
+
+  draw() {
     this.lineChart = new Chart(this.chartCanvas.nativeElement, {
       type: 'line',
       data: {
@@ -52,11 +53,11 @@ export class SparklineComponent implements AfterViewInit {
           }
         },
         scales: {
-          yAxes:
+          y:
           {
             display: false
           },
-          xAxes:
+          x:
           {
             display: false
           },

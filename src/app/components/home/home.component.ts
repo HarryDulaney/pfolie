@@ -39,7 +39,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('searchInputWrapper') searchInputTarget: ElementRef;
 
 
-
   @HostListener('window:scroll', ['$event'])
   onScroll(event) {
     if (event) {
@@ -203,7 +202,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 

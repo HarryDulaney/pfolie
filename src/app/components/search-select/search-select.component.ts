@@ -40,7 +40,7 @@ export class AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 

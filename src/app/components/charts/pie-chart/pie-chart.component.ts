@@ -23,7 +23,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
 
   chartData: PieChartData[] = [];
   chartOptions: any;
-  destroySubject$ = new Subject();
+  destroySubject$: Subject<boolean> = new Subject<boolean>();
 
 
   constructor(
@@ -32,7 +32,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 

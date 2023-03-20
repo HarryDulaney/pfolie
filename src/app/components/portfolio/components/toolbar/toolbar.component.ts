@@ -46,7 +46,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private portfolioService: PortfolioService  ) { }
 
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 

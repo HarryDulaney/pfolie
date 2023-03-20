@@ -11,9 +11,6 @@
             [value]="coinService.getGlobalStore().state$.select('basicCoins') | async"
             [scrollHeight]="scrollHeight()"
             [itemSize]="45"
-            [rows]="45"
-            [maxBufferPx]="1200"
-            [minBufferPx]="1200"
             [style]="{'text-align': 'center'}"
         >
             <ng-template

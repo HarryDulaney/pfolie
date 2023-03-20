@@ -3,16 +3,16 @@
   role="heading"
 >
   <button
-    class="p-1"
     mat-flat-button
-    type="button"
     (click)="snav.toggle()"
   >
-    <i class="pi pi-bars"></i>
+    <i
+      class="pi pi-bars"
+      [style]="{'margin-top': '10px'}"
+    ></i>
   </button>
   <button
     mat-flat-button
-    type="button"
     (click)="home()"
   >
     <span class="p-component nav-title p-1">{{navbarTitle}}</span>

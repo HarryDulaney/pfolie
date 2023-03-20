@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
   APP_API_ROOT: 'http://localhost:8080/api',
+  CG_API_KEY: process.env.NG_APP_CG_API_KEY,
   firebaseConfig: {
     apiKey: process.env.NG_APP_FB_API_KEY,
     authDomain: process.env.NG_APP_FB_AUTH_DOMAIN,

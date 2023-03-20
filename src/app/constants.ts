@@ -45,7 +45,7 @@ export const TOOLBAR = {
 }
 
 export const API_ROOTS = {
-  COINGECKO: 'https://api.coingecko.com/api/v3',
+  COINGECKO: 'https://pro-api.coingecko.com/api/v3',
   COIN_MARKET_CAP: 'https://pro-api.coinmarketcap.com'
 };
 

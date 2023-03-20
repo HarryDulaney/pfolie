@@ -68,7 +68,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   currentPrice: string;
 
   tickers: BehaviorSubject<Ticker[]> = new BehaviorSubject<Ticker[]>([]);
-  destroySubject$ = new Subject();
+  destroySubject$:Subject<boolean> = new Subject<boolean>();
 
   columnDefs = [
     { header: "TimeStamp", field: 'timestamp' },
@@ -94,7 +94,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
 
   
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 

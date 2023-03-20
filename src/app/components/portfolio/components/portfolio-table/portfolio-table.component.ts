@@ -85,7 +85,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroySubject$.next();
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 
