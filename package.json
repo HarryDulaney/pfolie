@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
+    "start:local:all": "start npm run start:dev:backend && start npm run start:dev:frontend",
     "start": "node api/server.js",
+    "start:dev:frontend": "ng serve --open",
     "start:dev:backend": "nodemon --watch dist --watch api api/server.js",
     "start:local": "npm run build --watch && npm run start",
     "build": "ng build",

@@ -241,7 +241,15 @@ p-header {
   }
 }
 
-.custom-spinner {
+.p-paginator {
+  background: transparent !important;
+}
+
+p-table .p-paginator {
+  background: transparent !important;
+}
+
+p-table .custom-spinner {
   display: flex;
   justify-content: center;
   align-items: center;

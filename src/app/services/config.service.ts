@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { BasicCoin } from "../models/coin-gecko";
 import { ApiService } from "./api.service";
 import { SessionService } from "./session.service";
-import { CacheService } from "./cache.service";
-import { PreferencesService, UserPreferences } from "./preferences.service";
+import { CacheService, UserPreferences } from "./cache.service";
 import { BasicCoinInfoStore } from "../store/global/basic-coins.store";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class ConfigService {
@@ -13,8 +13,7 @@ export class ConfigService {
         private basicCoinInfoStore: BasicCoinInfoStore,
         private apiService: ApiService,
         private cache: CacheService,
-        private sessionService: SessionService,
-        private preferencesService: PreferencesService
+        private sessionService: SessionService
     ) {
     }
 
@@ -29,8 +28,7 @@ export class ConfigService {
         }
 
         if (this.cache.getTimeStampRaw() == null || !this.cache.isCacheValid()) {
-            var promise: Promise<BasicCoin[]> = this.apiService.getListCoins().toPromise();
-            promise.then(
+            firstValueFrom(this.apiService.getListCoins()).then(
                 (result) => {
                     if (result) {
                         let baseCoins: BasicCoin[] = result;
@@ -75,7 +73,11 @@ export class ConfigService {
     }
 
     getPreferences(): UserPreferences {
-        return this.preferencesService.userPreferences;
+        return this.cache.getUserPreferences();
+    }
+
+    setPreferences(preferences: UserPreferences) {
+        this.cache.setUserPreferences(preferences);
     }
 
 

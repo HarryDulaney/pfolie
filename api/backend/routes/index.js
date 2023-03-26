@@ -1,11 +1,18 @@
-const news = require("../controllers/news.controller");
-const portfolioController = require("../controllers/portfolio.controller");
-const partsController = require("../controllers/parts.controller");
+const news = require("../controllers/rss.controller"); // RSS Feeds
+const portfolioController = require("../controllers/portfolio.controller"); // Portfolio
+const partsController = require("../controllers/parts.controller"); // Portfolio Parts
+const polygon = require("../controllers/polygon.controller");   // Polygon API
 
 const Router = require('express-promise-router')
 
 const router = new Router();
 
+
+/* ---------------------- Poloygon.io ----------------------- */
+router.get('/polygon/stocks/all', polygon.getAllStockTickers);
+router.get('/polygon/stocks/:ticker', polygon.getStockTicker);
+router.get('/polygon/news/all', polygon.getNews);
+router.get('/polygon/news/:ticker', polygon.getNewsTicker);
 /* ---------------------- Portfolios ----------------------- */
 router.get('/portfolio/:uid', portfolioController.findAllPortfoliosByUserId);
 router.get('/portfolio/ids/:uid', portfolioController.findAllPortfolioIdsByUserId);

@@ -19,6 +19,14 @@ export const CONSTANT = {
 
 };
 
+export const CHART_TYPE = {
+  PRICE: 'price',
+  VOLUME: 'volume',
+  MARKET_CAP: 'market_cap',
+  MARKET_SHARE: 'market_share',
+  OHLC: 'ohlc'
+}
+
 export const IP_SERVICE_URI = 'https://api.ipify.org/?format=json';
 export const SIGN_IN_PERSISTENCE_LEVEL = 'local';
 
@@ -117,3 +125,7 @@ export const CLICKED = 'clicked';
 
 
 export declare type PLATFORMS = 'ethereum' | 'tron';
+
+
+
+

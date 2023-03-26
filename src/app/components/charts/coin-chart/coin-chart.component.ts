@@ -12,6 +12,7 @@ import { CoinMarketChartResponse } from "src/app/models/coin-gecko";
 import { ChartService } from "../chart.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { CHART_TYPE } from "src/app/constants";
 
 HIndicatorsAll(Highcharts);
 HDragPanes(Highcharts);
@@ -52,9 +53,9 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     public chartService: ChartService
-  ) {
+  ) { }
 
-  }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.reload();
   }
@@ -83,10 +84,21 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
     ).subscribe({
       next: (responseData) => {
         this.setChartData(responseData);
-        if (this.chartDataType === 'ohlc') {
-          this.chartOptions = this.getOHLCChartOptions();
-        } else { // Default to Price/Volume
-          this.chartOptions = this.getPriceAreaChartOptions();
+        switch (this.chartDataType) {
+          case CHART_TYPE.OHLC:
+            this.chartOptions = this.getOHLCChartOptions();
+            break;
+          case CHART_TYPE.PRICE:
+            this.chartOptions = this.getPriceAreaChartOptions();
+            break;
+          case CHART_TYPE.VOLUME:
+            this.chartOptions = this.getVolumeChartOptions();
+            break;
+          case CHART_TYPE.MARKET_CAP:
+            this.chartOptions = this.getMarketCapChartOptions();
+            break;
+          default:
+            this.chartOptions = this.getPriceAreaChartOptions();
         }
       },
       complete: () => {
@@ -95,12 +107,12 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       error: () => {
         this.loading.emit(false);
       }
-
-
     });
-
   }
 
+  getMarketCapChartOptions(): any {
+
+  }
 
   getPriceAreaChartOptions() {
     return {
@@ -153,8 +165,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
         title: {
           text: 'Volume'
         },
-        top: '80%',
-        height: '20%',
+        height: '100%',
         offset: 0,
         lineWidth: 2
       }],
@@ -177,7 +188,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
     };
   }
 
-  getPriceAndVolumeChartOptions() {
+  getVolumeChartOptions() {
     return {
       title: {
         text: this.chartService.coinName
@@ -188,23 +199,9 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
           x: -3
         },
         title: {
-          text: 'Price'
-        },
-        height: '80%',
-        lineWidth: 2,
-        resize: {
-          enabled: true
-        }
-      }, {
-        labels: {
-          align: 'right',
-          x: -3
-        },
-        title: {
           text: 'Volume'
         },
-        top: '80%',
-        height: '20%',
+        height: '100%',
         offset: 0,
         lineWidth: 2
       }],
@@ -214,20 +211,12 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       },
       responsive: {
       },
-      series: [{
-        type: 'area',
-        name: '$USD',
-        data: this.prices,
-        tooltip: {
-          valueDecimals: 2
-        }
-      },
-      {
-        type: "column",
-        name: 'Total',
-        data: this.total_volumes,
-        yAxis: 1
-      }],
+      series: [
+        {
+          type: "column",
+          name: 'Total',
+          data: this.total_volumes,
+        }],
       rangeSelector: {
         selected: '1m',
       },

@@ -72,10 +72,7 @@ import { ToastService } from './services/toast.service';
 import { UtilityService } from './services/utility.service';
 import { ApiService } from './services/api.service';
 import { CoinDataService } from './services/coin-data.service';
-import { NavMenuService } from './services/nav-menu.service';
 import { NavService } from './services/nav.service';
-import { PreferencesService } from './services/preferences.service';
-import { AuthGuard } from './auth/auth.guard';
 import { BrowserModule } from '@angular/platform-browser';
 
 
@@ -149,9 +146,7 @@ export function initializeServices(configService: ConfigService) {
     CacheService,
     CoinDataService,
     ConfigService,
-    NavMenuService,
     NavService,
-    PreferencesService,
     MessageService,
     DatePipe,
     CurrencyPipe,

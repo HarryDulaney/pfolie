@@ -36,8 +36,10 @@ const parseRssFeeds = async (req, res) => {
 async function parseFeed(url) {
     var feed = await parse(url);
     return feed;
+
 }
 
-
-exports.parseRssFeeds = parseRssFeeds;
-exports.parseRssFeed = parseRssFeed;
+module.exports = {
+    parseRssFeeds,
+    parseRssFeed
+}

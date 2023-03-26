@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
 import { CoinFullInfo, DeveloperData, Links, MarketData, Ticker } from '../../models/coin-gecko'
 import { NavService } from 'src/app/services/nav.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -17,9 +17,11 @@ import { takeUntil } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.Emulated
 })
 export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  chartType: string = Const.CHART_TYPE.PRICE; // Default chart type
+
   /* Interactive Chart attribute values */
   chartDataInterval: string = 'daily';
-  chartDataType: string = 'price';
   isLoading: boolean;
 
   isTracked: boolean;
@@ -68,7 +70,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   currentPrice: string;
 
   tickers: BehaviorSubject<Ticker[]> = new BehaviorSubject<Ticker[]>([]);
-  destroySubject$:Subject<boolean> = new Subject<boolean>();
+  destroySubject$: Subject<boolean> = new Subject<boolean>();
 
   columnDefs = [
     { header: "TimeStamp", field: 'timestamp' },
@@ -79,6 +81,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
     { header: "Volume", field: 'converted_volume' },
     { header: "Link", field: 'trade_url' },
   ];
+  maximizeChart = false;
 
 
 
@@ -92,7 +95,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
     private domSanitizer: DomSanitizer) {
   }
 
-  
+
   ngOnDestroy(): void {
     this.destroySubject$.next(true);
     this.destroySubject$.complete();

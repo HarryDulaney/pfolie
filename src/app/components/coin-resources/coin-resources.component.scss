@@ -3,6 +3,29 @@
   float: right;
 }
 
+.chart-type-btn-wrapper {
+  margin-right: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.active-chart {
+  background-color: #58585886 !important;
+  border: solid 1px #58585886 !important;
+  font-weight: bold;
+
+}
+
+.active-chart:hover {
+  background-color: unset !important;
+}
+
+.inactive-chart {
+  background-color: transparent !important;
+  border: solid 1px #58585886 !important;
+  font-weight: normal;
+}
+
 #favorite--icon {
   font-size: 2rem;
   margin-right: 1rem;
