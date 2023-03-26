@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Host, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import * as Highcharts from "highcharts/highcharts";
 import { PieChartData } from 'src/app/models/portfolio';
 import HBrandDark from "highcharts/themes/dark-blue"
@@ -17,7 +17,6 @@ HAccessability(Highcharts);
 export class PieChartComponent implements OnInit, OnDestroy {
   @Input('title') title: string;
   @Input() pieChartService: PieChartService;
-
 
   Highcharts: typeof Highcharts = Highcharts;
 

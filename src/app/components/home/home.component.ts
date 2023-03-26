@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Router } from "@angular/router";
 import { MatSidenav } from '@angular/material/sidenav';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -29,6 +29,7 @@ import { Observable } from "rxjs"
 
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+
   @ViewChild('snav') snav: MatSidenav;
   @ViewChild('searchPanel') searchPanel: OverlayPanel;
   @ViewChild('accountPanel') accountPanel: OverlayPanel;
@@ -104,11 +105,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.screenSize === Const.SCREEN_SIZE.XS) {
           this.navOpened = false;
         } else {
-          this.navOpened = true;
+          this.navOpened = this.configService.getPreferences().sideNav === 'expand' ? true : false;
         }
       });
 
   }
+
 
   ngAfterViewInit(): void {
     this.searchForm.get('searchField').valueChanges.pipe(
@@ -142,21 +144,26 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnInit() {
-    this.sessionService.getAuth().pipe(takeUntil(this.destroySubject$)).subscribe(user => {
-      this.user = user;
-      if (user !== null) {
-        if (user.photoURL) {
-          this.userProfilePictureSource = user.photoURL;
-        } else {
-          this.userProfilePictureSource = this.imagePreviewSrc;
+    this.sessionService.getAuth()
+      .pipe(takeUntil(this.destroySubject$)).subscribe(user => {
+        this.user = user;
+        if (user !== null) {
+          if (user.photoURL) {
+            this.userProfilePictureSource = user.photoURL;
+          } else {
+            this.userProfilePictureSource = this.imagePreviewSrc;
+          }
         }
-      }
-    });
+      });
 
     this.configService.getGlobalStore().state$.select('basicCoins')
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(
-        coins => this.allCoins = coins
+        coins => {
+          this.allCoins = coins;
+          this.cd.detectChanges();
+        }
+
       );
 
     if (this.screenSize === Const.SCREEN_SIZE.XS) {
@@ -183,6 +190,17 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     )
     this.cd.detectChanges();
 
+  }
+
+  navMenuTogglePressed() {
+    let prefs = this.configService.getPreferences();
+    if (this.snav.opened) {
+      prefs.sideNav = 'contract';
+    } else {
+      prefs.sideNav = 'expand';
+    }
+    this.configService.setPreferences(prefs);
+    this.snav.toggle();
   }
 
 
@@ -383,7 +401,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         label: 'Home',
         icon: 'fa fa-home',
         command: (event) => {
-          this.handleAccontMenuState().then(() => {
+          this.handleAccountMenuState().then(() => {
             this.router.navigate(['/', 'home']);
           });
         }
@@ -392,7 +410,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         label: 'Sign In',
         icon: 'fa fa-user-o',
         command: (event) => {
-          this.handleAccontMenuState().then(() => {
+          this.handleAccountMenuState().then(() => {
             this.sessionService.toggleLoginModal();
           });
         }
@@ -401,7 +419,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         label: 'Register',
         icon: 'fa fa-user-plus',
         command: (event) => {
-          this.handleAccontMenuState().then(() => {
+          this.handleAccountMenuState().then(() => {
             this.sessionService.toggleRegistrationModal();
           });
         }
@@ -413,7 +431,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         label: 'Home',
         icon: 'fa fa-home',
         command: (event) => {
-          this.handleAccontMenuState().then(() => {
+          this.handleAccountMenuState().then(() => {
             this.router.navigate(['/', 'home']);
           });
         }
@@ -422,7 +440,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         label: 'Portfolio Manager',
         icon: 'fa fa-bar-chart',
         command: (event) => {
-          this.handleAccontMenuState().then(() => {
+          this.handleAccountMenuState().then(() => {
             this.router.navigate(['/', 'portfolio']);
           });
         }
@@ -432,7 +450,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         icon: 'fa fa-clock-o',
         disabled: false,
         command: (event) => {
-          this.handleAccontMenuState().then(() => {
+          this.handleAccountMenuState().then(() => {
             this.router.navigate(['/', 'tracking']);
           });
         }
@@ -441,7 +459,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         label: 'Sign Out',
         icon: 'fa fa-signout',
         command: (event) => {
-          this.handleAccontMenuState().then(() => {
+          this.handleAccountMenuState().then(() => {
             this.sessionService.signOutUser();
           });
         }
@@ -543,7 +561,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /* Main Menu SideNav */
   handleNavDrawerState(): Promise<any> {
-    if (this.screenSize === Const.SCREEN_SIZE.XS && this.snav.opened) {
+    if ((this.screenSize === Const.SCREEN_SIZE.XS && this.snav.opened)
+      || this.configService.getPreferences().sideNav === 'contract') {
       return this.snav.close();
     }
     return new Promise((resolve, reject) => {
@@ -553,7 +572,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /* Account Menu Dropdown */
-  handleAccontMenuState(): Promise<any> {
+  handleAccountMenuState(): Promise<any> {
     if (this.accountPanel.overlayVisible) {
       this.accountPanel.hide();
       return new Promise((resolve, reject) => {

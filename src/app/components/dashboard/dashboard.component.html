@@ -1,15 +1,21 @@
 <p-scrollTop></p-scrollTop>
-<div class="mt-3"
-     id="dash">
+<div
+    class="mt-3"
+    id="dash"
+>
     <div class="grid-nogutter w-100">
         <div class="col-12">
-            <div [hidden]="!isGlobalDataLoading"
-                 class="text-center"
-                 [style]="{height:'100%',width:'100%'}">
-                <p-progressSpinner [style]="{height:'10rem',width:'10rem','margin-top':'7rem','margin-bottom':'7rem'}"
-                                   [strokeWidth]='6'
-                                   fill="transparent"
-                                   animationDuration=".1s"></p-progressSpinner>
+            <div
+                [hidden]="!isGlobalDataLoading"
+                class="text-center"
+                [style]="{height:'100%',width:'100%'}"
+            >
+                <p-progressSpinner
+                    [style]="{height:'10rem',width:'10rem','margin-top':'7rem','margin-bottom':'7rem'}"
+                    [strokeWidth]='6'
+                    fill="transparent"
+                    animationDuration=".1s"
+                ></p-progressSpinner>
             </div>
         </div>
 
@@ -41,24 +47,32 @@
             </div>
             <div class="row row-cols-xl-4 row-cols-lg-2">
                 <div *ngFor="let t of trendingItems; index as i; count as c;">
-                    <a (click)="onCardClicked(t)"
-                       style="cursor:pointer">
+                    <a
+                        (click)="onCardClicked(t)"
+                        style="cursor:pointer"
+                    >
                         <p-card class="p-component feature-card m-1">
                             <ng-template pTemplate="header">
-                                <div *ngIf="t.price_change_24h >= 0"
-                                     class="increased text-xl float-end p-2">
+                                <div
+                                    *ngIf="t.price_change_24h >= 0"
+                                    class="increased text-xl float-end p-2"
+                                >
                                     <span>{{t.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
 
                                 </div>
-                                <div *ngIf="t.price_change_24h < 0"
-                                     class="decreased text-xl float-end p-2">
+                                <div
+                                    *ngIf="t.price_change_24h < 0"
+                                    class="decreased text-xl float-end p-2"
+                                >
                                     <span>{{t.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
                                 </div>
                                 <div>
-                                    <img class="w-4rem h-auto border-round p-2"
-                                         alt="trending-item-img"
-                                         [src]="t.image"
-                                         [style]="{'max-width':'4rem'}">
+                                    <img
+                                        class="w-4rem h-auto border-round p-2"
+                                        alt="trending-item-img"
+                                        [src]="t.image"
+                                        [style]="{'max-width':'4rem'}"
+                                    >
                                 </div>
                                 <div class="text-white float-end m-1 p-2 text-3xl">{{t.name}}</div>
                                 <div class="center float-start m-1 p-2 text-xl">
@@ -71,10 +85,12 @@
                             </ng-template>
                             <ng-template pTemplate="footer">
                                 <div class="center">
-                                    <app-sparkline [maxWidth]="'100%'"
-                                                   [maxHeight]="'6rem'"
-                                                   [chart-data]="t.sparkline"
-                                                   [xaxis-labels]="coinDataService.getSparklineLabels()">
+                                    <app-sparkline
+                                        [maxWidth]="'100%'"
+                                        [maxHeight]="'6rem'"
+                                        [chart-data]="t.sparkline"
+                                        [xaxis-labels]="coinDataService.getSparklineLabels()"
+                                    >
                                     </app-sparkline>
                                 </div>
                             </ng-template>
@@ -84,29 +100,37 @@
             </div>
         </div>
 
-        <!-- ------------------------ Top 250 By Market Cap---------------------- -->
+        <!-- ------------------------ Coins By Market Cap---------------------- -->
         <div class="col-12 w-100">
             <div class="card">
-                <p-table [value]="top250Coins"
-                         styleClass="p-table-custom"
-                         [loading]="isTop250Loading"
-                         selectionMode="single"
-                         [rows]="50"
-                         responsiveLayout="scroll"
-                         responsive="true"
-                         [alwaysShowPaginator]="true"
-                         [showPageLinks]="true"
-                         [showCurrentPageReport]="true"
-                         [paginator]="true"
-                         [(selection)]="selectedCoin"
-                         (onRowSelect)="onRowSelect($event)"
-                         [style]="{width:'100%'}"
-                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+                <p-table
+                    [value]="coinsByMarketCap"
+                    styleClass="p-table-custom"
+                    [style]="{width:'100%'}"
+                    responsiveLayout="scroll"
+                    [loading]="isCoinsByMarketCapLoading"
+                    [loadingIcon]="loadingIcon"
+                    [rows]="rows"
+                    [totalRecords]="totalRecords"
+                    [first]="first"
+                    [lazy]="true"
+                    (onLazyLoad)="loadCoinsLazy($event)"
+                    [paginator]="true"
+                    [paginatorPosition]="'both'"
+                    [showPageLinks]="true"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [showCurrentPageReport]="true"
+                    selectionMode="single"
+                    [(selection)]="selectedCoin"
+                    (onRowSelect)="onRowSelect($event)"
+                >
                     <ng-template pTemplate="caption">
                         <div class="flex align-items-center justify-content-between">
-                            <h2 class="caption-label-md"
-                                style="margin:0 auto;">
-                                Crytocurrencies <span style="font-size:small;">Top 250</span></h2>
+                            <h2
+                                class="caption-label-md"
+                                style="margin:0 auto; background-color: transparent;"
+                            >
+                                Crytocurrencies <span style="font-size:small;">by Market Cap</span></h2>
                         </div>
                     </ng-template>
                     <ng-template pTemplate="header">
@@ -121,8 +145,10 @@
                             <th>
                                 {{mainColumnDefs[2].header}}
                             </th>
-                            <th pSortableColumn="market_cap_rank"
-                                [width]="100">
+                            <th
+                                pSortableColumn="market_cap_rank"
+                                [width]="100"
+                            >
                                 {{mainColumnDefs[3].header}}<p-sortIcon field="market_cap_rank"></p-sortIcon>
                             </th>
                             <th pSortableColumn="market_cap">
@@ -142,12 +168,16 @@
                             </th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body"
-                                 let-coinMarket>
+                    <ng-template
+                        pTemplate="body"
+                        let-coinMarket
+                    >
                         <tr [pSelectableRow]="coinMarket">
-                            <td><img [src]=coinMarket[mainColumnDefs[0].field]
-                                     [alt]="coinMarket[mainColumnDefs[1].field]"
-                                     width="30" /></td>
+                            <td><img
+                                    [src]=coinMarket[mainColumnDefs[0].field]
+                                    [alt]="coinMarket[mainColumnDefs[1].field]"
+                                    width="30"
+                                /></td>
                             <td [width]="30">{{coinMarket[mainColumnDefs[1].field]}}
                             </td>
                             <td>{{coinMarket[mainColumnDefs[2].field]}}
@@ -165,16 +195,21 @@
                             <td>{{coinMarket[mainColumnDefs[7].field]}}
                             </td>
                             <!-- sparkline -->
-                            <td [width]="170"
-                                [style]="{'padding':'0.1rem 0.1rem'}">
-                                <app-sparkline [maxHeight]="'3rem'"
-                                               [maxWidth]="'12rem'"
-                                               [chart-data]="coinMarket[mainColumnDefs[8].field]"
-                                               [xaxis-labels]="coinDataService.getSparklineLabels()">
+                            <td
+                                [width]="170"
+                                [style]="{'padding':'0.1rem 0.1rem'}"
+                            >
+                                <app-sparkline
+                                    [maxHeight]="'3rem'"
+                                    [maxWidth]="'12rem'"
+                                    [chart-data]="coinMarket[mainColumnDefs[8].field]"
+                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
+                                >
                                 </app-sparkline>
                             </td>
                         </tr>
                     </ng-template>
+
                 </p-table>
 
             </div>

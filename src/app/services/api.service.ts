@@ -133,8 +133,7 @@ export class ApiService {
     sparkline: boolean,
     priceChangePercentage): Observable<CoinMarket[]> {
     return this.http.get<CoinMarket[]>
-      (`${API_ROOTS.COINGECKO}/coins/markets?vs_currency=${vsCurrency}&order=${orderBy}&per_page=${pageSize} &
-    page=${thruPage}&sparkline=${sparkline}&price_change_percentage${priceChangePercentage}`, this.CG_OPTIONS);
+      (`${API_ROOTS.COINGECKO}/coins/markets?vs_currency=${vsCurrency}&order=${orderBy}&per_page=${pageSize}&page=${thruPage}&sparkline=${sparkline}&price_change_percentage${priceChangePercentage}`, this.CG_OPTIONS);
   }
 
   getPagedMarketDataByIds(

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NewsService } from '../news/news.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -10,6 +10,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { ScreenService } from 'src/app/services/screen.service';
+import { LazyLoadEvent } from 'primeng/api';
+import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,19 +23,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   screenSize: string;
 
   destroySubject$ = new Subject();
-  top250Coins: CoinTableView[] = [];
+  coinsByMarketCap: CoinTableView[] = [];
   trendingItems: CoinTableView[] = [];
   selectedCoin: CoinTableView;
   globalMarketShares: { [key: string]: number } = {};
 
   isTrendingSelected = false;
   hideRegisterBanner = false;
-  isMarketCapCoinsLoading = false;
   timeInMillis: number = Date.now();
   date: string | undefined;
+  first = 0;
+  rows = 100;
+  totalRecords = 0;
 
   isTrendingLoading: boolean;
-  isTop250Loading: boolean;
+  loadingIcon = 'pi pi-spin pi-spinner';
+  isCoinsByMarketCapLoading: boolean;
   isGlobalDataLoading: boolean;
 
   mainColumnDefs = [
@@ -64,13 +69,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.screenService.screenSource$.pipe(
       takeUntil(this.destroySubject$)
-    ).subscribe(screenSize => this.screenSize = screenSize);
-    
+    ).subscribe(screenSize => {
+      this.screenSize = screenSize;
+    });
+
   }
 
-  ngOnDestroy(): void {
-    this.destroySubject$.next(true);
-    this.destroySubject$.complete();
+  loadCoinsLazy(event: LazyLoadEvent) {
+    this.isCoinsByMarketCapLoading = true;
+    this.dashboardService.getCoinsByMarketCap(event).pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe({
+      next: (data) => {
+        if (data) {
+          this.coinsByMarketCap = data;
+          this.isCoinsByMarketCapLoading = false;
+          this.cd.detectChanges();
+        }
+      }
+    });
   }
 
 
@@ -83,21 +100,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (trendingView) {
           this.trendingItems = trendingView;
           this.isTrendingLoading = false;
+          this.cd.detectChanges();
         }
       }
     });
 
-    this.isTop250Loading = true;
-    this.dashboardService.getTop250Coins().pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe({
-      next: (top250) => {
-        if (top250) {
-          this.top250Coins = top250;
-          this.isTop250Loading = false;
+    this.dashboardService.coinsSource$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(
+        {
+          next: (coins) => {
+            this.totalRecords = coins.length
+            this.cd.detectChanges();
+          }
         }
-      }
-    });
+
+      )
 
     this.isGlobalDataLoading = true;
     this.dashboardService.getGlobalData().pipe(
@@ -108,11 +126,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (globalView) {
             this.pieChartService.pieData.next(globalView.market_cap_percentage)
             this.isGlobalDataLoading = false;
+            this.cd.detectChanges();
           }
         }
       }
     );
-    this.cd.detectChanges();
 
   }
 
@@ -128,4 +146,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.openCoinContent(coinView.id);
   }
 
+  ngOnDestroy(): void {
+    this.destroySubject$.next(true);
+    this.destroySubject$.complete();
+  }
 }
