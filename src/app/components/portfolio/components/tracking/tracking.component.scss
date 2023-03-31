@@ -23,6 +23,56 @@
     display: none !important;
 }
 
+:host ::ng-deep .p-datatable .p-datatable-loading-icon {
+    font-size: 10rem !important;
+    color: #0882a4 !important;
+}
+
+:host ::ng-deep .p-datatable .p-paginator-top {
+    border-width: 0 0 0 0 !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    background: transparent !important;
+    border: none !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.5rem 0.5rem !important;
+    font-weight: 700;
+}
+
+:host ::ng-deep .p-datatable .p-paginator-bottom {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.5rem 0.5rem !important;
+}
+
+:host ::ng-deep .p-datatable .p-paginator-bottom {
+    border-width: 0 0 0 0 !important;
+}
+
+:host ::ng-deep .p-datatable .p-paginator .p-paginator-bottom {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+:host ::ng-deep .p-datatable > .p-paginator .p-paginator-top {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+.card {
+    box-shadow: 1px 1px 1px var(--surface-border);
+    background: transparent !important;
+    padding: 0.3rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
 .p-datatable .p-datatable-header {
     padding: 0.4rem 0.4rem !important;
 }
@@ -37,4 +87,8 @@
 
 :host ::ng-deep .p-datatable .p-datatable-footer {
     background: transparent;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    cursor: pointer;
 }

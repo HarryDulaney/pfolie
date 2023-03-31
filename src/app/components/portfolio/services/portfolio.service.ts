@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, lastValueFrom, Observable, Subject } from 'rxjs';
+import { concatMap, take, takeUntil } from 'rxjs/operators';
 import { OwnedAsset, OwnedAssetView, Portfolio, TrackedAsset, ViewPreferences } from 'src/app/models/portfolio';
 import { ApiService } from 'src/app/services/api.service';
 import { CoinDataService } from 'src/app/services/coin-data.service';
@@ -66,40 +66,44 @@ export class PortfolioService {
     this.isLoading = true;
     this.user = user;
     if (user && user.uid) {
-      this.apiService.findAllPortfoliosByUser(user.uid).toPromise().then(
-        (response) => {
-          let value = response[0];
-          let obs: Observable<Portfolio>;
-          if (!value || value === undefined) {
-            obs = this.builder.createNewPortfolio(user.uid);
-          } else {
-            obs = this.builder.loadPorftfolio(response, user.uid);
+      this.apiService.findAllPortfoliosByUser(user.uid).pipe(
+        takeUntil(this.portfolioInitializedEvent),
+        concatMap(
+          (response) => {
+            let value = response[0];
+            let obs: Observable<Portfolio>;
+            if (!value || value === undefined) {
+              return this.builder.createNewPortfolio(user.uid);
+            } else {
+              return this.builder.loadPorftfolio(response, user.uid);
+            }
           }
-
-          obs.pipe(
-            takeUntil(this.portfolioInitializedEvent)
-          ).subscribe(
-            result => {
+        ))
+        .subscribe(
+          {
+            next: (result) => {
               this.setPortfolio(result);
               this.initTrackedAssets(result);
               this.initPortfolioAssets(result)
               this.isLoading = false;
-              this.portfolioInitializedEvent.next(false);
+              this.portfolioInitializedEvent.next(true);
               this.portfolioInitializedEvent.complete();
-            }, (error) => {
+            },
+
+            error: (error) => {
               this.isLoading = false;
               console.log("Create Portfolio Session Error: " + JSON.stringify(error.message));
-              this.isLoading = false;
-              this.portfolioInitializedEvent.next(false);
+              this.portfolioInitializedEvent.next(true);
+              this.portfolioInitializedEvent.complete();
 
-            }, () => {
+            },
+            complete: () => {
               this.isLoading = false;
-              this.portfolioInitializedEvent.next(false);
+              this.portfolioInitializedEvent.next(true);
               this.portfolioInitializedEvent.complete();
             }
-          )
-        }
-      )
+          }
+        );
     }
   }
 
@@ -123,10 +127,7 @@ export class PortfolioService {
   }
 
   save(portfolio: Portfolio) {
-    return this.apiService.updatePortfolio(portfolio)
-      .pipe()
-      .toPromise()
-      .then(result => console.info('Portfolio Updated.'));
+    return lastValueFrom(this.apiService.updatePortfolio(portfolio)).then(result => console.info('Portfolio Updated.'));
   }
 
 
@@ -259,12 +260,12 @@ export class PortfolioService {
   /*   initPortfolioParts(portfolio: Portfolio): Observable<PortfolioPart[]> {
       let ids = portfolio.portfolioData.componentIds;
       console.log("Init portfolio Parts....");
-  
+   
       if (ids.length < 1) {
         this.$componentSource.next([]);
         return of([]);
       }
-  
+   
       let parts: Observable<PortfolioPart>[] = ids.map((id) => { return this.apiService.getPortfolioPart(id); });
       return forkJoin(parts).pipe(
         tap(portfolioParts => {
@@ -276,10 +277,10 @@ export class PortfolioService {
 
   addTracked(id: string) {
     /*    
-
+  
     let asset = { id: ownedAsset.id, quantity: ownedAsset.quantity, costBasis: ownedAsset.costBasis };
     let updated = this.add(asset);
-
+  
     */
     let isValid = PortfolioBuilderService.isUniqueTrackedAsset(id, this.portfolio.getValue());
     if (!isValid) {

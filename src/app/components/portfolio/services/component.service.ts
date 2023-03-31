@@ -6,9 +6,7 @@ import { MedStatCardComponent } from '../components/parts/med-stat-card/med-stat
 import { SmStatCardComponent } from '../components/parts/sm-stat-card/sm-stat-card.component';
 import { PortfolioService } from './portfolio.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ComponentService extends BehaviorSubject<CoinFullInfo[]> {
 
   trackedAssets: any[] = [];

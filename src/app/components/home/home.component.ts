@@ -14,10 +14,10 @@ import firebase from 'firebase/compat/app';
 import { RegisterComponent } from '../register/register.component';
 import { SearchComponent } from '../search/search.component';
 import { NavService } from 'src/app/services/nav.service';
-import { mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { concatMap, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { Subject, timer } from 'rxjs';
 import { DashboardService } from '../dashboard/dashboard.service';
-import { BasicCoin, GlobalDataView } from 'src/app/models/coin-gecko';
+import { BasicCoin, GlobalData, GlobalDataView } from 'src/app/models/coin-gecko';
 import { ScreenService } from 'src/app/services/screen.service';
 import { CONSTANT as Const, PROJECT_LINKS } from '../../constants'
 import { Observable } from "rxjs"
@@ -71,7 +71,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   signedInNavItems: MenuItem[];
   accountMenuItems: MenuItem[];
   signedOutAccountMenuItems: MenuItem[];
-
+  globalDataSource$: Observable<GlobalData>;
   destroySubject$ = new Subject();
   globalDataView: GlobalDataView = {} as GlobalDataView;
   isGlobalDataLoading: boolean;
@@ -177,18 +177,21 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isGlobalDataLoading = true;
     timer(0, 60000).pipe(
       takeUntil(this.destroySubject$),
-      mergeMap((value) => this.dashboardService.getGlobalData())
+      concatMap((value) => this.dashboardService.getGlobalDataSource()),
+      map((globalData) => {
+        return this.dashboardService.getGlobalDataView(globalData);
+      })
     ).subscribe(
       {
         next: (globalView) => {
           if (globalView) {
             this.globalDataView = globalView;
             this.isGlobalDataLoading = false;
+            this.cd.detectChanges();
           }
         }
       }
     )
-    this.cd.detectChanges();
 
   }
 
@@ -562,7 +565,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   /* Main Menu SideNav */
   handleNavDrawerState(): Promise<any> {
     if ((this.screenSize === Const.SCREEN_SIZE.XS && this.snav.opened)
-      || this.configService.getPreferences().sideNav === 'contract') {
+      || (this.configService.getPreferences().sideNav === 'contract' && this.snav.opened)) {
       return this.snav.close();
     }
     return new Promise((resolve, reject) => {

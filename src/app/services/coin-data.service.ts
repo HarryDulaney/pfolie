@@ -54,8 +54,8 @@ export class CoinDataService {
   }
 
 
-  public readCoinInfo(coinId: string): Observable<CoinFullInfo> {
-    return this.apiService.getCoinFullInfo(coinId).pipe(
+  public readCoinInfo(coinId: string, sparkline = false): Observable<CoinFullInfo> {
+    return this.apiService.getCoinFullInfo(coinId, sparkline).pipe(
       map(value => {
         return value;
       })

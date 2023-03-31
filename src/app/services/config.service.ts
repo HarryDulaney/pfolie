@@ -12,35 +12,27 @@ export class ConfigService {
     constructor(
         private basicCoinInfoStore: BasicCoinInfoStore,
         private apiService: ApiService,
-        private cache: CacheService,
-        private sessionService: SessionService
+        private cache: CacheService
     ) {
     }
 
 
     load(): void {
-        if (!this.sessionService.initialized) {
-            this.sessionService.init();
-        }
-        /* Reset LocalStorage so will use new storage keys */
-        if (this.cache.oldCacheExists()) {
-            this.cache.migrate();
-        }
-
         if (this.cache.getTimeStampRaw() == null || !this.cache.isCacheValid()) {
-            firstValueFrom(this.apiService.getListCoins()).then(
-                (result) => {
-                    if (result) {
-                        let baseCoins: BasicCoin[] = result;
-                        let filteredCoins = [];
-                        filteredCoins.push(...baseCoins);
-                        this.cache.cacheCoinList(baseCoins);
-                        this.basicCoinInfoStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
-                    }
+            firstValueFrom(this.apiService.getListCoins())
+                .then(
+                    (result) => {
+                        if (result) {
+                            let baseCoins: BasicCoin[] = result;
+                            let filteredCoins = [];
+                            filteredCoins.push(...baseCoins);
+                            this.cache.cacheCoinList(baseCoins);
+                            this.basicCoinInfoStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
+                        }
 
-                }).finally(() => {
-                    this.cache.setTimeStampCachedCoinList();
-                });
+                    }).finally(() => {
+                        this.cache.setTimeStampCachedCoinList();
+                    });
 
         } else {
             let cachedCoins = this.cache.getCachedCoinsList();
@@ -84,7 +76,6 @@ export class ConfigService {
     getGlobalStore(): BasicCoinInfoStore {
         return this.basicCoinInfoStore;
     }
-
 
 }
 

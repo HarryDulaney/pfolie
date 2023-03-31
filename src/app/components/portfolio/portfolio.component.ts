@@ -76,7 +76,6 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   chartOptions: any;
   showAddEditDialog: boolean = false;
   portfolioExpandedSource: any;
-  isLoading: boolean;
   isNavExpanded: boolean;
   screenSize: string;
 
@@ -165,7 +164,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe(
       (user) => this.user = user
     );
-    this.isLoading = true;
+    this.portfolioService.isLoading = true;
 
     this.calculatedValues = {
       totalCurrentValue: 0,
@@ -196,15 +195,15 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
           this.portfolioView = results;
           this.calculatedValues.totalProfitLoss = this.calculatedValues.totalCurrentValue - this.calculatedValues.totalCostBasis;
           this.portfolioService.setAssetViews(results);
-          this.isLoading = false;
+          this.portfolioService.isLoading = false;
         }
 
       },
       complete: () => {
-        this.isLoading = false;
+        this.portfolioService.isLoading = false;
       },
       error: (err: any) => {
-        this.isLoading = false;
+        this.portfolioService.isLoading = false;
         console.error("Portfolio Data Loading Error: " + JSON.stringify(err));
       }
     });
@@ -216,22 +215,25 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         if (p) {
           this.portfolio = p;
           this.sidebarPostion = this.portfolio.preferences.view['sidebarLocation'];
-          this.isLoading = false;
+          this.portfolioService.isLoading = false;
         }
 
       },
       complete: () => {
-        this.isLoading = false;
+        this.portfolioService.isLoading = false;
       },
       error: (err) => {
-        this.isLoading = false;
+        this.portfolioService.isLoading = false;
         console.error("PortfolioComponent Initilization Error: " + JSON.stringify(err));
       }
     });
 
     this.screenService.screenSource$.pipe(
       takeUntil(this.destroySubject$)
-    ).subscribe(screenSize => this.screenSize = screenSize);
+    ).subscribe(screenSize => {
+      this.screenSize = screenSize;
+      this.cd.detectChanges();
+    });
 
   }
 

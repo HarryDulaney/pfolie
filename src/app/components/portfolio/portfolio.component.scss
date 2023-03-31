@@ -32,3 +32,31 @@
 :host ::ng-deep .p-sidebar .p-sidebar-header {
     display: none;
 }
+
+:host ::ng-deep .card {
+    background: transparent !important;
+}
+
+/* ========================== Custom Scrollbar Styling ============================ */
+/* width */
+:host ::ng-deep ::-webkit-scrollbar {
+    width: 4px !important;
+    height: 4px !important;
+}
+
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--surface-ground) !important;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #24273a !important;
+    border-radius: 10px 10px 10px 10px !important;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #31354e !important;
+}

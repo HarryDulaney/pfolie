@@ -62,16 +62,51 @@
                     <p-table
                         #trackedAssetTable
                         [value]="view"
-                        [paginator]="true"
-                        responsive="true"
                         responsiveLayout="scroll"
-                        [rows]="20"
-                        [rowsPerPageOptions]="[5,20,50,100]"
-                        [showCurrentPageReport]="true"
+                        [rows]="100"
                         [loading]="isLoading"
-                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                        styleClass="p-table-custom"
+                        [loadingIcon]="loadingIcon"
+                        [paginator]="true"
+                        [showFirstLastIcon]="false"
+                        [paginatorPosition]="'both'"
+                        [showPageLinks]="true"
+                        [showCurrentPageReport]="false"
+                        selectionMode="single"
+                        [(selection)]="selectedAsset"
+                        (onRowSelect)="onRowSelect($event)"
                         [style]="{width:'100%'}"
                     >
+
+                        <ng-template
+                            pTemplate="body"
+                            let-coinMarket
+                        >
+                            <tr [pSelectableRow]="coinMarket">
+                                <td><img
+                                        [src]=coinMarket[mainColumnDefs[0].field]
+                                        [alt]="coinMarket[mainColumnDefs[1].field]"
+                                        width="30"
+                                    /></td>
+                                <td [width]="30">{{coinMarket[mainColumnDefs[1].field]}}
+                                </td>
+                                <td>{{coinMarket[mainColumnDefs[2].field]}}
+                                </td>
+                                <td [width]="100">{{coinMarket[mainColumnDefs[3].field]}}
+                                </td>
+                                <td>{{coinMarket[mainColumnDefs[4].field]}}
+                                </td>
+                                <td>
+                                    <span [class]="coinMarket[mainColumnDefs[5].field] < 0 ? 'decreased' :'increased'">
+                                        {{coinMarket[mainColumnDefs[5].field] + '%'}}</span>
+                                </td>
+                                <td>{{coinMarket[mainColumnDefs[6].field]}}
+                                </td>
+                                <td>{{coinMarket[mainColumnDefs[7].field]}}
+                                </td>
+
+                            </tr>
+                        </ng-template>
                         <ng-template pTemplate="caption">
                             <div class="flex align-items-center justify-content-between">
                                 <h2
@@ -109,16 +144,6 @@
                                 </a>
                             </div>
                         </ng-template>
-                        <ng-template pTemplate="colgroup">
-                            <colgroup>
-                                <col style="max-width:16.667%">
-                                <col style="max-width:16.667%">
-                                <col style="max-width:16.667%">
-                                <col style="max-width:16.667%">
-                                <col style="max-width:16.667%">
-                                <col style="max-width:16.667%">
-                            </colgroup>
-                        </ng-template>
                         <ng-template pTemplate="header">
                             <tr class="header-box-special">
                                 <th
@@ -148,7 +173,7 @@
                                     7d <delta-icon></delta-icon>
                                 </th>
                                 <th class="header-text">
-                                    Action
+                                    7 Day Sparkline
                                 </th>
                             </tr>
                         </ng-template>
@@ -167,7 +192,7 @@
                                 </td>
                                 <td style="padding:0.3rem 0.3rem">
                                     <div> {{rowData['market_data']['current_price']['usd'] |
-                                        currency:'USD':'$':'1.1-12'}}</div>
+                                            currency:'USD':'$':'1.1-12'}}</div>
                                 </td>
                                 <td style="padding:0.3rem 0.3rem">
                                     <span
@@ -187,20 +212,18 @@
                                     >
                                         {{formatPercentData(rowData,'7d')}}</span>
                                 </td>
-                                <!-- Actions -->
-                                <td style="padding:0.3rem 0.3rem; cursor: pointer;">
-                                    <a
-                                        #rowOptionsIcon
-                                        mat-flat-button
-                                        (click)="rowPanel.toggle($event)"
-                                        class="cursor-pointer text-2xl bg-transparent"
+                                <!-- sparkline -->
+                                <td
+                                    [width]="sparklineWidth"
+                                    [style]="{'padding':'0.1rem 0.1rem'}"
+                                >
+                                    <app-sparkline
+                                        [maxHeight]="'3rem'"
+                                        [maxWidth]="'16rem'"
+                                        [chart-data]="rowData['market_data']['sparkline_7d']['price']"
+                                        [xaxis-labels]="coinDataService.getSparklineLabels()"
                                     >
-                                        <i
-                                            class="pi pi-ellipsis-v"
-                                            [style]="{'font-size':'1.2rem','cursor':'pointer'}"
-                                        >
-                                        </i>
-                                    </a>
+                                    </app-sparkline>
                                 </td>
 
                                 <!-- Actions/Options Overlay -->
@@ -280,7 +303,9 @@
                         </ng-template>
 
                     </p-table>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
