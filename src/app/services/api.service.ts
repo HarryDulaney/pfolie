@@ -99,13 +99,14 @@ export class ApiService {
     return this.http.get<BasicCoin[]>(`${API_ROOTS.COINGECKO}${COINAPI.COIN_LIST}`, this.CG_OPTIONS);
   }
 
-  getGlobalDataCrypto(): Observable<any> {
-    return this.http.get<any>(`${API_ROOTS.COINGECKO}${API_ROUTES.GLOBAL}`, this.CG_OPTIONS);
+  getGlobalDataCrypto(): Observable<GlobalData> {
+    return this.http.get<GlobalData>(`${API_ROOTS.COINGECKO}${API_ROUTES.GLOBAL}`, this.CG_OPTIONS);
   }
 
-  getCoinFullInfo(id: string): Observable<CoinFullInfo> {
-    return this.http.get<CoinFullInfo>(`${API_ROOTS.COINGECKO}/coins/${id}`, this.CG_OPTIONS);
+  getCoinFullInfo(id: string, sparkline: boolean): Observable<CoinFullInfo> {
+    return this.http.get<CoinFullInfo>(`${API_ROOTS.COINGECKO}/coins/${id}?sparkline=${sparkline}`, this.CG_OPTIONS);
   }
+
 
   getSpecificCoinInfo(
     ids: string[],

@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { EventEmitter, Output } from '@angular/core';
-import { ConfigService } from 'src/app/services/config.service';
 import { BasicCoin } from 'src/app/models/coin-gecko';
 import { UntypedFormGroup, UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { VirtualScroller } from 'primeng/virtualscroller';
+import { ScrollerOptions } from 'primeng/scroller';
 
 
 @Component({
@@ -13,20 +14,27 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./search-select.component.scss']
 })
 export class AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('vs') virtualScroller!: VirtualScroller;
+  @Input() maxWidth: string;
   @Input() scrollHeight: string;
   @Input() selectOptions: BasicCoin[] = [];
   @Output('selected') selected: EventEmitter<string> = new EventEmitter();
 
   filteredAssets: BasicCoin[] = [];
   isMobile: boolean;
-  vScrollStyle = { 'text-align': 'center', 'width': '100%' };
   searchForm: UntypedFormGroup;
   searchField: UntypedFormControl = new UntypedFormControl('');
   destroySubject$ = new Subject();
 
+  options: ScrollerOptions = {
+    autoSize: true,
+    step: 40,
+    delay: 1,
+    lazy: true,
+    showSpacer: true,
+  }
 
   constructor(
-    public configService: ConfigService,
     private formBuilder: UntypedFormBuilder
   ) {
     this.searchForm = this.formBuilder.group({
@@ -45,9 +53,12 @@ export class AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.options.scrollHeight = this.scrollHeight;
+    this.options.items = this.filteredAssets;
     this.searchForm.get('searchField').valueChanges.pipe(takeUntil(this.destroySubject$)).subscribe(word => {
       this.filter(word);
     });
+
 
   }
 
@@ -57,8 +68,11 @@ export class AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
       this.filteredAssets = this.selectOptions.filter(v => {
         return v.name.toLowerCase().startsWith(word.toLowerCase())
       });
+      this.virtualScroller.scrollToIndex(0);
     } else {
       this.filteredAssets = this.selectOptions;
+      this.virtualScroller.scrollToIndex(0);
+
     }
   }
 

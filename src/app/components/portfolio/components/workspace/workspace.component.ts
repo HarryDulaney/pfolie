@@ -15,6 +15,7 @@ import { SmStatCardComponent } from '../parts/sm-stat-card/sm-stat-card.componen
   selector: 'app-workspace',
   templateUrl: './workspace.component.html',
   styleUrls: ['./workspace.component.scss'],
+  providers: [ComponentService],
 })
 export class WorkspaceComponent {
   @ViewChild(PartHostDirective, { static: true }) partHost!: PartHostDirective;

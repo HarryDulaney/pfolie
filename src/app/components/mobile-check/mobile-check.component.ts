@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { AfterContentChecked, AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterContentChecked, AfterViewChecked, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { CONSTANT as Const } from '../../constants'
@@ -8,9 +8,17 @@ import { ScreenService as ScreenService } from 'src/app/services/screen.service'
 @Component({
   selector: 'app-mobile-check',
   templateUrl: './mobile-check.component.html',
-  styleUrls: ['./mobile-check.component.scss']
+  styleUrls: ['./mobile-check.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MobileCheckComponent implements AfterViewChecked, AfterViewInit, AfterContentChecked, OnDestroy {
+export class MobileCheckComponent implements AfterViewChecked, AfterViewInit, OnDestroy {
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if (event) {
+      this.changeDetectorRef.markForCheck();
+    }
+  }
+
   screenSize: string = Const.SCREEN_SIZE.XL;
   destroySubject$: Subject<boolean> = new Subject();
 
@@ -51,16 +59,13 @@ export class MobileCheckComponent implements AfterViewChecked, AfterViewInit, Af
         );
   }
 
+
   ngAfterViewChecked(): void {
-    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
   }
 
   ngAfterViewInit(): void {
-    this.changeDetectorRef.detectChanges();
-  }
-
-  ngAfterContentChecked(): void {
-    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
   }
 
   ngOnDestroy(): void {

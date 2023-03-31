@@ -1,17 +1,16 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NewsService } from '../news/news.service';
 import { SessionService } from 'src/app/services/session.service';
-import { CoinTableView } from 'src/app/models/coin-gecko';
+import { CoinTableView, GlobalData } from 'src/app/models/coin-gecko';
 import { NavService } from 'src/app/services/nav.service';
 import { DashboardService } from './dashboard.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { LazyLoadEvent } from 'primeng/api';
-import { ProgressSpinner } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,13 +20,13 @@ import { ProgressSpinner } from 'primeng/progressspinner';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   screenSize: string;
-
   destroySubject$ = new Subject();
   coinsByMarketCap: CoinTableView[] = [];
+  topMarketShareItems: CoinTableView[] = [];
   trendingItems: CoinTableView[] = [];
+  globalData: GlobalData;
   selectedCoin: CoinTableView;
   globalMarketShares: { [key: string]: number } = {};
-
   isTrendingSelected = false;
   hideRegisterBanner = false;
   timeInMillis: number = Date.now();
@@ -66,7 +65,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private navService: NavService
   ) {
     this.date = this.datePipe.transform(this.timeInMillis, 'MM-dd-yyyy h:mm a')?.toString();
-
     this.screenService.screenSource$.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(screenSize => {
@@ -93,17 +91,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isTrendingLoading = true;
-    this.dashboardService.getTrending().pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe({
-      next: (trendingView) => {
-        if (trendingView) {
-          this.trendingItems = trendingView;
-          this.isTrendingLoading = false;
-          this.cd.detectChanges();
+    this.dashboardService.getTrending()
+      .pipe(
+        takeUntil(this.destroySubject$)
+      ).subscribe({
+        next: (trendingView) => {
+          if (trendingView) {
+            this.trendingItems = trendingView;
+            this.isTrendingLoading = false;
+            this.cd.detectChanges();
+          }
         }
-      }
-    });
+      });
 
     this.dashboardService.coinsSource$
       .pipe(takeUntil(this.destroySubject$))
@@ -118,19 +117,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
       )
 
     this.isGlobalDataLoading = true;
-    this.dashboardService.getGlobalData().pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe(
-      {
-        next: (globalView) => {
-          if (globalView) {
-            this.pieChartService.pieData.next(globalView.market_cap_percentage)
-            this.isGlobalDataLoading = false;
-            this.cd.detectChanges();
+    this.dashboardService.getGlobalDataSource()
+      .pipe(
+        takeUntil(this.destroySubject$),
+        tap((globalData) => {
+          if (globalData) {
+            this.globalData = globalData;
+          }
+        }),
+        mergeMap((globalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),
+        map(result => {
+          return result.map((value) => {
+            return this.dashboardService.getMarketDataView(value);
+          })
+        })
+      ).subscribe(
+        {
+          next: (topCoinsData) => {
+            if (topCoinsData) {
+              this.topMarketShareItems = topCoinsData;
+              this.isGlobalDataLoading = false;
+              this.cd.detectChanges();
+            }
           }
         }
-      }
-    );
+      );
 
   }
 
@@ -151,3 +162,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.destroySubject$.complete();
   }
 }
+

@@ -19,33 +19,78 @@
             </div>
         </div>
 
-        <div [hidden]="isGlobalDataLoading">
-            <div class="grid-nogutter">
-                <div class="row">
-                    <div class="xl:col-8 sm:col-12">
-                        <app-news-carosel></app-news-carosel>
-                    </div>
-                    <div class="xl:col-4 sm:col-12">
-                        <div class="text-center m-0 p-0">
-                            <p-header style="font-size: 1rem;">Top Market Share</p-header>
-                        </div>
-                        <div class="p-5">
-                            <div class="special-card">
-                                <div class="p-card m-1">
-                                    <app-pie-chart [pieChartService]="pieChartService"></app-pie-chart>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="grid-nogutter">
+            <div class="row">
+                <div class="xl:col-12 sm:col-12">
+                    <app-news-carosel></app-news-carosel>
                 </div>
             </div>
         </div>
+        <!-- Top Global by market share -->
+        <div class="grid-nogutter w-100">
+            <div class="row text-center w-100">
+                <p-header style="font-size: 1rem;">Top Market Share</p-header>
+            </div>
+            <div class="row row-cols-xl-5 row-cols-lg-3 row-col-md-3">
+                <div *ngFor="let g of topMarketShareItems; index as i; count as c;">
+                    <a
+                        (click)="onCardClicked(g)"
+                        style="cursor:pointer"
+                    >
+                        <p-card class="p-component feature-card m-1">
+                            <ng-template pTemplate="header">
+                                <div
+                                    *ngIf="g.price_change_24h >= 0"
+                                    class="increased text-xl float-end p-2"
+                                >
+                                    <span>{{g.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
 
+                                </div>
+                                <div
+                                    *ngIf="g.price_change_24h < 0"
+                                    class="decreased text-xl float-end p-2"
+                                >
+                                    <span>{{g.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
+                                </div>
+                                <div>
+                                    <img
+                                        class="w-4rem h-auto border-round p-2"
+                                        alt="trending-item-img"
+                                        [src]="g.image"
+                                        [style]="{'max-width':'4rem'}"
+                                    >
+                                </div>
+                                <div class="text-white float-end m-1 p-2 text-3xl">{{g.name}}</div>
+                                <div class="center float-start m-1 p-2 text-xl">
+                                    <div [class]="g.price_change_24h < 0 ? 'decreased':'increased'">
+                                        {{g.current_price}}
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="body">
+                            </ng-template>
+                            <ng-template pTemplate="footer">
+                                <div class="center">
+                                    <app-sparkline
+                                        [maxWidth]="'100%'"
+                                        [maxHeight]="'6rem'"
+                                        [chart-data]="g.sparkline"
+                                        [xaxis-labels]="coinDataService.getSparklineLabels()"
+                                    >
+                                    </app-sparkline>
+                                </div>
+                            </ng-template>
+                        </p-card>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Trending -->
         <div class="grid-nogutter w-100">
             <div class="row text-center w-100">
                 <p-header style="font-size: 1rem;">Trending</p-header>
             </div>
-            <div class="row row-cols-xl-4 row-cols-lg-2">
+            <div class="row row-cols-xl-5 row-cols-lg-3 row-col-md-3">
                 <div *ngFor="let t of trendingItems; index as i; count as c;">
                     <a
                         (click)="onCardClicked(t)"
@@ -116,10 +161,10 @@
                     [lazy]="true"
                     (onLazyLoad)="loadCoinsLazy($event)"
                     [paginator]="true"
+                    [showFirstLastIcon]="false"
                     [paginatorPosition]="'both'"
                     [showPageLinks]="true"
-                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                    [showCurrentPageReport]="true"
+                    [showCurrentPageReport]="false"
                     selectionMode="single"
                     [(selection)]="selectedCoin"
                     (onRowSelect)="onRowSelect($event)"
@@ -138,21 +183,17 @@
                             <th>
                                 {{mainColumnDefs[0].header}}
                             </th>
-                            <th pSortableColumn="name">
-                                {{mainColumnDefs[1].header}} <p-sortIcon field="name">
-                                </p-sortIcon>
+                            <th>
+                                {{mainColumnDefs[1].header}}
                             </th>
                             <th>
                                 {{mainColumnDefs[2].header}}
                             </th>
-                            <th
-                                pSortableColumn="market_cap_rank"
-                                [width]="100"
-                            >
-                                {{mainColumnDefs[3].header}}<p-sortIcon field="market_cap_rank"></p-sortIcon>
+                            <th [width]="100">
+                                {{mainColumnDefs[3].header}}
                             </th>
-                            <th pSortableColumn="market_cap">
-                                {{mainColumnDefs[4].header}}<p-sortIcon field="market_cap"></p-sortIcon>
+                            <th>
+                                {{mainColumnDefs[4].header}}
                             </th>
                             <th>
                                 {{mainColumnDefs[5].header}} <delta-icon></delta-icon>

@@ -1,5 +1,5 @@
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { OverlayPanel } from 'primeng/overlaypanel';
@@ -25,9 +25,14 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./portfolio-table.component.scss']
 })
 export class PortfolioTableComponent implements OnInit, OnDestroy {
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if (event) {
+      this.initScreenSizes();
+    }
+  }
   @ViewChild('pdt') pdt: Table;
   @ViewChild('rowPanel') rowPanel: OverlayPanel;
-  @ViewChild('assetSearchOverlay') assetSearchOverlay!: OverlayPanel;
   @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
 
 
@@ -47,7 +52,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   @Output() onSelect: EventEmitter<any> = new EventEmitter();
 
   selectMode: string;
-
+  loadingIcon = 'pi pi-spin pi-spinner';
   isLoading: boolean;
   sortOrder = 1;
   sortField = 'id';
@@ -60,11 +65,13 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   searchForm: UntypedFormGroup;
   searchField: UntypedFormControl = new UntypedFormControl('');
   rowOptions: MenuItem[];
-  responsiveLayout: string;
+  responsiveLayout = "scroll";
   selectedAsset: OwnedAssetView;
 
   showAssetSearchDialog: boolean;
   searchScrollHeight: string;
+  maxSearchWidth: string;
+  modalPostion: string;
 
   protected selectedRowData: any = undefined;
   imagePreviewSrc: string = '../assets/img/image_filler_icon_blank.jpg';
@@ -93,23 +100,37 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     this.cd.detectChanges();
   }
 
-
-  ngOnInit(): void {
-    this.responsiveLayout = "scroll";
-    if (this.screenSize === Const.CONSTANT.SCREEN_SIZE.XS) {
-      this.searchScrollHeight = '60vh';
-    } else {
-      this.searchScrollHeight = '35vh';
-    }
+  ngOnViewChanges(): void {
   }
 
 
-  showAssetSearchContainer(event) {
-    if (this.screenSize === Const.CONSTANT.SCREEN_SIZE.XS) {
-      this.showAssetSearchDialog = true;
-    } else {
-      this.assetSearchOverlay.show(event);
+  ngOnInit(): void {
+    this.initScreenSizes();
+  }
+
+  initScreenSizes() {
+    switch (this.screenSize) {
+      case Const.CONSTANT.SCREEN_SIZE.XS:
+        this.searchScrollHeight = '60vh';
+        this.maxSearchWidth = '80vw';
+        this.modalPostion = 'top';
+        break;
+      case Const.CONSTANT.SCREEN_SIZE.M:
+      case Const.CONSTANT.SCREEN_SIZE.L:
+      case Const.CONSTANT.SCREEN_SIZE.XL:
+        this.searchScrollHeight = '40vh';
+        this.maxSearchWidth = '60vw';
+        this.modalPostion = 'center';
+        break;
+      default:
+        this.searchScrollHeight = '35vh';
+        this.maxSearchWidth = '50vw';
+        this.modalPostion = 'center';
     }
+  }
+
+  showAssetSearchContainer(event) {
+    this.showAssetSearchDialog = true;
   }
 
 
@@ -162,8 +183,6 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   handleAddNewAsset(id: string) {
     if (this.assetSearchDialog.visible) {
       this.showAssetSearchDialog = false;
-    } else if (this.assetSearchOverlay.overlayVisible) {
-      this.assetSearchOverlay.hide();
     }
 
     this.onRowAddInit(id);

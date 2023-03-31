@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { BasicCoin, CoinMarket, CoinTableView, GlobalData, GlobalDataView, Trending, TrendingItem } from 'src/app/models/coin-gecko';
 import { ApiService } from 'src/app/services/api.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -19,6 +19,8 @@ export class DashboardService {
   thruPage = 1;
   orderBy: string = this.orderByValues[0];
   coinsSource$: Observable<BasicCoin[]>;
+  globalDataSource$: Observable<GlobalData>;
+  globalData: GlobalData;
 
   constructor(
     private apiService: ApiService,
@@ -57,12 +59,8 @@ export class DashboardService {
     )
   }
 
-  public getGlobalData(): Observable<GlobalDataView> {
-    return this.apiService.getGlobalDataCrypto().pipe(
-      map((result) => {
-        return this.getGlobalDataView(result.data);
-      })
-    )
+  getGlobalDataSource(): Observable<GlobalData> {
+    return this.apiService.getGlobalDataCrypto();
   }
 
   getTrendingCoinsInfo(trendingItems: Trending[]): Observable<CoinMarket[]> {
@@ -71,6 +69,15 @@ export class DashboardService {
     }))
 
     return this.getCoinMarketDataByIds(trendingIds, this.thruPage, 7, this.defaultCurrency, this.orderBy, true, this.activePriceChangePercent);
+  }
+
+  getGlobalCoinsInfo(globalData: GlobalData): Observable<CoinMarket[]> {
+    let topGlobalByCapIds = [];
+    for (const key in globalData.data.total_market_cap) {
+      topGlobalByCapIds.push(key);
+    }
+
+    return this.getCoinMarketDataByIds(topGlobalByCapIds, this.thruPage, 7, this.defaultCurrency, this.orderBy, true, this.activePriceChangePercent);
   }
 
 
@@ -130,16 +137,16 @@ export class DashboardService {
     return this.apiService.getPagedMarketData(thruPage, pageSize, vsCurrency, orderBy, sparkline, priceChangesInclude);
   }
 
-
-  getGlobalDataView(globalData: GlobalData): GlobalDataView {
+  getGlobalDataView(g: GlobalData): GlobalDataView {
     return {
-      total_volume: globalData.total_volume['usd'],
-      total_market_cap_usd: globalData.total_market_cap['usd'],
-      market_cap_change_percentage_24h_usd: globalData.market_cap_change_percentage_24h_usd,
-      total_volume_formated: this.utilityService.format(globalData.total_volume['usd'], '2dec'),
-      total_market_cap_usd_formated: this.utilityService.format(globalData.total_market_cap['usd'], '2dec'),
-      market_cap_change_percentage_24h_usd_formated: this.utilityService.format(globalData.market_cap_change_percentage_24h_usd, 'pd'),
-      market_cap_percentage: globalData.market_cap_percentage
-    } as GlobalDataView;  }
+      total_market_cap_usd: g.data.total_market_cap['usd'],
+      total_volume: g.data.total_volume.usd,
+      market_cap_change_percentage_24h_usd: g.data.market_cap_change_percentage_24h_usd,
+      total_volume_formated: this.utilityService.format(g.data.total_volume.usd, '2dec'),
+      total_market_cap_usd_formated: this.utilityService.format(g.data.total_market_cap.usd, '2dec'),
+      market_cap_change_percentage_24h_usd_formated: this.utilityService.format(g.data.market_cap_change_percentage_24h_usd, 'pd'),
+      market_cap_percentage: g.data.market_cap_percentage
+    } as GlobalDataView;
+  }
 
 }

@@ -27,6 +27,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
   @ViewChild(AssetSearchSelect) assetSelectionList: AssetSearchSelect;
   @ViewChild('assetSearchOverlay') assetSearchOverlay!: OverlayPanel;
+  @ViewChild('rowpanel') rowPanel: OverlayPanel;
 
   private portfolio: Portfolio;
   private user: firebase.User = null;
@@ -41,10 +42,12 @@ export class TrackingComponent implements OnInit, OnDestroy {
   showAssetSearchDialog: boolean;
   allCoins: BasicCoin[] = [];
   destroySubject$ = new Subject();
-
+  loadingIcon = 'pi pi-spin pi-spinner';
+  selectedAsset: TrackedAsset;
   mobileQuery: MediaQueryList;
   public _mobileQueryListener: () => void;
-
+  sparklineWidth = '200';
+  
   constructor(
     public coinDataService: CoinDataService,
     private sessionService: SessionService,
@@ -148,6 +151,10 @@ export class TrackingComponent implements OnInit, OnDestroy {
     }
   }
 
+  onRowSelect(event) {
+    this.rowPanel.toggle(event)
+  }
+
   formatPercentData(rowData: any, col: string): string {
     switch (col) {
       case '24hr': {
@@ -192,7 +199,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
       return trackedAsset.id;
     });
 
-    let coinInfos = ids.map((id) => { return this.coinDataService.readCoinInfo(id); });
+    let coinInfos = ids.map((id) => { return this.coinDataService.readCoinInfo(id, true); });
     return forkJoin(coinInfos);
   }
 

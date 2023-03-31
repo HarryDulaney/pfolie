@@ -21,7 +21,7 @@
     <div class="col-4">
       <span class="d-flex flex-row row w-100">
         <span class="chart-type-btn-wrapper">
-          <button
+<!--           <button
             mat-flat-button
             class="col w-33"
             [pTooltip]="'Maximize Chart'"
@@ -33,7 +33,7 @@
           <ng-template #maximize>
             <i class="pi pi-window-maximize"></i>
           </ng-template>
-          </button>
+          </button> -->
           <button
             mat-flat-button
             class="col w-33"
@@ -78,7 +78,7 @@
       class="grid w-100"
       style="margin-left: 0 !important;"
     >
-      <div [ngClass]="{'col-12 lg:col-8':!maximizeChart,'col-12':maximizeChart}">
+      <div class="col-12 lg:col-8">
         <app-coin-chart
           [chartDataType]="chartType"
           (loading)="isLoading"

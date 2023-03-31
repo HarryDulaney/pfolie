@@ -46,6 +46,10 @@ body {
   margin-bottom: 2rem;
 }
 
+.p-table-custom {
+  background-color: transparent !important;
+}
+
 .header-text-md {
   color: #ffffff;
   font-size: medium;
@@ -83,8 +87,7 @@ body {
 
 .caption-label {
   color: #ffffff;
-  font-size: small;
-  font-weight: bold;
+  font-size: 0.9rem;
 }
 
 .header-box-special {
@@ -224,6 +227,14 @@ p-header {
   color: #ff1100;
 }
 
+.increased :hover {
+  color: #00ff59 !important;
+}
+
+.decreased :hover {
+  color: #ff1100 !important;
+}
+
 @keyframes p-progress-spinner-color {
   100%,
   0% {
@@ -269,4 +280,55 @@ p-table .custom-spinner {
   color: var(--blue-100);
   font-size: medium;
   font-weight: bold;
+}
+
+.p-datatable .p-datatable-footer {
+  background: transparent !important;
+  border: none !important;
+  border-width: 0 0 0 0;
+  padding: 0.5rem 0.5rem !important;
+  font-weight: 700;
+}
+
+.p-datatable .p-datatable-loading-icon {
+  font-size: 10rem !important;
+  color: #0882a4 !important;
+}
+
+.p-datatable .p-paginator-top {
+  border-width: 0 0 0 0 !important;
+}
+
+.p-datatable .p-datatable-header {
+  background: transparent !important;
+  border: none !important;
+}
+
+.p-datatable .p-datatable-header {
+  background: transparent !important;
+  border: none !important;
+  border-width: 0 0 0 0;
+  padding: 0.5rem 0.5rem !important;
+  font-weight: 700;
+}
+
+.p-datatable .p-paginator-bottom {
+  background: transparent !important;
+  border: none !important;
+  border-width: 0 0 0 0;
+  padding: 0.5rem 0.5rem !important;
+}
+
+.p-datatable .p-paginator-bottom {
+  border-width: 0 0 0 0 !important;
+}
+
+.p-datatable .p-paginator .p-paginator-bottom {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+.p-datatable > .p-paginator .p-paginator-top {
+  background-color: transparent !important;
+  background: transparent !important;
 }
