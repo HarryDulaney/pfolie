@@ -89,18 +89,10 @@
       class="float-start me-1"
     >
       <span>
-        <ng-container *ngIf="!sessionService.authenticated || userProfilePictureSource === null">
-          <i
-
-            class="fa fa-user-circle default-profile-picture-icon"
-          ></i>
-        </ng-container>
-        <ng-container *ngIf="sessionService.authenticated && userProfilePictureSource !== null">
-          <img
-            [src]="userProfilePictureSource"
-            class="profile-picture-icon"
-          >
-        </ng-container>
+        <img
+          [src]="userProfilePictureSource"
+          class="profile-picture-icon"
+        >
       </span>
     </button>
   </div>

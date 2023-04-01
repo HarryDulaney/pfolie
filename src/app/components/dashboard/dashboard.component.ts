@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NewsService } from '../news/news.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -11,6 +11,7 @@ import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { LazyLoadEvent } from 'primeng/api';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,6 +20,7 @@ import { LazyLoadEvent } from 'primeng/api';
   providers: [DashboardService]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  @ViewChild('bigCoinsTable') bigCoinsTable: Table;
   screenSize: string;
   destroySubject$ = new Subject();
   coinsByMarketCap: CoinTableView[] = [];

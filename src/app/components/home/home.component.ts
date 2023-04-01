@@ -25,7 +25,7 @@ import { Observable } from "rxjs"
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  providers: [MessageService, DashboardService]
+  providers: [MessageService,DashboardService]
 
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -38,7 +38,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('login') loginComp: LoginComponent;
   @ViewChild('appSearch') searchComponent: SearchComponent;
   @ViewChild('searchInputWrapper') searchInputTarget: ElementRef;
-
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event) {
@@ -66,7 +65,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   isLoading: boolean;
   verified: boolean;
   searchActive: boolean;
-  userProfilePictureSource: string = null;
+  userProfilePictureSource: string = '../../../assets/img/robo-default-avatar-icon.png';
   signedOutNavItems: MenuItem[];
   signedInNavItems: MenuItem[];
   accountMenuItems: MenuItem[];
@@ -145,16 +144,19 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.sessionService.getAuth()
-      .pipe(takeUntil(this.destroySubject$)).subscribe(user => {
-        this.user = user;
-        if (user !== null) {
-          if (user.photoURL) {
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(
+        user => {
+          this.user = user;
+          if (user !== null &&
+            user !== undefined &&
+            user.photoURL !== null &&
+            user.photoURL !== undefined) {
             this.userProfilePictureSource = user.photoURL;
           } else {
-            this.userProfilePictureSource = this.imagePreviewSrc;
+            this.userProfilePictureSource = '../../../assets/img/robo-default-avatar-icon.png';
           }
-        }
-      });
+        });
 
     this.configService.getGlobalStore().state$.select('basicCoins')
       .pipe(takeUntil(this.destroySubject$))

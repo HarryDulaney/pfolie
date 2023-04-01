@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
-import { Observable } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { ToastService } from './toast.service';
 import { PortfolioService } from '../components/portfolio/services/portfolio.service';
 import { SIGN_IN_PERSISTENCE_LEVEL } from '../constants';
@@ -151,6 +151,17 @@ export class SessionService {
 
     }
 
+    signInAnonymously() {
+        this.auth.signInAnonymously().then(
+            userCredentials => {
+                this.signIn(userCredentials);
+            }
+        ).catch((error) => {
+            this.toastService.showErrorToast("Login Attempt Failed. Error: " + error);
+        }
+        );
+    }
+
 
     registerNewUser(email: any, password: any) {
         this.auth.createUserWithEmailAndPassword(email, password).then(value => {
@@ -198,6 +209,23 @@ export class SessionService {
 
     public getUser(): Observable<firebase.User> {
         return this.auth.user;
+    }
+
+
+    public isLoggedIn(route: ActivatedRouteSnapshot): Observable<boolean> {
+        return this.getUser()
+            .pipe(
+                map((user) => {
+                    if (user === null) {
+                        let fragment = route.url[0]['path'];
+                        this.displayLoginModal(fragment);
+                        this.router.navigate(['/home']);
+                        return false;
+                    }
+
+                    return (user !== null && user !== undefined);
+                })
+            );
     }
 
 

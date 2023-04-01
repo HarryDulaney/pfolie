@@ -46,7 +46,6 @@ import { MessageService } from 'primeng/api';
 import { PortfolioPartComponent } from './components/builder/portfolio-part/portfolio-part.component';
 import { PortfolioModalComponent } from './components/portfolio/components/portfolio-modal/portfolio-modal.component';
 import { ToolbarComponent } from './components/portfolio/components/toolbar/toolbar.component';
-import { PortfolioService } from './components/portfolio/services/portfolio.service';
 import { FloattingToolbarButtonComponent } from './components/portfolio/components/floatting-toolbar-button/floatting-toolbar-button.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { WorkspaceComponent } from './components/portfolio/components/workspace/workspace.component';
