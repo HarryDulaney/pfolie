@@ -137,8 +137,6 @@ export function initializeServices(configService: ConfigService) {
   ],
   providers: [
     BasicCoinInfoStore,
-    ScreenService,
-    SessionService,
     ToastService,
     UtilityService,
     ApiService,
