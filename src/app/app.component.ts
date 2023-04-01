@@ -5,7 +5,6 @@ import { SessionService } from './services/session.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  providers: [SessionService]
 })
 export class AppComponent implements OnInit, AfterViewInit {
   constructor(

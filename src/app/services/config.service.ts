@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BasicCoin } from "../models/coin-gecko";
 import { ApiService } from "./api.service";
-import { SessionService } from "./session.service";
 import { CacheService, UserPreferences } from "./cache.service";
 import { BasicCoinInfoStore } from "../store/global/basic-coins.store";
 import { firstValueFrom } from "rxjs";

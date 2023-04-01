@@ -1,19 +1,16 @@
-import { inject, NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { inject, InjectionToken, NgModule, ProviderToken } from '@angular/core';
+import { CanActivateChildFn, CanActivateFn, RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { CoinResourcesComponent } from './components/coin-resources/coin-resources.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NewsComponent } from './components/news/news.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { FeatureComponent } from './components/news/feature/feature.component';
-import { AuthGuard } from './auth/auth.guard';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { SmStatCardComponent } from './components/portfolio/components/parts/sm-stat-card/sm-stat-card.component';
 import { MedStatCardComponent } from './components/portfolio/components/parts/med-stat-card/med-stat-card.component';
 import { TrackingComponent } from './components/portfolio/components/tracking/tracking.component';
 import { authGuard } from './auth/guards';
-
-
 
 
 const appRoutes: Routes = [
@@ -32,8 +29,7 @@ const appRoutes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(appRoutes, { scrollPositionRestoration: 'top' })],
-  exports: [RouterModule],
-  providers: []
+  exports: [RouterModule]
 })
 export class AppRoutingModule {
 }
