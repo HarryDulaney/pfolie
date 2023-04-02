@@ -7,7 +7,7 @@ import { CoinTableView, GlobalData } from 'src/app/models/coin-gecko';
 import { NavService } from 'src/app/services/nav.service';
 import { DashboardService } from './dashboard.service';
 import { Subject } from 'rxjs';
-import { map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { concatMap, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { LazyLoadEvent } from 'primeng/api';
@@ -21,6 +21,7 @@ import { Table } from 'primeng/table';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
+
   screenSize: string;
   destroySubject$ = new Subject();
   coinsByMarketCap: CoinTableView[] = [];
@@ -121,18 +122,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isGlobalDataLoading = true;
     this.dashboardService.getGlobalDataSource()
       .pipe(
-        takeUntil(this.destroySubject$),
         tap((globalData) => {
           if (globalData) {
             this.globalData = globalData;
           }
         }),
-        mergeMap((globalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),
+        concatMap((globalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),
         map(result => {
           return result.map((value) => {
             return this.dashboardService.getMarketDataView(value);
           })
-        })
+        }),
+        takeUntil(this.destroySubject$)
       ).subscribe(
         {
           next: (topCoinsData) => {

@@ -8,6 +8,19 @@
     min-height: 25vh !important;
 }
 
+.table-options-panel {
+    background: #000000 !important;
+}
+
+:host ::ng-deep .p-overlaypanel .p-overlaypanel-content {
+    background: #000000 !important;
+}
+
+:host ::ng-deep .p-overlaypanel-content {
+    background: #000000 !important;
+}
+
+
 :host ::ng-deep .p-component-overlay {
     display: none !important;
 }

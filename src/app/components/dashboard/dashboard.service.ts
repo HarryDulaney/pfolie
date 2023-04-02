@@ -25,7 +25,7 @@ export class DashboardService {
   constructor(
     private apiService: ApiService,
     private utilityService: UtilityService,
-    basicCoinStore: BasicCoinInfoStore
+    private basicCoinStore: BasicCoinInfoStore
   ) {
     this.defaultCurrency = this.currencies[0];
     this.coinsSource$ = basicCoinStore.state$.select('basicCoins');
@@ -72,12 +72,23 @@ export class DashboardService {
   }
 
   getGlobalCoinsInfo(globalData: GlobalData): Observable<CoinMarket[]> {
+    const basicCoins = this.basicCoinStore.state$.getCurrentValue().basicCoins;
     let topGlobalByCapIds = [];
-    for (const key in globalData.data.total_market_cap) {
-      topGlobalByCapIds.push(key);
+    for (const key in globalData.data.market_cap_percentage) {
+      const assetId = this.getIdFromSymbol(key, basicCoins);
+      topGlobalByCapIds.push(assetId);
     }
 
     return this.getCoinMarketDataByIds(topGlobalByCapIds, this.thruPage, 7, this.defaultCurrency, this.orderBy, true, this.activePriceChangePercent);
+  }
+
+  getIdFromSymbol(symbol: string, basicCoins: BasicCoin[]): string {
+    const index = basicCoins.findIndex((c: BasicCoin) => c.symbol === symbol);
+    if (index > -1) {
+      return basicCoins[index].id;
+    }
+    return symbol;
+
   }
 
 
