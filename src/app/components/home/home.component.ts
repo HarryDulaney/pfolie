@@ -25,7 +25,20 @@ import { Observable } from "rxjs"
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  providers: [MessageService,DashboardService]
+  styles: [`
+  :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0px;
+  }
+
+  @media screen and (max-width: 64em) {
+      :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+          top: 0px;
+      }
+  }
+`],
+  providers: [MessageService, DashboardService]
 
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -178,11 +191,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.initNavMenus();
     this.isGlobalDataLoading = true;
     timer(0, 60000).pipe(
-      takeUntil(this.destroySubject$),
       concatMap((value) => this.dashboardService.getGlobalDataSource()),
       map((globalData) => {
         return this.dashboardService.getGlobalDataView(globalData);
-      })
+      }),
+      takeUntil(this.destroySubject$)
     ).subscribe(
       {
         next: (globalView) => {

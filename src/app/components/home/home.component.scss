@@ -10,6 +10,24 @@ mat-toolbar {
   z-index: 1000;
 }
 
+
+@media screen and (max-width: 64em) {
+  :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+      top: 0px;
+  }
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  color: #ffffff;
+  font-size: medium;
+  top: 0px;
+  font-weight: bold;
+  white-space: nowrap !important;
+  text-overflow: ellipsis;
+}
+
 .fa .fa-user-circle {
   font-size: 2rem;
   vertical-align: unset;

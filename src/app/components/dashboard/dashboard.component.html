@@ -26,129 +26,128 @@
                 </div>
             </div>
         </div>
-        <!-- Top Global by market share -->
-        <div class="grid-nogutter w-100">
-            <div class="row text-center w-100">
-                <p-header style="font-size: 1rem;">Top Market Share</p-header>
-            </div>
-            <div class="row row-cols-xl-5 row-cols-lg-3 row-col-md-3">
-                <div *ngFor="let g of topMarketShareItems; index as i; count as c;">
-                    <a
-                        (click)="onCardClicked(g)"
-                        style="cursor:pointer"
-                    >
-                        <p-card class="p-component feature-card m-1">
-                            <ng-template pTemplate="header">
-                                <div
-                                    *ngIf="g.price_change_24h >= 0"
-                                    class="increased text-xl float-end p-2"
-                                >
-                                    <span>{{g.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
-
-                                </div>
-                                <div
-                                    *ngIf="g.price_change_24h < 0"
-                                    class="decreased text-xl float-end p-2"
-                                >
-                                    <span>{{g.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
-                                </div>
-                                <div>
-                                    <img
-                                        class="w-4rem h-auto border-round p-2"
-                                        alt="trending-item-img"
-                                        [src]="g.image"
-                                        [style]="{'max-width':'4rem'}"
-                                    >
-                                </div>
-                                <div class="text-white float-end m-1 p-2 text-3xl">{{g.name}}</div>
-                                <div class="center float-start m-1 p-2 text-xl">
-                                    <div [class]="g.price_change_24h < 0 ? 'decreased':'increased'">
-                                        {{g.current_price}}
-                                    </div>
-                                </div>
-                            </ng-template>
-                            <ng-template pTemplate="body">
-                            </ng-template>
-                            <ng-template pTemplate="footer">
-                                <div class="center">
-                                    <app-sparkline
-                                        [maxWidth]="'100%'"
-                                        [maxHeight]="'6rem'"
-                                        [chart-data]="g.sparkline"
-                                        [xaxis-labels]="coinDataService.getSparklineLabels()"
-                                    >
-                                    </app-sparkline>
-                                </div>
-                            </ng-template>
-                        </p-card>
-                    </a>
-                </div>
-            </div>
-        </div>
         <!-- Trending -->
-        <div class="grid-nogutter w-100">
-            <div class="row text-center w-100">
-                <p-header style="font-size: 1rem;">Trending</p-header>
-            </div>
-            <div class="row row-cols-xl-5 row-cols-lg-3 row-col-md-3">
-                <div *ngFor="let t of trendingItems; index as i; count as c;">
-                    <a
-                        (click)="onCardClicked(t)"
-                        style="cursor:pointer"
+        <div class="row text-center w-100">
+            <p-header style="font-size: 1rem;font-weight: bold;">Trending</p-header>
+        </div>
+        <span class="row text-center w-100">
+            <p-header style="font-size: 0.8rem; font-weight: normal;">Top Market Share</p-header>
+        </span>
+        <!-- Top Global by market share -->
+        <div class="card m-1 p-1 w-100 border-0 border-transparent">
+            <div class="flex flex-wrap justify-content-start card-container gap-3">
+                <div *ngFor="let g of topMarketShareItems; index as i; count as c;">
+                    <p-card
+                        (click)="onCardClicked(g)"
+                        [style]="{'width':'100%','max-height':'400px','max-width':'400px','cursor':'pointer'}"
+                        class="flex-grow-0 border-round m-1"
                     >
-                        <p-card class="p-component feature-card m-1">
-                            <ng-template pTemplate="header">
-                                <div
-                                    *ngIf="t.price_change_24h >= 0"
-                                    class="increased text-xl float-end p-2"
-                                >
-                                    <span>{{t.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
+                        <ng-template pTemplate="header">
+                            <div
+                                *ngIf="g.price_change_24h >= 0"
+                                class="increased text-xl float-end p-2"
+                            >
+                                <span>{{g.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
 
-                                </div>
-                                <div
-                                    *ngIf="t.price_change_24h < 0"
-                                    class="decreased text-xl float-end p-2"
+                            </div>
+                            <div
+                                *ngIf="g.price_change_24h < 0"
+                                class="decreased text-xl float-end p-2"
+                            >
+                                <span>{{g.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
+                            </div>
+                            <div>
+                                <img
+                                    class="w-4rem h-auto border-round p-2"
+                                    alt="trending-item-img"
+                                    [src]="g.image"
+                                    [style]="{'max-width':'4rem'}"
                                 >
-                                    <span>{{t.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
+                            </div>
+                            <div class="text-white float-end m-1 p-2 text-3xl">{{g.name}}</div>
+                            <div class="center float-start m-1 p-2 text-xl">
+                                <div [class]="g.price_change_24h < 0 ? 'decreased':'increased'">
+                                    {{g.current_price}}
                                 </div>
-                                <div>
-                                    <img
-                                        class="w-4rem h-auto border-round p-2"
-                                        alt="trending-item-img"
-                                        [src]="t.image"
-                                        [style]="{'max-width':'4rem'}"
-                                    >
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="body">
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="center">
+                                <app-sparkline
+                                    [maxWidth]="'100%'"
+                                    [maxHeight]="'6rem'"
+                                    [chart-data]="g.sparkline"
+                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
+                                >
+                                </app-sparkline>
+                            </div>
+                        </ng-template>
+                    </p-card>
+                </div>
+
+                <span class="flex-grow-1 text-center w-100">
+                    <p-header style="font-size: 0.8rem; font-weight: normal;">Top Trading Activity</p-header>
+                </span>
+
+                <div *ngFor="let t of trendingItems; index as i; count as c;">
+                    <p-card
+                        (click)="onCardClicked(t)"
+                        class="flex-grow-0 border-round m-1"
+                        [style]="{'width':'100%','max-height':'400px','max-width':'400px','cursor':'pointer'}"
+                    >
+                        <ng-template pTemplate="header">
+                            <div
+                                *ngIf="t.price_change_24h >= 0"
+                                class="increased text-xl float-end p-2"
+                            >
+                                <span>{{t.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
+
+                            </div>
+                            <div
+                                *ngIf="t.price_change_24h < 0"
+                                class="decreased text-xl float-end p-2"
+                            >
+                                <span>{{t.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
+                            </div>
+                            <div>
+                                <img
+                                    class="w-4rem h-auto border-round p-2"
+                                    alt="trending-item-img"
+                                    [src]="t.image"
+                                    [style]="{'max-width':'4rem'}"
+                                >
+                            </div>
+                            <div class="text-white float-end m-1 p-2 text-3xl">{{t.name}}</div>
+                            <div class="center float-start m-1 p-2 text-xl">
+                                <div [class]="t.price_change_24h < 0 ? 'decreased':'increased'">
+                                    {{t.current_price}}
                                 </div>
-                                <div class="text-white float-end m-1 p-2 text-3xl">{{t.name}}</div>
-                                <div class="center float-start m-1 p-2 text-xl">
-                                    <div [class]="t.price_change_24h < 0 ? 'decreased':'increased'">
-                                        {{t.current_price}}
-                                    </div>
-                                </div>
-                            </ng-template>
-                            <ng-template pTemplate="body">
-                            </ng-template>
-                            <ng-template pTemplate="footer">
-                                <div class="center">
-                                    <app-sparkline
-                                        [maxWidth]="'100%'"
-                                        [maxHeight]="'6rem'"
-                                        [chart-data]="t.sparkline"
-                                        [xaxis-labels]="coinDataService.getSparklineLabels()"
-                                    >
-                                    </app-sparkline>
-                                </div>
-                            </ng-template>
-                        </p-card>
-                    </a>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="body">
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <div class="center">
+                                <app-sparkline
+                                    [maxWidth]="'100%'"
+                                    [maxHeight]="'6rem'"
+                                    [chart-data]="t.sparkline"
+                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
+                                >
+                                </app-sparkline>
+                            </div>
+                        </ng-template>
+                    </p-card>
                 </div>
             </div>
         </div>
-
         <!-- ------------------------ Coins By Market Cap---------------------- -->
         <div class="col-12 w-100">
             <div class="card">
-                <p-table #bigCoinsTable
+                <p-table
+                    #bigCoinsTable
                     [value]="coinsByMarketCap"
                     styleClass="p-table-custom"
                     [style]="{width:'100%'}"

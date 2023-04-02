@@ -30,19 +30,8 @@ tr td {
     padding: 0.1rem !important;
 }
 
-:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-    position: -webkit-sticky !important;
-    position: sticky !important;
-    color: #ffffff;
-    font-size: medium;
-    font-weight: bold;
-    white-space: nowrap !important;
-    text-overflow: ellipsis;
-}
 
 :host ::ng-deep .p-card {
-    height: fit-content;
-    width: auto;
     transition: transform 0.2s;
     text-decoration: none;
 }
@@ -50,3 +39,4 @@ tr td {
 :host ::ng-deep .p-card:hover {
     transform: scale(1.05);
 }
+

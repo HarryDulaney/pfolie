@@ -178,7 +178,7 @@ p-header {
 }
 
 .nav-title {
-  font-size: x-large !important;
+  font-size: small !important;
   font-weight: bold !important;
 }
 
@@ -235,7 +235,7 @@ p-header {
   color: #ff1100 !important;
 }
 
-@keyframes p-progress-spinner-color {
+/* @keyframes p-progress-spinner-color {
   100%,
   0% {
     stroke: #d62d20;
@@ -250,7 +250,7 @@ p-header {
   90% {
     stroke: #ffa700;
   }
-}
+} */
 
 .p-paginator {
   background: transparent !important;
