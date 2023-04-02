@@ -1,6 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { SessionService } from 'src/app/services/session.service';
 import firebase from 'firebase/compat/app';
@@ -27,7 +27,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
   @ViewChild(AssetSearchSelect) assetSelectionList: AssetSearchSelect;
   @ViewChild('assetSearchOverlay') assetSearchOverlay!: OverlayPanel;
-  @ViewChild('rowpanel') rowPanel: OverlayPanel;
+  @ViewChild('rowPanel') rowPanel: OverlayPanel;
 
   private portfolio: Portfolio;
   private user: firebase.User = null;
@@ -47,7 +47,8 @@ export class TrackingComponent implements OnInit, OnDestroy {
   mobileQuery: MediaQueryList;
   public _mobileQueryListener: () => void;
   sparklineWidth = '200';
-  
+  openRowPanels: OverlayPanel[] = [];
+
   constructor(
     public coinDataService: CoinDataService,
     private sessionService: SessionService,
@@ -151,8 +152,25 @@ export class TrackingComponent implements OnInit, OnDestroy {
     }
   }
 
-  onRowSelect(event) {
-    this.rowPanel.toggle(event)
+  onRowClick(event, rowPanel: OverlayPanel) {
+    for (let panel of this.openRowPanels) {
+      if (panel.el.nativeElement.id !== rowPanel.el.nativeElement.id) {
+        panel.hide();
+        this.openRowPanels = this.openRowPanels.slice(this.openRowPanels.indexOf(panel), 1);
+      }
+    }
+
+    rowPanel.toggle(event);
+    if (rowPanel.overlayVisible) {
+      this.openRowPanels.push(rowPanel);
+    }
+
+  }
+
+  onRowSelect(event: any) {
+    const orgEvent = event.originalEvent as MouseEvent;
+    console.debug("Row Select Event: " + JSON.stringify(orgEvent));
+
   }
 
   formatPercentData(rowData: any, col: string): string {

@@ -21,6 +21,7 @@ import { Table } from 'primeng/table';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
+  
   screenSize: string;
   destroySubject$ = new Subject();
   coinsByMarketCap: CoinTableView[] = [];

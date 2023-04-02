@@ -5,6 +5,20 @@
     min-height: 81vh !important;
 }
 
+.table-options-panel {
+    background: #000000 !important;
+}
+
+:host ::ng-deep .p-overlaypanel .p-overlaypanel-content {
+    background: #000000 !important;
+}
+
+:host ::ng-deep .p-overlaypanel-content {
+    background: #000000 !important;
+}
+
+
+
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
     white-space: nowrap !important;
     overflow: hidden;

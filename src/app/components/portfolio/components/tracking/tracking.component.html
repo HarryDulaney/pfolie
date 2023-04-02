@@ -58,14 +58,15 @@
                     >
                     </app-search-select>
                 </p-dialog>
+
                 <div class="card">
                     <p-table
                         #trackedAssetTable
                         [value]="view"
+                        styleClass="p-table-custom"
                         responsiveLayout="scroll"
                         [rows]="100"
                         [loading]="isLoading"
-                        styleClass="p-table-custom"
                         [loadingIcon]="loadingIcon"
                         [paginator]="true"
                         [showFirstLastIcon]="false"
@@ -75,38 +76,7 @@
                         selectionMode="single"
                         [(selection)]="selectedAsset"
                         (onRowSelect)="onRowSelect($event)"
-                        [style]="{width:'100%'}"
                     >
-
-                        <ng-template
-                            pTemplate="body"
-                            let-coinMarket
-                        >
-                            <tr [pSelectableRow]="coinMarket">
-                                <td><img
-                                        [src]=coinMarket[mainColumnDefs[0].field]
-                                        [alt]="coinMarket[mainColumnDefs[1].field]"
-                                        width="30"
-                                    /></td>
-                                <td [width]="30">{{coinMarket[mainColumnDefs[1].field]}}
-                                </td>
-                                <td>{{coinMarket[mainColumnDefs[2].field]}}
-                                </td>
-                                <td [width]="100">{{coinMarket[mainColumnDefs[3].field]}}
-                                </td>
-                                <td>{{coinMarket[mainColumnDefs[4].field]}}
-                                </td>
-                                <td>
-                                    <span [class]="coinMarket[mainColumnDefs[5].field] < 0 ? 'decreased' :'increased'">
-                                        {{coinMarket[mainColumnDefs[5].field] + '%'}}</span>
-                                </td>
-                                <td>{{coinMarket[mainColumnDefs[6].field]}}
-                                </td>
-                                <td>{{coinMarket[mainColumnDefs[7].field]}}
-                                </td>
-
-                            </tr>
-                        </ng-template>
                         <ng-template pTemplate="caption">
                             <div class="flex align-items-center justify-content-between">
                                 <h2
@@ -144,12 +114,31 @@
                                 </a>
                             </div>
                         </ng-template>
+                        <ng-template pTemplate="colgroup">
+                            <colgroup>
+                                <!-- Image -->
+                                <col style="min-width:14.285%;">
+                                <!-- Asset Name -->
+                                <col style="min-width:14.285%;">
+                                <!-- Current Price -->
+                                <col style="min-width:14.285%;">
+                                <!-- 24hr Change -->
+                                <col style="min-width:14.285%;">
+                                <!-- 1hr Change -->
+                                <col style="min-width:14.285%;">
+                                <!-- 7d Change -->
+                                <col style="min-width:14.285%;">
+                                <!-- 7d Change -->
+                                <col style="min-width:14.285%;">
+                            </colgroup>
+                        </ng-template>
                         <ng-template pTemplate="header">
                             <tr class="header-box-special">
                                 <th
                                     [width]="100"
                                     class="header-text"
                                 >
+                                Icon
                                 </th>
                                 <th
                                     [width]="160"
@@ -181,7 +170,62 @@
                             pTemplate="body"
                             let-rowData
                         >
-                            <tr>
+                                 <!-- Actions/Options Overlay -->
+                                 <p-overlayPanel
+                                 #rowPanel
+                                 [id]="'rowPanel' + rowData.id"
+                                 class="cursor-pointer"
+                                 [style]="{ 'background': '#000000' }"
+                                 [showTransitionOptions]="'0.9ms'"
+                                 [hideTransitionOptions]="'0.9ms'"
+                                 [dismissable]="false"
+                                 [baseZIndex]="1000001"
+                                 appendTo="body"
+                             >
+                                 <ng-template pTemplate>
+                                     <ul
+                                         style="list-style: none;"
+                                         class="p-0 m-0"
+                                     >
+
+                                         <li class="p-0 m-0">
+                                             <a
+                                                 mat-flat-button
+                                                 class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                 type="button"
+                                                 (click)="deleteTrackedAsset(rowData)"
+                                             >
+                                                 <i
+                                                     class="pi pi-trash"
+                                                     [style]="{'font-size':'1.2rem','cursor':'pointer'}"
+                                                 >
+                                                 </i>
+                                                 Delete
+                                             </a>
+                                         </li>
+
+                                         <li class="p-0 m-0">
+                                             <a
+                                                 mat-flat-button
+                                                 class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                 type="button"
+                                                 (click)="openAssetInfo(rowData)"
+                                             >
+                                                 <i
+                                                     class="pi pi-external-link"
+                                                     [style]="{'font-size':'1.1rem','cursor':'pointer'}"
+                                                 >
+                                                 </i>
+                                                 Asset Info
+                                             </a>
+                                         </li>
+                                     </ul>
+                                 </ng-template>
+                             </p-overlayPanel>
+                            <tr
+                                [pSelectableRow]="rowData"
+                                (click)="onRowClick($event,rowPanel)"
+                            >
                                 <td style="padding:0.3rem 0.3rem"><img
                                         [src]="rowData['image']['small']"
                                         alt="asset--image-thumb"
@@ -225,57 +269,6 @@
                                     >
                                     </app-sparkline>
                                 </td>
-
-                                <!-- Actions/Options Overlay -->
-                                <p-overlayPanel
-                                    #rowPanel
-                                    appendTo="body"
-                                    class="cursor-pointer"
-                                    [showTransitionOptions]="'0.9ms'"
-                                    [hideTransitionOptions]="'0.9ms'"
-                                    [dismissable]="true"
-                                    [baseZIndex]="1000001"
-                                >
-                                    <ng-template pTemplate>
-                                        <ul
-                                            style="list-style: none;"
-                                            class="p-0 m-0"
-                                        >
-
-                                            <li class="p-0 m-0">
-                                                <a
-                                                    mat-flat-button
-                                                    class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
-                                                    type="button"
-                                                    (click)="deleteTrackedAsset(rowData)"
-                                                >
-                                                    <i
-                                                        class="pi pi-trash"
-                                                        [style]="{'font-size':'1.2rem','cursor':'pointer'}"
-                                                    >
-                                                    </i>
-                                                    Delete
-                                                </a>
-                                            </li>
-
-                                            <li class="p-0 m-0">
-                                                <a
-                                                    mat-flat-button
-                                                    class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
-                                                    type="button"
-                                                    (click)="openAssetInfo(rowData)"
-                                                >
-                                                    <i
-                                                        class="pi pi-external-link"
-                                                        [style]="{'font-size':'1.1rem','cursor':'pointer'}"
-                                                    >
-                                                    </i>
-                                                    Asset Info
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </ng-template>
-                                </p-overlayPanel>
 
                             </tr>
                         </ng-template>
