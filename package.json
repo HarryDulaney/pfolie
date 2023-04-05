@@ -53,6 +53,7 @@
     "tslib": "^2.5.0",
     "typescript": "~4.8.0",
     "web-animations-js": "^2.3.2",
+    "web3": "^1.9.0",
     "zone.js": "^0.12.0"
   },
   "devDependencies": {
@@ -63,8 +64,11 @@
     "@ngx-env/builder": "^15.1.0",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^18.15.3",
+    "assert": "^2.0.0",
+    "crypto-browserify": "^3.12.0",
     "enhanced-resolve": "^5.12.0",
     "fuzzy": "^0.1.3",
+    "https-browserify": "^1.0.0",
     "inquirer": "^6.2.2",
     "inquirer-autocomplete-prompt": "^1.0.1",
     "jasmine-core": "^4.6.0",
@@ -75,6 +79,9 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "nodemon": "^2.0.21",
-    "open": "^8.4.2"
+    "open": "^8.4.2",
+    "os-browserify": "^0.3.0",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0"
   }
 }

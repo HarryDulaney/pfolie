@@ -1,5 +1,5 @@
 <a (click)="openArticle($event)" class="cursor-pointer">
-    <p-card id="article-card" class="p-component feature-card m-1"
+    <p-card id="article-card" class="feature-card m-1"
         [hidden]="showArticle">
         <ng-template pTemplate="header">
             <div id="article-date" class="text-gray-100 text-500 float-end p-2">{{feedContent.publishedDate | date: 'fullDate'}}

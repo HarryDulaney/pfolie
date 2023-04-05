@@ -30,7 +30,6 @@ tr td {
     padding: 0.1rem !important;
 }
 
-
 :host ::ng-deep .p-card {
     transition: transform 0.2s;
     text-decoration: none;
@@ -40,3 +39,15 @@ tr td {
     transform: scale(1.05);
 }
 
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    position: -webkit-sticky;
+    z-index: 999999999 !important;
+    position: sticky !important;
+    top: 50px;
+}
+
+@media screen and (max-width: 64em) {
+    :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+        top: 0px;
+    }
+}

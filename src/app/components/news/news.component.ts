@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FeedItem, ParsedFeedItem, RssFeed } from 'src/app/models/rssfeed';
 import { NewsService } from 'src/app/components/news/news.service';
 import { FEED_SOURCES } from '../../constants';
 import { ArticleService } from './article.service';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 @Component({
   selector: 'app-news',
-  templateUrl: './news.component.html'
+  templateUrl: './news.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewsComponent implements OnInit {
+export class NewsComponent implements OnInit, OnDestroy {
 
   feedItems: FeedItem[];
   filteredFeedItems: FeedItem[] = [];
   displayedFeed: BehaviorSubject<FeedItem[]> = new BehaviorSubject<FeedItem[]>([]);
+  destorySubject$ = new Subject<boolean>();
 
   isLoading: boolean = false;
   allCategories: string[] = FEED_SOURCES;
@@ -24,6 +26,7 @@ export class NewsComponent implements OnInit {
     private router: Router
   ) {
   }
+
 
   ngOnInit(): void {
     this.isLoading = true;
@@ -84,5 +87,10 @@ export class NewsComponent implements OnInit {
 
     return 'bg-gray-600';
 
+  }
+
+  ngOnDestroy(): void {
+    this.destorySubject$.next(true);
+    this.destorySubject$.complete();
   }
 }

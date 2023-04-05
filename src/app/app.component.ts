@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { SessionService } from './services/session.service';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit, AfterViewInit {
   constructor(
@@ -12,8 +12,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     private sessionService: SessionService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.primengConfig.ripple = true;
+
   }
 
   ngAfterViewInit(): void {

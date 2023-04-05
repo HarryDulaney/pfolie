@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NewsService } from '../news/news.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -17,7 +17,8 @@ import { Table } from 'primeng/table';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [DashboardService]
+  providers: [DashboardService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
@@ -54,24 +55,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { header: "24h Low", field: 'low_24h' },
     { header: "7 Days", field: 'sparkline' },
   ];
+  rowTrackBy = (index: number, item: CoinTableView) => item.id;
 
 
   constructor(
     public coinDataService: CoinDataService,
     public pieChartService: PieChartService,
-    public newsService: NewsService,
     public sessionService: SessionService,
     private screenService: ScreenService,
     private dashboardService: DashboardService,
     private cd: ChangeDetectorRef,
     private datePipe: DatePipe,
-    private navService: NavService
-  ) {
+    private navService: NavService) {
     this.date = this.datePipe.transform(this.timeInMillis, 'MM-dd-yyyy h:mm a')?.toString();
     this.screenService.screenSource$.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(screenSize => {
       this.screenSize = screenSize;
+      this.cd.markForCheck();
     });
 
   }
@@ -85,7 +86,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (data) {
           this.coinsByMarketCap = data;
           this.isCoinsByMarketCapLoading = false;
-          this.cd.detectChanges();
+          this.cd.markForCheck();
         }
       }
     });
@@ -102,7 +103,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (trendingView) {
             this.trendingItems = trendingView;
             this.isTrendingLoading = false;
-            this.cd.detectChanges();
+            this.cd.markForCheck();
           }
         }
       });
@@ -113,7 +114,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         {
           next: (coins) => {
             this.totalRecords = coins.length
-            this.cd.detectChanges();
+            this.cd.markForCheck();
           }
         }
 
@@ -140,7 +141,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (topCoinsData) {
               this.topMarketShareItems = topCoinsData;
               this.isGlobalDataLoading = false;
-              this.cd.detectChanges();
+              this.cd.markForCheck();
             }
           }
         }

@@ -9,7 +9,9 @@ export interface GlobalDataView {
     market_cap_change_percentage_24h_usd_formated: string;
     market_cap_percentage: {
         [key: string]: number;
-    };
+    },
+    active_cryptocurrencies: number;
+    markets: number;
 }
 
 export interface CoinTableView {

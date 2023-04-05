@@ -1,16 +1,17 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Carousel } from 'primeng/carousel';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { FeedItem, ParsedFeedItem, RssFeed } from 'src/app/models/rssfeed';
+import { FeedItem, ParsedFeedItem } from 'src/app/models/rssfeed';
 import { ConfigService } from 'src/app/services/config.service';
 import { ArticleService } from '../article.service';
 import { NewsService } from '../news.service';
 
 @Component({
   selector: 'app-news-carosel',
-  templateUrl: './news-carosel.component.html'
+  templateUrl: './news-carosel.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewsCaroselComponent implements OnInit, OnDestroy {
   @ViewChild(Carousel) carousel!: Carousel;
@@ -26,6 +27,7 @@ export class NewsCaroselComponent implements OnInit, OnDestroy {
   constructor(
     public newsService: NewsService,
     public articleService: ArticleService,
+    private cd: ChangeDetectorRef,
     private router: Router) {
     this.responsiveOptions = [
       {
@@ -63,6 +65,7 @@ export class NewsCaroselComponent implements OnInit, OnDestroy {
     ).finally(() => {
       this.feedItems = loadedItems;
       this.isLoading = false;
+      this.cd.markForCheck();
     });
   }
 

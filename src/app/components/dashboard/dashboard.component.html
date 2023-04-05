@@ -27,20 +27,19 @@
             </div>
         </div>
         <!-- Trending -->
-        <div class="row text-center w-100">
-            <p-header style="font-size: 1rem;font-weight: bold;">Trending</p-header>
-        </div>
         <span class="row text-center w-100">
-            <p-header style="font-size: 0.8rem; font-weight: normal;">Top Market Share</p-header>
+            <p-header style="font-size: 0.9rem; font-weight: bold;">Top Market Share</p-header>
         </span>
         <!-- Top Global by market share -->
         <div class="card m-1 p-1 w-100 border-0 border-transparent">
-            <div class="flex flex-wrap justify-content-start card-container gap-3">
-                <div *ngFor="let g of topMarketShareItems; index as i; count as c;">
+            <div class="flex flex-wrap justify-content-evenly gap-3">
+                <div
+                    *ngFor="let g of topMarketShareItems; index as i; count as c;"
+                >
                     <p-card
                         (click)="onCardClicked(g)"
-                        [style]="{'width':'100%','max-height':'400px','max-width':'400px','cursor':'pointer'}"
-                        class="flex-grow-0 border-round m-1"
+                        [style]="{'max-width':'90vw','height':'280px','width':'360px','cursor':'pointer','overflow': 'hidden'}"
+                        class="border-round m-2"
                     >
                         <ng-template pTemplate="header">
                             <div
@@ -88,14 +87,14 @@
                 </div>
 
                 <span class="flex-grow-1 text-center w-100">
-                    <p-header style="font-size: 0.8rem; font-weight: normal;">Top Trading Activity</p-header>
+                    <p-header style="font-size: 0.9rem; font-weight: bold;">Top Trading Activity</p-header>
                 </span>
 
                 <div *ngFor="let t of trendingItems; index as i; count as c;">
                     <p-card
                         (click)="onCardClicked(t)"
-                        class="flex-grow-0 border-round m-1"
-                        [style]="{'width':'100%','max-height':'400px','max-width':'400px','cursor':'pointer'}"
+                        class="border-round m-2"
+                        [style]="{'max-width':'90vw','height':'280px','width':'360px','cursor':'pointer','overflow': 'hidden'}"
                     >
                         <ng-template pTemplate="header">
                             <div
@@ -149,9 +148,9 @@
                 <p-table
                     #bigCoinsTable
                     [value]="coinsByMarketCap"
+                    [rowTrackBy]="rowTrackBy"
                     styleClass="p-table-custom"
                     [style]="{width:'100%'}"
-                    responsiveLayout="scroll"
                     [loading]="isCoinsByMarketCapLoading"
                     [loadingIcon]="loadingIcon"
                     [rows]="rows"

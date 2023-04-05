@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Router } from "@angular/router";
 import { MatSidenav } from '@angular/material/sidenav';
 import { MenuItem, MessageService } from 'primeng/api';
@@ -25,20 +25,8 @@ import { Observable } from "rxjs"
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  styles: [`
-  :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 0px;
-  }
-
-  @media screen and (max-width: 64em) {
-      :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-          top: 0px;
-      }
-  }
-`],
-  providers: [MessageService, DashboardService]
+  providers: [MessageService, DashboardService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -61,6 +49,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.accountPanel.overlayVisible) {
         this.accountPanel.hide();
       }
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if (event) {
+      this.cd.markForCheck();
     }
   }
 
@@ -176,7 +171,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(
         coins => {
           this.allCoins = coins;
-          this.cd.detectChanges();
+          this.cd.markForCheck();
         }
 
       );
@@ -202,7 +197,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           if (globalView) {
             this.globalDataView = globalView;
             this.isGlobalDataLoading = false;
-            this.cd.detectChanges();
+            this.cd.markForCheck();
           }
         }
       }
