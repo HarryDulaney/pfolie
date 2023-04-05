@@ -1,26 +1,36 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
+import { CurrencyPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { SessionService } from 'src/app/services/session.service';
 import firebase from 'firebase/compat/app';
 import { UntypedFormGroup } from '@angular/forms';
-import { OverlayPanel } from 'primeng/overlaypanel';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { NavService } from 'src/app/services/nav.service';
 import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
 import { Portfolio, TrackedAsset } from 'src/app/models/portfolio';
 import { PortfolioService } from '../../services/portfolio.service';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
-import { Dialog } from 'primeng/dialog';
+import { Dialog, DialogModule } from 'primeng/dialog';
 import { AssetSearchSelect } from 'src/app/components/search-select/search-select.component';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
+import { SparklineComponent } from '../../../charts/sparkline/sparkline.component';
+import { DeltaIcon } from '../../../icons/change-icon/delta.component';
+import { MatButtonModule } from '@angular/material/button';
+import { SharedModule } from 'primeng/api';
+import { TableModule } from 'primeng/table';
+import { AssetSearchSelect as AssetSearchSelect_1 } from '../../../search-select/search-select.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-tracking',
   templateUrl: './tracking.component.html',
   styleUrls: ['./tracking.component.scss'],
-  providers: [DatePipe, CurrencyPipe, DecimalPipe]
+  providers: [DatePipe, CurrencyPipe, DecimalPipe],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect_1, TableModule, SharedModule, MatButtonModule, OverlayPanelModule, DeltaIcon, SparklineComponent, CurrencyPipe, DatePipe]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
   @ViewChild('trackedAssetTable') trackedTable;
@@ -56,7 +66,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     private navService: NavService,
     public decimalPipe: DecimalPipe,
     public portfolioService: PortfolioService,
-    changeDetectorRef: ChangeDetectorRef,
+    private changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
@@ -73,7 +83,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
       } else {
         this.scrollHeight = '35vh';
       }
-      changeDetectorRef.detectChanges()
+      this.changeDetectorRef.markForCheck()
     };
     this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
@@ -91,7 +101,10 @@ export class TrackingComponent implements OnInit, OnDestroy {
       (user) => this.user = user
     );
     this.globalStore.state$.select('basicCoins').pipe(takeUntil(this.destroySubject$)).subscribe(
-      (coins) => this.allCoins = coins
+      (coins) => {
+        this.allCoins = coins;
+        this.changeDetectorRef.markForCheck();
+      }
     );
 
     this.isLoading = true;
@@ -105,6 +118,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
         },
         complete: () => {
           this.isLoading = false;
+          this.changeDetectorRef.markForCheck();
         },
         error: (err) => {
           this.isLoading = false;
@@ -125,10 +139,12 @@ export class TrackingComponent implements OnInit, OnDestroy {
           if (result) {
             this.view = result;
             this.isLoading = false;
+            this.changeDetectorRef.markForCheck();
           }
         },
         complete: () => {
           this.isLoading = false;
+          this.changeDetectorRef.markForCheck();
         },
         error: (err) => {
           this.isLoading = false;

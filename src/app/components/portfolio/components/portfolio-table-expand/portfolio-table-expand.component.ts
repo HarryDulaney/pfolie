@@ -1,7 +1,7 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, NgIf } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Table } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { OwnedAsset, OwnedAssetView, Portfolio, Transaction } from 'src/app/models/portfolio';
@@ -9,11 +9,20 @@ import * as Const from '../../../../constants';
 import { PortfolioBuilderService } from '../../services/portfolio-builder.service';
 import { PortfolioService } from '../../services/portfolio.service';
 import { TransactionService } from './transaction.service';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ButtonModule } from 'primeng/button';
+import { MatButtonModule } from '@angular/material/button';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { FormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { SharedModule } from 'primeng/api';
 
 @Component({
-  selector: 'app-portfolio-table-expand',
-  templateUrl: './portfolio-table-expand.component.html',
-  styleUrls: ['./portfolio-table-expand.component.scss']
+    selector: 'app-portfolio-table-expand',
+    templateUrl: './portfolio-table-expand.component.html',
+    styleUrls: ['./portfolio-table-expand.component.scss'],
+    standalone: true,
+    imports: [TableModule, SharedModule, DropdownModule, FormsModule, InputNumberModule, NgIf, MatButtonModule, ButtonModule, OverlayPanelModule]
 })
 export class PortfolioTableExpandComponent implements AfterViewInit, OnDestroy {
   @ViewChild('edt') edt: Table;

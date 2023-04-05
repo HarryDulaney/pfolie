@@ -1,3 +1,4 @@
+// @ts-ignore
 declare var process: {
   env: {
     NG_APP_CG_API_KEY: string;

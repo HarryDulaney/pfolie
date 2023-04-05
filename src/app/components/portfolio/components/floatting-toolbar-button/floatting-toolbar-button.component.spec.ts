@@ -8,8 +8,8 @@ describe('FloattingToolbarButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FloattingToolbarButtonComponent ]
-    })
+    imports: [FloattingToolbarButtonComponent]
+})
     .compileComponents();
   });
 

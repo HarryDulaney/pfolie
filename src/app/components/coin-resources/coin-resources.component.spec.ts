@@ -8,8 +8,8 @@ describe('CoinResourcesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CoinResourcesComponent ]
-    })
+    imports: [CoinResourcesComponent]
+})
     .compileComponents();
   });
 

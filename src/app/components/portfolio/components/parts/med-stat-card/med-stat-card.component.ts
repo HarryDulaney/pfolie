@@ -2,11 +2,17 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CoinFullInfo } from 'src/app/models/coin-gecko';
 import { ComponentService } from '../../../services/component.service';
 import { Part } from '../part';
+import { SparklineComponent } from '../../../../charts/sparkline/sparkline.component';
+import { NgIf } from '@angular/common';
+import { SharedModule } from 'primeng/api';
+import { CardModule } from 'primeng/card';
 
 @Component({
-  selector: 'app-med-stat-card',
-  templateUrl: './med-stat-card.component.html',
-  styleUrls: ['./med-stat-card.component.scss']
+    selector: 'app-med-stat-card',
+    templateUrl: './med-stat-card.component.html',
+    styleUrls: ['./med-stat-card.component.scss'],
+    standalone: true,
+    imports: [CardModule, SharedModule, NgIf, SparklineComponent]
 })
 export class MedStatCardComponent implements OnInit, Part {
   componentId: string = 'md-card-componenet';

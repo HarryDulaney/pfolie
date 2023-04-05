@@ -1,11 +1,16 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, Input, Output, EventEmitter, Optional, OnDestroy } from '@angular/core';
 import { ConfigService } from 'src/app/services/config.service';
+import { AsyncPipe } from '@angular/common';
+import { SharedModule } from 'primeng/api';
+import { VirtualScrollerModule } from 'primeng/virtualscroller';
 
 @Component({
-  selector: 'app-search-track',
-  templateUrl: './search-track.component.html',
-  styleUrls: ['./search-track.component.scss']
+    selector: 'app-search-track',
+    templateUrl: './search-track.component.html',
+    styleUrls: ['./search-track.component.scss'],
+    standalone: true,
+    imports: [VirtualScrollerModule, SharedModule, AsyncPipe]
 })
 export class SearchTrackComponent implements OnDestroy {
   @Output() result: EventEmitter<string> = new EventEmitter();

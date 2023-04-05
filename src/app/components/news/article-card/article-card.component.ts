@@ -1,12 +1,14 @@
-import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DatePipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FeedItem, ParsedFeedItem } from 'src/app/models/rssfeed';
 import { ArticleService } from '../article.service';
+import { SharedModule } from 'primeng/api';
+import { CardModule } from 'primeng/card';
 
 @Component({
-  selector: 'article-card',
-  templateUrl: './article-card.component.html',
-  styles: [`
+    selector: 'article-card',
+    templateUrl: './article-card.component.html',
+    styles: [`
   :host ::ng-deep .p-card {
     height:fit-content;
     width:auto;
@@ -38,7 +40,9 @@ import { ArticleService } from '../article.service';
     font-size: 1rem;
 
 }`],
-  providers: [DatePipe]
+    providers: [DatePipe],
+    standalone: true,
+    imports: [CardModule, SharedModule, NgIf, DatePipe]
 })
 export class ArticleCardComponent implements OnInit {
   @Input('rss-item') rssItem: FeedItem;

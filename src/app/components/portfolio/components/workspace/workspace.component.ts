@@ -7,15 +7,18 @@ import { AllocationChartComponent } from '../allocation-chart/allocation-chart.c
 import { PartHostDirective } from '../parts-palette/part-host.directive';
 import { Part } from '../parts/part';
 import { SmStatCardComponent } from '../parts/sm-stat-card/sm-stat-card.component';
+import { CurrencyPipe } from '@angular/common';
 
 /**
  * Parent Component for portfolio custom component workspace
  */
 @Component({
-  selector: 'app-workspace',
-  templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.scss'],
-  providers: [ComponentService],
+    selector: 'app-workspace',
+    templateUrl: './workspace.component.html',
+    styleUrls: ['./workspace.component.scss'],
+    providers: [ComponentService],
+    standalone: true,
+    imports: [AllocationChartComponent, CurrencyPipe]
 })
 export class WorkspaceComponent {
   @ViewChild(PartHostDirective, { static: true }) partHost!: PartHostDirective;

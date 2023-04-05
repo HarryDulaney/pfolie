@@ -8,8 +8,8 @@ describe('PortfolioTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PortfolioTableComponent ]
-    })
+    imports: [PortfolioTableComponent]
+})
     .compileComponents();
   });
 

@@ -6,13 +6,16 @@ import HAccessability from "highcharts/modules/accessibility";
 import { Subject } from 'rxjs';
 import { PieChartService } from './pie-chart.service';
 import { takeUntil } from 'rxjs/operators';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 HBrandDark(Highcharts);
 HAccessability(Highcharts);
 
 @Component({
-  selector: 'app-pie-chart',
-  templateUrl: './pie-chart.component.html'
+    selector: 'app-pie-chart',
+    templateUrl: './pie-chart.component.html',
+    standalone: true,
+    imports: [HighchartsChartModule]
 })
 export class PieChartComponent implements OnInit, OnDestroy {
   @Input('title') title: string;

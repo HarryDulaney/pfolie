@@ -3,11 +3,15 @@ import { ChangeDetectorRef, Component, Input, EventEmitter, Output, OnDestroy } 
 import { BasicCoin } from 'src/app/models/coin-gecko';
 import { ConfigService } from 'src/app/services/config.service';
 import { NavService } from 'src/app/services/nav.service';
+import { SharedModule } from 'primeng/api';
+import { VirtualScrollerModule } from 'primeng/virtualscroller';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss']
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    standalone: true,
+    imports: [VirtualScrollerModule, SharedModule]
 })
 export class SearchComponent implements OnDestroy {
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
 import { Observable } from 'rxjs';
-import { map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { BasicCoin, CoinMarket, CoinTableView, GlobalData, GlobalDataView, Trending, TrendingItem } from 'src/app/models/coin-gecko';
 import { ApiService } from 'src/app/services/api.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -156,7 +156,9 @@ export class DashboardService {
       total_volume_formated: this.utilityService.format(g.data.total_volume.usd, '2dec'),
       total_market_cap_usd_formated: this.utilityService.format(g.data.total_market_cap.usd, '2dec'),
       market_cap_change_percentage_24h_usd_formated: this.utilityService.format(g.data.market_cap_change_percentage_24h_usd, 'pd'),
-      market_cap_percentage: g.data.market_cap_percentage
+      market_cap_percentage: g.data.market_cap_percentage,
+      active_cryptocurrencies: g.data.active_cryptocurrencies,
+      markets: g.data.markets,
     } as GlobalDataView;
   }
 

@@ -1,9 +1,9 @@
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe, NgIf, DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { Table } from 'primeng/table';
+import { MenuItem, SharedModule } from 'primeng/api';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { Table, TableModule } from 'primeng/table';
 import { OwnedAsset, OwnedAssetView, Portfolio, Transaction } from 'src/app/models/portfolio';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NavService } from 'src/app/services/nav.service';
@@ -13,16 +13,23 @@ import { PortfolioBuilderService } from '../../services/portfolio-builder.servic
 import { PortfolioService } from '../../services/portfolio.service';
 import * as Const from '../../../../constants';
 import { TransactionService } from '../portfolio-table-expand/transaction.service';
-import { Dialog } from 'primeng/dialog';
+import { Dialog, DialogModule } from 'primeng/dialog';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { BasicCoin } from 'src/app/models/coin-gecko';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { PortfolioTableExpandComponent } from '../portfolio-table-expand/portfolio-table-expand.component';
+import { DeltaIcon } from '../../../icons/change-icon/delta.component';
+import { MatButtonModule } from '@angular/material/button';
+import { AssetSearchSelect } from '../../../search-select/search-select.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
-  selector: 'app-portfolio-table',
-  templateUrl: './portfolio-table.component.html',
-  styleUrls: ['./portfolio-table.component.scss']
+    selector: 'app-portfolio-table',
+    templateUrl: './portfolio-table.component.html',
+    styleUrls: ['./portfolio-table.component.scss'],
+    standalone: true,
+    imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect, TableModule, SharedModule, MatButtonModule, DeltaIcon, OverlayPanelModule, PortfolioTableExpandComponent, CurrencyPipe, DatePipe]
 })
 export class PortfolioTableComponent implements OnInit, OnDestroy {
   @HostListener('window:resize', ['$event'])

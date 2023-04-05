@@ -6,10 +6,11 @@ import { CONSTANT as Const } from '../../constants'
 import { ScreenService as ScreenService } from 'src/app/services/screen.service';
 
 @Component({
-  selector: 'app-mobile-check',
-  templateUrl: './mobile-check.component.html',
-  styleUrls: ['./mobile-check.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-mobile-check',
+    templateUrl: './mobile-check.component.html',
+    styleUrls: ['./mobile-check.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true
 })
 export class MobileCheckComponent implements AfterViewChecked, AfterViewInit, OnDestroy {
   @HostListener('window:resize', ['$event'])

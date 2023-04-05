@@ -1,16 +1,22 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, SharedModule } from 'primeng/api';
 import { ToolbarEvent } from 'src/app/models/events';
 import { PortfolioService } from '../../services/portfolio.service';
 import * as Const from '../../../../constants';
-import { Inplace } from 'primeng/inplace';
-import { Menubar } from 'primeng/menubar';
+import { Inplace, InplaceModule } from 'primeng/inplace';
+import { Menubar, MenubarModule } from 'primeng/menubar';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { NgIf } from '@angular/common';
 @Component({
-  selector: 'app-toolbar',
-  templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+    selector: 'app-toolbar',
+    templateUrl: './toolbar.component.html',
+    styleUrls: ['./toolbar.component.scss'],
+    standalone: true,
+    imports: [MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
 })
 export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('menuBar') menuBar: Menubar;

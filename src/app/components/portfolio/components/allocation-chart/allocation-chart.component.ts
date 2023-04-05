@@ -6,13 +6,16 @@ import HAccessability from "highcharts/modules/accessibility";
 import { PortfolioService } from '../../services/portfolio.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 HBrandDark(Highcharts);
 HAccessability(Highcharts);
 
 @Component({
-  selector: 'app-allocation-chart',
-  templateUrl: './allocation-chart.component.html'
+    selector: 'app-allocation-chart',
+    templateUrl: './allocation-chart.component.html',
+    standalone: true,
+    imports: [HighchartsChartModule]
 })
 export class AllocationChartComponent implements OnInit, OnDestroy {
   @Input('title') title: string;

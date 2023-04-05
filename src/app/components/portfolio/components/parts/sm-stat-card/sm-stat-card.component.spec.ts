@@ -8,8 +8,8 @@ describe('SmStatCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SmStatCardComponent ]
-    })
+    imports: [SmStatCardComponent]
+})
     .compileComponents();
   });
 

@@ -1,14 +1,14 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { Router } from "@angular/router";
-import { MatSidenav } from '@angular/material/sidenav';
-import { MenuItem, MessageService } from 'primeng/api';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Router, RouterOutlet } from "@angular/router";
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { MenuItem, MessageService, SharedModule } from 'primeng/api';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfigService } from 'src/app/services/config.service';
-import { OverlayPanel } from 'primeng/overlaypanel';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { SessionService } from 'src/app/services/session.service';
 import { LoginComponent } from '../login/login.component';
 import { ToastMessage } from 'src/app/models/toast-message';
-import { Toast } from 'primeng/toast';
+import { Toast, ToastModule } from 'primeng/toast';
 import { ToastService } from 'src/app/services/toast.service';
 import firebase from 'firebase/compat/app';
 import { RegisterComponent } from '../register/register.component';
@@ -21,25 +21,23 @@ import { BasicCoin, GlobalData, GlobalDataView } from 'src/app/models/coin-gecko
 import { ScreenService } from 'src/app/services/screen.service';
 import { CONSTANT as Const, PROJECT_LINKS } from '../../constants'
 import { Observable } from "rxjs"
+import { FooterComponent } from '../footer/footer.component';
+import { DialogModule } from 'primeng/dialog';
+import { MenuModule } from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
+import { PanelMenuModule } from 'primeng/panelmenu';
+import { InputTextModule } from 'primeng/inputtext';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  styles: [`
-  :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 0px;
-  }
-
-  @media screen and (max-width: 64em) {
-      :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-          top: 0px;
-      }
-  }
-`],
-  providers: [MessageService, DashboardService]
-
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    providers: [MessageService, DashboardService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatToolbarModule, MatButtonModule, NgIf, FormsModule, InputTextModule, ReactiveFormsModule, MatSidenavModule, PanelMenuModule, ButtonModule, ToastModule, SharedModule, OverlayPanelModule, SearchComponent, MenuModule, RouterOutlet, DialogModule, LoginComponent, RegisterComponent, FooterComponent, AsyncPipe]
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -61,6 +59,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.accountPanel.overlayVisible) {
         this.accountPanel.hide();
       }
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if (event) {
+      this.cd.markForCheck();
     }
   }
 
@@ -176,7 +181,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(
         coins => {
           this.allCoins = coins;
-          this.cd.detectChanges();
+          this.cd.markForCheck();
         }
 
       );
@@ -202,7 +207,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           if (globalView) {
             this.globalDataView = globalView;
             this.isGlobalDataLoading = false;
-            this.cd.detectChanges();
+            this.cd.markForCheck();
           }
         }
       }

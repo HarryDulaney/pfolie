@@ -1,5 +1,5 @@
-import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NewsService } from '../news/news.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -10,14 +10,23 @@ import { Subject } from 'rxjs';
 import { concatMap, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { ScreenService } from 'src/app/services/screen.service';
-import { LazyLoadEvent } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { LazyLoadEvent, SharedModule } from 'primeng/api';
+import { Table, TableModule } from 'primeng/table';
+import { DeltaIcon } from '../icons/change-icon/delta.component';
+import { SparklineComponent } from '../charts/sparkline/sparkline.component';
+import { CardModule } from 'primeng/card';
+import { NewsCaroselComponent } from '../news/news-carosel/news-carosel.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ScrollTopModule } from 'primeng/scrolltop';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
-  providers: [DashboardService]
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    providers: [DashboardService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ScrollTopModule, ProgressSpinnerModule, NewsCaroselComponent, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, TableModule, DeltaIcon]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
@@ -54,24 +63,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { header: "24h Low", field: 'low_24h' },
     { header: "7 Days", field: 'sparkline' },
   ];
+  rowTrackBy = (index: number, item: CoinTableView) => item.id;
 
 
   constructor(
     public coinDataService: CoinDataService,
     public pieChartService: PieChartService,
-    public newsService: NewsService,
     public sessionService: SessionService,
     private screenService: ScreenService,
     private dashboardService: DashboardService,
     private cd: ChangeDetectorRef,
     private datePipe: DatePipe,
-    private navService: NavService
-  ) {
+    private navService: NavService) {
     this.date = this.datePipe.transform(this.timeInMillis, 'MM-dd-yyyy h:mm a')?.toString();
     this.screenService.screenSource$.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(screenSize => {
       this.screenSize = screenSize;
+      this.cd.markForCheck();
     });
 
   }
@@ -85,7 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (data) {
           this.coinsByMarketCap = data;
           this.isCoinsByMarketCapLoading = false;
-          this.cd.detectChanges();
+          this.cd.markForCheck();
         }
       }
     });
@@ -102,7 +111,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           if (trendingView) {
             this.trendingItems = trendingView;
             this.isTrendingLoading = false;
-            this.cd.detectChanges();
+            this.cd.markForCheck();
           }
         }
       });
@@ -113,7 +122,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         {
           next: (coins) => {
             this.totalRecords = coins.length
-            this.cd.detectChanges();
+            this.cd.markForCheck();
           }
         }
 
@@ -140,7 +149,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (topCoinsData) {
               this.topMarketShareItems = topCoinsData;
               this.isGlobalDataLoading = false;
-              this.cd.detectChanges();
+              this.cd.markForCheck();
             }
           }
         }

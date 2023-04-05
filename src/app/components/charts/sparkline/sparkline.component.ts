@@ -1,9 +1,11 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
+import { NgChartsModule } from 'ng2-charts';
 @Component({
   selector: 'app-sparkline',
   templateUrl: './sparkline.component.html',
-  styleUrls: ['./sparkline.component.scss']
+  imports: [NgChartsModule],
+  standalone: true
 })
 export class SparklineComponent implements AfterViewInit {
   @ViewChild('chartCanvas') chartCanvas: ElementRef;
@@ -13,7 +15,9 @@ export class SparklineComponent implements AfterViewInit {
   @Input('xaxis-labels') xAxisLabels: string[];
   @Input('maxHeight') maxHeight: string;
   @Input('maxWidth') maxWidth: string;
-
+  @Input('height') height: string;
+  @Input('width') width: string;
+  @Input('color') color: string = '#006aff';
 
   ngAfterViewInit(): void {
     this.draw();
@@ -44,7 +48,7 @@ export class SparklineComponent implements AfterViewInit {
         elements: {
           line: {
             backgroundColor: 'transparent',
-            borderColor: '#006aff',
+            borderColor: this.color,
             borderWidth: 2,
             borderJoinStyle: 'round'
           },

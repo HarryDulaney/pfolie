@@ -1,13 +1,14 @@
 import { Component, ComponentRef, Injector, Input, NgModule, NgModuleRef, OnInit, ViewChild } from '@angular/core';
 import { AppComponent } from 'src/app/app.component';
-import { AppModule } from 'src/app/app.module';
+
 import { CustomComponent } from '../custom/custom.component';
 import { FragmentDirective } from './fragment.directive';
 
 @Component({
-  selector: 'part',
-  templateUrl: './portfolio-part.component.html',
-  styleUrls: ['./portfolio-part.component.scss']
+    selector: 'part',
+    templateUrl: './portfolio-part.component.html',
+    styleUrls: ['./portfolio-part.component.scss'],
+    standalone: true
 })
 export class PortfolioPartComponent {
   @ViewChild(FragmentDirective) fragment!: FragmentDirective;
@@ -17,7 +18,6 @@ export class PortfolioPartComponent {
 
   initialized: boolean = false;
   private options: {
-    ngModuleRef: NgModuleRef<AppModule>
   }
 
   draggable = {

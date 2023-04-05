@@ -9,12 +9,22 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { PortfolioService } from '../portfolio/services/portfolio.service';
 import * as Const from '../../constants';
 import { takeUntil } from 'rxjs/operators';
+import { SharedModule } from 'primeng/api';
+import { TableModule } from 'primeng/table';
+import { CardModule } from 'primeng/card';
+import { ChipModule } from 'primeng/chip';
+import { CoinChartComponent } from '../charts/coin-chart/coin-chart.component';
+import { NgClass, NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
-  selector: 'app-coin-resources',
-  templateUrl: './coin-resources.component.html',
-  styleUrls: ['./coin-resources.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated
+    selector: 'app-coin-resources',
+    templateUrl: './coin-resources.component.html',
+    styleUrls: ['./coin-resources.component.scss'],
+    encapsulation: ViewEncapsulation.Emulated,
+    standalone: true,
+    imports: [TooltipModule, MatButtonModule, NgClass, CoinChartComponent, NgIf, NgFor, ChipModule, CardModule, TableModule, SharedModule, AsyncPipe]
 })
 export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
 

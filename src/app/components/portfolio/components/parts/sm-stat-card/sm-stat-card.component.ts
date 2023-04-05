@@ -6,12 +6,16 @@ import { ApiService } from 'src/app/services/api.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { ComponentService } from '../../../services/component.service';
 import { Part } from '../part';
+import { MatButtonModule } from '@angular/material/button';
+import { SelectComponent } from '../../select/select.component';
 
 @Component({
-  selector: 'app-sm-stat-card',
-  templateUrl: './sm-stat-card.component.html',
-  styleUrls: ['./sm-stat-card.component.scss'],
-  providers: [DatePipe]
+    selector: 'app-sm-stat-card',
+    templateUrl: './sm-stat-card.component.html',
+    styleUrls: ['./sm-stat-card.component.scss'],
+    providers: [DatePipe],
+    standalone: true,
+    imports: [SelectComponent, MatButtonModule, DatePipe]
 })
 export class SmStatCardComponent implements OnInit, Part {
   componentId: string = 'sm-card-componenet';
