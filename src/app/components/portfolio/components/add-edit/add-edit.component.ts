@@ -1,18 +1,27 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators, FormBuilder } from '@angular/forms';
-import { OverlayPanel } from 'primeng/overlaypanel';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { switchMap } from 'rxjs/operators';
 import { SearchComponent } from 'src/app/components/search/search.component';
 import { ConfigService } from 'src/app/services/config.service';
 import { PortfolioBuilderService } from '../../services/portfolio-builder.service';
 import { PortfolioService } from '../../services/portfolio.service';
 import { AddEditService } from './add-edit.service';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { SearchComponent as SearchComponent_1 } from '../../../search/search.component';
+import { SharedModule } from 'primeng/api';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-add-edit',
-  templateUrl: './add-edit.component.html',
-  styleUrls: ['./add-edit.component.scss']
+    selector: 'app-add-edit',
+    templateUrl: './add-edit.component.html',
+    styleUrls: ['./add-edit.component.scss'],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, OverlayPanelModule, SharedModule, SearchComponent_1, InputTextModule, InputNumberModule, ButtonModule, RippleModule]
 })
 export class AddEditComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('searchAssets') searchOverlay: OverlayPanel;

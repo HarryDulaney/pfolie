@@ -8,8 +8,8 @@ describe('SparklineComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SparklineComponent ]
-    })
+    imports: [SparklineComponent]
+})
     .compileComponents();
   });
 

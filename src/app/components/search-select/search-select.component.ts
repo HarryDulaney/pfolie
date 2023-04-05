@@ -1,17 +1,21 @@
 import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { EventEmitter, Output } from '@angular/core';
 import { BasicCoin } from 'src/app/models/coin-gecko';
-import { UntypedFormGroup, UntypedFormControl, UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { VirtualScroller } from 'primeng/virtualscroller';
+import { VirtualScroller, VirtualScrollerModule } from 'primeng/virtualscroller';
 import { ScrollerOptions } from 'primeng/scroller';
+import { SharedModule } from 'primeng/api';
+import { InputTextModule } from 'primeng/inputtext';
 
 
 @Component({
-  selector: 'app-search-select',
-  templateUrl: './search-select.component.html',
-  styleUrls: ['./search-select.component.scss']
+    selector: 'app-search-select',
+    templateUrl: './search-select.component.html',
+    styleUrls: ['./search-select.component.scss'],
+    standalone: true,
+    imports: [FormsModule, InputTextModule, ReactiveFormsModule, VirtualScrollerModule, SharedModule]
 })
 export class AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('vs') virtualScroller!: VirtualScroller;

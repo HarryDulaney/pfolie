@@ -5,10 +5,17 @@ import { FEED_SOURCES } from '../../constants';
 import { ArticleService } from './article.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { ArticleCardComponent } from './article-card/article-card.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ChipModule } from 'primeng/chip';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { SharedModule } from 'primeng/api';
 @Component({
-  selector: 'app-news',
-  templateUrl: './news.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-news',
+    templateUrl: './news.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [SharedModule, NgFor, ChipModule, NgIf, ProgressSpinnerModule, ArticleCardComponent, AsyncPipe]
 })
 export class NewsComponent implements OnInit, OnDestroy {
 

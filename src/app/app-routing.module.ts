@@ -1,5 +1,5 @@
-import { inject, InjectionToken, NgModule, ProviderToken } from '@angular/core';
-import { CanActivateChildFn, CanActivateFn, RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { CoinResourcesComponent } from './components/coin-resources/coin-resources.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';

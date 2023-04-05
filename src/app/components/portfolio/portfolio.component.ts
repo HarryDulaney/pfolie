@@ -1,4 +1,4 @@
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe, NgIf, AsyncPipe } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
@@ -18,12 +18,15 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { WorkspaceComponent } from './components/workspace/workspace.component';
 import { PortfolioBuilderService } from './services/portfolio-builder.service';
 import { PortfolioService } from './services/portfolio.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
-  selector: 'app-portfolio',
-  templateUrl: './portfolio.component.html',
-  styleUrls: ['./portfolio.component.scss'],
-  providers: [DatePipe, CurrencyPipe, DecimalPipe]
+    selector: 'app-portfolio',
+    templateUrl: './portfolio.component.html',
+    styleUrls: ['./portfolio.component.scss'],
+    providers: [DatePipe, CurrencyPipe, DecimalPipe],
+    standalone: true,
+    imports: [ToolbarComponent, NgIf, ProgressSpinnerModule, WorkspaceComponent, PortfolioTableComponent, AsyncPipe]
 })
 export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('toolbar') toolbar: ToolbarComponent;

@@ -33,15 +33,24 @@
         <!-- Top Global by market share -->
         <div class="card m-1 p-1 w-100 border-0 border-transparent">
             <div class="flex flex-wrap justify-content-evenly gap-3">
-                <div
-                    *ngFor="let g of topMarketShareItems; index as i; count as c;"
-                >
+                <div *ngFor="let g of topMarketShareItems; index as i; count as c;">
                     <p-card
                         (click)="onCardClicked(g)"
-                        [style]="{'max-width':'90vw','height':'280px','width':'360px','cursor':'pointer','overflow': 'hidden'}"
+                        [style]="{'max-width':'90vw','height':'200px','width':'300px','cursor':'pointer','overflow': 'hidden'}"
                         class="border-round m-2"
                     >
                         <ng-template pTemplate="header">
+                            <app-sparkline
+                                [style]="{'position':'absolute','opacity':'0.3'}"
+                                [maxWidth]="'100%'"
+                                [maxHeight]="'100%'"
+                                [width]="'300px'"
+                                [height]="'200px'"
+                                [color]="'#006aff'"
+                                [chart-data]="g.sparkline"
+                                [xaxis-labels]="coinDataService.getSparklineLabels()"
+                            >
+                            </app-sparkline>
                             <div
                                 *ngIf="g.price_change_24h >= 0"
                                 class="increased text-xl float-end p-2"
@@ -71,17 +80,10 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="body">
+
                         </ng-template>
                         <ng-template pTemplate="footer">
-                            <div class="center">
-                                <app-sparkline
-                                    [maxWidth]="'100%'"
-                                    [maxHeight]="'6rem'"
-                                    [chart-data]="g.sparkline"
-                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
-                                >
-                                </app-sparkline>
-                            </div>
+
                         </ng-template>
                     </p-card>
                 </div>
@@ -94,9 +96,21 @@
                     <p-card
                         (click)="onCardClicked(t)"
                         class="border-round m-2"
-                        [style]="{'max-width':'90vw','height':'280px','width':'360px','cursor':'pointer','overflow': 'hidden'}"
+                        [style]="{'max-width':'90vw','height':'200px','width':'300px','cursor':'pointer','overflow': 'hidden'}"
                     >
+
                         <ng-template pTemplate="header">
+                            <app-sparkline
+                                [style]="{'position':'absolute','opacity':'0.3'}"
+                                [maxWidth]="'100%'"
+                                [maxHeight]="'100%'"
+                                [width]="'300px'"
+                                [height]="'200px'"
+                                [color]="'#006aff'"
+                                [chart-data]="t.sparkline"
+                                [xaxis-labels]="coinDataService.getSparklineLabels()"
+                            >
+                            </app-sparkline>
                             <div
                                 *ngIf="t.price_change_24h >= 0"
                                 class="increased text-xl float-end p-2"
@@ -126,17 +140,10 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="body">
+
                         </ng-template>
                         <ng-template pTemplate="footer">
-                            <div class="center">
-                                <app-sparkline
-                                    [maxWidth]="'100%'"
-                                    [maxHeight]="'6rem'"
-                                    [chart-data]="t.sparkline"
-                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
-                                >
-                                </app-sparkline>
-                            </div>
+
                         </ng-template>
                     </p-card>
                 </div>

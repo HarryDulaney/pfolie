@@ -1,7 +1,8 @@
 import { Directive, Renderer2, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  selector: '[fragment]'
+    selector: '[fragment]',
+    standalone: true
 })
 export class FragmentDirective {
 

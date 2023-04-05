@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NewsService } from '../news/news.service';
@@ -10,15 +10,23 @@ import { Subject } from 'rxjs';
 import { concatMap, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { ScreenService } from 'src/app/services/screen.service';
-import { LazyLoadEvent } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { LazyLoadEvent, SharedModule } from 'primeng/api';
+import { Table, TableModule } from 'primeng/table';
+import { DeltaIcon } from '../icons/change-icon/delta.component';
+import { SparklineComponent } from '../charts/sparkline/sparkline.component';
+import { CardModule } from 'primeng/card';
+import { NewsCaroselComponent } from '../news/news-carosel/news-carosel.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ScrollTopModule } from 'primeng/scrolltop';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
-  providers: [DashboardService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    providers: [DashboardService],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ScrollTopModule, ProgressSpinnerModule, NewsCaroselComponent, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, TableModule, DeltaIcon]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;

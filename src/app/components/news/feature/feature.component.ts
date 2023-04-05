@@ -4,12 +4,17 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ArticleService } from '../article.service';
+import { ChipModule } from 'primeng/chip';
+import { NgFor, DatePipe } from '@angular/common';
+import { SharedModule } from 'primeng/api';
 
 
 @Component({
-  selector: 'app-feature',
-  templateUrl: './feature.component.html',
-  encapsulation: ViewEncapsulation.None
+    selector: 'app-feature',
+    templateUrl: './feature.component.html',
+    encapsulation: ViewEncapsulation.None,
+    standalone: true,
+    imports: [SharedModule, NgFor, ChipModule, DatePipe]
 })
 export class FeatureComponent implements OnInit, OnDestroy {
 

@@ -17,15 +17,6 @@ mat-toolbar {
   }
 }
 
-:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-  position: -webkit-sticky !important;
-  position: sticky !important;
-  color: #ffffff;
-  font-size: medium;
-  top: 50px;
-  font-weight: bold;
-  text-overflow: ellipsis;
-}
 
 .fa .fa-user-circle {
   font-size: 2rem;

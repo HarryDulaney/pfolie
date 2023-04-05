@@ -3,6 +3,10 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { FloatingButtonService } from './floating-button.service';
 import * as Constants from '../../../../constants';
+import { AsyncPipe } from '@angular/common';
+import { TooltipModule } from 'primeng/tooltip';
+import { RippleModule } from 'primeng/ripple';
+import { MatButtonModule } from '@angular/material/button';
 
 
 /**
@@ -25,9 +29,11 @@ import * as Constants from '../../../../constants';
  * }
  */
 @Component({
-  selector: 'app-float-toolbar-button',
-  templateUrl: './floatting-toolbar-button.component.html',
-  styleUrls: ['./floatting-toolbar-button.component.scss']
+    selector: 'app-float-toolbar-button',
+    templateUrl: './floatting-toolbar-button.component.html',
+    styleUrls: ['./floatting-toolbar-button.component.scss'],
+    standalone: true,
+    imports: [MatButtonModule, RippleModule, TooltipModule, AsyncPipe]
 })
 export class FloattingToolbarButtonComponent implements OnInit {
   hidden: Observable<boolean>;

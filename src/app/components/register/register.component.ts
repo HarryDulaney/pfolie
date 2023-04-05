@@ -1,11 +1,17 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, NgModel, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, NgModel, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SessionService } from 'src/app/services/session.service';
+import { RippleModule } from 'primeng/ripple';
+import { ButtonModule } from 'primeng/button';
+import { NgIf } from '@angular/common';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+    selector: 'app-register',
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, InputTextModule, NgIf, ButtonModule, RippleModule]
 })
 export class RegisterComponent implements OnInit {
 

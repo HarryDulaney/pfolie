@@ -39,15 +39,7 @@ tr td {
     transform: scale(1.05);
 }
 
-:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-    position: -webkit-sticky;
-    z-index: 999999999 !important;
-    position: sticky !important;
-    top: 50px;
-}
 
-@media screen and (max-width: 64em) {
-    :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-        top: 0px;
-    }
+:host ::ng-deep .p-card:hover {
+    transform: scale(1.05);
 }

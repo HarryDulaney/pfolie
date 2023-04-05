@@ -13,6 +13,7 @@ import { ChartService } from "../chart.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CHART_TYPE } from "src/app/constants";
+import { HighchartsChartModule } from "highcharts-angular";
 
 HIndicatorsAll(Highcharts);
 HDragPanes(Highcharts);
@@ -23,13 +24,15 @@ HBrandDark(Highcharts);
 HAccessability(Highcharts);
 
 @Component({
-  selector: 'app-coin-chart',
-  templateUrl: './coin-chart.component.html',
-  styles: [`#container {
+    selector: 'app-coin-chart',
+    templateUrl: './coin-chart.component.html',
+    styles: [`#container {
     max-height: 900px;
     height: 75vh;
 }
-`]
+`],
+    standalone: true,
+    imports: [HighchartsChartModule]
 })
 export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   /** price | marketcap | volume | ohlc */
