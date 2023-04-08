@@ -1,5 +1,5 @@
 import { DatePipe, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostListener, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NewsService } from '../news/news.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -20,16 +20,24 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollTopModule } from 'primeng/scrolltop';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
-    providers: [DashboardService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [ScrollTopModule, ProgressSpinnerModule, NewsCaroselComponent, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, TableModule, DeltaIcon]
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
+  providers: [DashboardService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ScrollTopModule, ProgressSpinnerModule, NewsCaroselComponent, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, TableModule, DeltaIcon]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+
+  @HostListener('window:click', ['$event'])
+  onDocumentClick(event) {
+    this.dashboardService.dashboardClicked.emit(true);
+  }
+
+
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
+
 
   screenSize: string;
   destroySubject$ = new Subject();

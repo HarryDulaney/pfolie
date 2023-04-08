@@ -1,7 +1,7 @@
-@import "~primeng/resources/themes/lara-dark-blue/theme.css";
 @import "~primeng/resources/primeng.min.css";
 @import "~@angular/material/prebuilt-themes/purple-green.css";
-@import "~font-awesome/css/font-awesome.css";
+@import "~@fortawesome/fontawesome-free/css/all.css";
+@import "~@fortawesome/fontawesome-free/css/fontawesome.css";
 @import "~bootstrap/dist/css/bootstrap.css";
 
 html,
@@ -13,6 +13,14 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+:host ::ng-deep .p-sidebar .p-sidebar-content {
+  background: var(--surface-b) !important;
+  min-height: 100% !important;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 
 /* ========================== Custom Scrollbar Styling ============================ */
 /* width */
@@ -51,48 +59,48 @@ body {
 }
 
 .header-text-md {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: medium;
   font-weight: bold;
 }
 
 .cell-class-md {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: medium;
   font-weight: bold;
 }
 
 .caption-label-md {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: medium;
   font-weight: bold;
 }
 
 .header-text {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: small;
   font-weight: bold;
 }
 
 .header-text-expand {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: small;
 }
 
 .cell-class {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: small;
   font-weight: bold;
 }
 
 .caption-label {
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
 .header-box-special {
   height: 2rem;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.9rem;
 }
 
@@ -104,7 +112,7 @@ body {
 
 .header-box-special-trans {
   height: 2rem;
-  color: #ffffff;
+  color: var(--text-primary);
   font-size: 0.9rem;
   background-color: var(--surface-b);
 }
@@ -151,12 +159,12 @@ body {
 }
 
 .mdc-button {
-  color: #fafafa !important;
+  color: var(--text-primary);
   background-color: transparent !important;
 }
 
 .mdc-button :hover {
-  color: #fafafa !important;
+  color: var(--text-primary);
   background-color: inherit !important;
 }
 
@@ -165,11 +173,11 @@ body {
 }
 
 a {
-  color: #fff !important;
+  color: var(--text-primary);
 }
 
 a :hover {
-  color: #fff !important;
+  color: var(--text-primary);
 }
 
 p-header {
@@ -178,12 +186,18 @@ p-header {
 }
 
 .nav-title {
-  font-size: small !important;
+  font-size: medium !important;
+  font-weight: bold !important;
+}
+
+.nav-title-exaggerate {
+  font-size: x-large !important;
   font-weight: bold !important;
 }
 
 .mat-drawer {
   background-color: var(--surface-ground);
+  border: none;
 }
 
 .mat-drawer-content {
@@ -235,23 +249,6 @@ p-header {
   color: #ff1100 !important;
 }
 
-/* @keyframes p-progress-spinner-color {
-  100%,
-  0% {
-    stroke: #d62d20;
-  }
-  40% {
-    stroke: var(--primary-color);
-  }
-  66% {
-    stroke: #008744;
-  }
-  80%,
-  90% {
-    stroke: #ffa700;
-  }
-} */
-
 .p-paginator {
   background: transparent !important;
 }
@@ -271,7 +268,7 @@ p-table .custom-spinner {
 }
 
 .caption-label-special {
-  color: #e3e3e3;
+  color: var(--text-primary);
   font-size: medium;
   font-weight: bold;
 }
@@ -332,3 +329,4 @@ p-table .custom-spinner {
   background-color: transparent !important;
   background: transparent !important;
 }
+

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from "@angular/router";
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MenuItem, MessageService, SharedModule } from 'primeng/api';
@@ -14,7 +14,7 @@ import firebase from 'firebase/compat/app';
 import { RegisterComponent } from '../register/register.component';
 import { SearchComponent } from '../search/search.component';
 import { NavService } from 'src/app/services/nav.service';
-import { concatMap, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { concatMap, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Subject, timer } from 'rxjs';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { BasicCoin, GlobalData, GlobalDataView } from 'src/app/models/coin-gecko';
@@ -30,17 +30,24 @@ import { InputTextModule } from 'primeng/inputtext';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { Sidebar, SidebarModule } from 'primeng/sidebar';
+import { SettingsComponent } from "../settings/settings.component";
+import { UserPreferences } from 'src/app/models/appconfig';
+import { ThemeService } from 'src/app/services/theme.service';
+
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    providers: [MessageService, DashboardService],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatToolbarModule, MatButtonModule, NgIf, FormsModule, InputTextModule, ReactiveFormsModule, MatSidenavModule, PanelMenuModule, ButtonModule, ToastModule, SharedModule, OverlayPanelModule, SearchComponent, MenuModule, RouterOutlet, DialogModule, LoginComponent, RegisterComponent, FooterComponent, AsyncPipe]
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  providers: [MessageService, DashboardService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatToolbarModule, MatButtonModule, NgIf, FormsModule, InputTextModule,
+    ReactiveFormsModule, MatSidenavModule, PanelMenuModule, SidebarModule, ButtonModule,
+    ToastModule, SharedModule, OverlayPanelModule, SearchComponent, MenuModule, RouterOutlet,
+    DialogModule, LoginComponent, RegisterComponent, FooterComponent, AsyncPipe, SettingsComponent]
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
-
   @ViewChild('snav') snav: MatSidenav;
   @ViewChild('searchPanel') searchPanel: OverlayPanel;
   @ViewChild('accountPanel') accountPanel: OverlayPanel;
@@ -49,6 +56,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('login') loginComp: LoginComponent;
   @ViewChild('appSearch') searchComponent: SearchComponent;
   @ViewChild('searchInputWrapper') searchInputTarget: ElementRef;
+  @ViewChild('settings') settings: SettingsComponent;
 
   @HostListener('window:scroll', ['$event'])
   onScroll(event) {
@@ -58,6 +66,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       if (this.accountPanel.overlayVisible) {
         this.accountPanel.hide();
+      }
+
+      if (this.isSearchActive) {
+        this.isSearchActive = false;
       }
     }
   }
@@ -69,8 +81,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  theme: string;
   screenSize: string;
   navOpened: boolean;
+  settingsVisible: boolean;
+  isSearchActive: boolean;
 
   searchField: UntypedFormControl = new UntypedFormControl('');
   searchForm: UntypedFormGroup;
@@ -78,8 +93,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private user: firebase.User = null;
   private readonly issuesLink = PROJECT_LINKS.ISSUES;
   private readonly aboutPageLink = PROJECT_LINKS.ABOUT;
-  title = 'Pfolie';
-  navbarTitle: string = this.title;
+  navbarTitleStart: 'P';
+  navbarTitleEnd: string = 'folie';
   isLoading: boolean;
   verified: boolean;
   searchActive: boolean;
@@ -95,7 +110,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   imagePreviewSrc: string = '../assets/img/image_filler_icon_blank.jpg';
   googleIconSrc = '../../../assets/img/google-icon-org.svg';
-
+  userPreferences: UserPreferences = {} as UserPreferences;
   allCoins: BasicCoin[] = [];
 
   constructor(
@@ -105,11 +120,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     public configService: ConfigService,
     private screenService: ScreenService,
     private toastService: ToastService,
+    private themeService: ThemeService,
     private cd: ChangeDetectorRef,
     fb: UntypedFormBuilder,
     private dashboardService: DashboardService,
     private messageService: MessageService) {
-
     this.searchForm = fb.group({
       searchField: this.searchField
     });
@@ -130,6 +145,15 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngAfterViewInit(): void {
+    this.dashboardService.dashboardClicked.pipe(
+      tap(
+        (clicked) => {
+          if (clicked && this.isSearchActive) {
+            this.isSearchActive = false;
+          }
+        }
+      )
+    );
     this.searchForm.get('searchField').valueChanges.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(word => {
@@ -161,6 +185,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngOnInit() {
+    this.userPreferences = this.configService.getPreferences();
+
     this.sessionService.getAuth()
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(
@@ -241,6 +267,22 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     return 'side';
   }
 
+  toggleSettings(event) {
+    if (this.settingsVisible) {
+      this.settingsVisible = false;
+    } else {
+      this.settingsVisible = true;
+    }
+  }
+
+
+  toggleSearch(event) {
+    if (this.isSearchActive) {
+      this.isSearchActive = false;
+    } else {
+      this.isSearchActive = true;
+    }
+  }
 
   ngOnDestroy(): void {
     this.destroySubject$.next(true);
@@ -255,26 +297,25 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signedInNavItems = [
       {
         label: 'Account',
-        icon: 'fa fa-user-circle',
+        icon: 'fa-solid fa-user-circle',
         items: [
-          /*      {
-                 label: 'Settings (Coming Soon)',
-                 icon: 'fa fa-gear',
-                 disabled: true,
-                 command: (event) => {
-                   // Open settings
-                 }
-               }, */
+          {
+            label: 'Settings',
+            icon: 'fa-solid fa-gear',
+            command: (event) => {
+              this.toggleSettings(event);
+            }
+          },
           {
             label: 'Sign Out',
-            icon: 'fa fa-sign-out',
+            icon: 'fa-solid fa-sign-out',
             command: (event) => {
               this.handleSignOut();
             }
           },
           {
             label: 'Privacy Policy',
-            icon: 'fa fa-lock',
+            icon: 'fa-solid fa-lock',
             command: (event) => {
               this.privacyPolicy();
             }
@@ -283,14 +324,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'Home',
-        icon: 'fa fa-home',
+        icon: 'fa-solid fa-home',
         command: (event) => {
           this.home();
         }
       },
       {
         label: 'News Aggregator',
-        icon: 'fa fa-newspaper-o',
+        icon: 'fa-solid fa-newspaper',
         command: (event) => {
           this.allNews();
         }
@@ -298,11 +339,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         label: 'Portfolio',
         expanded: true,
-        icon: 'fa fa-bar-chart',
+        icon: 'fa-solid fa-bar-chart',
         items: [
           {
             label: 'Portfolio Manager',
-            icon: 'fa fa-bar-chart',
+            icon: 'fa-solid fa-bar-chart',
             disabled: false,
             command: (event) => {
               this.portfolio();
@@ -310,7 +351,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           {
             label: 'Watchlist',
-            icon: 'fa fa-eye',
+            icon: 'fa-solid fa-eye',
             disabled: false,
             command: (event) => {
               this.openTrackedAssets();
@@ -341,31 +382,31 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signedOutNavItems = [
       {
         label: 'Home',
-        icon: 'fa fa-home',
+        icon: 'fa-solid fa-home',
         command: (event) => {
           this.home();
         }
       },
       {
         label: 'Account',
-        icon: 'fa fa-user-circle',
+        icon: 'fa-solid fa-user-circle',
         items: [{
           label: 'Sign In',
-          icon: 'fa fa-user-o',
+          icon: 'fa-solid fa-user',
           command: (event) => {
             this.openLoginWindow();
           }
         },
         {
           label: 'Register',
-          icon: 'fa fa-user-plus',
+          icon: 'fa-solid fa-user-plus',
           command: (event) => {
             this.register();
           }
         },
         {
           label: 'Privacy Policy',
-          icon: 'fa fa-lock',
+          icon: 'fa-solid fa-lock',
           command: (event) => {
             this.privacyPolicy();
           }
@@ -373,7 +414,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'News Aggregator',
-        icon: 'fa fa-newspaper-o',
+        icon: 'fa-solid fa-newspaper',
         command: (event) => {
           this.allNews();
         }
@@ -381,11 +422,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         label: 'Portfolio',
         expanded: true,
-        icon: 'fa fa-bar-chart',
+        icon: 'fa-solid fa-bar-chart',
         items: [
           {
             label: 'Portfolio Manager',
-            icon: 'fa fa-bar-chart',
+            icon: 'fa-solid fa-bar-chart',
             disabled: false,
             command: (event) => {
               this.portfolio();
@@ -393,7 +434,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           {
             label: 'Watchlist',
-            icon: 'fa fa-eye',
+            icon: 'fa-solid fa-eye',
             disabled: false,
             command: (event) => {
               this.openTrackedAssets();
@@ -412,7 +453,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           {
             label: 'Report A Bug',
-            icon: 'fa fa-bug',
+            icon: 'fa-solid fa-bug',
             url: this.issuesLink
           }
         ]
@@ -422,7 +463,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signedOutAccountMenuItems = [
       {
         label: 'Home',
-        icon: 'fa fa-home',
+        icon: 'fa-solid fa-home',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.router.navigate(['/', 'home']);
@@ -431,7 +472,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'Sign In',
-        icon: 'fa fa-user-o',
+        icon: 'fa-solid fa-user',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.sessionService.toggleLoginModal();
@@ -440,7 +481,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'Register',
-        icon: 'fa fa-user-plus',
+        icon: 'fa-solid fa-user-plus',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.sessionService.toggleRegistrationModal();
@@ -452,7 +493,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.accountMenuItems = [
       {
         label: 'Home',
-        icon: 'fa fa-home',
+        icon: 'fa-solid fa-home',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.router.navigate(['/', 'home']);
@@ -461,7 +502,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'Portfolio Manager',
-        icon: 'fa fa-bar-chart',
+        icon: 'fa-solid fa-bar-chart',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.router.navigate(['/', 'portfolio']);
@@ -470,7 +511,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'Watchlist',
-        icon: 'fa fa-clock-o',
+        icon: 'fa-solid fa-eye',
         disabled: false,
         command: (event) => {
           this.handleAccountMenuState().then(() => {
@@ -480,7 +521,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'Sign Out',
-        icon: 'fa fa-signout',
+        icon: 'fa-solid fa-sign-out-alt',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.sessionService.signOutUser();
@@ -517,6 +558,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
   }
+
 
   portfolio() {
     this.handleNavDrawerState().then(() => {
@@ -607,6 +649,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       resolve('Already Hidden');
     });
 
+  }
+
+  settingsChanged(userPreferences: UserPreferences) {
+    this.themeService.setTheme(userPreferences.theme);
+    this.userPreferences = userPreferences;
+    this.configService.setPreferences(this.userPreferences);
   }
 
   createAccount(event) {

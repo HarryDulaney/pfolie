@@ -6,17 +6,20 @@ import { SharedModule } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 
 @Component({
-    selector: 'article-card',
-    templateUrl: './article-card.component.html',
-    styles: [`
+  selector: 'article-card',
+  templateUrl: './article-card.component.html',
+  styles: [`
   :host ::ng-deep .p-card {
-    height:fit-content;
-    width:auto;
+    height: 10rem !important;
     transition: transform .2s;
     text-decoration: none;
   }
   :host ::ng-deep .p-card:hover {
     transform: scale(1.05);
+  }
+  :host ::ng-deep .p-card .p-card-content{
+    padding: 0.1rem;
+    textwrap: ellipsis !important;
   }
   a {
     text-decoration: none;
@@ -38,15 +41,17 @@ import { CardModule } from 'primeng/card';
 
 ::ng-deep .p-card .p-card-title {
     font-size: 1rem;
+    textwrap: ellipsis !important;
 
 }`],
-    providers: [DatePipe],
-    standalone: true,
-    imports: [CardModule, SharedModule, NgIf, DatePipe]
+  providers: [DatePipe],
+  standalone: true,
+  imports: [CardModule, SharedModule, NgIf, DatePipe]
 })
 export class ArticleCardComponent implements OnInit {
   @Input('rss-item') rssItem: FeedItem;
   @Input('isCarousel') isCarousel: boolean = false;
+  @Input() showImagePreview: boolean = false;
   @Output() open: EventEmitter<ParsedFeedItem> = new EventEmitter();
 
   feedContent: ParsedFeedItem;

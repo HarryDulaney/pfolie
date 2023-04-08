@@ -28,23 +28,6 @@
     display: none !important;
 }
 
-:host ::ng-deep .p-sidebar-mask {
-    display: none !important;
-}
-:host ::ng-deep .p-sidebar-right {
-    top: 7rem !important;
-}
-
-:host ::ng-deep .p-sidebar .p-sidebar-content {
-    background: var(--surface-b) !important;
-    min-height: 100% !important;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
-:host ::ng-deep .p-sidebar .p-sidebar-header {
-    display: none;
-}
 
 :host ::ng-deep .card {
     background: transparent !important;

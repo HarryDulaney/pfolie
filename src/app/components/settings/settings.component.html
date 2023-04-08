@@ -1,0 +1,79 @@
+<p-sidebar
+    #settingsSidebar
+    [style]="{'max-width': '300px'}"
+    [(visible)]="visible"
+    [dismissible]="true"
+    [closeOnEscape]="true"
+    [showCloseIcon]="true"
+    [baseZIndex]="99999999"
+    [modal]="false"
+    position="right"
+>
+    <ng-template pTemplate="header">
+        <h1>Settings</h1>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <div class="p-2">
+            <section class="mb-5">
+                <h3>Theme</h3>
+                <div class="flex gap-5">
+                    <div class="flex align-items-center gap-2">
+                        <p-radioButton
+                            #laraBlueDark
+                            name="theme"
+                            value="lara-dark-blue"
+                            inputId="laraBlueDark"
+                            class="p-element"
+                            [(ngModel)]="selectedTheme"
+                            (click)="changeTheme(laraBlueDark.value)"
+                            (onKeyDown)="changeTheme(laraBlueDark.value)"
+                        >
+                        </p-radioButton><label for="laraBlueDark">Dark Blue</label>
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                        <p-radioButton
+                            #darkIndigo
+                            name="theme"
+                            value="dark-indigo"
+                            inputId="darkIndigo"
+                            class="p-element"
+                            [(ngModel)]="selectedTheme"
+                            (click)="changeTheme(darkIndigo.value)"
+                            (onKeyDown)="changeTheme(darkIndigo.value)"
+                        >
+                        </p-radioButton><label for="laraBlueDark">Dark Indigo</label>
+                    </div>
+
+                    <!--         <div class="flex align-items-center gap-2">
+                        <p-radioButton
+                            #lightIndigo
+                            name="theme"
+                            value="light-indigo"
+                            inputId="lightIndigo"
+                            class="p-element"
+                            [(ngModel)]="selectedTheme"
+                            (click)="changeTheme(lightIndigo.value)"
+                            (onKeyDown)="changeTheme(lightIndigo.value)"
+                        >
+                        </p-radioButton><label for="laraBlueLight">Light Indigo</label>
+                        <div class="flex align-items-center gap-2">
+                            <p-radioButton
+                                #laraBlueLight
+                                name="theme"
+                                value="lara-light-blue"
+                                inputId="laraBlueLight"
+                                class="p-element"
+                                [(ngModel)]="selectedTheme"
+                                (click)="changeTheme(laraBlueLight.value)"
+                                (onKeyDown)="changeTheme(laraBlueLight.value)"
+                            >
+                            </p-radioButton><label for="laraBlueLight">Light Blue</label>
+                        </div>
+          
+                    </div> -->
+                </div>
+            </section>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer"></ng-template>
+</p-sidebar>

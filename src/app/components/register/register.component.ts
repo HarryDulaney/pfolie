@@ -9,7 +9,6 @@ import { InputTextModule } from 'primeng/inputtext';
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
-    styleUrls: ['./register.component.scss'],
     standalone: true,
     imports: [FormsModule, ReactiveFormsModule, InputTextModule, NgIf, ButtonModule, RippleModule]
 })
