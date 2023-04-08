@@ -17,7 +17,7 @@ import { InputTextModule } from 'primeng/inputtext';
     standalone: true,
     imports: [FormsModule, InputTextModule, ReactiveFormsModule, VirtualScrollerModule, SharedModule]
 })
-export class AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
+export class  AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('vs') virtualScroller!: VirtualScroller;
   @Input() maxWidth: string;
   @Input() scrollHeight: string;

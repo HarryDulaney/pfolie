@@ -5,6 +5,13 @@
     min-height: 81vh !important;
 }
 
+.empty-table-message {
+    white-space: nowrap !important;
+    font-size: large !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
 .table-options-panel {
     background: #000000 !important;
 }
@@ -16,8 +23,6 @@
 :host ::ng-deep .p-overlaypanel-content {
     background: #000000 !important;
 }
-
-
 
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
     white-space: nowrap !important;

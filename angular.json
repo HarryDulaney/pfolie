@@ -31,7 +31,26 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/primeng/resources/themes/lara-dark-blue/theme.css",
+              {
+                "input": "src/theme-lara-dark-blue.scss",
+                "inject": false,
+                "bundleName": "lara-dark-blue"
+              },
+              {
+                "input": "src/theme-lara-light-blue.scss",
+                "inject": false,
+                "bundleName": "lara-light-blue"
+              },
+              {
+                "input": "src/theme-dark-indigo.scss",
+                "inject": false,
+                "bundleName": "dark-indigo"
+              },
+              {
+                "input": "src/theme-light-indigo.scss",
+                "inject": false,
+                "bundleName": "light-indigo"
+              },
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeflex/primeflex.css",
               "node_modules/primeicons/primeicons.css"
@@ -106,7 +125,26 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/primeng/resources/themes/lara-dark-blue/theme.css",
+              {
+                "input": "src/theme-lara-dark-blue.scss",
+                "inject": false,
+                "bundleName": "lara-dark-blue"
+              },
+              {
+                "input": "src/theme-lara-light-blue.scss",
+                "inject": false,
+                "bundleName": "lara-light-blue"
+              },
+              {
+                "input": "src/theme-dark-indigo.scss",
+                "inject": false,
+                "bundleName": "dark-indigo"
+              },
+              {
+                "input": "src/theme-light-indigo.scss",
+                "inject": false,
+                "bundleName": "light-indigo"
+              },
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeflex/primeflex.css",
               "node_modules/primeicons/primeicons.css"

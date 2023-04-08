@@ -1,7 +1,8 @@
 mat-toolbar {
   position: fixed;
-  position: -webkit-sticky;
   background-color: var(--surface-ground);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   left: 0;
   right: 0;
   top: 0;
@@ -10,13 +11,24 @@ mat-toolbar {
   z-index: 1000;
 }
 
-
-@media screen and (max-width: 64em) {
-  :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-      top: 0px;
-  }
+.main-toolbar {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
+:host ::ng-deep .p-sidebar {
+  margin-top: 41px !important;
+  padding-top: 1rem !important;
+  padding-bottom: 41px !important;
+}
+
+.toolbar-nav-itmes {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 100% !important;
+  padding: 0 1rem;
+}
 
 .fa .fa-user-circle {
   font-size: 2rem;
@@ -48,6 +60,21 @@ mat-toolbar {
   width: 100% !important;
   border-radius: 50px !important;
   vertical-align: middle !important;
+}
+
+.toolbar-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  font-size: 2.2rem !important;
+  padding: 0.4rem !important;
+  height: 100% !important;
+  width: 100% !important;
+  border-radius: 50px !important;
+  vertical-align: middle !important;
+  float: inline-start !important;
 }
 
 :host ::ng-deep .p-dialog-content {
@@ -204,4 +231,3 @@ p {
   width: 2.1rem;
   height: 2.1rem;
 }
-

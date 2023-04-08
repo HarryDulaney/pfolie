@@ -10,13 +10,13 @@ import { NewsService } from '../news.service';
 import { ArticleCardComponent } from '../article-card/article-card.component';
 import { SharedModule } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
+import { SkeletonModule } from 'primeng/skeleton';
 @Component({
     selector: 'app-news-carosel',
     templateUrl: './news-carosel.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    imports: [ProgressSpinnerModule, CarouselModule, SharedModule, ArticleCardComponent]
+    imports: [ProgressSpinnerModule, CarouselModule, SkeletonModule, SharedModule, ArticleCardComponent]
 })
 export class NewsCaroselComponent implements OnInit, OnDestroy {
   @ViewChild(Carousel) carousel!: Carousel;

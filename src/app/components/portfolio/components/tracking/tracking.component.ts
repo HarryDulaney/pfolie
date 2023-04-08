@@ -13,14 +13,13 @@ import { PortfolioService } from '../../services/portfolio.service';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { Dialog, DialogModule } from 'primeng/dialog';
-import { AssetSearchSelect } from 'src/app/components/search-select/search-select.component';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { SparklineComponent } from '../../../charts/sparkline/sparkline.component';
 import { DeltaIcon } from '../../../icons/change-icon/delta.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from 'primeng/api';
 import { TableModule } from 'primeng/table';
-import { AssetSearchSelect as AssetSearchSelect_1 } from '../../../search-select/search-select.component';
+import { AssetSearchSelect } from '../../../search-select/search-select.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
@@ -30,7 +29,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   providers: [DatePipe, CurrencyPipe, DecimalPipe],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect_1, TableModule, SharedModule, MatButtonModule, OverlayPanelModule, DeltaIcon, SparklineComponent, CurrencyPipe, DatePipe]
+  imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect, TableModule, SharedModule, MatButtonModule, OverlayPanelModule, DeltaIcon, SparklineComponent, CurrencyPipe, DatePipe]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
   @ViewChild('trackedAssetTable') trackedTable;
@@ -58,6 +57,8 @@ export class TrackingComponent implements OnInit, OnDestroy {
   public _mobileQueryListener: () => void;
   sparklineWidth = '200';
   openRowPanels: OverlayPanel[] = [];
+
+  totalColumns = 7;
 
   constructor(
     public coinDataService: CoinDataService,

@@ -1,24 +1,8 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BasicCoin } from '../models/coin-gecko';
+import { DEFAULT_USER_PREFS, LastCoin, TimeStamp, UserPreferences } from '../models/appconfig';
 
 
-export interface LastCoin {
-    id: string;
-    name: string;
-}
-
-export interface CachedPortfolio {
-    pid: number;
-    pName: string;
-}
-
-export interface TimeStamp {
-    timeInMillis: number;
-}
-
-export interface UserPreferences {
-    sideNav: 'contract' | 'expand';
-}
 
 @Injectable()
 export class CacheService {
@@ -44,13 +28,21 @@ export class CacheService {
 
     public getUserPreferences(): UserPreferences {
         let prefs = localStorage.getItem(this.USER_PREFS_KEY);
-        if (prefs === null) {
-            const newPrefs = { sideNav: 'expand' } as UserPreferences;
-            this.setUserPreferences(newPrefs);
-            return newPrefs;
+        if (prefs !== null) {
+            const userPrefs = JSON.parse(prefs) as UserPreferences;
+            if (!userPrefs.theme) {
+                userPrefs.theme = DEFAULT_USER_PREFS.theme;
+            }
+
+            if (!userPrefs.sideNav) {
+                userPrefs.sideNav = DEFAULT_USER_PREFS.sideNav;
+            }
+            return userPrefs;
+        } else {
+            this.setUserPreferences(DEFAULT_USER_PREFS);
+            return DEFAULT_USER_PREFS;
         }
 
-        return JSON.parse(prefs);
     }
 
     public setUserPreferences(userPreferences: UserPreferences) {

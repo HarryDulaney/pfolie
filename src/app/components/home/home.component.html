@@ -15,7 +15,10 @@
     mat-flat-button
     (click)="home()"
   >
-    <span class="nav-title p-1">{{navbarTitle}}</span>
+    <span class="px-3">
+      <span class="nav-title-exaggerate">P</span>
+      <span class="nav-title">{{navbarTitleEnd}}</span>
+    </span>
   </button>
   <span class="navbar-message">
     <span
@@ -62,47 +65,62 @@
       <span class="text-white">{{globalDataView.markets}} </span>
     </span>
   </span>
+  <span class="toolbar-nav-itmes">
+    <span
+      (click)="searchPanel.toggle($event)"
+      class="float-start ml-5 mr-5"
+      [hidden]="screenSize === 'XSmall'"
+    >
+      <form
+        #searchForm
+        id="searchForm"
+      >
+        <span #searchInputWrapper>
+          <input
+            pInputText
+            type="text"
+            [formControl]="searchField"
+            name="searchInput"
+            id="search"
+            [style.max-width]="screenSize === 'XSmall' ? '150px' : '300px'"
+            class="p-component p-inputtext-sm text-white form-control"
+            placeholder="Search tokens"
+            aria-describedby="helpId"
+            autocomplete="off"
+          >
+        </span>
+      </form>
+    </span>
+    <!-- Settings Menu Button -->
+    <span>
+      <button
+        mat-icon-button
+        type="button"
+        (click)="toggleSettings($event)"
+        class="float-start mx-2"
+      >
+        <span class="toolbar-icon">
+          <i class="fa-regular fa-gear"></i>
+        </span>
+      </button>
+    </span>
 
-  <span
-    (click)="searchPanel.toggle($event)"
-    class="float-start"
-    [hidden]="screenSize === 'XSmall'"
-  >
-    <form
-      #searchForm
-      id="searchForm"
-    >
-      <span #searchInputWrapper>
-        <input
-          pInputText
-          type="text"
-          [formControl]="searchField"
-          name="searchInput"
-          id="search"
-          [style.max-width]="screenSize === 'XSmall' ? '150px' : '300px'"
-          class="p-component p-inputtext-sm text-white form-control"
-          placeholder="Search tokens"
-          aria-describedby="helpId"
-          autocomplete="off"
-        >
-      </span>
-    </form>
+    <div class="p-1 mt-2 ms-5">
+      <button
+        mat-icon-button
+        type="button"
+        (click)="accountPanel.toggle($event)"
+        class="float-start me-1"
+      >
+        <span>
+          <img
+            [src]="userProfilePictureSource"
+            class="profile-picture-icon"
+          >
+        </span>
+      </button>
+    </div>
   </span>
-  <div class="p-1 mt-2 ms-5">
-    <button
-      mat-icon-button
-      type="button"
-      (click)="accountPanel.toggle($event)"
-      class="float-start me-1"
-    >
-      <span>
-        <img
-          [src]="userProfilePictureSource"
-          class="profile-picture-icon"
-        >
-      </span>
-    </button>
-  </div>
 </mat-toolbar>
 <mat-sidenav-container
   class="sidenav-container"
@@ -179,6 +197,12 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
+    <!-- Settins Menu, right side panel -->
+    <app-settings
+      [(visible)]="settingsVisible"
+      [settings]="userPreferences"
+      (settingsChange)="settingsChanged($event)"
+    ></app-settings>
     <!-- Bottom-right Toast Message -->
     <p-toast
       position="bottom-right"

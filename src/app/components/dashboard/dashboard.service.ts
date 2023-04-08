@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 
 @Injectable()
 export class DashboardService {
+  dashboardClicked = new EventEmitter<boolean>();
   currencies: string[] = ["usd", "btc", "eth", "ltc", "bch", "bnb", "eos", "xrp", "xlm", "link", "dot", "yfi", "aed"];
   priceChangePercent: string[] = ["1h", "24h", "7d", "14d", "30d", "200d", "1y"];
   activePriceChangePercent: string[] = ["1h", "24h", "7d"];

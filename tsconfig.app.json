@@ -10,6 +10,10 @@
     "src/polyfills.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "/node_modules/primeng/resources/themes/lara-dark-blue/theme.css",
+    "/node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+    "/node_modules/primeng/resources/themes/mdc-dark-indigo/theme.css",
+    "/node_modules/primeng/resources/themes/mdc-light-indigo/theme.css"
   ]
 }
