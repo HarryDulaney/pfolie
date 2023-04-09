@@ -6,6 +6,8 @@ import { Observable, Subject } from 'rxjs';
 })
 export class ScreenService {
   screenSource$: Observable<string>;
-  documentClickedSource$: Subject<HTMLElement> = new Subject<HTMLElement>()
+  documentClickedSource$: Subject<any> = new Subject<any>();
+  documentKeydownSource$: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
+  resizeSource$: Subject<any> = new Subject<any>();
 
 }
