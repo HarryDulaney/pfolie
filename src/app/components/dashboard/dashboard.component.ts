@@ -29,15 +29,7 @@ import { ScrollTopModule } from 'primeng/scrolltop';
   imports: [ScrollTopModule, ProgressSpinnerModule, NewsCaroselComponent, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, TableModule, DeltaIcon]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-
-  @HostListener('window:click', ['$event'])
-  onDocumentClick(event) {
-    this.dashboardService.dashboardClicked.emit(true);
-  }
-
-
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
-
 
   screenSize: string;
   destroySubject$ = new Subject();

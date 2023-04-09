@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/api";
 import { Sidebar, SidebarModule } from "primeng/sidebar";
@@ -20,18 +20,18 @@ export class SettingsComponent implements OnInit {
 
     @Input() settings: UserPreferences;
     @Output() settingsChange = new EventEmitter<UserPreferences>();
-
-    @ViewChild(Sidebar) sidebar: Sidebar;
-
     selectedTheme: string;
+    el: ElementRef;
 
-    constructor(private cd: ChangeDetectorRef) {
+    constructor(private cd: ChangeDetectorRef, el: ElementRef) {
+        this.el = el;
     }
 
     ngOnInit(): void {
         this.selectedTheme = this.settings.theme;
         this.cd.markForCheck();
     }
+
 
     changeTheme(newTheme) {
         this.settings.theme = newTheme;

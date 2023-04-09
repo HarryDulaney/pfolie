@@ -66,9 +66,31 @@
     </span>
   </span>
   <span class="toolbar-nav-itmes">
+    <button
+      [hidden]="searchVisible || screenSize === 'XSmall'"
+      mat-icon-button
+      type="button"
+      (click)="toggleSearchInput($event)"
+      class="float-start"
+    >
+      <span class="toolbar-icon">
+        <i class="fa-regular fa-search"></i>
+      </span>
+    </button>
+    <button
+      [hidden]="!searchVisible"
+      mat-icon-button
+      type="button"
+      (click)="toggleSearchInput($event)"
+      class="float-start mx-2"
+    >
+      <span class="toolbar-icon">
+        <i class="fa-regular fa-x"></i>
+      </span>
+    </button>
     <span
       (click)="searchPanel.toggle($event)"
-      class="float-start ml-5 mr-5"
+      class="float-start"
       [hidden]="screenSize === 'XSmall'"
     >
       <form
@@ -77,12 +99,13 @@
       >
         <span #searchInputWrapper>
           <input
+            [@showHideSearchBox]="searchVisible ? 'show' : 'hide'"
             pInputText
             type="text"
             [formControl]="searchField"
             name="searchInput"
             id="search"
-            [style.max-width]="screenSize === 'XSmall' ? '150px' : '300px'"
+            [style.max-width]="screenSize === 'Small' ? '150px' : '300px'"
             class="p-component p-inputtext-sm text-white form-control"
             placeholder="Search tokens"
             aria-describedby="helpId"
@@ -92,18 +115,17 @@
       </form>
     </span>
     <!-- Settings Menu Button -->
-    <span>
-      <button
-        mat-icon-button
-        type="button"
-        (click)="toggleSettings($event)"
-        class="float-start mx-2"
-      >
-        <span class="toolbar-icon">
-          <i class="fa-regular fa-gear"></i>
-        </span>
-      </button>
-    </span>
+    <button
+      #settingsButton
+      mat-icon-button
+      type="button"
+      (click)="toggleSettings($event)"
+      class="float-start mx-2"
+    >
+      <span class="toolbar-icon">
+        <i class="fa-regular fa-gear"></i>
+      </span>
+    </button>
 
     <div class="p-1 mt-2 ms-5">
       <button
@@ -199,6 +221,7 @@
   <mat-sidenav-content>
     <!-- Settins Menu, right side panel -->
     <app-settings
+      #settingsComponent
       [(visible)]="settingsVisible"
       [settings]="userPreferences"
       (settingsChange)="settingsChanged($event)"
