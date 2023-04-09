@@ -1,5 +1,5 @@
 import { CurrencyPipe, DecimalPipe, NgIf, DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
@@ -14,8 +14,6 @@ import { PortfolioService } from '../../services/portfolio.service';
 import * as Const from '../../../../constants';
 import { TransactionService } from '../portfolio-table-expand/transaction.service';
 import { Dialog, DialogModule } from 'primeng/dialog';
-import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
-import { BasicCoin } from 'src/app/models/coin-gecko';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PortfolioTableExpandComponent } from '../portfolio-table-expand/portfolio-table-expand.component';
@@ -23,21 +21,17 @@ import { DeltaIcon } from '../../../icons/change-icon/delta.component';
 import { MatButtonModule } from '@angular/material/button';
 import { AssetSearchSelect } from '../../../search-select/search-select.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ScreenService } from 'src/app/services/screen.service';
 
 @Component({
-    selector: 'app-portfolio-table',
-    templateUrl: './portfolio-table.component.html',
-    styleUrls: ['./portfolio-table.component.scss'],
-    standalone: true,
-    imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect, TableModule, SharedModule, MatButtonModule, DeltaIcon, OverlayPanelModule, PortfolioTableExpandComponent, CurrencyPipe, DatePipe]
+  selector: 'app-portfolio-table',
+  templateUrl: './portfolio-table.component.html',
+  styleUrls: ['./portfolio-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect, TableModule, SharedModule, MatButtonModule, DeltaIcon, OverlayPanelModule, PortfolioTableExpandComponent, CurrencyPipe, DatePipe]
 })
 export class PortfolioTableComponent implements OnInit, OnDestroy {
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    if (event) {
-      this.initScreenSizes();
-    }
-  }
   @ViewChild('pdt') pdt: Table;
   @ViewChild('rowPanel') rowPanel: OverlayPanel;
   @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
@@ -53,6 +47,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   set selectionMode(selectMode: string) {
     if (selectMode) {
       this.selectMode = selectMode;
+      this.cd.markForCheck();
     }
   }
 
@@ -95,7 +90,8 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     public utilityService: UtilityService,
     public decimalPipe: DecimalPipe,
     public currencyPipe: CurrencyPipe,
-    private navService: NavService) {
+    private navService: NavService,
+    private screenService: ScreenService) {
   }
 
   ngOnDestroy(): void {
@@ -104,15 +100,20 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.cd.detectChanges();
-  }
-
-  ngOnViewChanges(): void {
+    this.cd.markForCheck();
   }
 
 
   ngOnInit(): void {
     this.initScreenSizes();
+    this.screenService.resizeSource$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe({
+        next: (screenSize) => {
+          this.screenSize = screenSize;
+          this.cd.markForCheck();
+        }
+      });
   }
 
   initScreenSizes() {
@@ -203,7 +204,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     this.view[rowIndex].transactions.push(transaction);
     this.expandedRowKeys[view.id] = true;
     this.transactionService.addNew(transaction, rowIndex, event)
-    this.cd.detectChanges();
+    this.cd.markForCheck();
 
   }
 

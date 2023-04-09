@@ -16,7 +16,13 @@ import { ScreenService } from './services/screen.service';
 export class AppComponent implements OnInit, AfterViewInit {
   @HostListener('document:click', ['$event'])
   documentClick(event: any): void {
-    this.screenService.documentClickedSource$.next(event.target);
+    this.screenService.documentClickedSource$.next(event);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeydownHandler(event: KeyboardEvent) {
+    this.screenService.documentKeydownSource$.next(event);
+
   }
 
 

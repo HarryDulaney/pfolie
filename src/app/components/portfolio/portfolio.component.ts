@@ -21,14 +21,15 @@ import { PortfolioService } from './services/portfolio.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
-    selector: 'app-portfolio',
-    templateUrl: './portfolio.component.html',
-    styleUrls: ['./portfolio.component.scss'],
-    providers: [DatePipe, CurrencyPipe, DecimalPipe],
-    standalone: true,
-    imports: [ToolbarComponent, NgIf, ProgressSpinnerModule, WorkspaceComponent, PortfolioTableComponent, AsyncPipe]
+  selector: 'app-portfolio',
+  templateUrl: './portfolio.component.html',
+  styleUrls: ['./portfolio.component.scss'],
+  providers: [DatePipe, CurrencyPipe, DecimalPipe],
+  standalone: true,
+  imports: [ToolbarComponent, NgIf, ProgressSpinnerModule, WorkspaceComponent, PortfolioTableComponent, AsyncPipe]
 })
 export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
+
   @ViewChild('toolbar') toolbar: ToolbarComponent;
   @ViewChild('portfolioTable') portfolioTable: PortfolioTableComponent;
   @ViewChild('searchTrackPanel') searchTrackedPanel: OverlayPanel;
@@ -36,19 +37,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('workspace') workspace: WorkspaceComponent;
 
 
-  @HostListener('document:click', ['$event'])
-  onClick(event) {
-    if (event) {
-      this.portfolioService.eventSource$.next({ name: 'click', event: event } as AppEvent);
-    }
-  }
 
-  @HostListener('document:keydown', ['$event'])
-  onKeydownHandler(event: KeyboardEvent) {
-    if (event.key === "Escape") {
-      this.showPalette = false;
-    }
-  }
 
   /* Component Palette Options */
   isPaletteDismissible: boolean = true;
@@ -103,6 +92,21 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.screenService.documentClickedSource$.pipe(
+      takeUntil(this.destroySubject$),
+      tap(event => {
+        this.portfolioService.eventSource$.next({ name: 'click', event: event } as AppEvent);
+      })
+    ).subscribe();
+
+    this.screenService.documentKeydownSource$.pipe(
+      takeUntil(this.destroySubject$)).subscribe(
+        event => {
+          if (event.key === "Escape") {
+            this.showPalette = false;
+          }
+        });
+
     this.toolbar.$toolbarSource.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(

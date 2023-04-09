@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
 import { CoinFullInfo, DeveloperData, Links, MarketData, Ticker } from '../../models/coin-gecko'
 import { NavService } from 'src/app/services/nav.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -19,12 +19,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
-    selector: 'app-coin-resources',
-    templateUrl: './coin-resources.component.html',
-    styleUrls: ['./coin-resources.component.scss'],
-    encapsulation: ViewEncapsulation.Emulated,
-    standalone: true,
-    imports: [TooltipModule, MatButtonModule, NgClass, CoinChartComponent, NgIf, NgFor, ChipModule, CardModule, TableModule, SharedModule, AsyncPipe]
+  selector: 'app-coin-resources',
+  templateUrl: './coin-resources.component.html',
+  styleUrls: ['./coin-resources.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.Emulated,
+  standalone: true,
+  imports: [TooltipModule, MatButtonModule, NgClass, CoinChartComponent, NgIf, NgFor, ChipModule, CardModule, TableModule, SharedModule, AsyncPipe]
 })
 export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -113,7 +114,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
 
 
   ngAfterViewInit(): void {
-    this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.markForCheck();
 
   }
 
@@ -127,7 +128,11 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
         this.initCategories(coinData);
         this.initDevData(coinData);
         this.initMarketData(coinData);
+        this.changeDetectorRef.markForCheck();
+
       }
+      this.changeDetectorRef.markForCheck();
+
     });
 
     this.portfolioService.portfolio$.pipe(takeUntil(this.destroySubject$)).subscribe(
@@ -135,6 +140,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
         if (portfolio) {
           let index = portfolio.portfolioData.trackedAssets.findIndex(x => x.id === this.coinInfo.id);
           this.isTracked = (index !== -1);
+          this.changeDetectorRef.markForCheck();
         }
 
       }
@@ -236,14 +242,20 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   favoriteButtonClicked(ref: any) {
     if (!this.sessionService.getCurrentUser()) {
       this.sessionService.showLoginModal = true;
+      this.changeDetectorRef.markForCheck();
       return;
     }
 
     if (this.isTracked) {
       this.portfolioService.removeTrackedFromCurrentUserPortfolio(this.coinInfo.id).then(
-        () => console.log('removed'));
+        () => {
+          console.log('removed');
+          this.changeDetectorRef.markForCheck();
+        });
     } else {
       this.portfolioService.addTrackedToCurrentUserPortfolio(this.coinInfo.id);
+      this.changeDetectorRef.markForCheck();
+
     }
   }
 }

@@ -67,6 +67,7 @@
   </span>
   <span class="toolbar-nav-itmes">
     <button
+      #searchButton
       [hidden]="searchVisible || screenSize === 'XSmall'"
       mat-icon-button
       type="button"
@@ -75,17 +76,6 @@
     >
       <span class="toolbar-icon">
         <i class="fa-regular fa-search"></i>
-      </span>
-    </button>
-    <button
-      [hidden]="!searchVisible"
-      mat-icon-button
-      type="button"
-      (click)="toggleSearchInput($event)"
-      class="float-start mx-2"
-    >
-      <span class="toolbar-icon">
-        <i class="fa-regular fa-x"></i>
       </span>
     </button>
     <span

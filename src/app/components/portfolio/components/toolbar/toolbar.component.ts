@@ -12,11 +12,11 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { NgIf } from '@angular/common';
 @Component({
-    selector: 'app-toolbar',
-    templateUrl: './toolbar.component.html',
-    styleUrls: ['./toolbar.component.scss'],
-    standalone: true,
-    imports: [MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
+  selector: 'app-toolbar',
+  templateUrl: './toolbar.component.html',
+  styleUrls: ['./toolbar.component.scss'],
+  standalone: true,
+  imports: [MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
 })
 export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('menuBar') menuBar: Menubar;
@@ -49,7 +49,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   constructor(
-    private portfolioService: PortfolioService  ) { }
+    private portfolioService: PortfolioService) { }
 
   ngOnDestroy(): void {
     this.destroySubject$.next(true);
@@ -58,15 +58,17 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit(): void {
-    this.portfolioService.eventSource$.pipe(takeUntil(this.destroySubject$)).subscribe(
-      (ev) => {
-        if (ev.event.type === 'click' && ev.event.target.id !== this.menuBar.el.nativeElement.id) {
-          if (this.portfolioNameEditor.active) {
-            this.handleCancelRename();
+    this.portfolioService.eventSource$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(
+        (ev) => {
+          if (ev.event.type === 'click' && ev.event.target.id !== this.menuBar.el.nativeElement.id) {
+            if (this.portfolioNameEditor.active) {
+              this.handleCancelRename();
+            }
           }
         }
-      }
-    );
+      );
 
   }
 

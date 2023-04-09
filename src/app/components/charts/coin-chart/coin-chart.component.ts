@@ -1,5 +1,5 @@
 declare var require: any;
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
 import HAccessability from "highcharts/modules/accessibility";
@@ -24,15 +24,16 @@ HBrandDark(Highcharts);
 HAccessability(Highcharts);
 
 @Component({
-    selector: 'app-coin-chart',
-    templateUrl: './coin-chart.component.html',
-    styles: [`#container {
+  selector: 'app-coin-chart',
+  templateUrl: './coin-chart.component.html',
+  styles: [`#container {
     max-height: 900px;
     height: 75vh;
 }
 `],
-    standalone: true,
-    imports: [HighchartsChartModule]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [HighchartsChartModule]
 })
 export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   /** price | marketcap | volume | ohlc */
@@ -55,12 +56,15 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   destroySubject$ = new Subject();
 
   constructor(
-    public chartService: ChartService
+    public chartService: ChartService,
+    private cd: ChangeDetectorRef
   ) { }
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.reload();
+    if (changes.chartDataType) {
+      this.reload();
+    }
   }
 
   ngOnDestroy(): void {
@@ -103,6 +107,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
           default:
             this.chartOptions = this.getPriceAreaChartOptions();
         }
+        this.cd.markForCheck();
       },
       complete: () => {
         this.loading.emit(false);

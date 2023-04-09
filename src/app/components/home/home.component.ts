@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from "@angular/router";
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MenuItem, MessageService, SharedModule } from 'primeng/api';
@@ -14,7 +14,7 @@ import firebase from 'firebase/compat/app';
 import { RegisterComponent } from '../register/register.component';
 import { SearchComponent } from '../search/search.component';
 import { NavService } from 'src/app/services/nav.service';
-import { concatMap, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { concatMap, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Subject, timer } from 'rxjs';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { BasicCoin, GlobalData, GlobalDataView } from 'src/app/models/coin-gecko';
@@ -30,12 +30,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { NgIf, AsyncPipe, CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Sidebar, SidebarModule } from 'primeng/sidebar';
+import { SidebarModule } from 'primeng/sidebar';
 import { SettingsComponent } from "../settings/settings.component";
 import { UserPreferences } from 'src/app/models/appconfig';
 import { ThemeService } from 'src/app/services/theme.service';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -46,7 +44,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     trigger('showHideSearchBox', [
       state('show', style({
         width: '100%',
-        opacitcy: '1',
+        opacity: '1',
       })),
       state('hide', style({
         width: '0px',
@@ -96,6 +94,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('searchInputWrapper') searchInputTarget: ElementRef;
   @ViewChild('settingsComponent') settingsComponent: SettingsComponent;
   @ViewChild('settingsButton', { read: ElementRef, static: false }) settingsButton: ElementRef;
+  @ViewChild('searchButton', { read: ElementRef, static: false }) searchButton: ElementRef;
 
 
   theme: string;
@@ -163,13 +162,21 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.screenService.documentClickedSource$.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(
-      (target: HTMLElement) => {
+      (event: Event) => {
         const menuBtn = document.getElementById('settingMenuButton');
         if (this.settingsVisible &&
-          !this.settingsComponent.el.nativeElement.contains(target)
-          && !this.settingsButton.nativeElement.contains(target)
-          && !menuBtn.contains(target)) {
+          !this.settingsComponent.el.nativeElement.contains(event.target as HTMLElement)
+          && !this.settingsButton.nativeElement.contains(event.target as HTMLElement)
+          && !menuBtn.contains(event.target as HTMLElement)) {
           this.settingsVisible = false;
+          this.cd.markForCheck();
+        }
+
+        if (this.searchVisible &&
+          !this.searchPanel.overlayVisible &&
+          !this.searchButton.nativeElement.contains(event.target as HTMLElement) &&
+          !this.searchInputTarget.nativeElement.contains(event.target as HTMLElement)) {
+          this.searchVisible = false;
           this.cd.markForCheck();
         }
       }
