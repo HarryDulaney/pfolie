@@ -9,7 +9,6 @@ import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 
 @Injectable()
 export class DashboardService {
-  dashboardClicked = new EventEmitter<boolean>();
   currencies: string[] = ["usd", "btc", "eth", "ltc", "bch", "bnb", "eos", "xrp", "xlm", "link", "dot", "yfi", "aed"];
   priceChangePercent: string[] = ["1h", "24h", "7d", "14d", "30d", "200d", "1y"];
   activePriceChangePercent: string[] = ["1h", "24h", "7d"];

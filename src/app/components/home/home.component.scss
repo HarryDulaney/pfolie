@@ -1,8 +1,8 @@
 mat-toolbar {
   position: fixed;
   background-color: var(--surface-ground);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(20%) !important;
+  backdrop-filter: blur(20%) !important;
   left: 0;
   right: 0;
   top: 0;
@@ -12,8 +12,8 @@ mat-toolbar {
 }
 
 .main-toolbar {
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(20%) !important;
+  backdrop-filter: blur(20%) !important;
 }
 
 :host ::ng-deep .p-sidebar {
@@ -128,7 +128,7 @@ mat-toolbar {
 
 button {
   background-color: transparent;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 mat-toolbar > button:hover {

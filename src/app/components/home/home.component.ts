@@ -27,27 +27,65 @@ import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { InputTextModule } from 'primeng/inputtext';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { NgIf, AsyncPipe, CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
 import { SettingsComponent } from "../settings/settings.component";
 import { UserPreferences } from 'src/app/models/appconfig';
 import { ThemeService } from 'src/app/services/theme.service';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
+  animations: [
+    trigger('showHideSearchBox', [
+      state('show', style({
+        width: '100%',
+        opacitcy: '1',
+      })),
+      state('hide', style({
+        width: '0px',
+        opacity: '0',
+      })),
+      transition('show => hide', [
+        animate('0.5s')
+      ]),
+      transition('hide => show', [
+        animate('0.5s')
+      ]),
+    ]),
+  ],
   providers: [MessageService, DashboardService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [MatToolbarModule, MatButtonModule, NgIf, FormsModule, InputTextModule,
     ReactiveFormsModule, MatSidenavModule, PanelMenuModule, SidebarModule, ButtonModule,
     ToastModule, SharedModule, OverlayPanelModule, SearchComponent, MenuModule, RouterOutlet,
-    DialogModule, LoginComponent, RegisterComponent, FooterComponent, AsyncPipe, SettingsComponent]
+    DialogModule, LoginComponent, RegisterComponent, FooterComponent, AsyncPipe, SettingsComponent, CommonModule]
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event) {
+    if (event) {
+      if (this.searchPanel.overlayVisible) {
+        this.searchPanel.hide();
+        this.searchVisible = false;
+      }
+      if (this.accountPanel.overlayVisible) {
+        this.accountPanel.hide();
+      }
+
+      if (this.settingsVisible) {
+        this.settingsVisible = false;
+      }
+    }
+  }
+
   @ViewChild('snav') snav: MatSidenav;
   @ViewChild('searchPanel') searchPanel: OverlayPanel;
   @ViewChild('accountPanel') accountPanel: OverlayPanel;
@@ -56,36 +94,15 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('login') loginComp: LoginComponent;
   @ViewChild('appSearch') searchComponent: SearchComponent;
   @ViewChild('searchInputWrapper') searchInputTarget: ElementRef;
-  @ViewChild('settings') settings: SettingsComponent;
+  @ViewChild('settingsComponent') settingsComponent: SettingsComponent;
+  @ViewChild('settingsButton', { read: ElementRef, static: false }) settingsButton: ElementRef;
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event) {
-    if (event) {
-      if (this.searchPanel.overlayVisible) {
-        this.searchPanel.hide();
-      }
-      if (this.accountPanel.overlayVisible) {
-        this.accountPanel.hide();
-      }
-
-      if (this.isSearchActive) {
-        this.isSearchActive = false;
-      }
-    }
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    if (event) {
-      this.cd.markForCheck();
-    }
-  }
 
   theme: string;
   screenSize: string;
   navOpened: boolean;
   settingsVisible: boolean;
-  isSearchActive: boolean;
+  searchVisible: boolean;
 
   searchField: UntypedFormControl = new UntypedFormControl('');
   searchForm: UntypedFormGroup;
@@ -136,24 +153,31 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         this.screenSize = screenSize;
         if (this.screenSize === Const.SCREEN_SIZE.XS) {
           this.navOpened = false;
+          this.cd.markForCheck();
         } else {
           this.navOpened = this.configService.getPreferences().sideNav === 'expand' ? true : false;
+          this.cd.markForCheck();
         }
       });
 
+    this.screenService.documentClickedSource$.pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe(
+      (target: HTMLElement) => {
+        const menuBtn = document.getElementById('settingMenuButton');
+        if (this.settingsVisible &&
+          !this.settingsComponent.el.nativeElement.contains(target)
+          && !this.settingsButton.nativeElement.contains(target)
+          && !menuBtn.contains(target)) {
+          this.settingsVisible = false;
+          this.cd.markForCheck();
+        }
+      }
+    );
   }
 
 
   ngAfterViewInit(): void {
-    this.dashboardService.dashboardClicked.pipe(
-      tap(
-        (clicked) => {
-          if (clicked && this.isSearchActive) {
-            this.isSearchActive = false;
-          }
-        }
-      )
-    );
     this.searchForm.get('searchField').valueChanges.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(word => {
@@ -241,6 +265,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
+
   navMenuTogglePressed() {
     let prefs = this.configService.getPreferences();
     if (this.snav.opened) {
@@ -267,6 +292,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     return 'side';
   }
 
+  toggleSearchInput($event: any) {
+    this.searchVisible = !this.searchVisible;
+  }
+
   toggleSettings(event) {
     if (this.settingsVisible) {
       this.settingsVisible = false;
@@ -277,10 +306,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   toggleSearch(event) {
-    if (this.isSearchActive) {
-      this.isSearchActive = false;
+    if (this.searchVisible) {
+      this.searchVisible = false;
     } else {
-      this.isSearchActive = true;
+      this.searchVisible = true;
     }
   }
 
@@ -302,6 +331,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           {
             label: 'Settings',
             icon: 'fa-solid fa-gear',
+            id: 'settingMenuButton',
             command: (event) => {
               this.toggleSettings(event);
             }
