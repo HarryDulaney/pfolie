@@ -79,7 +79,8 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   defaultId: string = '-1';
   currentDate: Date = new Date();
   private destroySubject$ = new Subject();
-
+  sparklineColor = '#006aff';
+  
   constructor(
     private cd: ChangeDetectorRef,
     public portfolioService: PortfolioService,

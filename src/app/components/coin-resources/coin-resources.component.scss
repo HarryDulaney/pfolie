@@ -1,3 +1,7 @@
+@import "~@fortawesome/fontawesome-free/css/brands.css";
+@import "~@fortawesome/fontawesome-free/css/regular.css";
+@import "~@fortawesome/fontawesome-free/css/solid.css";
+
 .favorite--button-wrapper {
   cursor: pointer;
   float: right;
@@ -10,10 +14,9 @@
 }
 
 .active-chart {
-  background-color: #58585886 !important;
-  border: solid 1px #58585886 !important;
+  background-color: var(--hover-bg) !important;
+  border: solid 1px var(--hover-bg) !important;
   font-weight: bold;
-
 }
 
 .active-chart:hover {
@@ -22,7 +25,7 @@
 
 .inactive-chart {
   background-color: transparent !important;
-  border: solid 1px #58585886 !important;
+  border: solid 1px var(--hover-bg) !important;
   font-weight: normal;
 }
 
@@ -31,7 +34,7 @@
   margin-right: 1rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: rgb(252, 255, 81) !important;
+  color: var(--star-color) !important;
 }
 
 .p-card {
@@ -56,42 +59,41 @@
 
 .card-content {
   font-weight: bold;
-  color: var(--blue-50);
+  color: var(--text-color);
 }
 
 .dynamic-content {
   font-size: 1rem;
   font-weight: bold;
-  color: var(--blue-50);
+  color: var(--text-color);
 }
 
 .coin-resource-title-content {
   font-size: calc(1.9rem + 2vw);
-  color: var(--blue-50);
+  color: var(--text-color);
 }
 
 .coin-header-description {
   font-size: medium;
   font-weight: bold;
-  color: #ffffff;
+  color: var(--text-color);
 }
-
 .card-title {
   font-size: 1.4rem;
   font-weight: bold;
   opacity: 80%;
-  color: var(--blue-200);
+  color: var(--text-color);
 }
 
 .med-card-content {
   font-size: medium;
   font-weight: bold;
-  color: var(--blue-200);
+  color: var(--text-color-secondary);
 }
 
 .lrg-card-content {
   font-size: 1rem;
-  color: var(--gray-200);
+  color: var(--text-color-secondary);
 }
 
 .sm-card-content {
@@ -101,6 +103,6 @@
 
 .basic-card-link {
   font-weight: bold;
-  color: var(--blue-700);
+  color: var(--text-color-link);
   text-decoration: none;
 }

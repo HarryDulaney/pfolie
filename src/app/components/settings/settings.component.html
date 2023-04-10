@@ -10,13 +10,13 @@
     position="right"
 >
     <ng-template pTemplate="header">
-        <h2>Settings</h2>
+        <h6>Settings</h6>
     </ng-template>
     <ng-template pTemplate="content">
         <div class="p-2">
             <section class="mb-5">
-                <h3>Theme</h3>
-                <div class="flex gap-5">
+                <h4>Theme</h4>
+                <div class="flex w-100 gap-3">
                     <div class="flex align-items-center gap-2">
                         <p-radioButton
                             #laraBlueDark
@@ -43,8 +43,9 @@
                         >
                         </p-radioButton><label for="laraBlueDark">Dark Indigo</label>
                     </div>
-
-                    <!--         <div class="flex align-items-center gap-2">
+                </div>
+                <div class="flex w-100 gap-3 mt-3">
+                    <div class="flex align-items-center gap-2">
                         <p-radioButton
                             #lightIndigo
                             name="theme"
@@ -69,11 +70,12 @@
                             >
                             </p-radioButton><label for="laraBlueLight">Light Blue</label>
                         </div>
-          
-                    </div> -->
+                    </div>
                 </div>
             </section>
+
         </div>
+
     </ng-template>
     <ng-template pTemplate="footer"></ng-template>
 </p-sidebar>

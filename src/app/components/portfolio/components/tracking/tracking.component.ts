@@ -57,6 +57,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   public _mobileQueryListener: () => void;
   sparklineWidth = '200';
   openRowPanels: OverlayPanel[] = [];
+  sparklineColor = '#006aff';
 
   totalColumns = 7;
 

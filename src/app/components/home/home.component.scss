@@ -61,7 +61,7 @@ mat-toolbar {
   width: 100% !important;
   border-radius: 50px !important;
   vertical-align: unset !important;
-  color: var(--text-primary);
+  color: var(--text-color);
 }
 
 .default-profile-picture-icon {
@@ -144,7 +144,7 @@ mat-toolbar {
 
 button {
   background-color: transparent;
-  color: var(--text-primary);
+  color: var(--text-color);
 }
 
 mat-toolbar > button:hover {

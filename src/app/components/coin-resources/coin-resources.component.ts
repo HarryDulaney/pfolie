@@ -23,7 +23,6 @@ import { TooltipModule } from 'primeng/tooltip';
   templateUrl: './coin-resources.component.html',
   styleUrls: ['./coin-resources.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.Emulated,
   standalone: true,
   imports: [TooltipModule, MatButtonModule, NgClass, CoinChartComponent, NgIf, NgFor, ChipModule, CardModule, TableModule, SharedModule, AsyncPipe]
 })

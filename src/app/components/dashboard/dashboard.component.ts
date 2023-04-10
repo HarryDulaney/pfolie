@@ -45,6 +45,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   first = 0;
   rows = 100;
   totalRecords = 0;
+  sparklineColor = '#006aff';
 
   isTrendingLoading: boolean;
   loadingIcon = 'pi pi-spin pi-spinner';
