@@ -1,4 +1,4 @@
-<div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+<div class="surface-card shadow-2 border-round w-full lg:w-6">
     <div class="text-center mb-1">
         <img
             src="../../../assets/donut_small_white_24dp.svg"
@@ -11,13 +11,65 @@
             [style]="{'font-size':'1.2rem'}"
         >Please choose a sign in method</div>
     </div>
-    <span class="row text-400 font-medium justify-content-center mb-1">
+    <div class="mb-1">
         <a
-            class="ml-2 text-blue-500 text-center cursor-pointer no-underline font-medium"
-            (click)="navigateRegister()"
-        >Register Here
+            mat-flat-button
+            class="fed-sign-in-btn-main"
+            (click)="googleSignIn()"
+        >
+            <span class="float-start">
+                <img
+                    class="float-start"
+                    style="font-size: x-large;"
+                    [src]="googleIconSrc"
+                >
+            </span>
+            <span class="float-end pl-2">
+                <div class="text-center font-bold no-wrap">Continue with Google</div>
+            </span>
         </a>
-    </span>
+
+        <span class="row m-1 w-100"></span>
+
+        <a
+            mat-flat-button
+            class="fed-sign-in-btn-main"
+            (click)="facebookSignIn()"
+        >
+            <span class="float-start">
+                <i
+                    class="pi pi-facebook"
+                    style="font-size: x-large;color:cornflowerblue"
+                ></i>
+            </span>
+            <span class="float-end pl-2">
+                <div class="text-center font-bold  no-wrap"> Continue with Facebook</div>
+            </span>
+        </a>
+
+        <span class="row m-1 w-100"></span>
+
+        <a
+            mat-flat-button
+            class="fed-sign-in-btn-main"
+            (click)="githubSignIn()"
+        >
+            <span class="float-start">
+                <i
+                    class="pi pi-github"
+                    style="font-size: x-large;"
+                ></i>
+            </span>
+            <span class="float-end pl-2">
+                <div class="text-center font-bold  no-wrap"> Continue with Github
+                </div>
+            </span>
+        </a>
+
+    </div>
+    <div class="row w-100 text-center"> <span class="row text-400 font-medium justify-content-center mb-1">Or</span>
+    </div>
+
     <div>
         <label
             for="email1"
@@ -58,7 +110,7 @@
                     ></i>
                 </span>
                 <span class="float-end">
-                    <div class="text-center font-bold text-white no-wrap pl-2">Sign In</div>
+                    <div class="text-center font-bold no-wrap pl-2">Sign In</div>
                 </span>
             </a>
         </ng-container>
@@ -82,61 +134,13 @@
 
 
     </div>
-    <div class="mb-1">
-        <span class="row text-400 font-medium justify-content-center mb-1">Or</span>
+    <span class="row text-400 font-medium justify-content-center mb-1">
         <a
-            mat-flat-button
-            class="fed-sign-in-btn-main"
-            (click)="googleSignIn()"
-        >
-            <span class="float-start">
-                <img
-                    class="float-start"
-                    style="font-size: x-large;"
-                    [src]="googleIconSrc"
-                >
-            </span>
-            <span class="float-end pl-2">
-                <div class="text-center font-bold text-white no-wrap">Continue with Google</div>
-            </span>
+            id="register"
+            class="text-color-link ml-2 text-center cursor-pointer no-underline font-medium"
+            (click)="navigateRegister()"
+        >Register Here
         </a>
+    </span>
 
-        <span class="row m-1 w-100"></span>
-
-        <a
-            mat-flat-button
-            class="fed-sign-in-btn-main"
-            (click)="facebookSignIn()"
-        >
-            <span class="float-start">
-                <i
-                    class="pi pi-facebook"
-                    style="font-size: x-large;color:cornflowerblue"
-                ></i>
-            </span>
-            <span class="float-end pl-2">
-                <div class="text-center font-bold text-white no-wrap"> Continue with Facebook</div>
-            </span>
-        </a>
-
-        <span class="row m-1 w-100"></span>
-
-        <a
-            mat-flat-button
-            class="fed-sign-in-btn-main"
-            (click)="githubSignIn()"
-        >
-            <span class="float-start">
-                <i
-                    class="pi pi-github"
-                    style="font-size: x-large;"
-                ></i>
-            </span>
-            <span class="float-end pl-2">
-                <div class="text-center font-bold text-white no-wrap"> Continue with Github
-                </div>
-            </span>
-        </a>
-
-    </div>
 </div>

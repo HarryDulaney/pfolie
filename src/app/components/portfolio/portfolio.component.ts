@@ -8,7 +8,6 @@ import { map, tap, switchMap, takeUntil } from 'rxjs/operators';
 import { AppEvent } from 'src/app/models/events';
 import { DragBundle, OwnedAssetView, Portfolio } from 'src/app/models/portfolio';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { ConfigService } from 'src/app/services/config.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { NavService } from 'src/app/services/nav.service';
 import { SessionService } from 'src/app/services/session.service';

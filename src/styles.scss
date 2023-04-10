@@ -21,6 +21,9 @@ body {
   overflow-x: hidden;
 }
 
+::-webkit-calendar-picker-indicator {
+  filter: invert(1) !important;
+}
 
 /* ========================== Custom Scrollbar Styling ============================ */
 /* width */
@@ -35,13 +38,13 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #24273a;
+  background: var(--scrollbar-thumb);
   border-radius: 10px 10px 10px 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #31354e;
+  background: var(--scrollbar-hover-thumb)
 }
 
 /* ========================== Cards ============================ */
@@ -234,19 +237,19 @@ p-header {
 }
 
 .increased {
-  color: #00ff59;
+  color: var(--increase-color) !important;
 }
 
 .decreased {
-  color: #ff1100;
+  color: var(--decrease-color) !important;
 }
 
 .increased :hover {
-  color: #00ff59 !important;
+  color: var(--increase-color) !important;
 }
 
 .decreased :hover {
-  color: #ff1100 !important;
+  color: var(--decrease-color) !important;
 }
 
 .p-paginator {
@@ -274,7 +277,7 @@ p-table .custom-spinner {
 }
 
 .caption-label-data {
-  color: var(--blue-100);
+  color: var(--light-blue);
   font-size: medium;
   font-weight: bold;
 }
@@ -289,7 +292,7 @@ p-table .custom-spinner {
 
 .p-datatable .p-datatable-loading-icon {
   font-size: 10rem !important;
-  color: #0882a4 !important;
+  color: var(--light-blue) !important;
 }
 
 .p-datatable .p-paginator-top {
@@ -330,3 +333,77 @@ p-table .custom-spinner {
   background: transparent !important;
 }
 
+.header-text {
+  color: var(--text-primary);
+  font-size: medium;
+  font-weight: bold;
+}
+
+.toolbar-wrapper-nav-contracted {
+  position: fixed;
+  top: calc(5px + 7vh);
+  z-index: 5000;
+  right: 0;
+  left: 0;
+  width: auto;
+  margin-bottom: 2rem;
+}
+
+.toolbar-wrapper-nav-expanded {
+  position: fixed;
+  top: calc(5px + 7vh);
+  z-index: 5000;
+  right: 0;
+  left: calc(200px);
+  max-width: 100%;
+  margin-bottom: 2rem;
+}
+
+.toolbar-wrapper-mobile {
+  position: fixed;
+  top: calc(5px + 7vh);
+  z-index: 5000;
+  right: 0;
+  left: 0;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+:host ::ng-deep .p-menubar {
+  height: fit-content !important;
+  background-color: var(--surface-ground);
+}
+
+:host ::ng-deep .p-menubar .p-submenu-list {
+  background: var(--surface-ground) !important;
+}
+
+:host ::ng-deep .p-menubar .p-menuitem.p-menuitem-active > .p-menuitem-link {
+  background: var(--hover-bg) !important;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-content {
+  background: transparent;
+}
+
+#hide--button {
+  z-index: 99999 !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--primary-color);
+}
+
+#hide--button :hover {
+  color: var(--primary-color) !important;
+}
+
+.p-button-icon-only {
+  max-height: 2rem;
+  padding: 0.3rem;
+  border: none;
+  background-color: transparent !important;
+}
+
+.p-button-icon-only:hover {
+  border: none;
+  background-color:var(--hover-bg) !important;
+}
