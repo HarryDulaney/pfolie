@@ -26,7 +26,6 @@ import { ScreenService } from 'src/app/services/screen.service';
 @Component({
   selector: 'app-portfolio-table',
   templateUrl: './portfolio-table.component.html',
-  styleUrls: ['./portfolio-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect, TableModule, SharedModule, MatButtonModule, DeltaIcon, OverlayPanelModule, PortfolioTableExpandComponent, CurrencyPipe, DatePipe]

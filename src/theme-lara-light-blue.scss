@@ -1,115 +1,16 @@
 @import "~primeng/resources/themes/lara-light-blue/theme.css";
 
-.header-text-md {
-    color: #000;
-    font-size: medium;
-    font-weight: bold;
-}
+* {
+    --increase-color: #00ff59;
+    --decrease-color: #ff1100;
+    --light-blue: var(--blue-100);
+    --hover-bg: #4242424a;
+    --scrollbar-thumb: #24273a;
+    --scrollbar-hover-thumb: #15161c;
+    --surface-bg-exdark: #00012b;
+    --toast-bg-color: #e1a1ff;
+    --toast-text-color: #060d3a;
+    --toast-close-color: #0882a4;
+    --text-color-link: #1000f3;
 
-.cell-class-md {
-    color: #000;
-    font-size: medium;
-    font-weight: bold;
-}
-
-.caption-label-md {
-    color: #000;
-    font-size: medium;
-    font-weight: bold;
-}
-
-.header-text {
-    color: #000;
-    font-size: small;
-    font-weight: bold;
-}
-
-.header-text-expand {
-    color: #000;
-    font-size: small;
-}
-
-.cell-class {
-    color: #000;
-    font-size: small;
-    font-weight: bold;
-}
-
-.caption-label {
-    color: #000;
-    font-size: 0.9rem;
-}
-
-.header-box-special {
-    height: 2rem;
-    color: #000;
-    font-size: 0.9rem;
-}
-
-.header-box-special th {
-    height: 2rem;
-    font-size: 0.9rem;
-    padding: 1rem 1rem;
-}
-
-.header-box-special-trans {
-    height: 2rem;
-    font-size: 0.9rem;
-    background-color: var(--surface-b);
-}
-
-.mdc-button {
-    color: #000000 !important;
-    background-color: transparent !important;
-}
-
-.mdc-button :hover {
-    color: #000000 !important;
-    background-color: inherit !important;
-}
-
-.inline--text-description a {
-    color: var(--blue-400) !important;
-}
-
-a {
-    color: #000 !important;
-}
-
-a :hover {
-    color: #000 !important;
-}
-
-.increased {
-    color: #018e32;
-}
-
-.decreased {
-    color: #720800;
-}
-
-.increased :hover {
-    color: #018e32;
-}
-
-.decreased :hover {
-    color: #720800;
-}
-
-
-.caption-label-special {
-    color: #000;
-    font-size: medium;
-    font-weight: bold;
-}
-
-.caption-label-data {
-    color: var(--blue-900);
-    font-size: medium;
-    font-weight: bold;
-}
-
-.p-datatable .p-datatable-loading-icon {
-    font-size: 10rem !important;
-    color: #00222c !important;
 }

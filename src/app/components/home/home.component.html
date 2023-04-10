@@ -125,11 +125,26 @@
         class="float-start me-1"
       >
         <span>
-          <img
-            [src]="userProfilePictureSource"
-            class="profile-picture-icon"
-          >
+
+          <ng-container *ngIf="isSignedIn;else signedOut">
+            <img
+              [src]="userProfilePictureSource"
+              class="profile-picture-icon"
+            >
+          </ng-container>
+          <ng-template #signedOut>
+            <div
+              *ngIf="!isSignedIn"
+              class="profile-picture-icon"
+            >
+              <i
+                class="fa-regular fa-user"
+                [style]="{'color':'var(--text-primary)','font-size':'2rem'}"
+              ></i>
+            </div>
+          </ng-template>
         </span>
+
       </button>
     </div>
   </span>
@@ -284,17 +299,13 @@
     <p-overlayPanel
       #accountPanel
       (onShow)="onShowAccountMenu($event)"
-      [style]="{'background-color':'var(--surface-a)'}"
+      styleClass="p-overlaypanel-account-menu"
     >
       <ng-template pTemplate>
         <p-menu
+          styleClass="p-menu-account-menu"
           [model]="sessionService.authenticated ? accountMenuItems: signedOutAccountMenuItems"
           class="container w-100 h-100 p-0 m-0"
-          [style]="{
-            'width': '100%',
-            'height':'100%',
-            'background-color':'var(--surface-a)'
-          }"
         >
         </p-menu>
       </ng-template>

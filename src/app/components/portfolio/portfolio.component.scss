@@ -9,17 +9,16 @@
 }
 
 .table-options-panel {
-    background: #000000 !important;
+    background: var(--surface-bg-exdark) !important;
 }
 
 :host ::ng-deep .p-overlaypanel .p-overlaypanel-content {
-    background: #000000 !important;
+    background: var(--surface-bg-exdark) !important;
 }
 
 :host ::ng-deep .p-overlaypanel-content {
-    background: #000000 !important;
+    background: var(--surface-bg-exdark) !important;
 }
-
 
 :host ::ng-deep .p-component-overlay {
     display: none !important;
@@ -27,7 +26,6 @@
 :host ::ng-deep .p-component-overlay-enter {
     display: none !important;
 }
-
 
 :host ::ng-deep .card {
     background: transparent !important;
@@ -40,7 +38,6 @@
     height: 4px !important;
 }
 
-
 /* Track */
 ::-webkit-scrollbar-track {
     background: var(--surface-ground) !important;
@@ -48,11 +45,11 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #24273a !important;
+    background: var(--scrollbar-thumb) !important;
     border-radius: 10px 10px 10px 10px !important;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #31354e !important;
+    background: var(--scrollbar-hover-thumb) !important;
 }

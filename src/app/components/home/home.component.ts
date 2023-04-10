@@ -102,6 +102,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   navOpened: boolean;
   settingsVisible: boolean;
   searchVisible: boolean;
+  isSignedIn: boolean;
 
   searchField: UntypedFormControl = new UntypedFormControl('');
   searchForm: UntypedFormGroup;
@@ -114,7 +115,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   isLoading: boolean;
   verified: boolean;
   searchActive: boolean;
-  userProfilePictureSource: string = '../../../assets/img/robo-default-avatar-icon.png';
+  userProfilePictureSource: string = '../../../assets/img/image_filler_icon_blank.jpg';
   signedOutNavItems: MenuItem[];
   signedInNavItems: MenuItem[];
   accountMenuItems: MenuItem[];
@@ -123,8 +124,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   destroySubject$ = new Subject();
   globalDataView: GlobalDataView = {} as GlobalDataView;
   isGlobalDataLoading: boolean;
-
-  imagePreviewSrc: string = '../assets/img/image_filler_icon_blank.jpg';
   googleIconSrc = '../../../assets/img/google-icon-org.svg';
   userPreferences: UserPreferences = {} as UserPreferences;
   allCoins: BasicCoin[] = [];
@@ -165,17 +164,15 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       (event: Event) => {
         const menuBtn = document.getElementById('settingMenuButton');
         if (this.settingsVisible &&
-          !this.settingsComponent.el.nativeElement.contains(event.target as HTMLElement)
-          && !this.settingsButton.nativeElement.contains(event.target as HTMLElement)
-          && !menuBtn.contains(event.target as HTMLElement)) {
+          (this.settingsComponent && !this.settingsComponent.el.nativeElement.contains(event.target as HTMLElement) &&
+            this.settingsButton && !this.settingsButton.nativeElement.contains(event.target as HTMLElement))
+          ||
+          (menuBtn && !menuBtn.contains(event.target as HTMLElement))) {
           this.settingsVisible = false;
           this.cd.markForCheck();
         }
 
-        if (this.searchVisible &&
-          !this.searchPanel.overlayVisible &&
-          !this.searchButton.nativeElement.contains(event.target as HTMLElement) &&
-          !this.searchInputTarget.nativeElement.contains(event.target as HTMLElement)) {
+        if (this.isEventTargetOutsideSearch(event)) {
           this.searchVisible = false;
           this.cd.markForCheck();
         }
@@ -223,14 +220,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(
         user => {
           this.user = user;
-          if (user !== null &&
-            user !== undefined &&
-            user.photoURL !== null &&
-            user.photoURL !== undefined) {
+          this.isSignedIn = (user && user !== null && user !== undefined);
+          if (this.isSignedIn) {
             this.userProfilePictureSource = user.photoURL;
-          } else {
-            this.userProfilePictureSource = '../../../assets/img/robo-default-avatar-icon.png';
           }
+          this.cd.markForCheck();
+
         });
 
     this.configService.getGlobalStore().state$.select('basicCoins')
@@ -710,4 +705,15 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sessionService.signInWithGithub();
   }
 
+  private isEventTargetOutsideSearch(event: Event): boolean {
+    return this.searchVisible &&
+      !this.searchPanel.overlayVisible &&
+      this.searchButton.nativeElement &&
+      this.searchInputTarget.nativeElement &&
+      !this.searchButton.nativeElement.contains(event.target as HTMLElement) &&
+      !this.searchInputTarget.nativeElement.contains(event.target as HTMLElement);
+  }
+
 }
+
+

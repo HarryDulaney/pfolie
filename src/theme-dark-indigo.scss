@@ -1,1 +1,15 @@
 @import "~primeng/resources/themes/mdc-dark-indigo/theme.css";
+
+* {
+    --increase-color: #00ff59;
+    --decrease-color: #ff1100;
+    --light-blue: var(--blue-100);
+    --hover-bg: #4242424a;
+    --scrollbar-thumb: #24273a;
+    --scrollbar-hover-thumb: #15161c;
+    --surface-bg-exdark: #00012b;
+    --toast-bg-color: #e1a1ff;
+    --toast-text-color: #060d3a;
+    --toast-close-color: #0882a4;
+    --text-color-link: #1000f3;
+}
