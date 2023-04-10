@@ -62,48 +62,48 @@ body {
 }
 
 .header-text-md {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: medium;
   font-weight: bold;
 }
 
 .cell-class-md {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: medium;
   font-weight: bold;
 }
 
 .caption-label-md {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: medium;
   font-weight: bold;
 }
 
 .header-text {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: small;
   font-weight: bold;
 }
 
 .header-text-expand {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: small;
 }
 
 .cell-class {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: small;
   font-weight: bold;
 }
 
 .caption-label {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: 0.9rem;
 }
 
 .header-box-special {
   height: 2rem;
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: 0.9rem;
 }
 
@@ -115,7 +115,7 @@ body {
 
 .header-box-special-trans {
   height: 2rem;
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: 0.9rem;
   background-color: var(--surface-b);
 }
@@ -162,12 +162,12 @@ body {
 }
 
 .mdc-button {
-  color: var(--text-primary);
+  color: var(--text-color);
   background-color: transparent !important;
 }
 
 .mdc-button :hover {
-  color: var(--text-primary);
+  color: var(--text-color);
   background-color: inherit !important;
 }
 
@@ -176,11 +176,11 @@ body {
 }
 
 a {
-  color: var(--text-primary);
+  color: var(--text-color);
 }
 
 a :hover {
-  color: var(--text-primary);
+  color: var(--text-color);
 }
 
 p-header {
@@ -271,7 +271,7 @@ p-table .custom-spinner {
 }
 
 .caption-label-special {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: medium;
   font-weight: bold;
 }
@@ -334,7 +334,7 @@ p-table .custom-spinner {
 }
 
 .header-text {
-  color: var(--text-primary);
+  color: var(--text-color);
   font-size: medium;
   font-weight: bold;
 }
@@ -388,7 +388,7 @@ p-table .custom-spinner {
 
 #hide--button {
   z-index: 99999 !important;
-  color: var(--text-primary) !important;
+  color: var(--text-color) !important;
   border: 1px solid var(--primary-color);
 }
 
@@ -407,3 +407,4 @@ p-table .custom-spinner {
   border: none;
   background-color:var(--hover-bg) !important;
 }
+

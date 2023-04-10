@@ -3,12 +3,12 @@
 }
 
 * {
-    color: var(--text-primary) !important;
+    color: var(--text-color) !important;
 }
 
 .fed-sign-in-btn-main {
     width: 100% !important;
-    border: 1px solid #f5f5f548;
+    border: 1px solid var(--hover-bg) !important;
     border-radius: 4px;
     text-decoration: none;
     cursor: pointer;

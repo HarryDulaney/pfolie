@@ -26,56 +26,62 @@
                 </div>
             </div>
         </div>
+
         <!-- Trending -->
         <span class="row text-center w-100">
             <p-header style="font-size: 0.9rem; font-weight: bold;">Top Market Share</p-header>
         </span>
         <!-- Top Global by market share -->
-        <div class="card m-1 p-1 w-100 border-0 border-transparent">
-            <div class="flex flex-wrap justify-content-evenly gap-3">
+        <div class="card w-100 border-0 border-transparent">
+            <div class="flex flex-wrap justify-content-evenly gap-1">
                 <div *ngFor="let g of topMarketShareItems; index as i; count as c;">
                     <p-card
                         (click)="onCardClicked(g)"
-                        [style]="{'max-width':'90vw','height':'200px','width':'300px','cursor':'pointer','overflow': 'hidden'}"
-                        class="border-round m-2"
+                        [style]="{'max-width':'90vw','height':'160px','width':'200px','cursor':'pointer','overflow': 'hidden'}"
+                        class="border-round"
                     >
                         <ng-template pTemplate="header">
-                            <app-sparkline
-                                [style]="{'position':'absolute','opacity':'0.3'}"
-                                [maxWidth]="'100%'"
-                                [maxHeight]="'100%'"
-                                [width]="'300px'"
-                                [height]="'200px'"
-                                [color]="'#006aff'"
-                                [chart-data]="g.sparkline"
-                                [xaxis-labels]="coinDataService.getSparklineLabels()"
-                            >
-                            </app-sparkline>
-                            <div
-                                *ngIf="g.price_change_24h >= 0"
-                                class="increased text-xl float-end p-2"
-                            >
-                                <span>{{g.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
-
-                            </div>
-                            <div
-                                *ngIf="g.price_change_24h < 0"
-                                class="decreased text-xl float-end p-2"
-                            >
-                                <span>{{g.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
-                            </div>
-                            <div>
-                                <img
-                                    class="w-4rem h-auto border-round p-2"
-                                    alt="trending-item-img"
-                                    [src]="g.image"
-                                    [style]="{'max-width':'4rem'}"
+                            <div style="position:relative;width:100%;height:100%;z-index:1 !important;">
+                                <app-sparkline
+                                    [style]="{'position':'absolute','opacity':'0.3','z-index':'0'}"
+                                    [maxWidth]="'100%'"
+                                    [maxHeight]="'100%'"
+                                    [width]="'200px'"
+                                    [height]="'160px'"
+                                    [color]="sparklineColor"
+                                    [chart-data]="g.sparkline"
+                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
                                 >
+                                </app-sparkline>
                             </div>
-                            <div class="text-white float-end m-1 p-2 text-3xl">{{g.name}}</div>
-                            <div class="center float-start m-1 p-2 text-xl">
-                                <div [class]="g.price_change_24h < 0 ? 'decreased':'increased'">
-                                    {{g.current_price}}
+                            <div style="position:relative;width:100%;height:100%;z-index:99999999 !important;">
+
+                                <div
+                                    *ngIf="g.price_change_24h >= 0"
+                                    class="increased text-md float-end p-1 z-3"
+                                >
+                                    <span class="z-3">{{g.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
+
+                                </div>
+                                <div
+                                    *ngIf="g.price_change_24h < 0"
+                                    class="decreased text-md float-end p-1 z-3"
+                                >
+                                    <span>{{g.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
+                                </div>
+                                <div>
+                                    <img
+                                        class="w-4rem h-auto border-round p-1"
+                                        alt="trending-item-img"
+                                        [src]="g.image"
+                                        [style]="{'max-width':'4rem','z-index':'1001'}"
+                                    >
+                                </div>
+                                <div class="float-end m-1 p-1 text-md z-3">{{g.name}}</div>
+                                <div class="center float-start m-1 p-2 text-md z-3">
+                                    <div [class]="g.price_change_24h < 0 ? 'decreased':'increased'">
+                                        {{g.current_price}}
+                                    </div>
                                 </div>
                             </div>
                         </ng-template>
@@ -89,67 +95,73 @@
                 </div>
 
                 <span class="flex-grow-1 text-center w-100">
-                    <p-header style="font-size: 0.9rem; font-weight: bold;">Top Trading Activity</p-header>
+                    <p-header style="font-size: 0.9rem; font-weight: bold;">Trending Trading Activity</p-header>
                 </span>
 
                 <div *ngFor="let t of trendingItems; index as i; count as c;">
-                        <p-card
-                            (click)="onCardClicked(t)"
-                            class="border-round m-2"
-                            [style]="{'max-width':'90vw','height':'200px','width':'300px','cursor':'pointer','overflow': 'hidden'}"
-                        >
+                    <p-card
+                        (click)="onCardClicked(t)"
+                        class="border-round"
+                        [style]="{'max-width':'90vw','height':'160px','width':'200px','cursor':'pointer','overflow': 'hidden'}"
+                    >
 
-                            <ng-template pTemplate="header">
+                        <ng-template pTemplate="header">
+                            <div style="position:relative;width:100%;height:100%;z-index:1 !important;">
                                 <app-sparkline
                                     [style]="{'position':'absolute','opacity':'0.3'}"
                                     [maxWidth]="'100%'"
                                     [maxHeight]="'100%'"
-                                    [width]="'300px'"
-                                    [height]="'200px'"
-                                    [color]="'#006aff'"
+                                    [width]="'200px'"
+                                    [height]="'160px'"
+                                    [color]="sparklineColor"
                                     [chart-data]="t.sparkline"
                                     [xaxis-labels]="coinDataService.getSparklineLabels()"
                                 >
                                 </app-sparkline>
+                            </div>
+                            <div style="position:relative;width:100%;height:100%;z-index:99999999 !important;">
                                 <div
                                     *ngIf="t.price_change_24h >= 0"
-                                    class="increased text-xl float-end p-2"
+                                    class="increased text-md float-end p-1 z-3"
                                 >
-                                    <span>{{t.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
+                                    <span class="z-3">{{t.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
 
                                 </div>
                                 <div
                                     *ngIf="t.price_change_24h < 0"
-                                    class="decreased text-xl float-end p-2"
+                                    class="decreased text-md float-end p-1 z-3"
                                 >
-                                    <span>{{t.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
+                                    <span class="z-3">{{t.price_change_24h + '%'}}<i
+                                            class="fa fa-arrow-down"></i></span>
                                 </div>
                                 <div>
                                     <img
-                                        class="w-4rem h-auto border-round p-2"
+                                        class="w-4rem h-auto border-round p-1 z-3"
                                         alt="trending-item-img"
                                         [src]="t.image"
                                         [style]="{'max-width':'4rem'}"
                                     >
                                 </div>
-                                <div class="text-white float-end m-1 p-2 text-3xl">{{t.name}}</div>
-                                <div class="center float-start m-1 p-2 text-xl">
+                                <div class="float-end m-1 p-1 text-md z-3">{{t.name}}</div>
+                                <div class="center float-start m-1 p-1 text-md z-3">
                                     <div [class]="t.price_change_24h < 0 ? 'decreased':'increased'">
                                         {{t.current_price}}
                                     </div>
                                 </div>
-                            </ng-template>
-                            <ng-template pTemplate="body">
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="body">
 
-                            </ng-template>
-                            <ng-template pTemplate="footer">
+                        </ng-template>
+                        <ng-template pTemplate="footer">
 
-                            </ng-template>
-                        </p-card>
+                        </ng-template>
+                    </p-card>
                 </div>
             </div>
         </div>
-        <!-- ------------------------ Coins By Market Cap---------------------- -->
+
+        <!-- ------------------------ Crypto Table By Market Cap---------------------- -->
         <div class="col-12 w-100">
             <div class="card">
                 <p-table
@@ -246,6 +258,7 @@
                                 [style]="{'padding':'0.1rem 0.1rem'}"
                             >
                                 <app-sparkline
+                                    [color]="sparklineColor"
                                     [maxHeight]="'3rem'"
                                     [maxWidth]="'12rem'"
                                     [chart-data]="coinMarket[mainColumnDefs[8].field]"
@@ -260,4 +273,5 @@
 
             </div>
         </div>
+
     </div>

@@ -46,6 +46,8 @@ if (env === 'production') {
   app.use(enforceSsl);
 }
 
+app.use(require('cookie-parser')());
+
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('*', cors(corsOptions));
