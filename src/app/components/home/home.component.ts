@@ -163,13 +163,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe(
       (event: Event) => {
         const menuBtn = document.getElementById('settingMenuButton');
-        if (this.settingsVisible &&
-          (this.settingsComponent && !this.settingsComponent.el.nativeElement.contains(event.target as HTMLElement) &&
-            this.settingsButton && !this.settingsButton.nativeElement.contains(event.target as HTMLElement))
-          ||
-          (menuBtn && !menuBtn.contains(event.target as HTMLElement))) {
-          this.settingsVisible = false;
-          this.cd.markForCheck();
+        if (this.settingsComponent && this.settingsComponent.visible) {
+          if (this.isEventTargetOutsideSettings(event, menuBtn)) {
+            this.settingsVisible = false;
+            this.settingsComponent.visible = false;
+            this.cd.markForCheck();
+          }
         }
 
         if (this.isEventTargetOutsideSearch(event)) {
@@ -178,6 +177,23 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     );
+  }
+
+  isEventTargetOutsideSettings(event: Event, menuBtn: HTMLElement) {
+    if (this.settingsComponent.el.nativeElement.contains(event.target)) {
+      return false;
+    }
+
+    if (this.settingsButton && this.settingsButton.nativeElement.contains(event.target)) {
+      return false;
+    }
+
+    if (menuBtn && menuBtn.contains(event.target as HTMLElement)) {
+      return false;
+    }
+
+    return true;
+
   }
 
 
