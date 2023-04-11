@@ -103,7 +103,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   settingsVisible: boolean;
   searchVisible: boolean;
   isSignedIn: boolean;
-
+  mainLogoSrc: string = '../../../assets/img/pfolie-logo-1-white.png';
   searchField: UntypedFormControl = new UntypedFormControl('');
   searchForm: UntypedFormGroup;
   toast: Toast;
@@ -179,58 +179,18 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  isEventTargetOutsideSettings(event: Event, menuBtn: HTMLElement) {
-    if (this.settingsComponent.el.nativeElement.contains(event.target)) {
-      return false;
-    }
-
-    if (this.settingsButton && this.settingsButton.nativeElement.contains(event.target)) {
-      return false;
-    }
-
-    if (menuBtn && menuBtn.contains(event.target as HTMLElement)) {
-      return false;
-    }
-
-    return true;
-
-  }
-
-
-  ngAfterViewInit(): void {
-    this.searchForm.get('searchField').valueChanges.pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe(word => {
-      if (!this.searchPanel.overlayVisible) {
-        this.searchPanel.show(new Event("change"), this.searchInputTarget.nativeElement);
-      }
-      this.configService.filter(word);
-    });
-
-    this.toastService.messageEmitter.pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe((toastMessage: ToastMessage) => {
-      this.showToast(toastMessage);
-    });
-
-    this.searchPanel.onShow.pipe(
-      takeUntil(this.destroySubject$),
-      switchMap(show => {
-        return this.searchComponent.onSelect;
-      })
-    ).subscribe(
-      selected => {
-        if (selected) {
-          this.searchPanel.hide();
-          this.navService.navigateTo(selected);
-        }
-      });
-  }
-
 
   ngOnInit() {
     this.userPreferences = this.configService.getPreferences();
-
+    this.themeService.themeSource$.pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe(
+      theme => {
+        this.theme = theme;
+        this.mainLogoSrc = this.theme.includes('dark') ? '../../../assets/img/pfolie-logo-1-white.png' : '../../../assets/img/pfolie-logo-1.png';
+        this.cd.markForCheck();
+      }
+    );
     this.sessionService.getAuth()
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(
@@ -281,6 +241,54 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     )
 
+  }
+
+  isEventTargetOutsideSettings(event: Event, menuBtn: HTMLElement) {
+    if (this.settingsComponent.el.nativeElement.contains(event.target)) {
+      return false;
+    }
+
+    if (this.settingsButton && this.settingsButton.nativeElement.contains(event.target)) {
+      return false;
+    }
+
+    if (menuBtn && menuBtn.contains(event.target as HTMLElement)) {
+      return false;
+    }
+
+    return true;
+
+  }
+
+
+  ngAfterViewInit(): void {
+    this.searchForm.get('searchField').valueChanges.pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe(word => {
+      if (!this.searchPanel.overlayVisible) {
+        this.searchPanel.show(new Event("change"), this.searchInputTarget.nativeElement);
+      }
+      this.configService.filter(word);
+    });
+
+    this.toastService.messageEmitter.pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe((toastMessage: ToastMessage) => {
+      this.showToast(toastMessage);
+    });
+
+    this.searchPanel.onShow.pipe(
+      takeUntil(this.destroySubject$),
+      switchMap(show => {
+        return this.searchComponent.onSelect;
+      })
+    ).subscribe(
+      selected => {
+        if (selected) {
+          this.searchPanel.hide();
+          this.navService.navigateTo(selected);
+        }
+      });
   }
 
 

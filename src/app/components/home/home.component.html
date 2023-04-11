@@ -8,7 +8,7 @@
   >
     <i
       class="pi pi-bars"
-      [style]="{'margin-top': '10px'}"
+      [style]="{'margin-top': '10px','color':'var(--text-color)'}"
     ></i>
   </button>
   <button
@@ -16,8 +16,10 @@
     (click)="home()"
   >
     <span class="px-3">
-      <span class="nav-title-exaggerate">P</span>
-      <span class="nav-title">{{navbarTitleEnd}}</span>
+      <img
+        class="main-logo"
+        [src]="mainLogoSrc"
+      />
     </span>
   </button>
   <span class="navbar-message">
@@ -26,8 +28,8 @@
       style="font-size: 0.7rem;"
       [hidden]="(screenSize === 'XSmall' || screenSize === 'Small')"
     >
-      <span class="text-blue-200">Market Cap:</span>
-      <span class="text-white">
+      <span class="tbar-stat-title">Market Cap:</span>
+      <span class="tbar-stat">
         {{globalDataView.total_market_cap_usd_formated}}
       </span>
       <span
@@ -52,17 +54,17 @@
           ></i></span>
       </span>
       <span class="mx-2"></span>
-      <span class="text-blue-200">24hr Volume:</span>
+      <span class="tbar-stat-title">24hr Volume:</span>
       <span class="mr-1"></span>
-      <span class="text-white">{{globalDataView.total_volume_formated}} </span>
+      <span class="tbar-stat">{{globalDataView.total_volume_formated}} </span>
       <span class="mx-2"></span>
-      <span class="text-blue-200">Active Currencies:</span>
+      <span class="tbar-stat-title">Active Currencies:</span>
       <span class="mr-1"></span>
-      <span class="text-white">{{globalDataView.active_cryptocurrencies}} </span>
+      <span class="tbar-stat">{{globalDataView.active_cryptocurrencies}} </span>
       <span class="mx-2"></span>
-      <span class="text-blue-200">Markets:</span>
+      <span class="tbar-stat-title">Markets:</span>
       <span class="mr-1"></span>
-      <span class="text-white">{{globalDataView.markets}} </span>
+      <span class="tbar-stat">{{globalDataView.markets}} </span>
     </span>
   </span>
   <span class="toolbar-nav-itmes">
@@ -117,7 +119,7 @@
       </span>
     </button>
 
-    <div class="p-1 mt-2 ms-5">
+    <div class="p-1 mt-2 ms-2">
       <button
         mat-icon-button
         type="button"
@@ -138,8 +140,8 @@
               class="profile-picture-icon"
             >
               <i
-                class="fa-regular fa-user"
-                [style]="{'color':'var(--text-primary)','font-size':'1.6rem'}"
+                class="fa fa-user-ninja"
+                [style]="{'color':'var(--text-primary)','font-size':'1.4rem'}"
               ></i>
               <i
                 class="fa-regular fa-chevron-down"
