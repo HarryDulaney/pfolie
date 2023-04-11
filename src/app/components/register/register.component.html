@@ -1,6 +1,12 @@
 <div class="surface-card p-1 shadow-2 border-round w-full h-full">
     <div class="text-center">
-        <img src="../../../assets/donut_small_white_24dp.svg" alt="Image" height="30" class="mb-1">
+            <div class="login-logo">
+                <img
+                    [src]='mainLogoSrc'
+                    alt="Image"
+                    class="mb-1"
+                >
+            </div>
         <div class="text-900 text-3xl font-medium mb-1">Create Account</div>
         <span class="text-600 font-medium line-height-1">Already have an account?</span>
         <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer" (click)="navigateLogin()">Sign In!</a>

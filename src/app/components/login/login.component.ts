@@ -55,7 +55,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this.destroySubject$.next(true);  
+    this.destroySubject$.complete();
   }
 
   googleSignIn() {

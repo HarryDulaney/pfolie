@@ -149,7 +149,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe(
       screenSize => {
         this.screenSize = screenSize;
-        if (this.screenSize === Const.SCREEN_SIZE.XS) {
+        if (this.screenService.isMobileScreen(screenSize)) {
           this.navOpened = false;
           this.cd.markForCheck();
         } else {
@@ -214,7 +214,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
       );
 
-    if (this.screenSize === Const.SCREEN_SIZE.XS) {
+    if (this.screenService.isMobileScreen(this.screenSize)) {
       this.navService.navExpandedSource$.next(false);
     } else {
 
