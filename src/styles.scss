@@ -1,5 +1,8 @@
 @import "~primeng/resources/primeng.min.css";
 @import "~@angular/material/prebuilt-themes/purple-green.css";
+@import "~@fortawesome/fontawesome-free/css/brands.css";
+@import "~@fortawesome/fontawesome-free/css/regular.css";
+@import "~@fortawesome/fontawesome-free/css/solid.css";
 @import "~@fortawesome/fontawesome-free/css/all.css";
 @import "~@fortawesome/fontawesome-free/css/fontawesome.css";
 @import "~bootstrap/dist/css/bootstrap.css";
@@ -44,7 +47,7 @@ body {
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-hover-thumb)
+  background: var(--scrollbar-hover-thumb);
 }
 
 /* ========================== Cards ============================ */
@@ -198,6 +201,13 @@ p-header {
   font-weight: bold !important;
 }
 
+.main-logo {
+  width: auto !important;
+  max-height: 64px !important;
+  height: 100%;
+  object-fit: contain;
+}
+
 .mat-drawer {
   background-color: var(--surface-ground);
   border: none;
@@ -213,6 +223,7 @@ p-header {
   height: 2.75rem;
   overflow-y: auto;
 }
+
 
 .nav-scroller .nav {
   display: -webkit-box;
@@ -405,6 +416,5 @@ p-table .custom-spinner {
 
 .p-button-icon-only:hover {
   border: none;
-  background-color:var(--hover-bg) !important;
+  background-color: var(--hover-bg) !important;
 }
-

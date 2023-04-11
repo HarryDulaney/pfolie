@@ -1,17 +1,19 @@
 @import "~primeng/resources/themes/mdc-light-indigo/theme.css";
 
 * {
-    --increase-color: #00ff59;
-    --decrease-color: #ff1100;
-    --light-blue: var(--blue-100);
-    --hover-bg: #4242424a;
-    --scrollbar-thumb: #24273a;
-    --scrollbar-hover-thumb: #15161c;
+    --increase-color: #00a53a;
+    --decrease-color: #a10d02;
+    --light-blue: var(--blue-900);
+    --hover-bg: #42424272;
+    --scrollbar-thumb: #161824;
+    --scrollbar-hover-thumb: #070709;
     --surface-bg-exdark: #00012b;
-    --toast-bg-color: #e1a1ff;
-    --toast-text-color: #060d3a;
-    --toast-close-color: #0882a4;
-    --text-color-link: #1000f3;
-    --sparkline-color: #006aff;
-    --star-color: rgb(252, 255, 81);
+    --toast-bg-color: #eccefa;
+    --toast-text-color: #010837;
+    --toast-close-color: #002632;
+    --text-color-link: #0a0185;
+    --star-color: rgb(186, 189, 11);
+    --sparkline-color: #011f49;
+    --text-exag-title-color: var(--blue-900);
+    --text-exag-for-color: #000;
 }
