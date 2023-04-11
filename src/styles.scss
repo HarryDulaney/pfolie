@@ -217,13 +217,18 @@ p-header {
   background-color: var(--surface-ground);
 }
 
+.login-logo img {
+  width: auto;
+  max-height: 64px !important;
+  height: 100%;
+}
+
 .nav-scroller {
   position: relative;
   z-index: 2;
   height: 2.75rem;
   overflow-y: auto;
 }
-
 
 .nav-scroller .nav {
   display: -webkit-box;

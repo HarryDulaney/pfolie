@@ -1,26 +1,31 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, NgModel, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SessionService } from 'src/app/services/session.service';
 import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { NgIf } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
+import { ThemeService } from 'src/app/services/theme.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-    selector: 'app-register',
-    templateUrl: './register.component.html',
-    standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, InputTextModule, NgIf, ButtonModule, RippleModule]
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, InputTextModule, NgIf, ButtonModule, RippleModule]
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
+  destroySubject$ = new Subject();
 
   registerForm: UntypedFormGroup;
   private e1: string = '';
   private p1: string = '';
   emailMatchError: boolean;
   pwordMatchError: boolean;
+  mainLogoSrc = "../../../assets/img/pfolie-logo-1-white.png";
 
   constructor(private sessionService: SessionService,
+    private themeService: ThemeService,
     public cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
@@ -69,7 +74,24 @@ export class RegisterComponent implements OnInit {
       this.pwordMatchError = false;
     });
 
+    this.themeService.themeSource$.pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe((theme) => {
+      if (theme) {
+        if (theme.includes('dark')) {
+          this.mainLogoSrc = "../../../assets/img/pfolie-logo-1-white.png";
+        } else {
+          this.mainLogoSrc = "../../../assets/img/pfolie-logo-1-black.png";
+        }
+      }
+    });
 
+
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubject$.next(true);
+    this.destroySubject$.complete();
   }
 
   navigateLogin() {
