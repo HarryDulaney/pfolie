@@ -1,4 +1,4 @@
-<div class="p-component container mt-5">
+<div class=" container mt-5">
   <span class="row w-100">
 
     <!-- Title Banner (Asset/Coin Logo/ Homepage link) -->
@@ -21,7 +21,7 @@
     <div class="col-4">
       <span class="d-flex flex-row row w-100">
         <span class="chart-type-btn-wrapper">
-<!--           <button
+          <!--           <button
             mat-flat-button
             class="col w-33"
             [pTooltip]="'Maximize Chart'"
@@ -35,14 +35,14 @@
           </ng-template>
           </button> -->
           <button
-            mat-flat-button
+            id="priceSwapBtn"
             class="col w-33"
             [ngClass]="{'active-chart': chartType === 'price', 'inactive-chart': chartType === 'volume'}"
             (click)="chartType = 'price'"
           > Price
           </button>
           <button
-            mat-flat-button
+            id="volumeSwapBtn"
             class="col w-33"
             [ngClass]="{'active-chart': chartType === 'volume', 'inactive-chart': chartType === 'price'}"
             (click)="chartType = 'volume'"
@@ -87,35 +87,32 @@
       </div>
       <div class="col-12 lg:col-4">
         <h3
-          class="p-component lrg-card-content"
+          class="lrg-card-content"
           [hidden]="!symbol"
         ><span class="font-monospace">Symbol:
           </span>
-          <span class="p-component dynamic-content">{{symbol}}</span>
+          <span class=" dynamic-content">{{symbol}}</span>
         </h3>
         <h3
-          class="p-component lrg-card-content"
+          class="lrg-card-content"
           [hidden]="!hashingAlgo"
         ><span class="font-monospace">Hashing Algorithm:
           </span>
-          <span class="p-component dynamic-content">{{hashingAlgo}}</span>
+          <span class="dynamic-content">{{hashingAlgo}}</span>
         </h3>
-        <h3 class="p-component lrg-card-content"><span class="font-monospace">CoinGecko Rank: </span><span
-            class="p-component dynamic-content"
-          >{{rank}}</span></h3>
-        <h3 class="p-component lrg-card-content"><span class="font-monospace">CoinGecko Score: </span> <span
-            class="p-component dynamic-content"
-          >{{score}}</span></h3>
+        <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Rank: </span><span
+            class="dynamic-content">{{rank}}</span></h3>
+        <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Score: </span> <span
+            class="dynamic-content">{{score}}</span></h3>
         <div *ngIf="countryOfOrigin">
-          <h3 class="p-component lrg-card-content"><span class="font-monospace">Country Origin: </span> <span
+          <h3 class="lrg-card-content"><span class="font-monospace">Country Origin: </span> <span
               class="dynamic-content"
             >{{countryOfOrigin}}</span></h3>
         </div>
-        <h3 class="p-component lrg-card-content"><span class="font-monospace">Current Price: </span> <span
-            class="dynamic-content"
-          >{{currentPrice}}</span></h3>
+        <h3 class="lrg-card-content"><span class="font-monospace">Current Price: </span> <span
+            class="dynamic-content">{{currentPrice}}</span></h3>
 
-        <h3 class="p-component lrg-card-content font-monospace"><span>Categories: </span></h3>
+        <h3 class="lrg-card-content font-monospace"><span>Categories: </span></h3>
         <span
           *ngFor="let category of categories"
           class="med-card-content"
@@ -126,9 +123,9 @@
           ></p-chip>
         </span>
 
-        <h3 class="p-component lrg-card-content font-monospace"><span>Community: </span></h3>
+        <h3 class="lrg-card-content font-monospace"><span>Community: </span></h3>
         <span
-          class="text-white"
+          class="chip-element-text"
           [hidden]="!chatChannel"
         >
           <a
@@ -137,7 +134,7 @@
           >
             <p-chip
               [label]="'Chat Channel'"
-              styleClass="bg-blue-900 m-1"
+              styleClass="chip-element-text m-1"
               pTooltip="{{chatChannel}}"
             >
               <i class="fa fa-comment"></i>&nbsp;
@@ -146,7 +143,7 @@
         </span>
 
         <span
-          class="text-white"
+          class="chip-element-text"
           [hidden]="!subReddit"
         >
           <a
@@ -155,7 +152,7 @@
           >
             <p-chip
               [label]="'Reddit'"
-              styleClass="bg-blue-900 m-1"
+              styleClass="chip-element-text m-1"
               pTooltip="{{subReddit}}"
             >
               <i class="fa-brands fa-reddit"></i>&nbsp;
@@ -164,7 +161,7 @@
         </span>
 
         <span
-          class="text-white"
+          class="chip-element-text"
           [hidden]="!githubRepoUrl"
         >
           <a
@@ -173,7 +170,7 @@
           >
             <p-chip
               [label]="'GitHub'"
-              styleClass="bg-blue-900 m-1"
+              styleClass="chip-element-text m-1"
               pTooltip="{{githubRepoUrl}}"
             >
               <i class="fa-brands fa-github"></i>&nbsp;
@@ -181,17 +178,15 @@
           </a>
         </span>
 
-        <span
-          class="text-white"
-          [hidden]="!blockChainSite"
-        >
+        <span [hidden]="!blockChainSite" class="chip-element-text-dark">
           <a
             class="basic-card-link card-link"
             [href]=blockChainSite
           >
             <p-chip
+              class="chip-element-text-dark"
               [label]="'Blockchain Site'"
-              styleClass="bg-blue-900 m-1"
+              styleClass="m-1"
               pTooltip="{{blockChainSite}}"
             >
             </p-chip>
@@ -199,7 +194,7 @@
         </span>
 
         <span
-          class="text-white"
+          class="chip-element-text"
           [hidden]="!officialForum"
         >
           <a
@@ -208,14 +203,14 @@
           >
             <p-chip
               [label]="'Official Forum'"
-              styleClass="bg-blue-900 m-1"
+              styleClass="chip-element-text m-1"
               pTooltip="{{officialForum}}"
             >
             </p-chip>
           </a>
         </span>
 
-        <h3 class="p-component lrg-card-content font-monospace"><span>Social Media: </span></h3>
+        <h3 class="lrg-card-content font-monospace"><span>Social Media: </span></h3>
         <span
           class="text-white"
           [hidden]="!twitterScreenName"
@@ -318,6 +313,7 @@
           </tr>
         </ng-template>
       </p-table>
-p    </div>
+      p
+    </div>
   </div>
 </div>
