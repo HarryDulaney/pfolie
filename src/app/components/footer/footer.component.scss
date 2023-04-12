@@ -8,14 +8,15 @@ footer {
   margin-top: 1rem;
   list-style: none;
   overflow-x: hidden;
+  color: var(--text-color);
 }
 
 .nav-link {
-  color: #fff;
+  color: var(--text-color) !important;
 }
 
 .footer-link {
   text-decoration: none !important;
   font-size: 1rem !important;
-  color: #bdbdbd !important;
+  color: var(--text-color-secondary) !important;
 }

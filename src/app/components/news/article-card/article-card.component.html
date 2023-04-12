@@ -10,7 +10,7 @@
         <ng-template pTemplate="header">
             <div
                 id="article-date"
-                class="text-gray-100 text-500 float-end pt-1 ps-1 pe-1 pb-0"
+                class="float-end pt-1 ps-1 pe-1 pb-0"
             >{{feedContent.publishedDate | date: 'fullDate'}}
             </div>
             <div *ngIf="showImagePreview && feedContent.featureImageUrl !== ''">
@@ -24,7 +24,7 @@
         </ng-template>
         <ng-template pTemplate="body">
             <div
-                class="text-white text-sm center m-0 p-0"
+                class="news-card-title text-sm center m-0 p-0"
             >{{feedContent.title}}</div>
         </ng-template>
         <ng-template pTemplate="footer">

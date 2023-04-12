@@ -1,5 +1,5 @@
 import { DatePipe, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FeedItem, ParsedFeedItem } from 'src/app/models/rssfeed';
 import { ArticleService } from '../article.service';
 import { SharedModule } from 'primeng/api';
@@ -25,7 +25,7 @@ import { CardModule } from 'primeng/card';
     text-decoration: none;
   }
   #article-card button {
-    border-color: var(--blue-700) !important;
+    border-color: var(--text-color-secondary) !important;
     border-style: solid !important;
     border-radius: 15px !important;
     border-width: 1px !important;
@@ -33,10 +33,15 @@ import { CardModule } from 'primeng/card';
 
 #article-date {
     font-size: 0.7rem;
+    color: var(--text-color-secondary);
 }
 
 .article-category {
     margin: 0.3rem;
+}
+.news-card-title {
+  color: var(--text-color);
+  fontweight: bold;
 }
 
 ::ng-deep .p-card .p-card-title {

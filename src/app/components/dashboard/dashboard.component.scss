@@ -14,6 +14,13 @@ tr td {
     margin: 1px auto;
 }
 
+.dash-section-title {
+    color: var(--text-color);
+    margin-bottom: 0.9rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
 .caption-label-md {
     background-color: transparent !important;
 }
@@ -38,7 +45,6 @@ tr td {
 :host ::ng-deep .p-card:hover {
     transform: scale(1.05);
 }
-
 
 :host ::ng-deep .p-card:hover {
     transform: scale(1.05);
