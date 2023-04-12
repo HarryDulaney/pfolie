@@ -1,8 +1,6 @@
 mat-toolbar {
   position: fixed;
-  background-color: var(--surface-ground);
-  -webkit-backdrop-filter: blur(20px) !important;
-  backdrop-filter: blur(20px) !important;
+  background-color: var(--main-toolbar-bg-color);
   left: 0;
   right: 0;
   top: 0;
@@ -17,11 +15,6 @@ mat-toolbar {
 
 .tbar-stat {
   color: var(--text-exag-for-color);
-}
-
-.main-toolbar {
-  -webkit-backdrop-filter: blur(20px) !important;
-  backdrop-filter: blur(20px) !important;
 }
 
 ::ng-deep .p-menu {
