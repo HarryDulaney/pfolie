@@ -9,18 +9,37 @@
   margin-bottom: 1rem;
 }
 
+#priceSwapBtn,
+#volumeSwapBtn {
+  color: var(--text-color) !important;
+  border-radius: 5px 5px 5px 5px;
+  border: solid 1px var(--hover-bg) !important;
+}
+
 .active-chart {
   background-color: var(--hover-bg) !important;
   border: solid 1px var(--hover-bg) !important;
+  color: var(--text-color) !important;
   font-weight: bold;
-}
-
-.active-chart:hover {
-  background-color: unset !important;
 }
 
 .inactive-chart {
   background-color: transparent !important;
+  color: var(--text-color) !important;
+  border: solid 1px var(--hover-bg) !important;
+  font-weight: normal;
+}
+
+.active-chart:hover {
+  background-color: var(--hover-bg) !important;
+  border: solid 1px var(--hover-bg) !important;
+  color: var(--text-color) !important;
+  font-weight: bold;
+}
+
+.inactive-chart:hover {
+  background-color: transparent !important;
+  color: var(--text-color) !important;
   border: solid 1px var(--hover-bg) !important;
   font-weight: normal;
 }
@@ -81,6 +100,22 @@
   color: var(--text-color);
 }
 
+i {
+  color: var(--text-negative-color) !important;
+}
+
+:host ::ng-deep .p-chip-text {
+  color: var(--text-negative-color) !important;
+}
+
+.chip-element-text {
+  color: var(--text-negative-color) !important;
+}
+
+.chip-element-text-dark {
+  color: var(--text-color) !important;
+}
+
 .med-card-content {
   font-size: medium;
   font-weight: bold;
@@ -99,6 +134,10 @@
 
 .basic-card-link {
   font-weight: bold;
-  color: var(--text-color-link);
+  color: var(--text-color-link) !important;
   text-decoration: none;
+}
+
+.chip-dark {
+  background-color: var(--surface-bg-exdark) !important;
 }
