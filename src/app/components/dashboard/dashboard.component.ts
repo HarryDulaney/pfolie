@@ -1,4 +1,4 @@
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -17,6 +17,12 @@ import { CardModule } from 'primeng/card';
 import { NewsCaroselComponent } from '../news/news-carosel/news-carosel.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollTopModule } from 'primeng/scrolltop';
+import { TrendingCardComponent } from '../cards/trending-card/trending-card.component';
+import * as Const from '../../constants';
+import { TooltipModule } from 'primeng/tooltip';
+import firebase from 'firebase/compat/app';
+import { EditableCardComponent } from '../cards/editable-card/editable-card.component';
+import { CoinMarket } from 'src/app/models/coin-gecko';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +31,7 @@ import { ScrollTopModule } from 'primeng/scrolltop';
   providers: [DashboardService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ScrollTopModule, ProgressSpinnerModule, NewsCaroselComponent, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, TableModule, DeltaIcon]
+  imports: [EditableCardComponent, NgClass, TooltipModule, ScrollTopModule, ProgressSpinnerModule, NewsCaroselComponent, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, TableModule, DeltaIcon, TrendingCardComponent]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
@@ -45,13 +51,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   first = 0;
   rows = 100;
   totalRecords = 0;
-  sparklineColor = '#006aff';
-
+  isTracked = false;
+  tooltipOptions = Const.TOOLTIP_OPTIONS;
   isTrendingLoading: boolean;
   loadingIcon = 'pi pi-spin pi-spinner';
   isCoinsByMarketCapLoading: boolean;
   isGlobalDataLoading: boolean;
 
+  private user: firebase.User = null;
   mainColumnDefs = [
     { header: "Icon", field: 'image' },
     { header: "Name", field: 'name' },
@@ -68,7 +75,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     public coinDataService: CoinDataService,
-    public pieChartService: PieChartService,
     public sessionService: SessionService,
     private screenService: ScreenService,
     private dashboardService: DashboardService,
@@ -103,6 +109,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isTrendingLoading = true;
+
+    const authUser = this.dashboardService.getUser();
+    authUser.pipe(takeUntil(this.destroySubject$))
+      .subscribe(
+        {
+          next: (user) => {
+            if (user) {
+              this.user = user;
+              this.cd.markForCheck();
+            }
+          }
+        }
+
+      );
+
     this.dashboardService.getTrending()
       .pipe(
         takeUntil(this.destroySubject$)
@@ -131,13 +152,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isGlobalDataLoading = true;
     this.dashboardService.getGlobalDataSource()
       .pipe(
-        tap((globalData) => {
+        tap((globalData: GlobalData) => {
           if (globalData) {
             this.globalData = globalData;
           }
         }),
-        concatMap((globalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),
-        map(result => {
+        concatMap((globalData: GlobalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),
+        map((result: CoinMarket[]) => {
           return result.map((value) => {
             return this.dashboardService.getMarketDataView(value);
           })
@@ -149,8 +170,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (topCoinsData) {
               this.topMarketShareItems = topCoinsData;
               this.isGlobalDataLoading = false;
-              this.cd.markForCheck();
             }
+            this.cd.markForCheck();
           }
         }
       );
@@ -167,6 +188,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onCardClicked(coinView: CoinTableView) {
     this.openCoinContent(coinView.id);
+  }
+
+  favoriteButtonClicked(coinView: CoinTableView) {
+
   }
 
   ngOnDestroy(): void {

@@ -11,6 +11,7 @@
     --toast-bg-color: #eccefa;
     --toast-text-color: #010837;
     --toast-close-color: #002632;
+    --border-accent: #131313da;
     --text-color-link: #0a0185;
     --star-color: rgb(251, 255, 0);
     --sparkline-color: #011f49;
@@ -18,5 +19,9 @@
     --text-exag-for-color: #000;
     --main-toolbar-bg-color: var(--surface-b);
     --text-negative-color: #cacaca;
-
+    --bg-mask-styled: #0000004a;
+    --table-border-color: #8181814e;
+    --hover-icon-color: #7e7e7e;
+    --button-at-rest-color: var(--hover-icon-color);
+    --button-hover-color: var(--text-color);
 }

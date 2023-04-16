@@ -12,266 +12,177 @@
             >
                 <p-progressSpinner
                     [style]="{height:'10rem',width:'10rem','margin-top':'7rem','margin-bottom':'7rem'}"
-                    [strokeWidth]='6'
+                    [strokeWidth]='2'
                     fill="transparent"
-                    animationDuration=".1s"
+                    animationDuration="1s"
                 ></p-progressSpinner>
             </div>
         </div>
 
         <div class="grid-nogutter">
-            <div class="row">
-                <div class="xl:col-12 sm:col-12">
+            <div
+                class="row flex-xl-nowrap flex-lg-nowrap flex-md-wrap-reverse flex-sm-wrap-reverse flex-xs-wrap-reverse">
+                <!-- ------------------------ Crypto Table By Market Cap---------------------- -->
+
+                <div class="xl:col-9">
+                    <div class="card">
+                        <p-table
+                            #bigCoinsTable
+                            [value]="coinsByMarketCap"
+                            [rowTrackBy]="rowTrackBy"
+                            styleClass="p-table-custom"
+                            [style]="{width:'100%'}"
+                            [loading]="isCoinsByMarketCapLoading"
+                            [loadingIcon]="loadingIcon"
+                            [rows]="rows"
+                            [totalRecords]="totalRecords"
+                            [first]="first"
+                            [lazy]="true"
+                            (onLazyLoad)="loadCoinsLazy($event)"
+                            [paginator]="true"
+                            [showFirstLastIcon]="false"
+                            [paginatorPosition]="'both'"
+                            [showPageLinks]="true"
+                            [showCurrentPageReport]="false"
+                            selectionMode="single"
+                            [(selection)]="selectedCoin"
+                            (onRowSelect)="onRowSelect($event)"
+                        >
+                            <ng-template pTemplate="caption">
+                                <div class="flex align-items-center justify-content-between">
+                                    <h2
+                                        class="caption-label-md"
+                                        style="margin:0 auto; background-color: transparent;"
+                                    >
+                                        Crytocurrencies <span style="font-size:small;">by Market Cap</span></h2>
+                                </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pFrozenColumn>
+                                    </th>
+                                    <th>
+                                        {{mainColumnDefs[0].header}}
+                                    </th>
+                                    <th pFrozenColumn>
+                                        {{mainColumnDefs[1].header}}
+                                    </th>
+                                    <th>
+                                        {{mainColumnDefs[2].header}}
+                                    </th>
+                                    <th [width]="100">
+                                        {{mainColumnDefs[3].header}}
+                                    </th>
+                                    <th>
+                                        {{mainColumnDefs[4].header}}
+                                    </th>
+                                    <th>
+                                        {{mainColumnDefs[5].header}} <delta-icon></delta-icon>
+                                    </th>
+                                    <th>
+                                        {{mainColumnDefs[6].header}}
+                                    </th>
+                                    <th>
+                                        {{mainColumnDefs[7].header}}
+                                    </th>
+                                    <th [width]="170">
+                                        {{mainColumnDefs[8].header}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template
+                                pTemplate="body"
+                                let-coinMarket
+                            >
+                                <tr [pSelectableRow]="coinMarket">
+                                    <!-- Star Icon, Add to Watchlist -->
+                                    <td
+                                        [width]="30"
+                                        pFrozenColumn
+                                    >
+                                        <a
+                                            #favoriteButtonTable
+                                            (click)="favoriteButtonClicked(favoriteButtonTable)"
+                                            class="favorite--button-wrapper"
+                                        >
+                                            <i
+                                                id="favorite--icon-table"
+                                                [ngClass]="isTracked ? 'fa-solid fa-star' : 'fa-regular fa-star' "
+                                            ></i>
+                                        </a>
+                                    </td>
+
+                                    <td pFrozenColumn><img
+                                            [src]=coinMarket[mainColumnDefs[0].field]
+                                            [alt]="coinMarket[mainColumnDefs[1].field]"
+                                            width="30"
+                                        /></td>
+                                    <td [width]="30">{{coinMarket[mainColumnDefs[1].field]}}
+                                    </td>
+                                    <td>{{coinMarket[mainColumnDefs[2].field]}}
+                                    </td>
+                                    <td [width]="100">{{coinMarket[mainColumnDefs[3].field]}}
+                                    </td>
+                                    <td>{{coinMarket[mainColumnDefs[4].field]}}
+                                    </td>
+                                    <td>
+                                        <span
+                                            [class]="coinMarket[mainColumnDefs[5].field] < 0 ? 'decreased' :'increased'"
+                                        >
+                                            {{coinMarket[mainColumnDefs[5].field] + '%'}}</span>
+                                    </td>
+                                    <td>{{coinMarket[mainColumnDefs[6].field]}}
+                                    </td>
+                                    <td>{{coinMarket[mainColumnDefs[7].field]}}
+                                    </td>
+                                    <!-- sparkline -->
+                                    <td
+                                        [width]="170"
+                                        [style]="{'padding':'0.1rem 0.1rem'}"
+                                    >
+                                        <app-sparkline
+                                            [color]="coinMarket[mainColumnDefs[5].field] < 0 ? '#ff1100' :'#00ff59'"
+                                            [maxHeight]="'3rem'"
+                                            [maxWidth]="'12rem'"
+                                            [chart-data]="coinMarket[mainColumnDefs[8].field]"
+                                            [xaxis-labels]="coinDataService.getSparklineLabels()"
+                                        >
+                                        </app-sparkline>
+                                    </td>
+                                </tr>
+                            </ng-template>
+
+                        </p-table>
+
+                    </div>
+                </div>
+
+                <div class="xl:col-3 xs:col-12">
                     <app-news-carosel></app-news-carosel>
+                    <!-- Watch List -->
+                    <app-editable-card
+                        class="card h-fit"
+                        [items]="[]"
+                        title="Watch List"
+                        (onSelect)="onCardClicked($event)"
+                    ></app-editable-card>
+                    <!-- Top Market Share Card -->
+                    <app-trending-card
+                        class="card h-fit"
+                        [items]="topMarketShareItems"
+                        title="Top Market Share"
+                        (onSelect)="onCardClicked($event)"
+                    ></app-trending-card>
+                    <!-- Top Trending Coins Card -->
+                    <app-trending-card
+                        class="card h-fit"
+                        title=" Most Active"
+                        [items]="trendingItems"
+                        (onSelect)="onCardClicked($event)"
+                    ></app-trending-card>
                 </div>
-            </div>
-        </div>
-
-        <!-- Trending -->
-        <span class="row text-center w-100">
-            <p-header class="dash-section-title">Top Market Share</p-header>
-        </span>
-        <!-- Top Global by market share -->
-        <div class="card w-100 border-0 border-transparent">
-            <div class="flex flex-wrap justify-content-evenly gap-1">
-                <div *ngFor="let g of topMarketShareItems; index as i; count as c;">
-                    <p-card
-                        (click)="onCardClicked(g)"
-                        [style]="{'max-width':'90vw','height':'160px','width':'200px','cursor':'pointer','overflow': 'hidden'}"
-                        class="border-round"
-                    >
-                        <ng-template pTemplate="header">
-                            <div style="position:relative;width:100%;height:100%;z-index:1 !important;">
-                                <app-sparkline
-                                    [style]="{'position':'absolute','opacity':'0.3','z-index':'0'}"
-                                    [maxWidth]="'100%'"
-                                    [maxHeight]="'100%'"
-                                    [width]="'200px'"
-                                    [height]="'160px'"
-                                    [color]="sparklineColor"
-                                    [chart-data]="g.sparkline"
-                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
-                                >
-                                </app-sparkline>
-                            </div>
-                            <div style="position:relative;width:100%;height:100%;z-index:9 !important;">
-
-                                <div
-                                    *ngIf="g.price_change_24h >= 0"
-                                    class="increased text-md float-end p-1 z-3"
-                                >
-                                    <span class="z-3">{{g.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
-
-                                </div>
-                                <div
-                                    *ngIf="g.price_change_24h < 0"
-                                    class="decreased text-md float-end p-1 z-3"
-                                >
-                                    <span>{{g.price_change_24h + '%'}}<i class="fa fa-arrow-down"></i></span>
-                                </div>
-                                <div>
-                                    <img
-                                        class="w-4rem h-auto border-round p-1"
-                                        alt="trending-item-img"
-                                        [src]="g.image"
-                                        [style]="{'max-width':'4rem','z-index':'1001'}"
-                                    >
-                                </div>
-                                <div class="float-end m-1 p-1 text-md z-3">{{g.name}}</div>
-                                <div class="center float-start m-1 p-2 text-md z-3">
-                                    <div [class]="g.price_change_24h < 0 ? 'decreased':'increased'">
-                                        {{g.current_price}}
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                        <ng-template pTemplate="body">
-
-                        </ng-template>
-                        <ng-template pTemplate="footer">
-
-                        </ng-template>
-                    </p-card>
-                </div>
-
-                <span class="flex-grow-1 text-center w-100">
-                    <p-header class="dash-section-title">Trending Trading Activity</p-header>
-                </span>
-
-                <div *ngFor="let t of trendingItems; index as i; count as c;">
-                    <p-card
-                        (click)="onCardClicked(t)"
-                        class="border-round"
-                        [style]="{'max-width':'90vw','height':'160px','width':'200px','cursor':'pointer','overflow': 'hidden'}"
-                    >
-
-                        <ng-template pTemplate="header">
-                            <div style="position:relative;width:100%;height:100%;z-index:1 !important;">
-                                <app-sparkline
-                                    [style]="{'position':'absolute','opacity':'0.3'}"
-                                    [maxWidth]="'100%'"
-                                    [maxHeight]="'100%'"
-                                    [width]="'200px'"
-                                    [height]="'160px'"
-                                    [color]="sparklineColor"
-                                    [chart-data]="t.sparkline"
-                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
-                                >
-                                </app-sparkline>
-                            </div>
-                            <div style="position:relative;width:100%;height:100%;z-index:9 !important;">
-                                <div
-                                    *ngIf="t.price_change_24h >= 0"
-                                    class="increased text-md float-end p-1 z-3"
-                                >
-                                    <span class="z-3">{{t.price_change_24h + '%'}} <i class="fa fa-arrow-up"></i></span>
-
-                                </div>
-                                <div
-                                    *ngIf="t.price_change_24h < 0"
-                                    class="decreased text-md float-end p-1 z-3"
-                                >
-                                    <span class="z-3">{{t.price_change_24h + '%'}}<i
-                                            class="fa fa-arrow-down"></i></span>
-                                </div>
-                                <div>
-                                    <img
-                                        class="w-4rem h-auto border-round p-1 z-3"
-                                        alt="trending-item-img"
-                                        [src]="t.image"
-                                        [style]="{'max-width':'4rem'}"
-                                    >
-                                </div>
-                                <div class="float-end m-1 p-1 text-md z-3">{{t.name}}</div>
-                                <div class="center float-start m-1 p-1 text-md z-3">
-                                    <div [class]="t.price_change_24h < 0 ? 'decreased':'increased'">
-                                        {{t.current_price}}
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                        <ng-template pTemplate="body">
-
-                        </ng-template>
-                        <ng-template pTemplate="footer">
-
-                        </ng-template>
-                    </p-card>
-                </div>
-            </div>
-        </div>
-
-        <!-- ------------------------ Crypto Table By Market Cap---------------------- -->
-        <div class="col-12 w-100">
-            <div class="card">
-                <p-table
-                    #bigCoinsTable
-                    [value]="coinsByMarketCap"
-                    [rowTrackBy]="rowTrackBy"
-                    styleClass="p-table-custom"
-                    [style]="{width:'100%'}"
-                    [loading]="isCoinsByMarketCapLoading"
-                    [loadingIcon]="loadingIcon"
-                    [rows]="rows"
-                    [totalRecords]="totalRecords"
-                    [first]="first"
-                    [lazy]="true"
-                    (onLazyLoad)="loadCoinsLazy($event)"
-                    [paginator]="true"
-                    [showFirstLastIcon]="false"
-                    [paginatorPosition]="'both'"
-                    [showPageLinks]="true"
-                    [showCurrentPageReport]="false"
-                    selectionMode="single"
-                    [(selection)]="selectedCoin"
-                    (onRowSelect)="onRowSelect($event)"
-                >
-                    <ng-template pTemplate="caption">
-                        <div class="flex align-items-center justify-content-between">
-                            <h2
-                                class="caption-label-md"
-                                style="margin:0 auto; background-color: transparent;"
-                            >
-                                Crytocurrencies <span style="font-size:small;">by Market Cap</span></h2>
-                        </div>
-                    </ng-template>
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>
-                                {{mainColumnDefs[0].header}}
-                            </th>
-                            <th>
-                                {{mainColumnDefs[1].header}}
-                            </th>
-                            <th>
-                                {{mainColumnDefs[2].header}}
-                            </th>
-                            <th [width]="100">
-                                {{mainColumnDefs[3].header}}
-                            </th>
-                            <th>
-                                {{mainColumnDefs[4].header}}
-                            </th>
-                            <th>
-                                {{mainColumnDefs[5].header}} <delta-icon></delta-icon>
-                            </th>
-                            <th>
-                                {{mainColumnDefs[6].header}}
-                            </th>
-                            <th>
-                                {{mainColumnDefs[7].header}}
-                            </th>
-                            <th [width]="170">
-                                {{mainColumnDefs[8].header}}
-                            </th>
-                        </tr>
-                    </ng-template>
-                    <ng-template
-                        pTemplate="body"
-                        let-coinMarket
-                    >
-                        <tr [pSelectableRow]="coinMarket">
-                            <td><img
-                                    [src]=coinMarket[mainColumnDefs[0].field]
-                                    [alt]="coinMarket[mainColumnDefs[1].field]"
-                                    width="30"
-                                /></td>
-                            <td [width]="30">{{coinMarket[mainColumnDefs[1].field]}}
-                            </td>
-                            <td>{{coinMarket[mainColumnDefs[2].field]}}
-                            </td>
-                            <td [width]="100">{{coinMarket[mainColumnDefs[3].field]}}
-                            </td>
-                            <td>{{coinMarket[mainColumnDefs[4].field]}}
-                            </td>
-                            <td>
-                                <span [class]="coinMarket[mainColumnDefs[5].field] < 0 ? 'decreased' :'increased'">
-                                    {{coinMarket[mainColumnDefs[5].field] + '%'}}</span>
-                            </td>
-                            <td>{{coinMarket[mainColumnDefs[6].field]}}
-                            </td>
-                            <td>{{coinMarket[mainColumnDefs[7].field]}}
-                            </td>
-                            <!-- sparkline -->
-                            <td
-                                [width]="170"
-                                [style]="{'padding':'0.1rem 0.1rem'}"
-                            >
-                                <app-sparkline
-                                    [color]="sparklineColor"
-                                    [maxHeight]="'3rem'"
-                                    [maxWidth]="'12rem'"
-                                    [chart-data]="coinMarket[mainColumnDefs[8].field]"
-                                    [xaxis-labels]="coinDataService.getSparklineLabels()"
-                                >
-                                </app-sparkline>
-                            </td>
-                        </tr>
-                    </ng-template>
-
-                </p-table>
 
             </div>
         </div>
-
     </div>
+</div>

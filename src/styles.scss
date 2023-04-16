@@ -1,4 +1,5 @@
 @import "~primeng/resources/primeng.min.css";
+@import "primeflex/primeflex.scss";
 @import "~@angular/material/prebuilt-themes/purple-green.css";
 @import "~@fortawesome/fontawesome-free/css/brands.css";
 @import "~@fortawesome/fontawesome-free/css/regular.css";
@@ -296,6 +297,11 @@ p-table .custom-spinner {
   color: var(--light-blue);
   font-size: medium;
   font-weight: bold;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  padding: 0.5rem 0.5rem !important;
+  font-weight: 700;
 }
 
 .p-datatable .p-datatable-footer {

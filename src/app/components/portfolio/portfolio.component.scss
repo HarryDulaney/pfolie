@@ -4,9 +4,6 @@
     overflow: hidden;
 }
 
-:host ::ng-deep .p-datatable-responsive-scroll > .p-datatable-wrapper {
-    min-height: 25vh !important;
-}
 
 .table-options-panel {
     background: var(--surface-bg-exdark) !important;
@@ -25,10 +22,6 @@
 }
 :host ::ng-deep .p-component-overlay-enter {
     display: none !important;
-}
-
-:host ::ng-deep .card {
-    background: transparent !important;
 }
 
 /* ========================== Custom Scrollbar Styling ============================ */

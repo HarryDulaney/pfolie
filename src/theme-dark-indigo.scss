@@ -9,6 +9,7 @@
     --scrollbar-hover-thumb: #15161c;
     --surface-bg-exdark: #00012b;
     --toast-bg-color: #e1a1ff;
+    --border-accent: #7b7b7bb8;
     --toast-text-color: #060d3a;
     --toast-close-color: #0882a4;
     --text-color-link: #1000f3;
@@ -18,5 +19,9 @@
     --text-exag-for-color: #fff;
     --main-toolbar-bg-color: var(--surface-ground);
     --text-negative-color: var(--text-color);
-
+    --bg-mask-styled: #11111160;
+    --table-border-color: #81818121;
+    --hover-icon-color: #7e7e7e;
+    --button-at-rest-color: var(--hover-icon-color);
+    --button-hover-color: var(--text-color);
 }
