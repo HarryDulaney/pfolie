@@ -4,8 +4,10 @@ import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { BasicCoin, CoinMarket, CoinTableView, GlobalData, GlobalDataView, Trending, TrendingItem } from 'src/app/models/coin-gecko';
 import { ApiService } from 'src/app/services/api.service';
+import { SessionService } from 'src/app/services/session.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
+import firebase from 'firebase/compat/app';
 
 @Injectable()
 export class DashboardService {
@@ -25,10 +27,16 @@ export class DashboardService {
   constructor(
     private apiService: ApiService,
     private utilityService: UtilityService,
-    private basicCoinStore: BasicCoinInfoStore
+    private basicCoinStore: BasicCoinInfoStore,
+    private sessionService: SessionService
   ) {
     this.defaultCurrency = this.currencies[0];
     this.coinsSource$ = basicCoinStore.state$.select('basicCoins');
+
+  }
+
+  getUser(): Observable<firebase.User> {
+    return this.sessionService.getUser();
   }
 
   getTrending(): Observable<CoinTableView[]> {

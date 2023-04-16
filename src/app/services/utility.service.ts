@@ -1,23 +1,27 @@
 import { CurrencyPipe, DatePipe, DecimalPipe, PercentPipe } from '@angular/common';
 import { Injectable, OnInit } from '@angular/core';
 import { CONSTANT } from '../constants';
+import { ThemeService } from './theme.service';
 
 @Injectable()
-export class UtilityService implements OnInit {
+export class UtilityService {
     USD_LONG = '1.2-10';
     USD_SHORT = '1.2-5';
     USD_FORMAT_BASE = '1.2-';
+    CHART_COLOR_PALLETTE = [];
 
     constructor(
         private currencyPipe: CurrencyPipe,
         private datePipe: DatePipe,
         private percentPipe: PercentPipe,
-        private decimalPipe: DecimalPipe
-    ) { }
+        private decimalPipe: DecimalPipe,
+        private themeService: ThemeService
+    ) {
+        this.themeService.themeSource$.subscribe(theme => {
+            this.CHART_COLOR_PALLETTE = []
+        });
 
-    ngOnInit(): void {
     }
-
 
     public format(value: any, format: string): any {
         switch (format) {
@@ -79,7 +83,24 @@ export class UtilityService implements OnInit {
 
     formatCurrencyTwoDecimalPlaces(value: any): string {
         return this.currencyPipe.transform(value, 'USD', '$', '1.2-2');
+    }
 
+    generateColorPallete(theme: string)/* : string[] */ {
+        // if (theme.includes('dark')) {
+        //     for (let i = 0; i < 500; i++) {
+        //         this.CHART_COLOR_PALLETTE.push(this.getRandomColor(theme));
+        //     }
+        // } else {
+        //     for (let i = 0; i < 500; i++) {
+        //         this.CHART_COLOR_PALLETTE.push(this.getRandomColor(theme));
+        //     }
+        // }
+
+ 
+    }
+
+    getThemeColorPallete(): string[] {
+        return this.CHART_COLOR_PALLETTE;
     }
 
 }

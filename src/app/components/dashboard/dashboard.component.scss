@@ -9,16 +9,18 @@ tr td {
     padding: 0.5rem 0.5rem;
 }
 
+.p-datatable .p-datatable-tbody > tr {
+    border-top: 1px solid var(--border-accent);
+    border-bottom: 1px solid var(--border-accent);
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+    background: var(--hover-bg) !important;
+}
+
 #chart {
     max-width: 350px;
     margin: 1px auto;
-}
-
-.dash-section-title {
-    color: var(--text-color);
-    margin-bottom: 0.9rem;
-    font-size: 0.9rem;
-    font-weight: bold;
 }
 
 .caption-label-md {
@@ -31,6 +33,8 @@ tr td {
 
 .card {
     background: transparent !important;
+    border: solid var(--border-accent) 1px !important;
+    border-radius: 15px !important;
 }
 
 :host ::ng-deep .special-card > p-card .p-card-content {
@@ -46,6 +50,6 @@ tr td {
     transform: scale(1.05);
 }
 
-:host ::ng-deep .p-card:hover {
-    transform: scale(1.05);
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
 }

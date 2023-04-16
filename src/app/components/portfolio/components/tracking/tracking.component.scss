@@ -111,3 +111,27 @@
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr {
     cursor: pointer;
 }
+
+
+.p-table-custom {
+    background-color: transparent !important;
+}
+
+.card {
+    background: transparent !important;
+    border: solid var(--border-accent) 1px !important;
+    border-radius: 15px !important;
+}
+
+:host ::ng-deep .p-card {
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+
+:host ::ng-deep .p-card:hover {
+    transform: scale(1.05);
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
+}

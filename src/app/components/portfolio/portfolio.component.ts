@@ -3,7 +3,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, O
 import { Router } from '@angular/router';
 import firebase from 'firebase/compat/app';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, tap, switchMap, takeUntil } from 'rxjs/operators';
 import { AppEvent } from 'src/app/models/events';
 import { DragBundle, OwnedAssetView, Portfolio } from 'src/app/models/portfolio';
@@ -51,6 +51,8 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: 'Small Card', componentId: 'sm-card-component', iconSrc: '../assets/img/small_card_icon.jpg', iconHeight: 40, iconWidth: 80 },
     { label: 'Medium Card', componentId: 'md-card-component', iconSrc: '../assets/img/med_card_d_and_d.jpg', iconHeight: 75, iconWidth: 100 }
   ];
+
+  assetSource$: Observable<OwnedAssetView[]>;
 
   portfolioView: OwnedAssetView[];
 

@@ -1,0 +1,98 @@
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    cursor: pointer;
+}
+
+.p-table-custom {
+    background-color: transparent !important;
+}
+
+.card {
+    background: transparent !important;
+    border: solid var(--border-accent) 1px !important;
+    border-radius: 15px !important;
+}
+
+:host ::ng-deep .p-card {
+    transition: transform 0.2s;
+    text-decoration: none;
+}
+
+:host ::ng-deep .p-card:hover {
+    transform: scale(1.05);
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
+}
+
+:host ::ng-deep .p-datatable-responsive-scroll > .p-datatable-wrapper {
+    min-height: 25vh !important;
+}
+
+:host ::ng-deep .p-paginator {
+    background: transparent !important;
+}
+
+:host ::ng-deep p-table .p-paginator {
+    background: transparent !important;
+}
+
+:host ::ng-deep p-table .custom-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    padding: 0.5rem 0.5rem !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    padding: 0.5rem 0.5rem !important;
+    font-weight: 700;
+}
+
+.p-datatable .p-datatable-footer {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.5rem 0.5rem !important;
+    font-weight: 700;
+}
+
+.p-datatable .p-datatable-loading-icon {
+    font-size: 10rem !important;
+    color: var(--light-blue) !important;
+}
+
+.p-datatable .p-paginator-top {
+    border-width: 0 0 0 0 !important;
+}
+
+.p-datatable .p-datatable-header {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.5rem 0.5rem !important;
+    font-weight: 700;
+}
+
+.p-datatable .p-paginator-bottom {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.5rem 0.5rem !important;
+}
+
+.p-datatable .p-paginator-bottom {
+    border-width: 0 0 0 0 !important;
+}
+.p-datatable .p-paginator .p-paginator-bottom {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+.p-datatable > .p-paginator .p-paginator-top {
+    background-color: transparent !important;
+    background: transparent !important;
+}

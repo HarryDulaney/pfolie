@@ -518,15 +518,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.signedOutAccountMenuItems = [
       {
-        label: 'Home',
-        icon: 'fa-solid fa-home',
-        command: (event) => {
-          this.handleAccountMenuState().then(() => {
-            this.router.navigate(['/', 'home']);
-          });
-        }
-      },
-      {
         label: 'Sign In',
         icon: 'fa-solid fa-user',
         command: (event) => {
@@ -547,34 +538,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
 
     this.accountMenuItems = [
-      {
-        label: 'Home',
-        icon: 'fa-solid fa-home',
-        command: (event) => {
-          this.handleAccountMenuState().then(() => {
-            this.router.navigate(['/', 'home']);
-          });
-        }
-      },
-      {
-        label: 'Portfolio Manager',
-        icon: 'fa-solid fa-bar-chart',
-        command: (event) => {
-          this.handleAccountMenuState().then(() => {
-            this.router.navigate(['/', 'portfolio']);
-          });
-        }
-      },
-      {
-        label: 'Watchlist',
-        icon: 'fa-solid fa-eye',
-        disabled: false,
-        command: (event) => {
-          this.handleAccountMenuState().then(() => {
-            this.router.navigate(['/', 'tracking']);
-          });
-        }
-      },
       {
         label: 'Sign Out',
         icon: 'fa-solid fa-sign-out-alt',

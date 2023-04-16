@@ -1,5 +1,4 @@
 import { ContentChildren, Directive, ViewContainerRef } from '@angular/core';
-
 @Directive({
     selector: '[partHost]',
     standalone: true
