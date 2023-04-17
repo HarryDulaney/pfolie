@@ -6,6 +6,12 @@
     background-color: transparent !important;
 }
 
+
+.mdc-button {
+    color: var(--text-color) !important;
+}
+
+
 .card {
     background: transparent !important;
     border: solid var(--border-accent) 1px !important;
@@ -62,7 +68,7 @@
 
 .p-datatable .p-datatable-loading-icon {
     font-size: 10rem !important;
-    color: var(--light-blue) !important;
+    color: var(--text-color) !important;
 }
 
 .p-datatable .p-paginator-top {

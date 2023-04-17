@@ -230,6 +230,11 @@ export class SessionService {
             );
     }
 
-
+    public getCurrentUserId(): string {
+        if (this.user) {
+            return this.user.uid;
+        }
+        return null;
+    }
 }
 

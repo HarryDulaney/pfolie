@@ -1,13 +1,15 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
 import { Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { BasicCoin, CoinMarket, CoinTableView, GlobalData, GlobalDataView, Trending, TrendingItem } from 'src/app/models/coin-gecko';
 import { ApiService } from 'src/app/services/api.service';
 import { SessionService } from 'src/app/services/session.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import firebase from 'firebase/compat/app';
+import { Portfolio, TrackedAsset } from 'src/app/models/portfolio';
+import { PortfolioService } from '../portfolio/services/portfolio.service';
 
 @Injectable()
 export class DashboardService {
@@ -16,7 +18,7 @@ export class DashboardService {
   activePriceChangePercent: string[] = ["1h", "24h", "7d"];
   orderByValues: string[] = ["market_cap_desc", "gecko_desc", "gecko_asc", "market_cap_asc", "market_cap_desc", "volume_asc", "volume_desc", "id_asc", "id_desc"];
   sparklineXAxisLabels: string[] = [];
-
+  watchListItem: CoinTableView[] = [];
   defaultCurrency: string;
   thruPage = 1;
   orderBy: string = this.orderByValues[0];
@@ -28,7 +30,8 @@ export class DashboardService {
     private apiService: ApiService,
     private utilityService: UtilityService,
     private basicCoinStore: BasicCoinInfoStore,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private portfolioService: PortfolioService
   ) {
     this.defaultCurrency = this.currencies[0];
     this.coinsSource$ = basicCoinStore.state$.select('basicCoins');
@@ -39,10 +42,14 @@ export class DashboardService {
     return this.sessionService.getUser();
   }
 
+  isUserLoggedIn(): boolean {
+    return this.sessionService.authenticated;
+  }
+
   getTrending(): Observable<CoinTableView[]> {
     return this.readTrending().pipe(
-      switchMap(data => this.getTrendingCoinsInfo(data)),
-      map(result => {
+      switchMap((data: Trending[]) => this.getTrendingCoinsInfo(data)),
+      map((result: CoinMarket[]) => {
         return result.map((value) => {
           return this.getMarketDataView(value);
         })
@@ -59,7 +66,7 @@ export class DashboardService {
       true,
       this.activePriceChangePercent
     ).pipe(
-      map(result => {
+      map((result: CoinMarket[]) => {
         return result.map((value) => {
           return this.getMarketDataView(value);
         })
@@ -76,7 +83,7 @@ export class DashboardService {
       return this.getTrendingItem(trending).id;
     }))
 
-    return this.getCoinMarketDataByIds(trendingIds, this.thruPage, 7, this.defaultCurrency, this.orderBy, true, this.activePriceChangePercent);
+    return this.getCoinMarketDataByIds(trendingIds, 1, 250, this.defaultCurrency, this.orderBy, true, this.activePriceChangePercent);
   }
 
   getGlobalCoinsInfo(globalData: GlobalData): Observable<CoinMarket[]> {
@@ -96,6 +103,11 @@ export class DashboardService {
       return basicCoins[index].id;
     }
     return symbol;
+
+  }
+
+  getMarketDataForIds(ids: string[]): Observable<CoinMarket[]> {
+    return this.getCoinMarketDataByIds(ids, this.thruPage, 7, this.defaultCurrency, "id_asc", true, this.activePriceChangePercent);
 
   }
 
@@ -168,6 +180,19 @@ export class DashboardService {
       active_cryptocurrencies: g.data.active_cryptocurrencies,
       markets: g.data.markets,
     } as GlobalDataView;
+  }
+
+
+  addToWatchList(coin: CoinTableView) {
+    this.portfolioService.addTracked(coin.id);
+  }
+
+  isTrackedAsset(id: string): boolean {
+    return this.portfolioService.isTracked(id);
+  }
+
+  getTrackedAssetSource(): Observable<TrackedAsset[]> {
+    return this.portfolioService.trackedSource$;
   }
 
 }

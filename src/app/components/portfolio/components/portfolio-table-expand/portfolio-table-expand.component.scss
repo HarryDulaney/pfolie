@@ -1,9 +1,3 @@
-/* :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0px;
-} */
-
 :host ::ng-deep .p-datatable-responsive-scroll > .p-datatable-wrapper {
     min-height: fit-content !important;
 }
@@ -12,8 +6,12 @@
     margin-top: -8px !important;
 }
 
-
 .expanded-table-header {
     font-size: 0.8rem !important;
     padding: 0.3rem 0.3rem !important;
+}
+
+
+.mdc-button {
+    color: var(--text-color) !important;
 }
