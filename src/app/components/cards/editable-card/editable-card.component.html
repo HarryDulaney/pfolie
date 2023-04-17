@@ -19,9 +19,9 @@
             <div class="col-5">
                 <app-sparkline
                     [maxWidth]="'100%'"
-                    [maxHeight]="'6rem'"
+                    [maxHeight]="'80px'"
                     [width]="'100%'"
-                    [height]="'fit-content'"
+                    [height]="'50%'"
                     [color]="g.price_change_24h < 0 ? '#ff1100' :'#00ff59'"
                     [chart-data]="g.sparkline"
                     [xaxis-labels]="coinDataService.getSparklineLabels()"

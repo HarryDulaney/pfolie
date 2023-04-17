@@ -4,11 +4,11 @@
         <div class="row w-100 justify-content-between trending-card-item">
             <div class="col-3">
                 <div [style]="{'height':'50%'}" class="font-bold m-1 text-sm z-3">{{g.name}}</div>
-                <span [style]="{'height':'50%'}" class="font-bold m-0 p-0 pt-1 text-sm z-3">
+                <div [style]="{'height':'50%'}" class="font-bold m-0 p-0 mt-3 text-sm z-3">
                     <div [class]="g.price_change_24h < 0 ? 'decreased':'increased'">
                         {{g.current_price}}
                     </div>
-                </span>
+                </div>
             </div>
             <div class="col-5">
                 <app-sparkline

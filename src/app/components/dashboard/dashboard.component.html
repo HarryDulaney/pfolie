@@ -107,7 +107,7 @@
                                         >
                                             <i
                                                 id="favorite--icon-table"
-                                                [ngClass]="isTracked ? 'fa-solid fa-star' : 'fa-regular fa-star' "
+                                                [ngClass]="isTracked(coinMarket.id) ? 'fa-solid fa-star' : 'fa-regular fa-star' "
                                             ></i>
                                         </a>
                                     </td>
@@ -161,10 +161,11 @@
                     <app-news-carosel></app-news-carosel>
                     <!-- Watch List -->
                     <app-editable-card
+                    #watchListCard
                         class="card h-fit"
-                        [items]="[]"
+                        [items]="watchListItems"
                         title="Watch List"
-                        (onSelect)="onCardClicked($event)"
+                        (onSelect)="addToWatchList($event, watchListCard)"
                     ></app-editable-card>
                     <!-- Top Market Share Card -->
                     <app-trending-card

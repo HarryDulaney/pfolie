@@ -1,7 +1,7 @@
 .dash-section-title {
     width: 100% !important;
     text-align: center;
-    color: var(--text-color);
+    color: var(--text-color) !important;
     margin-bottom: 0.9rem;
     font-size: 0.9rem;
     font-weight: bold;
@@ -14,6 +14,7 @@
     height: 100% !important;
     width: 100% !important;
     background-color: var(--bg-mask-styled) !important;
+    color: var(--text-color) !important;
     padding: 0.5rem !important;
     transition: 1s ease !important;
     word-wrap: normal !important;

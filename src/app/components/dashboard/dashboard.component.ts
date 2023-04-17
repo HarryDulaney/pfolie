@@ -1,8 +1,7 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { SessionService } from 'src/app/services/session.service';
-import { CoinTableView, GlobalData } from 'src/app/models/coin-gecko';
+import { BasicCoin, CoinTableView, GlobalData } from 'src/app/models/coin-gecko';
 import { NavService } from 'src/app/services/nav.service';
 import { DashboardService } from './dashboard.service';
 import { Subject } from 'rxjs';
@@ -23,6 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import firebase from 'firebase/compat/app';
 import { EditableCardComponent } from '../cards/editable-card/editable-card.component';
 import { CoinMarket } from 'src/app/models/coin-gecko';
+import { TrackedAsset } from 'src/app/models/portfolio';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,6 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   coinsByMarketCap: CoinTableView[] = [];
   topMarketShareItems: CoinTableView[] = [];
   trendingItems: CoinTableView[] = [];
+  watchListItems: CoinTableView[] = [];
   globalData: GlobalData;
   selectedCoin: CoinTableView;
   globalMarketShares: { [key: string]: number } = {};
@@ -51,14 +52,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   first = 0;
   rows = 100;
   totalRecords = 0;
-  isTracked = false;
   tooltipOptions = Const.TOOLTIP_OPTIONS;
   isTrendingLoading: boolean;
   loadingIcon = 'pi pi-spin pi-spinner';
   isCoinsByMarketCapLoading: boolean;
   isGlobalDataLoading: boolean;
+  trackedAssetIds: TrackedAsset[] = [];
+  private user: firebase.User | null = null;
 
-  private user: firebase.User = null;
   mainColumnDefs = [
     { header: "Icon", field: 'image' },
     { header: "Name", field: 'name' },
@@ -75,7 +76,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     public coinDataService: CoinDataService,
-    public sessionService: SessionService,
     private screenService: ScreenService,
     private dashboardService: DashboardService,
     private cd: ChangeDetectorRef,
@@ -84,7 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.date = this.datePipe.transform(this.timeInMillis, 'MM-dd-yyyy h:mm a')?.toString();
     this.screenService.screenSource$.pipe(
       takeUntil(this.destroySubject$)
-    ).subscribe(screenSize => {
+    ).subscribe((screenSize: string) => {
       this.screenSize = screenSize;
       this.cd.markForCheck();
     });
@@ -93,42 +93,41 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   loadCoinsLazy(event: LazyLoadEvent) {
     this.isCoinsByMarketCapLoading = true;
-    this.dashboardService.getCoinsByMarketCap(event).pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe({
-      next: (data) => {
-        if (data) {
-          this.coinsByMarketCap = data;
-          this.isCoinsByMarketCapLoading = false;
-          this.cd.markForCheck();
+    this.dashboardService.getCoinsByMarketCap(event)
+      .pipe(
+        takeUntil(this.destroySubject$)
+      ).subscribe({
+        next: (data: CoinTableView[]) => {
+          if (data) {
+            this.coinsByMarketCap = data;
+            this.isCoinsByMarketCapLoading = false;
+            this.cd.markForCheck();
+          }
         }
-      }
-    });
+      });
   }
 
 
   ngOnInit(): void {
+    this.dashboardService.getUser().pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe((user: firebase.User | null) => {
+      if (user) {
+        this.user = user;
+      } else {
+        this.user = null;
+        this.trackedAssetIds = [];
+        this.watchListItems = [];
+        this.cd.markForCheck();
+      }
+    });
+
     this.isTrendingLoading = true;
-
-    const authUser = this.dashboardService.getUser();
-    authUser.pipe(takeUntil(this.destroySubject$))
-      .subscribe(
-        {
-          next: (user) => {
-            if (user) {
-              this.user = user;
-              this.cd.markForCheck();
-            }
-          }
-        }
-
-      );
-
     this.dashboardService.getTrending()
       .pipe(
         takeUntil(this.destroySubject$)
       ).subscribe({
-        next: (trendingView) => {
+        next: (trendingView: CoinTableView[]) => {
           if (trendingView) {
             this.trendingItems = trendingView;
             this.isTrendingLoading = false;
@@ -141,7 +140,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(
         {
-          next: (coins) => {
+          next: (coins: BasicCoin[]) => {
             this.totalRecords = coins.length
             this.cd.markForCheck();
           }
@@ -166,7 +165,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         takeUntil(this.destroySubject$)
       ).subscribe(
         {
-          next: (topCoinsData) => {
+          next: (topCoinsData: CoinTableView[]) => {
             if (topCoinsData) {
               this.topMarketShareItems = topCoinsData;
               this.isGlobalDataLoading = false;
@@ -176,6 +175,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       );
 
+    this.dashboardService.getTrackedAssetSource().pipe(
+      tap((trackedAssets: TrackedAsset[]) => {
+        if (trackedAssets) {
+          this.trackedAssetIds = trackedAssets;
+        }
+      }),
+      concatMap((trackedAssets: TrackedAsset[]) => {
+        const ids = trackedAssets.map((asset) => asset.id);
+        return this.dashboardService.getMarketDataForIds(ids);
+      }),
+      map((result: CoinMarket[]) => {
+        return result.map((value) => {
+          return this.dashboardService.getMarketDataView(value);
+        })
+      }),
+      takeUntil(this.destroySubject$)
+    ).subscribe({
+      next: (watchListItems: CoinTableView[]) => {
+        if (watchListItems) {
+          this.watchListItems = watchListItems;
+        }
+        this.cd.markForCheck();
+      }
+    });
+
+  }
+
+  isTracked(id: string) {
+    return this.trackedAssetIds.some((asset) => asset.id === id);
   }
 
   public openCoinContent(coinId: string) {
@@ -191,6 +219,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   favoriteButtonClicked(coinView: CoinTableView) {
+    if (this.dashboardService.isUserLoggedIn()) {
+      this.dashboardService.addToWatchList(coinView);
+    }
+  }
+
+  isTrackedAsset(id: string) {
+    return this.dashboardService.isTrackedAsset(id);
+  }
+
+  addToWatchList(event: any, watchListComponent: EditableCardComponent) {
 
   }
 

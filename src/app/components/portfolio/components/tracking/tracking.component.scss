@@ -44,7 +44,7 @@
 
 :host ::ng-deep .p-datatable .p-datatable-loading-icon {
     font-size: 10rem !important;
-    color: #0882a4 !important;
+    color: var(--text-color) !important;
 }
 
 :host ::ng-deep .p-datatable .p-paginator-top {

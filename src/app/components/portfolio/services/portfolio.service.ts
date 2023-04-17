@@ -118,6 +118,11 @@ export class PortfolioService {
     this.portfolioAssetViews.next(results);
   }
 
+  isTracked(id: string) {
+    let tracked = this.trackedSource.getValue();
+    return tracked.some(t => t.id === id);
+  }
+
 
   /* ----------------------------- Portfolio ----------------------------- */
   setPortfolio(p: Portfolio) {
