@@ -20,7 +20,7 @@
       ],
       "os": [
         "./node_modules/os-browserify"
-      ],
+      ]
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",

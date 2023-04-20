@@ -20,8 +20,11 @@
         </div>
 
         <div class="grid-nogutter">
-            <div
-                class="row flex-xl-nowrap flex-lg-nowrap flex-md-wrap-reverse flex-sm-wrap-reverse flex-xs-wrap-reverse">
+            <div class="row w-100 flex-wrap">
+                <div class="col-12">
+                </div>
+            </div>
+            <div class="row flex-wrap-reverse">
                 <!-- ------------------------ Crypto Table By Market Cap---------------------- -->
 
                 <div class="xl:col-9">
@@ -161,7 +164,7 @@
                     <app-news-carosel></app-news-carosel>
                     <!-- Watch List -->
                     <app-editable-card
-                    #watchListCard
+                        #watchListCard
                         class="card h-fit"
                         [items]="watchListItems"
                         title="Watch List"

@@ -4,7 +4,7 @@ import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
 import HAccessability from "highcharts/modules/accessibility";
 import HDragPanes from "highcharts/modules/drag-panes";
-import HBrandDark from "highcharts/themes/brand-dark"
+import HHightContrastDark from "highcharts/themes/high-contrast-dark"
 import HAnnotationsAdvanced from "highcharts/modules/annotations-advanced";
 import HPriceIndicator from "highcharts/modules/price-indicator";
 import HStockTools from "highcharts/modules/stock-tools";
@@ -20,7 +20,7 @@ HDragPanes(Highcharts);
 HAnnotationsAdvanced(Highcharts);
 HPriceIndicator(Highcharts);
 HStockTools(Highcharts);
-HBrandDark(Highcharts);
+HHightContrastDark(Highcharts);
 HAccessability(Highcharts);
 
 @Component({
@@ -29,6 +29,12 @@ HAccessability(Highcharts);
   styles: [`#container {
     max-height: 900px;
     height: 75vh;
+}
+.highcharts-plot-background {
+  backgroud: transparent !important;
+}
+.highcharts-container {
+  background: transparent !important;
 }
 `],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,7 +46,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   @Input('chartDataType') chartDataType: string;
   @Output() loading: EventEmitter<boolean> = new EventEmitter();
 
-  chartOptions: any;
+  chartOptions: Highcharts.Options = {};
   prices: Array<Array<number>>;
   market_caps: Array<Array<number>>;
   total_volumes: Array<Array<number>>;
@@ -119,10 +125,47 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   getMarketCapChartOptions(): any {
+    return {
+      title: {
+        text: this.chartService.coinName
+      },
+      yAxis: [{
+
+        labels: {
+          align: 'right',
+          x: -3
+        },
+        title: {
+          text: 'Market Cap'
+        },
+        height: '100%',
+        offset: 0,
+        lineWidth: 2
+      }],
+
+      tooltip: {
+        split: true
+      },
+      responsive: {
+      },
+      series: [
+        {
+          type: "area",
+          name: 'Total',
+          data: this.market_caps,
+          tooltip: {
+            valueDecimals: 2
+          }
+        }
+      ],
+      rangeSelector: {
+        selected: 5,
+      },
+    };
 
   }
 
-  getPriceAreaChartOptions() {
+  getPriceAreaChartOptions(): Highcharts.Options {
     return {
       title: {
         text: this.chartService.coinName
@@ -146,6 +189,12 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       },
       responsive: {
       },
+      stockTools: {
+        gui: {
+          enabled: true,
+          buttons: ['simpleShapes', 'lines', 'crookedLines', 'measure', 'advanced']
+        }
+      },
       series: [{
         type: 'area',
         name: '$USD',
@@ -155,12 +204,12 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
         }
       }],
       rangeSelector: {
-        selected: '1m',
+        selected: 5,
       },
     };
   }
 
-  getVolumeOnlyChartOptions() {
+  getVolumeOnlyChartOptions(): Highcharts.Options {
     return {
       title: {
         text: this.chartService.coinName
@@ -191,12 +240,12 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
           yAxis: 1
         }],
       rangeSelector: {
-        selected: '1m',
+        selected: 5,
       },
     };
   }
 
-  getVolumeChartOptions() {
+  getVolumeChartOptions(): Highcharts.Options {
     return {
       title: {
         text: this.chartService.coinName
@@ -226,12 +275,12 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
           data: this.total_volumes,
         }],
       rangeSelector: {
-        selected: '1m',
+        selected: 5,
       },
     };
   }
 
-  getOHLCChartOptions() {
+  getOHLCChartOptions(): Highcharts.Options {
     return {
       yAxis: [
         {
@@ -269,7 +318,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
                 Math.min(
                   point.plotX + chart.plotLeft - width / 2,
                   // Right side limit
-                  chart.chartWidth - width - chart.marginRight
+                  chart.chartWidth - width - (chart.chartWidth / 2)
                 )
               ),
               y: point.plotY
@@ -277,7 +326,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
           } else {
             position = {
               x: point.series.chart.plotLeft,
-              y: point.series.yAxis.top - chart.plotTop
+              y: point.series.yAxis.max - chart.plotTop
             };
           }
 
