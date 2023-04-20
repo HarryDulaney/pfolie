@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { SessionService } from 'src/app/services/session.service';
 import firebase from 'firebase/compat/app';
-import { UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup }from '@angular/forms';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { NavService } from 'src/app/services/nav.service';
 import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
@@ -131,7 +131,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     this.portfolioService.trackedSource$.pipe(
       takeUntil(this.destroySubject$),
       mergeMap(
-        trackedAssets => {
+        (trackedAssets:TrackedAsset[]) => {
           return this.initializeDataSource(trackedAssets);
         }
       )

@@ -6,7 +6,6 @@ import { NavService } from 'src/app/services/nav.service';
 import { DashboardService } from './dashboard.service';
 import { Subject } from 'rxjs';
 import { concatMap, map, takeUntil, tap } from 'rxjs/operators';
-import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { LazyLoadEvent, SharedModule } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
@@ -31,7 +30,20 @@ import { TrackedAsset } from 'src/app/models/portfolio';
   providers: [DashboardService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [EditableCardComponent, NgClass, TooltipModule, ScrollTopModule, ProgressSpinnerModule, NewsCaroselComponent, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, TableModule, DeltaIcon, TrendingCardComponent]
+  imports: [EditableCardComponent,
+    NgClass,
+    TooltipModule,
+    ScrollTopModule,
+    ProgressSpinnerModule,
+    NewsCaroselComponent,
+    SharedModule,
+    NgFor,
+    CardModule,
+    NgIf,
+    SparklineComponent,
+    TableModule,
+    DeltaIcon,
+    TrendingCardComponent]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
@@ -42,6 +54,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   topMarketShareItems: CoinTableView[] = [];
   trendingItems: CoinTableView[] = [];
   watchListItems: CoinTableView[] = [];
+  globalBigChartProps = {}
   globalData: GlobalData;
   selectedCoin: CoinTableView;
   globalMarketShares: { [key: string]: number } = {};

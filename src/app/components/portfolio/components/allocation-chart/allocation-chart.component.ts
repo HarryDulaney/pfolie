@@ -1,15 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import * as Highcharts from "highcharts/highcharts";
 import { OwnedAssetView } from 'src/app/models/portfolio';
-import HBrandDark from "highcharts/themes/dark-blue"
-import HAccessability from "highcharts/modules/accessibility";
 import { ChartModule } from 'primeng/chart';
-import { Observable } from 'rxjs';
 import { PortfolioService } from '../../services/portfolio.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
-HBrandDark(Highcharts);
-HAccessability(Highcharts);
 
 @Component({
   selector: 'app-allocation-chart',
