@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SecurityContext, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CoinFullInfo, DeveloperData, Links, MarketData, Ticker } from '../../models/coin-gecko'
 import { NavService } from 'src/app/services/nav.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -27,15 +27,18 @@ import { TooltipModule } from 'primeng/tooltip';
   imports: [TooltipModule, MatButtonModule, NgClass, CoinChartComponent, NgIf, NgFor, ChipModule, CardModule, TableModule, SharedModule, AsyncPipe]
 })
 export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('chart') chart: CoinChartComponent;
 
   chartType: string = Const.CHART_TYPE.PRICE; // Default chart type
-
+  chartSizeStyle: any = {
+    'height': '60vh !important',
+    'width': '96vw !important',
+  }
   /* Interactive Chart attribute values */
   chartDataInterval: string = 'daily';
   isLoading: boolean;
 
   isTracked: boolean;
-
   htmlDescription: SafeHtml;
   titleContent: string;
   description: string;
@@ -133,6 +136,23 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
       this.changeDetectorRef.markForCheck();
 
     });
+
+    this.navService.navExpandedSource$.pipe(takeUntil(this.destroySubject$))
+      .subscribe(navExpanded => {
+        if (navExpanded) {
+          this.chartSizeStyle = {
+            'height': '60vh !important',
+            'max-width': '80vw !important',
+=
+          }
+        } else {
+          this.chartSizeStyle = {
+            'height': '60vh !important',
+            'width': '96vw !important',
+          }
+          this.chart.reload();
+          this.changeDetectorRef.markForCheck();
+        });
 
     this.portfolioService.portfolio$.pipe(takeUntil(this.destroySubject$)).subscribe(
       portfolio => {

@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { OwnedAssetView } from 'src/app/models/portfolio';
-import { ChartModule } from 'primeng/chart';
+import { ChartModule, UIChart } from 'primeng/chart';
 import { UtilityService } from 'src/app/services/utility.service';
 
 
@@ -17,6 +17,8 @@ export class BigChartComponent implements OnInit {
     @Input() style: any;
     @Input() data: any;
     @Input() options: any;
+
+    @ViewChild('chart') chart: UIChart;
 
     textColor: string;
 

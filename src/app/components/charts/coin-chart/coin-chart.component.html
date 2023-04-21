@@ -1,8 +1,7 @@
-<div class="container m-0 p-0">
-    <highcharts-chart style="width: 100%; display: block; background-color: transparent !important;"
-                      [Highcharts]="Highcharts"
-                      [constructorType]="'stockChart'"
-                      [options]="chartOptions">
-                      [immediateRender]="true"
-    </highcharts-chart>
-</div>
+<highcharts-chart
+    style="width: 100%; height: 100%; display: block"
+    [Highcharts]="Highcharts"
+    [constructorType]="'stockChart'"
+    [options]="chartOptions"
+>
+</highcharts-chart>
