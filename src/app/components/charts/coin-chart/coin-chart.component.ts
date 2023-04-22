@@ -53,7 +53,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     public chartService: ChartService,
-    private cd: ChangeDetectorRef
+    public cd: ChangeDetectorRef
   ) { }
 
 
@@ -122,9 +122,11 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
         enabled: false
       },
       title: {
-        text: this.chartService.coinName
+        text: ''
       },
       chart: {
+        height: 500,
+        width: 1000,
         backgroundColor: '#00000000',
         panning: {
           enabled: true,
@@ -178,7 +180,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
     }];
 
     baseOptions.tooltip = {
-      split: true
+      shared: true,
     };
 
     baseOptions.stockTools = {
@@ -186,6 +188,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
         enabled: true,
       }
     };
+
     baseOptions.series = [{
       type: 'area',
       name: '$USD',

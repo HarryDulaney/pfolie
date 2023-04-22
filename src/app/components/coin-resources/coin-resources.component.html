@@ -59,14 +59,17 @@
     </div>
   </span>
   <div class="grid-nogutter">
-    <div class="row col-12 p-1 m-1 h-100 w-100">
-      <div [style]="chartSizeStyle">
-        <app-coin-chart
-          [chartDataType]="chartType"
-          (loading)="isLoading"
-        >
-        </app-coin-chart>
-      </div>
+    <div
+      class="row col-12 p-1 m-1"
+      [style]="chartSizeStyle"
+    >
+      <app-coin-chart
+        #chart
+        [chartDataType]="chartType"
+        (loading)="isLoading"
+        [style]="chartSizeStyle"
+      >
+      </app-coin-chart>
     </div>
   </div>
   <div class="col-12 m-0 p-0 w-100">
