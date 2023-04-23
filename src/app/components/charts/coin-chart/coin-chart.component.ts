@@ -1,5 +1,5 @@
 declare var require: any;
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from "@angular/core";
 import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
 import HAccessability from "highcharts/modules/accessibility";
@@ -13,7 +13,7 @@ import { ChartService } from "../chart.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CHART_TYPE } from "src/app/constants";
-import { HighchartsChartModule } from "highcharts-angular";
+import { HighchartsChartComponent, HighchartsChartModule } from "highcharts-angular";
 
 HIndicatorsAll(Highcharts);
 HDragPanes(Highcharts);
@@ -27,7 +27,6 @@ HAccessability(Highcharts);
   selector: 'app-coin-chart',
   templateUrl: './coin-chart.component.html',
   styles: [``],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [HighchartsChartModule]
 })
@@ -35,6 +34,8 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   /** price | marketcap | volume | ohlc */
   @Input('chartDataType') chartDataType: string;
   @Output() loading: EventEmitter<boolean> = new EventEmitter();
+
+  @ViewChild('highchart') highchart: HighchartsChartComponent;
 
   chartOptions: Highcharts.Options = {};
   prices: Array<Array<number>>;
@@ -104,7 +105,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
           default:
             this.chartOptions = this.getPriceAreaChartOptions(baseOptions);
         }
-        this.cd.markForCheck();
+        this.cd.detectChanges();
       },
       complete: () => {
         this.loading.emit(false);
@@ -125,8 +126,6 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
         text: ''
       },
       chart: {
-        height: 500,
-        width: 1000,
         backgroundColor: '#00000000',
         panning: {
           enabled: true,
@@ -142,6 +141,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       navigator: {
         enabled: false
       },
+
       yAxis: [],
       tooltip: {
         shared: true,

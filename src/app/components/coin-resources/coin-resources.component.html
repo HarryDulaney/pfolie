@@ -1,7 +1,8 @@
 <div
   class="grid-nogutter w-100 h-100"
   style="margin-left: 0 !important;"
-> <span class="row w-100 mt-4">
+>
+  <span class="row w-100 mt-4">
 
     <!-- Title Banner (Asset/Coin Logo/ Homepage link) -->
     <div class="col-6 justify-content-center">
@@ -58,187 +59,183 @@
       </a>
     </div>
   </span>
-  <div class="grid-nogutter">
-    <div
-      class="row col-12 p-1 m-1"
-      [style]="chartSizeStyle"
-    >
-      <app-coin-chart
-        #chart
-        [chartDataType]="chartType"
-        (loading)="isLoading"
-        [style]="chartSizeStyle"
+  <div class="row w-100 p-1 m-1">
+    <div class="lg:col-8 md:col-12 p-1 m-1 h-100">
+      <div [style]="{'height':mainChartHeight,'width':mainChartWidth}">
+        <app-coin-chart
+          #chart
+          [chartDataType]="chartType"
+          (loading)="isLoading"
+        >
+        </app-coin-chart>
+      </div>
+    </div>
+    <div class="xl:col-3 md:col-12 m-1 p-1">
+      <h3
+        class="lrg-card-content"
+        [hidden]="!symbol"
+      ><span class="font-monospace">Symbol:
+        </span>
+        <span class=" dynamic-content">{{symbol}}</span>
+      </h3>
+      <h3
+        class="lrg-card-content"
+        [hidden]="!hashingAlgo"
+      ><span class="font-monospace">Hashing Algorithm:
+        </span>
+        <span class="dynamic-content">{{hashingAlgo}}</span>
+      </h3>
+      <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Rank: </span><span
+          class="dynamic-content">{{rank}}</span></h3>
+      <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Score: </span> <span
+          class="dynamic-content">{{score}}</span></h3>
+      <div *ngIf="countryOfOrigin">
+        <h3 class="lrg-card-content"><span class="font-monospace">Country Origin: </span> <span
+            class="dynamic-content">{{countryOfOrigin}}</span></h3>
+      </div>
+      <h3 class="lrg-card-content"><span class="font-monospace">Current Price: </span> <span
+          class="dynamic-content">{{currentPrice}}</span></h3>
+
+      <h3 class="lrg-card-content font-monospace"><span>Categories: </span></h3>
+      <span
+        *ngFor="let category of categories"
+        class="med-card-content"
       >
-      </app-coin-chart>
+        <p-chip
+          [label]=category
+          styleClass="bg-gray-600 m-1"
+        ></p-chip>
+      </span>
+
+      <h3 class="lrg-card-content font-monospace"><span>Community: </span></h3>
+      <span
+        class="chip-element-text"
+        [hidden]="!chatChannel"
+      >
+        <a
+          class="basic-card-link card-link"
+          [href]=chatChannel
+        >
+          <p-chip
+            [label]="'Chat Channel'"
+            styleClass="chip-element-text m-1"
+            pTooltip="{{chatChannel}}"
+          >
+            <i class="fa fa-comment"></i>&nbsp;
+          </p-chip>
+        </a>
+      </span>
+
+      <span
+        class="chip-element-text"
+        [hidden]="!subReddit"
+      >
+        <a
+          class="basic-card-link card-link"
+          [href]=subReddit
+        >
+          <p-chip
+            [label]="'Reddit'"
+            styleClass="chip-element-text m-1"
+            pTooltip="{{subReddit}}"
+          >
+            <i class="fa-brands fa-reddit"></i>&nbsp;
+          </p-chip>
+        </a>
+      </span>
+
+      <span
+        class="chip-element-text"
+        [hidden]="!githubRepoUrl"
+      >
+        <a
+          class="basic-card-link card-link"
+          [href]=githubRepoUrl
+        >
+          <p-chip
+            [label]="'GitHub'"
+            styleClass="chip-element-text m-1"
+            pTooltip="{{githubRepoUrl}}"
+          >
+            <i class="fa-brands fa-github"></i>&nbsp;
+          </p-chip>
+        </a>
+      </span>
+
+      <span
+        [hidden]="!blockChainSite"
+        class="chip-element-text-dark"
+      >
+        <a
+          class="basic-card-link card-link"
+          [href]=blockChainSite
+        >
+          <p-chip
+            class="chip-element-text-dark"
+            [label]="'Blockchain Site'"
+            styleClass="m-1"
+            pTooltip="{{blockChainSite}}"
+          >
+          </p-chip>
+        </a>
+      </span>
+
+      <span
+        class="chip-element-text"
+        [hidden]="!officialForum"
+      >
+        <a
+          class="basic-card-link card-link"
+          [href]=officialForum
+        >
+          <p-chip
+            [label]="'Official Forum'"
+            styleClass="chip-element-text m-1"
+            pTooltip="{{officialForum}}"
+          >
+          </p-chip>
+        </a>
+      </span>
+
+      <h3 class="lrg-card-content font-monospace"><span>Social Media: </span></h3>
+      <span
+        class="text-white"
+        [hidden]="!twitterScreenName"
+      >
+        <p-chip
+          [label]=twitterScreenName
+          styleClass="bg-purple-900 m-1"
+          pTooltip="Twitter Screen Name"
+        >
+          <i class="fa-brands fa-twitter"></i>&nbsp;
+        </p-chip>
+      </span>
+      <span
+        class="text-white"
+        [hidden]="!facebookUserName"
+      >
+        <p-chip
+          [label]=facebookUserName
+          styleClass="bg-purple-900 m-1"
+          pTooltip="Facebook User Name"
+        >
+          <i class="fa-brands fa-facebook"></i>&nbsp;
+        </p-chip>
+      </span>
+      <span
+        class="text-white"
+        [hidden]="!telegramChannelId"
+      >
+        <p-chip
+          [label]=telegramChannelId
+          styleClass="bg-purple-900 m-1"
+          pTooltip="Telegram Channel Id"
+        >
+          <i class="fa-brands fa-telegram"></i>&nbsp;
+        </p-chip>
+      </span>
     </div>
   </div>
-  <div class="col-12 m-0 p-0 w-100">
-    <h3
-      class="lrg-card-content"
-      [hidden]="!symbol"
-    ><span class="font-monospace">Symbol:
-      </span>
-      <span class=" dynamic-content">{{symbol}}</span>
-    </h3>
-    <h3
-      class="lrg-card-content"
-      [hidden]="!hashingAlgo"
-    ><span class="font-monospace">Hashing Algorithm:
-      </span>
-      <span class="dynamic-content">{{hashingAlgo}}</span>
-    </h3>
-    <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Rank: </span><span
-        class="dynamic-content">{{rank}}</span></h3>
-    <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Score: </span> <span
-        class="dynamic-content">{{score}}</span></h3>
-    <div *ngIf="countryOfOrigin">
-      <h3 class="lrg-card-content"><span class="font-monospace">Country Origin: </span> <span
-          class="dynamic-content">{{countryOfOrigin}}</span></h3>
-    </div>
-    <h3 class="lrg-card-content"><span class="font-monospace">Current Price: </span> <span
-        class="dynamic-content">{{currentPrice}}</span></h3>
-
-    <h3 class="lrg-card-content font-monospace"><span>Categories: </span></h3>
-    <span
-      *ngFor="let category of categories"
-      class="med-card-content"
-    >
-      <p-chip
-        [label]=category
-        styleClass="bg-gray-600 m-1"
-      ></p-chip>
-    </span>
-
-    <h3 class="lrg-card-content font-monospace"><span>Community: </span></h3>
-    <span
-      class="chip-element-text"
-      [hidden]="!chatChannel"
-    >
-      <a
-        class="basic-card-link card-link"
-        [href]=chatChannel
-      >
-        <p-chip
-          [label]="'Chat Channel'"
-          styleClass="chip-element-text m-1"
-          pTooltip="{{chatChannel}}"
-        >
-          <i class="fa fa-comment"></i>&nbsp;
-        </p-chip>
-      </a>
-    </span>
-
-    <span
-      class="chip-element-text"
-      [hidden]="!subReddit"
-    >
-      <a
-        class="basic-card-link card-link"
-        [href]=subReddit
-      >
-        <p-chip
-          [label]="'Reddit'"
-          styleClass="chip-element-text m-1"
-          pTooltip="{{subReddit}}"
-        >
-          <i class="fa-brands fa-reddit"></i>&nbsp;
-        </p-chip>
-      </a>
-    </span>
-
-    <span
-      class="chip-element-text"
-      [hidden]="!githubRepoUrl"
-    >
-      <a
-        class="basic-card-link card-link"
-        [href]=githubRepoUrl
-      >
-        <p-chip
-          [label]="'GitHub'"
-          styleClass="chip-element-text m-1"
-          pTooltip="{{githubRepoUrl}}"
-        >
-          <i class="fa-brands fa-github"></i>&nbsp;
-        </p-chip>
-      </a>
-    </span>
-
-    <span
-      [hidden]="!blockChainSite"
-      class="chip-element-text-dark"
-    >
-      <a
-        class="basic-card-link card-link"
-        [href]=blockChainSite
-      >
-        <p-chip
-          class="chip-element-text-dark"
-          [label]="'Blockchain Site'"
-          styleClass="m-1"
-          pTooltip="{{blockChainSite}}"
-        >
-        </p-chip>
-      </a>
-    </span>
-
-    <span
-      class="chip-element-text"
-      [hidden]="!officialForum"
-    >
-      <a
-        class="basic-card-link card-link"
-        [href]=officialForum
-      >
-        <p-chip
-          [label]="'Official Forum'"
-          styleClass="chip-element-text m-1"
-          pTooltip="{{officialForum}}"
-        >
-        </p-chip>
-      </a>
-    </span>
-
-    <h3 class="lrg-card-content font-monospace"><span>Social Media: </span></h3>
-    <span
-      class="text-white"
-      [hidden]="!twitterScreenName"
-    >
-      <p-chip
-        [label]=twitterScreenName
-        styleClass="bg-purple-900 m-1"
-        pTooltip="Twitter Screen Name"
-      >
-        <i class="fa-brands fa-twitter"></i>&nbsp;
-      </p-chip>
-    </span>
-    <span
-      class="text-white"
-      [hidden]="!facebookUserName"
-    >
-      <p-chip
-        [label]=facebookUserName
-        styleClass="bg-purple-900 m-1"
-        pTooltip="Facebook User Name"
-      >
-        <i class="fa-brands fa-facebook"></i>&nbsp;
-      </p-chip>
-    </span>
-    <span
-      class="text-white"
-      [hidden]="!telegramChannelId"
-    >
-      <p-chip
-        [label]=telegramChannelId
-        styleClass="bg-purple-900 m-1"
-        pTooltip="Telegram Channel Id"
-      >
-        <i class="fa-brands fa-telegram"></i>&nbsp;
-      </p-chip>
-    </span>
-
-  </div>
-
   <hr>
   <div class="col-12">
 

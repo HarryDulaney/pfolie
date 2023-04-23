@@ -30,14 +30,11 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('chart') chart!: CoinChartComponent;
 
   chartType: string = Const.CHART_TYPE.PRICE; // Default chart type
-  chartSizeStyle: any = {
-    'height': '60vh !important',
-    'width': '96vw !important',
-  }
   /* Interactive Chart attribute values */
   chartDataInterval: string = 'daily';
   isLoading: boolean;
-
+  mainChartHeight: string = '60vh';
+  mainChartWidth: string = '100%';
   isTracked: boolean;
   htmlDescription: SafeHtml;
   titleContent: string;
@@ -131,18 +128,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(navExpanded => {
         this.isNavExpanded = navExpanded;
-        if (navExpanded) {
-          this.chartSizeStyle = {
-            'height': '60vh !important',
-            'width': '78vw !important',
-          }
-        } else {
-          this.chartSizeStyle = {
-            'height': '60vh !important',
-            'width': '96vw !important',
-          }
-        }
-        this.chart.cd.markForCheck();
+
         this.changeDetectorRef.markForCheck();
       });
 
