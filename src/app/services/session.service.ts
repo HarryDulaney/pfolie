@@ -94,6 +94,14 @@ export class SessionService {
         }
     }
 
+    private silentSignIn(userCredentials: firebase.auth.UserCredential) {
+        const firebaseUser = userCredentials.user;
+        if (firebaseUser.uid) {
+            this.user = firebaseUser;
+            SessionService.isAuthenticated = true;
+        }
+    }
+
     public signOutUser() {
         this.auth.signOut().then(res => {
             this.user = null;
@@ -142,6 +150,7 @@ export class SessionService {
     }
 
     signInWithGoogle() {
+        this.auth.signInWithPhoneNumber
         this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
             userCredentials => {
                 this.signIn(userCredentials);

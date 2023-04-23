@@ -22,18 +22,23 @@ export class NavService extends BehaviorSubject<CoinFullInfo> {
   }
 
   public navigateTo(coinId: string) {
-    this.coinDataService.readCoinInfo(coinId).subscribe(coinFullInfo => {
-      super.next(coinFullInfo);
-    }, (error) => {
-      this.router.navigate(['/home']);
-      window.alert("Navigation error occurred: " + error);
-    }, () => {
-      this.cache.cacheLastCoinViewed(coinId, super.getValue().name);
-      this.chartService.initializeChart(coinId, super.getValue().name);
-      this.router.navigate(['/tokens', coinId]);
-    });
-
+    this.coinDataService.readCoinInfo(coinId)
+      .subscribe({
+        next: (coinFullInfo) => {
+          super.next(coinFullInfo);
+        },
+        error: (error) => {
+          this.router.navigate(['/home']);
+          window.alert("Navigation error occurred: " + error);
+        },
+        complete: () => {
+          this.cache.cacheLastCoinViewed(coinId, super.getValue().name);
+          this.chartService.initializeChart(coinId, super.getValue().name);
+          this.router.navigate(['/tokens', coinId]);
+        }
+      });
   }
+
 
   public refreshToLastCoinViewed() {
     if (this.cache.hasLastCoinCache()) {

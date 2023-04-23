@@ -1,6 +1,7 @@
 #dash {
-    height: 100% !important;
-    width: 100% !important;
+    min-height: 98vh !important;
+    max-height: 100% !important;
+    max-width: 100% !important;
     padding-left: 1rem;
     padding-right: 1rem;
 }

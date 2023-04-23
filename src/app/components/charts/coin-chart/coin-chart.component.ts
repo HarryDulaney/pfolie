@@ -1,5 +1,5 @@
 declare var require: any;
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from "@angular/core";
 import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
 import HAccessability from "highcharts/modules/accessibility";
@@ -13,7 +13,7 @@ import { ChartService } from "../chart.service";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CHART_TYPE } from "src/app/constants";
-import { HighchartsChartModule } from "highcharts-angular";
+import { HighchartsChartComponent, HighchartsChartModule } from "highcharts-angular";
 
 HIndicatorsAll(Highcharts);
 HDragPanes(Highcharts);
@@ -26,18 +26,7 @@ HAccessability(Highcharts);
 @Component({
   selector: 'app-coin-chart',
   templateUrl: './coin-chart.component.html',
-  styles: [`#container {
-    max-height: 900px;
-    height: 75vh;
-}
-.highcharts-plot-background {
-  backgroud: transparent !important;
-}
-.highcharts-container {
-  background: transparent !important;
-}
-`],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [``],
   standalone: true,
   imports: [HighchartsChartModule]
 })
@@ -45,6 +34,8 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   /** price | marketcap | volume | ohlc */
   @Input('chartDataType') chartDataType: string;
   @Output() loading: EventEmitter<boolean> = new EventEmitter();
+
+  @ViewChild('highchart') highchart: HighchartsChartComponent;
 
   chartOptions: Highcharts.Options = {};
   prices: Array<Array<number>>;
@@ -63,7 +54,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     public chartService: ChartService,
-    private cd: ChangeDetectorRef
+    public cd: ChangeDetectorRef
   ) { }
 
 
@@ -97,23 +88,24 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
     ).subscribe({
       next: (responseData) => {
         this.setChartData(responseData);
+        const baseOptions = this.getBaseOptions();
         switch (this.chartDataType) {
           case CHART_TYPE.OHLC:
-            this.chartOptions = this.getOHLCChartOptions();
+            this.chartOptions = this.getOHLCChartOptions(baseOptions);
             break;
           case CHART_TYPE.PRICE:
-            this.chartOptions = this.getPriceAreaChartOptions();
+            this.chartOptions = this.getPriceAreaChartOptions(baseOptions);
             break;
           case CHART_TYPE.VOLUME:
-            this.chartOptions = this.getVolumeChartOptions();
+            this.chartOptions = this.getVolumeChartOptions(baseOptions);
             break;
           case CHART_TYPE.MARKET_CAP:
-            this.chartOptions = this.getMarketCapChartOptions();
+            this.chartOptions = this.getMarketCapChartOptions(baseOptions);
             break;
           default:
-            this.chartOptions = this.getPriceAreaChartOptions();
+            this.chartOptions = this.getPriceAreaChartOptions(baseOptions);
         }
-        this.cd.markForCheck();
+        this.cd.detectChanges();
       },
       complete: () => {
         this.loading.emit(false);
@@ -124,164 +116,191 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  getMarketCapChartOptions(): any {
+
+  getBaseOptions(): Highcharts.Options {
     return {
+      credits: {
+        enabled: false
+      },
       title: {
-        text: this.chartService.coinName
+        text: ''
       },
-      yAxis: [{
+      chart: {
+        backgroundColor: '#00000000',
+        panning: {
+          enabled: true,
+          type: 'x',
 
-        labels: {
-          align: 'right',
-          x: -3
         },
-        title: {
-          text: 'Market Cap'
-        },
-        height: '100%',
-        offset: 0,
-        lineWidth: 2
-      }],
-
-      tooltip: {
-        split: true
-      },
-      responsive: {
-      },
-      series: [
-        {
-          type: "area",
-          name: 'Total',
-          data: this.market_caps,
-          tooltip: {
-            valueDecimals: 2
-          }
+        reflow: true,
+        panKey: 'shift',
+        zooming: {
+          type: "x",
         }
-      ],
-      rangeSelector: {
-        selected: 5,
       },
-    };
-
-  }
-
-  getPriceAreaChartOptions(): Highcharts.Options {
-    return {
-      title: {
-        text: this.chartService.coinName
+      navigator: {
+        enabled: false
       },
-      yAxis: [{
-        labels: {
-          align: 'right',
-          x: -3
-        },
-        title: {
-          text: 'Price'
-        },
-        height: '100%',
-        lineWidth: 2,
-        resize: {
-          enabled: true
-        }
-      }],
+
+      yAxis: [],
       tooltip: {
-        split: true
-      },
-      responsive: {
+        shared: true,
       },
       stockTools: {
         gui: {
           enabled: true,
-          buttons: ['simpleShapes', 'lines', 'crookedLines', 'measure', 'advanced']
+          definitions: {
+            fullScreen: {
+              symbol: 'url(https://static.thenounproject.com/png/1985-200.png)'
+            }
+          }
         }
       },
-      series: [{
-        type: 'area',
-        name: '$USD',
-        data: this.prices,
+      series: [],
+      rangeSelector: {
+        selected: 5,
+      },
+    };
+  }
+
+  getPriceAreaChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
+    baseOptions.yAxis = [{
+      labels: {
+        align: 'right',
+        x: -3
+      },
+      title: {
+        text: 'Price'
+      },
+      height: '100%',
+      lineWidth: 2,
+      resize: {
+        enabled: true
+      }
+    }];
+
+    baseOptions.tooltip = {
+      shared: true,
+    };
+
+    baseOptions.stockTools = {
+      gui: {
+        enabled: true,
+      }
+    };
+
+    baseOptions.series = [{
+      type: 'area',
+      name: '$USD',
+      data: this.prices,
+      tooltip: {
+        valueDecimals: 2
+      }
+    }];
+
+    return baseOptions;
+  }
+
+  getMarketCapChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
+    baseOptions.yAxis = [{
+
+      labels: {
+        align: 'right',
+        x: -3
+      },
+      title: {
+        text: 'Market Cap'
+      },
+      height: '100%',
+      offset: 0,
+      lineWidth: 2
+    }];
+
+    baseOptions.tooltip = {
+      split: true
+    };
+
+    baseOptions.series = [
+      {
+        type: "area",
+        name: 'Total',
+        data: this.market_caps,
         tooltip: {
           valueDecimals: 2
         }
-      }],
-      rangeSelector: {
-        selected: 5,
-      },
-    };
+      }
+    ];
+    return baseOptions;
+
   }
 
-  getVolumeOnlyChartOptions(): Highcharts.Options {
-    return {
+
+
+  getVolumeOnlyChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
+    baseOptions.yAxis = [{
+      labels: {
+        align: 'right',
+        x: -3
+      },
       title: {
-        text: this.chartService.coinName
+        text: 'Volume'
       },
-      yAxis: [{
-        labels: {
-          align: 'right',
-          x: -3
-        },
-        title: {
-          text: 'Volume'
-        },
-        height: '100%',
-        offset: 0,
-        lineWidth: 2
-      }],
+      height: '100%',
+      offset: 0,
+      lineWidth: 2
+    }];
 
-      tooltip: {
-        split: true
-      },
-      responsive: {
-      },
-      series: [
-        {
-          type: "area",
-          name: 'Total',
-          data: this.total_volumes,
-          yAxis: 1
-        }],
-      rangeSelector: {
-        selected: 5,
-      },
+    baseOptions.tooltip = {
+      split: true
     };
+
+
+    baseOptions.series = [
+      {
+        type: "area",
+        name: 'Total',
+        data: this.total_volumes,
+        yAxis: 1
+      }];
+
+    return baseOptions;
   }
 
-  getVolumeChartOptions(): Highcharts.Options {
-    return {
+  getVolumeChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
+    baseOptions.yAxis = [{
+      labels: {
+        align: 'right',
+        x: -3
+      },
       title: {
-        text: this.chartService.coinName
+        text: 'Volume'
       },
-      yAxis: [{
-        labels: {
-          align: 'right',
-          x: -3
-        },
-        title: {
-          text: 'Volume'
-        },
-        height: '100%',
-        offset: 0,
-        lineWidth: 2
-      }],
+      height: '100%',
+      offset: 0,
+      lineWidth: 2
+    }];
 
-      tooltip: {
-        split: true
-      },
-      responsive: {
-      },
-      series: [
-        {
-          type: "column",
-          name: 'Total',
-          data: this.total_volumes,
-        }],
-      rangeSelector: {
-        selected: 5,
-      },
+    baseOptions.tooltip = {
+      split: true
     };
+    baseOptions.series = [
+      {
+        type: "column",
+        name: 'Total',
+        data: this.total_volumes,
+      }];
+
+    return baseOptions;
   }
 
-  getOHLCChartOptions(): Highcharts.Options {
+  getOHLCChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
     return {
+      chart: {
+        backgroundColor: '#00000000',
+        zooming: {
+          type: "xy",
+        }
+      },
       yAxis: [
         {
           labels: {

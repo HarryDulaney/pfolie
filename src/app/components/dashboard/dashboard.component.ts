@@ -22,6 +22,8 @@ import firebase from 'firebase/compat/app';
 import { EditableCardComponent } from '../cards/editable-card/editable-card.component';
 import { CoinMarket } from 'src/app/models/coin-gecko';
 import { TrackedAsset } from 'src/app/models/portfolio';
+import { SkeletonModule } from 'primeng/skeleton';
+import * as e from 'express';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,6 +37,7 @@ import { TrackedAsset } from 'src/app/models/portfolio';
     TooltipModule,
     ScrollTopModule,
     ProgressSpinnerModule,
+    SkeletonModule,
     NewsCaroselComponent,
     SharedModule,
     NgFor,
@@ -47,6 +50,13 @@ import { TrackedAsset } from 'src/app/models/portfolio';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
+  /* Loading Flags */
+  isTrendingLoading: boolean;
+  isCoinsByMarketCapLoading: boolean;
+  isGlobalDataLoading: boolean;
+  isWatchListLoading: boolean;
+
+  loadingIcon = 'pi pi-spin pi-spinner';
 
   screenSize: string;
   destroySubject$ = new Subject();
@@ -66,10 +76,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   rows = 100;
   totalRecords = 0;
   tooltipOptions = Const.TOOLTIP_OPTIONS;
-  isTrendingLoading: boolean;
-  loadingIcon = 'pi pi-spin pi-spinner';
-  isCoinsByMarketCapLoading: boolean;
-  isGlobalDataLoading: boolean;
+
   trackedAssetIds: TrackedAsset[] = [];
   private user: firebase.User | null = null;
 
@@ -90,7 +97,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     public coinDataService: CoinDataService,
     private screenService: ScreenService,
-    private dashboardService: DashboardService,
+    public dashboardService: DashboardService,
     private cd: ChangeDetectorRef,
     private datePipe: DatePipe,
     private navService: NavService) {
@@ -184,10 +191,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
               this.isGlobalDataLoading = false;
             }
             this.cd.markForCheck();
+          },
+          error: (error: any) => {
+            this.isGlobalDataLoading = false;
+            this.cd.markForCheck();
+          },
+          complete: () => {
+            this.isGlobalDataLoading = false;
+            this.cd.markForCheck();
           }
         }
       );
 
+    this.isWatchListLoading = true;
     this.dashboardService.getTrackedAssetSource().pipe(
       tap((trackedAssets: TrackedAsset[]) => {
         if (trackedAssets) {
@@ -208,7 +224,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (watchListItems: CoinTableView[]) => {
         if (watchListItems) {
           this.watchListItems = watchListItems;
+          this.isWatchListLoading = false;
+        } else {
+          this.watchListItems = [];
         }
+        this.cd.markForCheck();
+      },
+      error: (error: any) => {
+        this.isWatchListLoading = false;
+        console.log(error);
+        this.cd.markForCheck();
+      },
+      complete: () => {
+        this.isWatchListLoading = false;
         this.cd.markForCheck();
       }
     });

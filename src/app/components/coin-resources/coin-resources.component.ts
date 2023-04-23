@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SecurityContext, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SecurityContext, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CoinFullInfo, DeveloperData, Links, MarketData, Ticker } from '../../models/coin-gecko'
 import { NavService } from 'src/app/services/nav.service';
 import { SessionService } from 'src/app/services/session.service';
@@ -27,15 +27,15 @@ import { TooltipModule } from 'primeng/tooltip';
   imports: [TooltipModule, MatButtonModule, NgClass, CoinChartComponent, NgIf, NgFor, ChipModule, CardModule, TableModule, SharedModule, AsyncPipe]
 })
 export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('chart') chart!: CoinChartComponent;
 
   chartType: string = Const.CHART_TYPE.PRICE; // Default chart type
-
   /* Interactive Chart attribute values */
   chartDataInterval: string = 'daily';
   isLoading: boolean;
-
+  mainChartHeight: string = '60vh';
+  mainChartWidth: string = '100%';
   isTracked: boolean;
-
   htmlDescription: SafeHtml;
   titleContent: string;
   description: string;
@@ -81,6 +81,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
 
   tickers: BehaviorSubject<Ticker[]> = new BehaviorSubject<Ticker[]>([]);
   destroySubject$: Subject<boolean> = new Subject<boolean>();
+  isNavExpanded: boolean;
 
   columnDefs = [
     { header: "TimeStamp", field: 'timestamp' },
@@ -106,17 +107,6 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
 
-  ngOnDestroy(): void {
-    this.destroySubject$.next(true);
-    this.destroySubject$.complete();
-  }
-
-
-  ngAfterViewInit(): void {
-    this.changeDetectorRef.markForCheck();
-
-  }
-
   ngOnInit() {
     this.navService.pipe(takeUntil(this.destroySubject$)).subscribe(coinData => {
       if (!coinData.id) {
@@ -134,6 +124,14 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
 
     });
 
+    this.navService.navExpandedSource$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(navExpanded => {
+        this.isNavExpanded = navExpanded;
+
+        this.changeDetectorRef.markForCheck();
+      });
+
     this.portfolioService.portfolio$.pipe(takeUntil(this.destroySubject$)).subscribe(
       portfolio => {
         if (portfolio) {
@@ -142,8 +140,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
           this.changeDetectorRef.markForCheck();
         }
 
-      }
-    )
+      });
   }
 
   initCoinData(coinData: CoinFullInfo) {
@@ -207,6 +204,20 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.domSanitizer.sanitize(SecurityContext.NONE, d);
 
   }
+
+
+
+  ngAfterViewInit(): void {
+    this.changeDetectorRef.markForCheck();
+
+  }
+
+
+  ngOnDestroy(): void {
+    this.destroySubject$.next(true);
+    this.destroySubject$.complete();
+  }
+
 
   getTickerViews(tickers: Ticker[]): any[] {
     let tickerViews = [];

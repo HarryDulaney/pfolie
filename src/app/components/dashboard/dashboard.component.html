@@ -4,20 +4,6 @@
     id="dash"
 >
     <div class="grid-nogutter w-100">
-        <div class="col-12">
-            <div
-                [hidden]="!isGlobalDataLoading"
-                class="text-center"
-                [style]="{height:'100%',width:'100%'}"
-            >
-                <p-progressSpinner
-                    [style]="{height:'10rem',width:'10rem','margin-top':'7rem','margin-bottom':'7rem'}"
-                    [strokeWidth]='2'
-                    fill="transparent"
-                    animationDuration="1s"
-                ></p-progressSpinner>
-            </div>
-        </div>
 
         <div class="grid-nogutter">
             <div class="row w-100 flex-wrap">
@@ -163,13 +149,15 @@
                 <div class="xl:col-3 xs:col-12">
                     <app-news-carosel></app-news-carosel>
                     <!-- Watch List -->
-                    <app-editable-card
-                        #watchListCard
-                        class="card h-fit"
-                        [items]="watchListItems"
-                        title="Watch List"
-                        (onSelect)="addToWatchList($event, watchListCard)"
-                    ></app-editable-card>
+                    <ng-container *ngIf="dashboardService.isUserLoggedIn()">
+                        <app-editable-card
+                            #watchListCard
+                            class="card h-fit"
+                            [items]="watchListItems"
+                            title="Watch List"
+                            (onSelect)="addToWatchList($event, watchListCard)"
+                        ></app-editable-card>
+                    </ng-container>
                     <!-- Top Market Share Card -->
                     <app-trending-card
                         class="card h-fit"
