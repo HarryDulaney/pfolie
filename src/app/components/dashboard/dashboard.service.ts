@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { BasicCoin, CoinMarket, CoinTableView, GlobalData, GlobalDataView, Trending, TrendingItem } from 'src/app/models/coin-gecko';
+import { BasicCoin, CoinMarket, CoinTableView, GlobalData, GlobalDataView, GlobalMarketCapChart, GlobalMarketCapData, Trending, TrendingItem } from 'src/app/models/coin-gecko';
 import { ApiService } from 'src/app/services/api.service';
 import { SessionService } from 'src/app/services/session.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -13,6 +13,8 @@ import { PortfolioService } from '../portfolio/services/portfolio.service';
 
 @Injectable()
 export class DashboardService {
+  globalMarketCapChartDays = 360;
+  globalMarketCapVsCurrency = "usd";
   currencies: string[] = ["usd", "btc", "eth", "ltc", "bch", "bnb", "eos", "xrp", "xlm", "link", "dot", "yfi", "aed"];
   priceChangePercent: string[] = ["1h", "24h", "7d", "14d", "30d", "200d", "1y"];
   activePriceChangePercent: string[] = ["1h", "24h", "7d"];
@@ -46,6 +48,12 @@ export class DashboardService {
     return this.sessionService.authenticated;
   }
 
+  anonymousLogin() {
+    return this.sessionService.signInAnonymously().then(
+
+    )
+  }
+
   getTrending(): Observable<CoinTableView[]> {
     return this.readTrending().pipe(
       switchMap((data: Trending[]) => this.getTrendingCoinsInfo(data)),
@@ -76,6 +84,10 @@ export class DashboardService {
 
   getGlobalDataSource(): Observable<GlobalData> {
     return this.apiService.getGlobalDataCrypto();
+  }
+
+  initGlobalMarketChartSource(): Observable<GlobalMarketCapData> {
+    return this.apiService.getGlobalMarketCapChart(this.globalMarketCapChartDays, this.globalMarketCapVsCurrency); 
   }
 
   getTrendingCoinsInfo(trendingItems: Trending[]): Observable<CoinMarket[]> {

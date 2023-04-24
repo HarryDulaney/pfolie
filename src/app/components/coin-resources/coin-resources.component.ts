@@ -126,9 +126,10 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
 
     this.navService.navExpandedSource$
       .pipe(takeUntil(this.destroySubject$))
-      .subscribe(navExpanded => {
-        this.isNavExpanded = navExpanded;
-
+      .subscribe(expandStateChange => {
+        this.isNavExpanded = expandStateChange;
+        this.chart.chartInstance.reflow();
+        this.chart.cd.detectChanges();
         this.changeDetectorRef.markForCheck();
       });
 

@@ -1,10 +1,10 @@
-import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { BasicCoin, CoinTableView, GlobalData } from 'src/app/models/coin-gecko';
+import { BasicCoin, CoinTableView, GlobalData, GlobalMarketCapChart, GlobalMarketCapData } from 'src/app/models/coin-gecko';
 import { NavService } from 'src/app/services/nav.service';
 import { DashboardService } from './dashboard.service';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { concatMap, map, takeUntil, tap } from 'rxjs/operators';
 import { ScreenService } from 'src/app/services/screen.service';
 import { LazyLoadEvent, SharedModule } from 'primeng/api';
@@ -23,8 +23,14 @@ import { EditableCardComponent } from '../cards/editable-card/editable-card.comp
 import { CoinMarket } from 'src/app/models/coin-gecko';
 import { TrackedAsset } from 'src/app/models/portfolio';
 import { SkeletonModule } from 'primeng/skeleton';
-import * as e from 'express';
+import { LineChartComponent } from '../charts/line-chart/line-chart.component';
 
+
+const documentStyle = getComputedStyle(document.documentElement);
+const chartFillColor = documentStyle.getPropertyValue('--chart-fill-color');
+const textColor = documentStyle.getPropertyValue('--text-color');
+const chartLineColor = documentStyle.getPropertyValue('--chart-fill-color');
+const chartBackgroundColor = documentStyle.getPropertyValue('--chart-fill-color');
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -44,22 +50,35 @@ import * as e from 'express';
     CardModule,
     NgIf,
     SparklineComponent,
+    LineChartComponent,
     TableModule,
     DeltaIcon,
     TrendingCardComponent]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
+  @ViewChild('cryptoMarketCapChart') globalChart: LineChartComponent;
+
+  private documentStyle: CSSStyleDeclaration;
+  private user: firebase.User | null = null;
+  destroySubject$ = new Subject();
+
   /* Loading Flags */
   isTrendingLoading: boolean;
   isCoinsByMarketCapLoading: boolean;
   isGlobalDataLoading: boolean;
   isWatchListLoading: boolean;
+  isGlobalChartLoading: boolean;
 
   loadingIcon = 'pi pi-spin pi-spinner';
+  /* Chart Style */
+  chartFillColor: string = chartFillColor;
+  chartLineColor: string = chartLineColor;
+  textColor: string = textColor;
+  chartBackgroundColor: string = chartBackgroundColor;
+  globalChartType: string = Const.CHART_TYPE.MARKET_CAP;
 
   screenSize: string;
-  destroySubject$ = new Subject();
   coinsByMarketCap: CoinTableView[] = [];
   topMarketShareItems: CoinTableView[] = [];
   trendingItems: CoinTableView[] = [];
@@ -76,9 +95,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   rows = 100;
   totalRecords = 0;
   tooltipOptions = Const.TOOLTIP_OPTIONS;
-
+  globalMarketCapChartProvider: Observable<GlobalMarketCapData>;
+  globalMarketCapChartDataType: string = Const.CHART_TYPE.MARKET_CAP;
   trackedAssetIds: TrackedAsset[] = [];
-  private user: firebase.User | null = null;
 
   mainColumnDefs = [
     { header: "Icon", field: 'image' },
@@ -91,6 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { header: "24h Low", field: 'low_24h' },
     { header: "7 Days", field: 'sparkline' },
   ];
+
   rowTrackBy = (index: number, item: CoinTableView) => item.id;
 
 
@@ -100,7 +120,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public dashboardService: DashboardService,
     private cd: ChangeDetectorRef,
     private datePipe: DatePipe,
-    private navService: NavService) {
+    private navService: NavService,
+  ) {
     this.date = this.datePipe.transform(this.timeInMillis, 'MM-dd-yyyy h:mm a')?.toString();
     this.screenService.screenSource$.pipe(
       takeUntil(this.destroySubject$)
@@ -108,6 +129,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.screenSize = screenSize;
       this.cd.markForCheck();
     });
+
+    this.globalMarketCapChartProvider =
+      this.dashboardService.initGlobalMarketChartSource();
+    this.documentStyle = documentStyle;
 
   }
 
@@ -166,7 +191,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
         }
 
-      )
+      );
 
     this.isGlobalDataLoading = true;
     this.dashboardService.getGlobalDataSource()
@@ -205,11 +230,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.isWatchListLoading = true;
     this.dashboardService.getTrackedAssetSource().pipe(
-      tap((trackedAssets: TrackedAsset[]) => {
-        if (trackedAssets) {
-          this.trackedAssetIds = trackedAssets;
-        }
-      }),
       concatMap((trackedAssets: TrackedAsset[]) => {
         const ids = trackedAssets.map((asset) => asset.id);
         return this.dashboardService.getMarketDataForIds(ids);
@@ -262,6 +282,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   favoriteButtonClicked(coinView: CoinTableView) {
     if (this.dashboardService.isUserLoggedIn()) {
       this.dashboardService.addToWatchList(coinView);
+    } else {
+      this.dashboardService.anonymousLogin();
     }
   }
 

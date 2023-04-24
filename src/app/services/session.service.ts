@@ -163,7 +163,7 @@ export class SessionService {
     }
 
     signInAnonymously() {
-        this.auth.signInAnonymously().then(
+        return this.auth.signInAnonymously().then(
             userCredentials => {
                 this.signIn(userCredentials);
             }

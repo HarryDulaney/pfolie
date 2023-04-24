@@ -4,6 +4,7 @@
     [Highcharts]="Highcharts"
     [constructorType]="'stockChart'"
     [options]="chartOptions"
-    [update]="true"
+    (chartInstance)="chartInstance = $event"
+    [(update)]="updateFlag"
 >
 </highcharts-chart>

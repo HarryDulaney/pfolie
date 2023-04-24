@@ -19,6 +19,10 @@ export class Store<StoreType = any> {
     this.state$ = new BehaviorSubject<StoreType>(initialState);
   }
 
+  public selectAll(): Observable<StoreType> {
+    return this.state$.asObservable();
+  }
+
 
   public select<K extends keyof StoreType>(key: K): Observable<StoreType[K]> {
     var selectStream = this.state$.pipe(
