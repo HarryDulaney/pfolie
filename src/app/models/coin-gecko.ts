@@ -1,5 +1,14 @@
 import { PLATFORMS } from '../constants';
 
+export interface GlobalMarketCapChart {
+    market_cap: Array<Array<number>>;
+    volume: Array<Array<number>>;
+}
+
+export interface GlobalMarketCapData {
+    market_cap_chart: GlobalMarketCapChart;
+}
+
 export interface GlobalDataView {
     total_market_cap_usd: number
     total_volume: number;

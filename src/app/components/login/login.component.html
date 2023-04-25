@@ -15,6 +15,26 @@
             [style]="{'font-size':'1.2rem'}"
         >Please choose a sign in method</div>
     </div>
+
+    <a
+        mat-flat-button
+        class="fed-sign-in-btn-main"
+        (click)="signInTempAccount()"
+    >
+        <span class="float-start">
+            <i
+                class="fa fa-user-ninja"
+                style="font-size: x-large;"
+            ></i>
+        </span>
+        <span class="float-end pl-2">
+            <div
+                style="font-size: large;"
+                class="text-center font-bold no-wrap"
+            >Continue as Guest
+            </div>
+        </span>
+    </a>
     <div class="mb-1">
         <a
             mat-flat-button
@@ -65,7 +85,7 @@
                 ></i>
             </span>
             <span class="float-end pl-2">
-                <div class="text-center font-bold  no-wrap"> Continue with Github
+                <div class="text-center font-bold no-wrap"> Continue with Github
                 </div>
             </span>
         </a>
@@ -141,7 +161,7 @@
     <span class="row text-400 font-medium justify-content-center mb-1">
         <a
             id="register"
-            class="text-color-link ml-2 text-center cursor-pointer no-underline font-medium"
+            class="text-color-link ml-2 text-center cursor-pointer no-underline font-large font-bold"
             (click)="navigateRegister()"
         >Register Here
         </a>

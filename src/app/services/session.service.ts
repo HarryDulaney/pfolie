@@ -19,7 +19,9 @@ export class SessionService {
     private redirectUrlFragment = null;
     public showRegisterModal = false;
     public initialized: boolean = false;
-
+    /* User tried to watch an item while signed out,
+   cache the Id and add to users watchlist after sign in successful */
+    private watchItemId = null;
 
     constructor(
         private auth: AngularFireAuth,
@@ -88,6 +90,9 @@ export class SessionService {
                     this.redirectUrlFragment = null;
                 });
 
+            } else if (this.watchItemId !== null) {
+                this.portfolioService.addTracked(this.watchItemId);
+                this.watchItemId = null;
             } else {
                 this.router.navigate(['/home']);
             }
@@ -163,7 +168,7 @@ export class SessionService {
     }
 
     signInAnonymously() {
-        this.auth.signInAnonymously().then(
+        return this.auth.signInAnonymously().then(
             userCredentials => {
                 this.signIn(userCredentials);
             }
@@ -209,9 +214,13 @@ export class SessionService {
      * Redirect to Login Modal and continue navigation on successful login.
      * @param redirect to true will open portfolio after sign in  
      */
-    public displayLoginModal(fragment?: string) {
+    public displayLoginModal(fragment?: string, watchItemId?: string) {
         if (fragment) {
             this.redirectUrlFragment = fragment;
+        }
+
+        if (watchItemId) {
+            this.watchItemId = watchItemId;
         }
 
         this.toastService.showLoginToast('Please sign in to perform that action.');

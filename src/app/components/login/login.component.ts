@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroySubject$.next(true);  
+    this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 
@@ -69,6 +69,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   githubSignIn() {
     this.sessionService.signInWithGithub();
+  }
+
+  signInTempAccount() {
+    this.sessionService.signInAnonymously();
   }
 
 

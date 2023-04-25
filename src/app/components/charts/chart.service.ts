@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { CoinMarketChartResponse } from 'src/app/models/coin-gecko';
+import { CoinMarketChartResponse, GlobalMarketCapData } from 'src/app/models/coin-gecko';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 
 @Injectable({

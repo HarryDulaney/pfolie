@@ -1,5 +1,5 @@
 declare var require: any;
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, AfterViewInit } from "@angular/core";
 import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
 import HAccessability from "highcharts/modules/accessibility";
@@ -35,8 +35,9 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   @Input('chartDataType') chartDataType: string;
   @Output() loading: EventEmitter<boolean> = new EventEmitter();
 
-  @ViewChild('highchart') highchart: HighchartsChartComponent;
-
+  @ViewChild('highchart') highchart!: HighchartsChartComponent;
+  chartInstance: Highcharts.Chart;
+  updateFlag: boolean;
   chartOptions: Highcharts.Options = {};
   prices: Array<Array<number>>;
   market_caps: Array<Array<number>>;
@@ -79,6 +80,10 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.reload();
+  }
+
+  reflow() {
+    this.chartInstance.reflow();
   }
 
   reload() {
@@ -203,7 +208,6 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
   getMarketCapChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
     baseOptions.yAxis = [{
-
       labels: {
         align: 'right',
         x: -3
@@ -212,26 +216,32 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
         text: 'Market Cap'
       },
       height: '100%',
-      offset: 0,
-      lineWidth: 2
+      lineWidth: 2,
+      resize: {
+        enabled: true
+      }
     }];
 
     baseOptions.tooltip = {
-      split: true
+      shared: true,
     };
 
-    baseOptions.series = [
-      {
-        type: "area",
-        name: 'Total',
-        data: this.market_caps,
-        tooltip: {
-          valueDecimals: 2
-        }
+    baseOptions.stockTools = {
+      gui: {
+        enabled: true,
       }
-    ];
-    return baseOptions;
+    };
 
+    baseOptions.series = [{
+      type: 'area',
+      name: '$USD',
+      data: this.market_caps,
+      tooltip: {
+        valueDecimals: 2
+      }
+    }];
+
+    return baseOptions;
   }
 
 
@@ -245,13 +255,24 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       title: {
         text: 'Volume'
       },
+
       height: '100%',
+      lineWidth: 2,
       offset: 0,
-      lineWidth: 2
+      resize: {
+        enabled: true
+      }
     }];
 
     baseOptions.tooltip = {
       split: true
+    };
+
+
+    baseOptions.stockTools = {
+      gui: {
+        enabled: true,
+      }
     };
 
 
@@ -275,10 +296,21 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       title: {
         text: 'Volume'
       },
+
       height: '100%',
+      lineWidth: 2,
       offset: 0,
-      lineWidth: 2
+      resize: {
+        enabled: true
+      }
     }];
+
+
+    baseOptions.stockTools = {
+      gui: {
+        enabled: true,
+      }
+    };
 
     baseOptions.tooltip = {
       split: true

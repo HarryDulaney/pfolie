@@ -281,12 +281,6 @@ export class PortfolioService {
 
 
   addTracked(id: string) {
-    /*    
-  
-    let asset = { id: ownedAsset.id, quantity: ownedAsset.quantity, costBasis: ownedAsset.costBasis };
-    let updated = this.add(asset);
-  
-    */
     let isValid = PortfolioBuilderService.isUniqueTrackedAsset(id, this.portfolio.getValue());
     if (!isValid) {
       this.toast.showInfoToast('You are already tracking asset: ' + id);

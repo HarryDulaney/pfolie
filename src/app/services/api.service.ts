@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { BasicCoin, CoinFullInfo, CoinMarket, CoinMarketChartResponse, GlobalData, SimplePriceResponse, TrendingResponse } from '../models/coin-gecko';
+import { BasicCoin, CoinFullInfo, CoinMarket, CoinMarketChartResponse, GlobalData, GlobalMarketCapData, SimplePriceResponse, TrendingResponse } from '../models/coin-gecko';
 import { environment } from 'src/environments/environment';
 import { API_ROUTES, API_ROUTES as COINAPI, CONSTANT, IP_SERVICE_URI } from '../constants';
 import { RssFeed } from '../models/rssfeed';
@@ -91,6 +91,10 @@ export class ApiService {
 
   /* ---------------------------------------- CoinGecko API ---------------------------------------- */
 
+  getGlobalMarketCapChart(days: number, vsCurrency: string): Observable<GlobalMarketCapData> {
+    return this.http.get<GlobalMarketCapData>(`${API_ROOTS.COINGECKO}/global/market_cap_chart?days=${days}&vs_currency=${vsCurrency}`, this.CG_OPTIONS);
+  }
+
   getTrendingCoins(): Observable<TrendingResponse> {
     return this.http.get<TrendingResponse>(`${API_ROOTS.COINGECKO}${COINAPI.SEARCH_TRENDING}`, this.CG_OPTIONS);
   }
@@ -105,6 +109,10 @@ export class ApiService {
 
   getCoinFullInfo(id: string, sparkline: boolean): Observable<CoinFullInfo> {
     return this.http.get<CoinFullInfo>(`${API_ROOTS.COINGECKO}/coins/${id}?sparkline=${sparkline}`, this.CG_OPTIONS);
+  }
+
+  getSupportedVsCurrencies(): Observable<string[]> {
+    return this.http.get<string[]>(`${API_ROOTS.COINGECKO}/simple/supported_vs_currencies`, this.CG_OPTIONS);
   }
 
 
