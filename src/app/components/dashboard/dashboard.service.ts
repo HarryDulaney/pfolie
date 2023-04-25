@@ -65,6 +65,10 @@ export class DashboardService {
     )
   }
 
+  promptForLogin() {
+    this.sessionService.displayLoginModal();
+  }
+
   getCoinsByMarketCap(event: LazyLoadEvent): Observable<CoinTableView[]> {
     return this.getAllCoinsMarketData(
       Number(event.first / event.rows + 1),
@@ -87,7 +91,7 @@ export class DashboardService {
   }
 
   initGlobalMarketChartSource(): Observable<GlobalMarketCapData> {
-    return this.apiService.getGlobalMarketCapChart(this.globalMarketCapChartDays, this.globalMarketCapVsCurrency); 
+    return this.apiService.getGlobalMarketCapChart(this.globalMarketCapChartDays, this.globalMarketCapVsCurrency);
   }
 
   getTrendingCoinsInfo(trendingItems: Trending[]): Observable<CoinMarket[]> {

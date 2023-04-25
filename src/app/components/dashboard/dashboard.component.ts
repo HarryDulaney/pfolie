@@ -283,7 +283,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.dashboardService.isUserLoggedIn()) {
       this.dashboardService.addToWatchList(coinView);
     } else {
-      this.dashboardService.anonymousLogin();
+      this.dashboardService.promptForLogin();
     }
   }
 
