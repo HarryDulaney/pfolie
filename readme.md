@@ -1,35 +1,55 @@
 
-# ~ Pfolie ~
-### [Pfolie.com](https://www.pfolie.com) is a suite of web-based investment and financial portfolio tools. Pfolie provides a portal for investors to interact with real-time data about financial markets. The current focus is on cryptocurrency price and market sentiment but tools for traditional financial markets are in development.
+<div align="center">
+  <a href="https://github.com/harrydulaney/pfolie">
+    <img src="img/pfolie-logo-1-white.png" alt="Logo" width="120" height="80">
+  </a>
+</div>
+<div align="center">
+
+### **Pfolie.com is a suite of web-based investment and financial portfolio tools. Pfolie provides a portal for investors to interact with real-time data about financial markets through a flexible next generation analytics dashboard. The current focus is on cryptocurrency price and market sentiment but tools for traditional financial markets are in development.**
+
+</div>
+
 ----
+## **Build With:**
+- #### Angular 15+
+- #### Node.js
+- #### Express.js
+- #### PostgreSQL
+- #### Firebase
+- #### CoinGecko API
+- #### Highcharts
+- #### Chart.js
 ____
-## Features:
- - ##### Watchlist and asset tracking
- - ##### Portfolio tracking with visual insights 
- - ##### Quick search individual asset and market data
- - ##### Real-Time view of asset prices
- - ##### Market and Exchange snapshots
- - ##### News from multiple sources
- - ##### Article reader
+## **Features:**
+ - #### Watchlist and asset tracking
+ - #### Portfolio tracking with visual insights 
+ - #### Quick search individual asset and market data
+ - #### Real-Time view of asset prices
+ - #### Market and Exchange snapshots
+ - #### News from multiple sources
+ - #### Article reader
 ____
-### Home Page![](img/coinetc-ss-1.png)
+### **Home Page** ![](img/coinetc-ss-1.png)
 ----
-### Quick Search ![](img/QuickSearchSS.png)
+### **Quick Search** ![](img/QuickSearchSS.png)
 
 ----
-### Real-Time Price and Market data ![](img/coinetc-ss-2.png)
+### **Real-Time Price and Market data** ![](img/coinetc-ss-2.png)
 ----
-### Historical Price and asset metadata ![](img/coinetc-ss-5.png)
+### **Historical Price and asset metadata** ![](img/coinetc-ss-5.png)
 ----
 
-### Create a Watchlist and Track Assets ![](img/coinetc-ss-6.png)
+### **Create a Watchlist and Track Assets** ![](img/coinetc-ss-6.png)
 ----
- ## Build and Track your Portfolio 
- ### Build ![](img/allocation_portfolio_workspace.png)
-### Track ![](img/portfolioManagerScreenShot.png)
+ ## **Build and Track your Portfolio** 
+ ### **Build** ![](img/allocation_portfolio_workspace.png)
+### **Track** ![](img/portfolioManagerScreenShot.png)
 
-### Your Portfolio ![](img/coinetc-ss-17.png)
+### **Your Portfolio** ![](img/coinetc-ss-17.png)
+
 ----
+
 ## Aggregated Market News and Sentiment
 ### Multiple News Sources ![](img/coinetc-ss-17.png)
 ### Full Articles ![](img/coinetc-ss-12.png)
