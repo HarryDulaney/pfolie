@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef, ViewChild } fro
 import { GlobalMarketCapData } from "src/app/models/coin-gecko";
 import { Observable, Subject, takeUntil } from "rxjs";
 import { ChartModule, UIChart } from "primeng/chart";
-
+import * as Const from '../../../constants'
 
 @Component({
   selector: 'app-line-chart',
@@ -61,9 +61,6 @@ export class LineChartComponent implements OnInit, OnDestroy {
           this.total_volume_labels = this.getLabels(rawVolumes);
           this.total_volumes = this.getValues(rawVolumes);
           this.drawChart();
-
-          this.data = this.createMarketCapChart(this.market_cap_labels, this.market_caps);
-          this.options = this.getOptions();
           this.cd.detectChanges();
         },
         complete: () => {
@@ -77,11 +74,13 @@ export class LineChartComponent implements OnInit, OnDestroy {
   }
   drawChart() {
     switch (this.type) {
-      case 'market_cap':
+      case Const.CHART_TYPE.MARKET_CAP:
         this.data = this.createMarketCapChart(this.market_cap_labels, this.market_caps);
+        this.options = this.getOptions();
         break;
       case 'volume':
         this.data = this.createVolumeChart(this.total_volume_labels, this.total_volumes);
+        this.options = this.getOptions();
         break;
       default:
         console.log('No chart type provided.');
@@ -90,8 +89,8 @@ export class LineChartComponent implements OnInit, OnDestroy {
 
   getLabels(data: Array<any>): Array<string> {
     let labels = [];
-    for (let i = 0; i < data.length; i++) {
-      labels.push(new Date(data[i][0]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase());
+    for (let i = data.length - 1; i >= 0; i--) {
+      labels.push(new Date(data[i][0]).toLocaleDateString('en-US'));
     }
 
     return labels;
@@ -100,7 +99,7 @@ export class LineChartComponent implements OnInit, OnDestroy {
 
   getValues(data: Array<any>): Array<number> {
     let values = [];
-    for (let i = 0; i < data.length; i++) {
+    for (let i = data.length - 1; i >= 0; i--) {
       values.push(data[i][1]);
     }
 
@@ -137,13 +136,33 @@ export class LineChartComponent implements OnInit, OnDestroy {
 
   getOptions() {
     return {
+      elements: {
+        point: {
+          radius: 1
+        }
+      },
+      responsive: true,
       maintainAspectRatio: false,
       aspectRatio: 0.6,
       plugins: {
-        legend: {
-          labels: {
-            color: this.textColor
+        tooltip: {
+          enabled: true,
+          callbacks: {
+            label: function (context) {
+              let label = context.dataset.label || '';
+
+              if (label) {
+                label += ': ';
+              }
+              if (context.parsed.y !== null) {
+                label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+              }
+              return label;
+            }
           }
+        },
+        legend: {
+          display: false
         }
       },
       scales: {
@@ -152,18 +171,18 @@ export class LineChartComponent implements OnInit, OnDestroy {
             color: this.textColor
           },
           grid: {
-            enabled: false,
+            display: false,
           }
         },
         y: {
           ticks: {
             color: this.textColor,
             callback: function (value, index, ticks) {
-              return '$' + value;
+              return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
             }
           },
           grid: {
-            enabled: false,
+            display: false,
           }
         }
       }

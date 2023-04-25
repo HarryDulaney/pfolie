@@ -230,6 +230,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.isWatchListLoading = true;
     this.dashboardService.getTrackedAssetSource().pipe(
+      takeUntil(this.destroySubject$),
       concatMap((trackedAssets: TrackedAsset[]) => {
         const ids = trackedAssets.map((asset) => asset.id);
         return this.dashboardService.getMarketDataForIds(ids);
@@ -239,7 +240,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           return this.dashboardService.getMarketDataView(value);
         })
       }),
-      takeUntil(this.destroySubject$)
     ).subscribe({
       next: (watchListItems: CoinTableView[]) => {
         if (watchListItems) {
