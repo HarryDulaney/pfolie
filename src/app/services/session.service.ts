@@ -43,6 +43,7 @@ export class SessionService {
                         this.initialized = true;
                     } else {
                         user = null;
+                        this.portfolioService.endSession();
                         this.initialized = false;
                         SessionService.isAuthenticated = false;
                     }

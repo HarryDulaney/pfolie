@@ -13,7 +13,7 @@ import { PortfolioService } from '../portfolio/services/portfolio.service';
 
 @Injectable()
 export class DashboardService {
-  globalMarketCapChartDays = 360;
+  globalMarketCapChartDays = 1440;
   globalMarketCapVsCurrency = "usd";
   currencies: string[] = ["usd", "btc", "eth", "ltc", "bch", "bnb", "eos", "xrp", "xlm", "link", "dot", "yfi", "aed"];
   priceChangePercent: string[] = ["1h", "24h", "7d", "14d", "30d", "200d", "1y"];

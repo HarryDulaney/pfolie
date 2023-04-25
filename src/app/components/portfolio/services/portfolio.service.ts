@@ -18,7 +18,6 @@ import { BasicCoin } from 'src/app/models/coin-gecko';
   providedIn: 'root'
 })
 export class PortfolioService {
-
   public isLoading: boolean;
   private user = null;
   showSelectModal: boolean = false;
@@ -111,6 +110,9 @@ export class PortfolioService {
   endSession() {
     this.portfolio.next(null);
     this.trackedSource.next([]);
+    this.portfolioDataSource.next([]);
+    this.portfolioAssetViews.next([]);
+    this.portfolioInitializedEvent.next(false);
   }
 
 
