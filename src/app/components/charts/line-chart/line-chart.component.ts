@@ -132,8 +132,25 @@ export class LineChartComponent implements OnInit, OnDestroy {
 
 
   createVolumeChart(labels: string[], values: any[]) {
+    return {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Volume',
+          data: values,
+          fill: true,
+          tension: 0.4,
+          borderColor: this.lineColor,
+          backgroundColor: this.backgroundColor,
+          color: this.fillColor,
+          borderWidth: 2,
+          pointBackgroundColor: this.fillColor,
+          pointBorderColor: this.lineColor,
+          pointBorderWidth: 0,
+        }
+      ]
+    }
   }
-
   getOptions() {
     return {
       elements: {

@@ -2,8 +2,10 @@ declare var require: any;
 import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, AfterViewInit } from "@angular/core";
 import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
+import HIndicators from "highcharts/indicators/indicators";
 import HAccessability from "highcharts/modules/accessibility";
 import HDragPanes from "highcharts/modules/drag-panes";
+import HExporting from "highcharts/modules/exporting"
 import HHightContrastDark from "highcharts/themes/high-contrast-dark"
 import HAnnotationsAdvanced from "highcharts/modules/annotations-advanced";
 import HPriceIndicator from "highcharts/modules/price-indicator";
@@ -15,8 +17,10 @@ import { takeUntil } from "rxjs/operators";
 import { CHART_TYPE } from "src/app/constants";
 import { HighchartsChartComponent, HighchartsChartModule } from "highcharts-angular";
 
+HIndicators(Highcharts);
 HIndicatorsAll(Highcharts);
 HDragPanes(Highcharts);
+HExporting(Highcharts);
 HAnnotationsAdvanced(Highcharts);
 HPriceIndicator(Highcharts);
 HStockTools(Highcharts);
@@ -146,7 +150,9 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       navigator: {
         enabled: false
       },
-
+      legend: {
+        enabled: false
+      },
       yAxis: [],
       tooltip: {
         shared: true,
