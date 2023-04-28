@@ -2,6 +2,7 @@ import { CurrencyPipe, DatePipe, DecimalPipe, PercentPipe } from '@angular/commo
 import { Injectable, OnInit } from '@angular/core';
 import { CONSTANT } from '../constants';
 import { ThemeService } from './theme.service';
+import { Coin, CoinFullInfo, CoinTableView } from '../models/coin-gecko';
 
 @Injectable()
 export class UtilityService {
@@ -96,11 +97,35 @@ export class UtilityService {
         //     }
         // }
 
- 
+
     }
 
     getThemeColorPallete(): string[] {
         return this.CHART_COLOR_PALLETTE;
+    }
+
+    mapCoinFullInfoToCoinTableView(coinFullInfo: CoinFullInfo): CoinTableView {
+        return {
+            id: coinFullInfo.id,
+            image: coinFullInfo.image.small,
+            name: coinFullInfo.name,
+            current_price: this.format(coinFullInfo.market_data.current_price['usd'], 'USD'),
+            market_cap_rank: coinFullInfo.market_cap_rank,
+            market_cap: this.format(coinFullInfo.market_data.market_cap['usd'], 'USD'),
+            price_change_24h: this.format(coinFullInfo.market_data.price_change_percentage_24h, 'decp'),
+            high_24h: this.format(coinFullInfo.market_data.high_24h['usd'], 'USD'),
+            low_24h: this.format(coinFullInfo.market_data.low_24h['usd'], 'USD'),
+            sparkline: coinFullInfo.market_data.sparkline_7d.price,
+        } as CoinTableView;
+
+    }
+
+    mapCoinFullInfosToCoinTableViews(coinFullInfos: CoinFullInfo[]): CoinTableView[] {
+        const coinTableViews: CoinTableView[] = [];
+        coinFullInfos.forEach(coinFullInfo => {
+            coinTableViews.push(this.mapCoinFullInfoToCoinTableView(coinFullInfo));
+        });
+        return coinTableViews;
     }
 
 }

@@ -31,6 +31,7 @@ export interface CoinTableView {
     market_cap_rank: number;
     market_cap: string;
     price_change_24h: number;
+    price_change_24h_currency?: number;
     high_24h: string;
     low_24h: string;
     sparkline: number[];
@@ -274,6 +275,9 @@ export interface MarketData extends BasicCoin {
     max_supply?: null;
     circulating_supply?: number;
     last_updated?: Date;
+    sparkline_7d?: {
+        price: number[];
+    }
 }
 export interface Market {
     name?: string;
@@ -346,9 +350,10 @@ export interface CoinFullInfo {
     status_updates?: any[];
     last_updated?: Date;
     tickers?: Ticker[];
-    sparkline_in_7d?: {
-        price: number[];
-    }
+}
+
+export interface SparkLine7d {
+    price: number[];
 }
 export interface CoinTickerResponse {
     name: string;

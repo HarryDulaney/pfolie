@@ -117,14 +117,6 @@ export class LineChartComponent implements OnInit, OnDestroy {
           label: 'Market Cap',
           data: values,
           fill: true,
-          tension: 0.4,
-          borderColor: this.lineColor,
-          backgroundColor: this.backgroundColor,
-          color: this.fillColor,
-          borderWidth: 2,
-          pointBackgroundColor: this.fillColor,
-          pointBorderColor: this.lineColor,
-          pointBorderWidth: 0,
         }
       ]
     }
@@ -139,14 +131,15 @@ export class LineChartComponent implements OnInit, OnDestroy {
           label: 'Volume',
           data: values,
           fill: true,
-          tension: 0.4,
-          borderColor: this.lineColor,
-          backgroundColor: this.backgroundColor,
-          color: this.fillColor,
-          borderWidth: 2,
-          pointBackgroundColor: this.fillColor,
-          pointBorderColor: this.lineColor,
-          pointBorderWidth: 0,
+          /*           tension: 1,
+                    borderJointStyle: 'round',
+                    borderColor: this.lineColor,
+                    backgroundColor: this.backgroundColor,
+                    color: this.fillColor,
+                    borderWidth: 2,
+                    pointBackgroundColor: this.fillColor,
+                    pointBorderColor: this.lineColor,
+                    pointBorderWidth: 0, */
         }
       ]
     }
@@ -155,12 +148,23 @@ export class LineChartComponent implements OnInit, OnDestroy {
     return {
       elements: {
         point: {
-          radius: 1
-        }
+          radius: 0,
+        },
+        line: {
+          tension: 1,
+          borderColor: this.lineColor,
+          backgroundColor: this.backgroundColor,
+          color: this.fillColor,
+          borderWidth: 2,
+          pointBackgroundColor: this.fillColor,
+          pointBorderColor: this.lineColor,
+          pointBorderWidth: 0, 
+          borderJoinStyle: 'round'
+        },
       },
       responsive: true,
       maintainAspectRatio: false,
-      aspectRatio: 0.6,
+      aspectRatio: 1,
       plugins: {
         tooltip: {
           enabled: true,

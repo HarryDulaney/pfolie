@@ -19,7 +19,7 @@ import { Subject, timer } from 'rxjs';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { BasicCoin, GlobalData, GlobalDataView } from 'src/app/models/coin-gecko';
 import { ScreenService } from 'src/app/services/screen.service';
-import { CONSTANT as Const, PROJECT_LINKS } from '../../constants'
+import { CONSTANT as Const, EDIT_TRACKED_ITEMS, PROJECT_LINKS } from '../../constants'
 import { Observable } from "rxjs"
 import { FooterComponent } from '../footer/footer.component';
 import { DialogModule } from 'primeng/dialog';
@@ -239,7 +239,16 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       }
-    )
+    );
+
+    this.dashboardService.eventSource$.pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe(
+      event => {
+        if (event && event.name === EDIT_TRACKED_ITEMS) {
+          this.openTrackedAssets();
+        }
+      });
 
   }
 

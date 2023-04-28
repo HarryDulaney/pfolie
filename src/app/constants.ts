@@ -122,7 +122,7 @@ export const PROJECT_LINKS = {
 export const SHOW = 'show';
 export const HIDE = 'hide';
 export const CLICKED = 'clicked';
-
+export const EDIT_TRACKED_ITEMS = 'edit-tracked-items';
 
 export declare type PLATFORMS = 'ethereum' | 'tron';
 

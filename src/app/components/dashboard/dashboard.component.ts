@@ -1,7 +1,7 @@
 import { DOCUMENT, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { BasicCoin, CoinTableView, GlobalData, GlobalMarketCapChart, GlobalMarketCapData } from 'src/app/models/coin-gecko';
+import { BasicCoin, CoinFullInfo, CoinTableView, GlobalData, GlobalMarketCapChart, GlobalMarketCapData } from 'src/app/models/coin-gecko';
 import { NavService } from 'src/app/services/nav.service';
 import { DashboardService } from './dashboard.service';
 import { Observable, Subject } from 'rxjs';
@@ -24,6 +24,9 @@ import { CoinMarket } from 'src/app/models/coin-gecko';
 import { TrackedAsset } from 'src/app/models/portfolio';
 import { SkeletonModule } from 'primeng/skeleton';
 import { LineChartComponent } from '../charts/line-chart/line-chart.component';
+import { CoinChartComponent } from '../charts/coin-chart/coin-chart.component';
+import { BigChartComponent } from '../charts/big-chart/big-chart.component';
+import { BigChartService } from '../charts/big-chart/big-chart.service';
 
 
 const documentStyle = getComputedStyle(document.documentElement);
@@ -45,19 +48,20 @@ const chartBackgroundColor = documentStyle.getPropertyValue('--chart-fill-color'
     ProgressSpinnerModule,
     SkeletonModule,
     NewsCaroselComponent,
+    BigChartComponent,
     SharedModule,
     NgFor,
     CardModule,
     NgIf,
     SparklineComponent,
-    LineChartComponent,
     TableModule,
     DeltaIcon,
     TrendingCardComponent]
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
-  @ViewChild('cryptoMarketCapChart') globalChart: LineChartComponent;
+  @ViewChild('globalChart') globalChart: BigChartComponent;
+  @ViewChild(BigChartService, { 'static': true }) bigChartService: BigChartService;
 
   private documentStyle: CSSStyleDeclaration;
   private user: firebase.User | null = null;
@@ -82,7 +86,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   coinsByMarketCap: CoinTableView[] = [];
   topMarketShareItems: CoinTableView[] = [];
   trendingItems: CoinTableView[] = [];
-  watchListItems: CoinTableView[] = [];
   globalBigChartProps = {}
   globalData: GlobalData;
   selectedCoin: CoinTableView;
@@ -95,9 +98,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   rows = 100;
   totalRecords = 0;
   tooltipOptions = Const.TOOLTIP_OPTIONS;
-  globalMarketCapChartProvider: Observable<GlobalMarketCapData>;
-  globalMarketCapChartDataType: string = Const.CHART_TYPE.MARKET_CAP;
-  trackedAssetIds: TrackedAsset[] = [];
+  trackedAssetDataProvider: Observable<CoinFullInfo[]>;
+  globalChartHeight: string = '400px';
+  globalChartWidth: string = '100%';
 
   mainColumnDefs = [
     { header: "Icon", field: 'image' },
@@ -129,9 +132,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.screenSize = screenSize;
       this.cd.markForCheck();
     });
-
-    this.globalMarketCapChartProvider =
-      this.dashboardService.initGlobalMarketChartSource();
     this.documentStyle = documentStyle;
 
   }
@@ -154,6 +154,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.isGlobalChartLoading = true;
+    this.bigChartService.initializeChart();
+
+    this.navService.navExpandedSource$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(expandStateChange => {
+        this.globalChart.chartInstance.reflow();
+        this.globalChart.cd.detectChanges();
+        this.cd.markForCheck();
+      });
+
     this.dashboardService.getUser().pipe(
       takeUntil(this.destroySubject$)
     ).subscribe((user: firebase.User | null) => {
@@ -161,8 +172,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.user = user;
       } else {
         this.user = null;
-        this.trackedAssetIds = [];
-        this.watchListItems = [];
         this.cd.markForCheck();
       }
     });
@@ -190,7 +199,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.cd.markForCheck();
           }
         }
-
       );
 
     this.isGlobalDataLoading = true;
@@ -229,42 +237,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
       );
 
     this.isWatchListLoading = true;
-    this.dashboardService.getTrackedAssetSource().pipe(
-      takeUntil(this.destroySubject$),
-      concatMap((trackedAssets: TrackedAsset[]) => {
-        const ids = trackedAssets.map((asset) => asset.id);
-        return this.dashboardService.getMarketDataForIds(ids);
-      }),
-      map((result: CoinMarket[]) => {
-        return result.map((value) => {
-          return this.dashboardService.getMarketDataView(value);
-        })
-      }),
-    ).subscribe({
-      next: (watchListItems: CoinTableView[]) => {
-        if (watchListItems) {
-          this.watchListItems = watchListItems;
-          this.isWatchListLoading = false;
-        } else {
-          this.watchListItems = [];
-        }
-        this.cd.markForCheck();
-      },
-      error: (error: any) => {
-        this.isWatchListLoading = false;
-        console.log(error);
-        this.cd.markForCheck();
-      },
-      complete: () => {
-        this.isWatchListLoading = false;
-        this.cd.markForCheck();
-      }
-    });
+    this.trackedAssetDataProvider = this.dashboardService.getTrackedAssetDataProvider()
+      .pipe(
+        takeUntil(this.destroySubject$),
+        tap((res) => {
+          if (res) {
+            this.isWatchListLoading = false;
+          }
+        }));
 
   }
 
+  ngAfterViewInit(): void {
+    this.globalChart.loading.subscribe(
+      (isLoading: boolean) => {
+        this.isGlobalChartLoading = isLoading;
+        this.cd.markForCheck();
+      });
+  }
+
+
   isTracked(id: string) {
-    return this.trackedAssetIds.some((asset) => asset.id === id);
+    return this.dashboardService.isTrackedAsset(id);
   }
 
   public openCoinContent(coinId: string) {
@@ -282,6 +276,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   favoriteButtonClicked(coinView: CoinTableView) {
     if (this.dashboardService.isUserLoggedIn()) {
       this.dashboardService.addToWatchList(coinView);
+    } else {
+      this.dashboardService.promptForLogin();
+    }
+  }
+
+  editTrackedAssets(event) {
+    if (this.dashboardService.isUserLoggedIn()) {
+      this.dashboardService.publishEvent(Const.EDIT_TRACKED_ITEMS, event);
     } else {
       this.dashboardService.promptForLogin();
     }
