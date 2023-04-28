@@ -101,7 +101,7 @@
                                 >
                                     <a
                                         #favoriteButtonTable
-                                        (click)="favoriteButtonClicked(favoriteButtonTable)"
+                                        (click)="favoriteButtonClicked(coinMarket)"
                                         class="favorite--button-wrapper"
                                     >
                                         <i
@@ -163,7 +163,7 @@
                         class="card h-fit"
                         [provider]="trackedAssetDataProvider"
                         title="Watch List"
-                        (onSelect)="addToWatchList($event, watchListCard)"
+                        (onSelect)="editTrackedAssets($event)"
                         (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>
                 </ng-container>
