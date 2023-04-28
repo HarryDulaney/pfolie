@@ -7,6 +7,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
 import { TrendingCardComponent } from '../trending-card/trending-card.component';
 import { CoinDataService } from 'src/app/services/coin-data.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-editable-card',
@@ -17,7 +18,7 @@ import { CoinDataService } from 'src/app/services/coin-data.service';
   styleUrls: ['./editable-card.component.scss']
 })
 export class EditableCardComponent {
-  @Input() items: CoinTableView[] = [];
+  @Input('provider') dataProvider: Observable<any>;
   @Input() title: string;
   @Output() onSelect = new EventEmitter<CoinTableView>();
 
