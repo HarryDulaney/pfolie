@@ -1,16 +1,14 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { CurrencyPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { SessionService } from 'src/app/services/session.service';
-import firebase from 'firebase/compat/app';
-import { UntypedFormGroup }from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { NavService } from 'src/app/services/nav.service';
 import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
 import { Portfolio, TrackedAsset } from 'src/app/models/portfolio';
 import { PortfolioService } from '../../services/portfolio.service';
-import { mergeMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
@@ -26,10 +24,23 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   selector: 'app-tracking',
   templateUrl: './tracking.component.html',
   styleUrls: ['./tracking.component.scss'],
-  providers: [DatePipe, CurrencyPipe, DecimalPipe],
+  providers: [DatePipe,
+    CurrencyPipe,
+    DecimalPipe],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect, TableModule, SharedModule, MatButtonModule, OverlayPanelModule, DeltaIcon, SparklineComponent, CurrencyPipe, DatePipe]
+  imports: [NgIf,
+    ProgressSpinnerModule,
+    DialogModule,
+    AssetSearchSelect,
+    TableModule,
+    SharedModule,
+    MatButtonModule,
+    OverlayPanelModule,
+    DeltaIcon,
+    SparklineComponent,
+    CurrencyPipe,
+    DatePipe]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
   @ViewChild('trackedAssetTable') trackedTable;
@@ -38,8 +49,6 @@ export class TrackingComponent implements OnInit, OnDestroy {
   @ViewChild('assetSearchOverlay') assetSearchOverlay!: OverlayPanel;
   @ViewChild('rowPanel') rowPanel: OverlayPanel;
 
-  private portfolio: Portfolio;
-  private user: firebase.User = null;
   view: CoinFullInfo[];
   isLoading: boolean;
   chartData: any;
@@ -63,7 +72,6 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   constructor(
     public coinDataService: CoinDataService,
-    private sessionService: SessionService,
     private globalStore: BasicCoinInfoStore,
     private navService: NavService,
     public decimalPipe: DecimalPipe,
@@ -99,9 +107,6 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.sessionService.getAuth().pipe(takeUntil(this.destroySubject$)).subscribe(
-      (user) => this.user = user
-    );
     this.globalStore.state$.select('basicCoins').pipe(takeUntil(this.destroySubject$)).subscribe(
       (coins) => {
         this.allCoins = coins;
@@ -110,32 +115,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     );
 
     this.isLoading = true;
-
-    this.portfolioService.portfolio$.pipe(takeUntil(this.destroySubject$))
-      .subscribe({
-        next: (portfoilo) => {
-          if (portfoilo) {
-            this.portfolio = portfoilo;
-          }
-        },
-        complete: () => {
-          this.isLoading = false;
-          this.changeDetectorRef.markForCheck();
-        },
-        error: (err) => {
-          this.isLoading = false;
-          console.log("Tracked Asset Table Portfolio Initilization Error: " + JSON.stringify(err));
-        }
-      });
-
-    this.portfolioService.trackedSource$.pipe(
-      takeUntil(this.destroySubject$),
-      mergeMap(
-        (trackedAssets:TrackedAsset[]) => {
-          return this.initializeDataSource(trackedAssets);
-        }
-      )
-    )
+    this.portfolioService.trackedAssetDataProvider()
       .subscribe({
         next: (result) => {
           if (result) {
@@ -153,6 +133,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
           console.log("Tracked Asset Table: Datasource Initilization Error: " + JSON.stringify(err));
         }
       });
+
   }
 
   getTrackedCount(): number {

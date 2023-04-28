@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 @Component({
@@ -8,6 +8,7 @@ import { NgChartsModule } from 'ng2-charts';
   standalone: true
 })
 export class SparklineComponent implements AfterViewInit {
+
   @ViewChild('chartCanvas') chartCanvas: ElementRef;
   lineChart: any;
 
@@ -23,10 +24,6 @@ export class SparklineComponent implements AfterViewInit {
     this.draw();
   }
 
-
-  afterContentChecked(): void {
-    this.draw();
-  }
 
   draw() {
     this.lineChart = new Chart(this.chartCanvas.nativeElement, {

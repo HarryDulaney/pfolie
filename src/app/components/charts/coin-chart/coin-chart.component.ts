@@ -1,5 +1,5 @@
 declare var require: any;
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, AfterViewInit } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectorRef, ViewChild } from "@angular/core";
 import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
 import HIndicators from "highcharts/indicators/indicators";

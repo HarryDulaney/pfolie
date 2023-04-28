@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, lastValueFrom, Observable, Subject } from 'rxjs';
-import { concatMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, forkJoin, lastValueFrom, Observable, of, Subject } from 'rxjs';
+import { concatMap, mergeMap, take, takeUntil } from 'rxjs/operators';
 import { OwnedAsset, OwnedAssetView, Portfolio, TrackedAsset, ViewPreferences } from 'src/app/models/portfolio';
 import { ApiService } from 'src/app/services/api.service';
 import { CoinDataService } from 'src/app/services/coin-data.service';
@@ -11,7 +11,7 @@ import firebase from 'firebase/compat/app';
 import { PortfolioBuilderService } from './portfolio-builder.service';
 import { AppEvent } from 'src/app/models/events';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
-import { BasicCoin } from 'src/app/models/coin-gecko';
+import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
 
 
 @Injectable({
@@ -328,6 +328,30 @@ export class PortfolioService {
     this.trackedSource.next(curr.portfolioData.trackedAssets);
 
     return this.save(curr);
+  }
+
+
+  trackedAssetDataProvider(): Observable<CoinFullInfo[]> {
+    return this.trackedSource$.pipe(
+      mergeMap(
+        (trackedAssets: TrackedAsset[]) => {
+          return this.initTrackedAssetData(trackedAssets);
+        }
+      )
+    );
+  }
+
+  initTrackedAssetData(trackedAssets: TrackedAsset[]): Observable<CoinFullInfo[]> {
+    if (trackedAssets.length < 1) {
+      return of([]);
+    }
+
+    let ids = trackedAssets.map((trackedAsset) => {
+      return trackedAsset.id;
+    });
+
+    let coinInfos = ids.map((id) => { return this.coinDataService.readCoinInfo(id, true); });
+    return forkJoin(coinInfos);
   }
 
   /* ------------------  Handle Events outside of the Portfoilio Builder ------------------ */

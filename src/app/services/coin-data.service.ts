@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CoinFullInfo, Trending, SimplePriceResponse, CoinMarket, GlobalData, TrendingItem, CoinTableView, CoinMarketChartResponse } from '../models/coin-gecko';
+import { CoinFullInfo, Trending, SimplePriceResponse, CoinMarket, GlobalData, TrendingItem, CoinTableView, CoinMarketChartResponse, GlobalMarketCapData } from '../models/coin-gecko';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
@@ -75,6 +75,11 @@ export class CoinDataService {
 
   getChartOHLC(coinId: string, vsCurrency: string, days: number): Observable<Array<Array<number>>> {
     return this.apiService.getOHLCByIdAndDays(coinId, vsCurrency, days);
+  }
+
+  getGlobalCrytoChartData(days: number, vsCurrency: string): Observable<GlobalMarketCapData> {
+    return this.apiService.getGlobalMarketCapChart(days, vsCurrency);
+
   }
 
 

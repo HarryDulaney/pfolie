@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { BasicCoin, CoinMarket, CoinTableView, GlobalData, GlobalDataView, GlobalMarketCapChart, GlobalMarketCapData, Trending, TrendingItem } from 'src/app/models/coin-gecko';
+import { BasicCoin, CoinFullInfo, CoinMarket, CoinTableView, GlobalData, GlobalDataView, GlobalMarketCapChart, GlobalMarketCapData, Trending, TrendingItem } from 'src/app/models/coin-gecko';
 import { ApiService } from 'src/app/services/api.service';
 import { SessionService } from 'src/app/services/session.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -10,11 +10,13 @@ import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import firebase from 'firebase/compat/app';
 import { Portfolio, TrackedAsset } from 'src/app/models/portfolio';
 import { PortfolioService } from '../portfolio/services/portfolio.service';
+import { AppEvent, DashboardEvent } from 'src/app/models/events';
 
 @Injectable()
 export class DashboardService {
-  globalMarketCapChartDays = 1440;
-  globalMarketCapVsCurrency = "usd";
+  private eventSource = new BehaviorSubject<DashboardEvent>(null);
+  eventSource$ = this.eventSource.asObservable();
+
   currencies: string[] = ["usd", "btc", "eth", "ltc", "bch", "bnb", "eos", "xrp", "xlm", "link", "dot", "yfi", "aed"];
   priceChangePercent: string[] = ["1h", "24h", "7d", "14d", "30d", "200d", "1y"];
   activePriceChangePercent: string[] = ["1h", "24h", "7d"];
@@ -90,9 +92,7 @@ export class DashboardService {
     return this.apiService.getGlobalDataCrypto();
   }
 
-  initGlobalMarketChartSource(): Observable<GlobalMarketCapData> {
-    return this.apiService.getGlobalMarketCapChart(this.globalMarketCapChartDays, this.globalMarketCapVsCurrency);
-  }
+
 
   getTrendingCoinsInfo(trendingItems: Trending[]): Observable<CoinMarket[]> {
     let trendingIds = trendingItems.map(((trending: Trending) => {
@@ -207,8 +207,16 @@ export class DashboardService {
     return this.portfolioService.isTracked(id);
   }
 
-  getTrackedAssetSource(): Observable<TrackedAsset[]> {
-    return this.portfolioService.trackedSource$;
+  getTrackedAssetDataProvider(): Observable<CoinFullInfo[]> {
+    return this.portfolioService.trackedAssetDataProvider();
+  }
+
+  publishEvent(eventType: string, event: any) {
+    const appEvent: DashboardEvent = {
+      name: eventType,
+      event: event
+    }
+    this.eventSource.next(event);
   }
 
 }

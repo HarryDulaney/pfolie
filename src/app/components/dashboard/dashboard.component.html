@@ -6,9 +6,7 @@
     <div class="grid-nogutter w-100">
         <div class="row flex-wrap-reverse">
             <!-- ------------------------ Crypto Table By Market Cap---------------------- -->
-            <div class="xl:col-9 xs:col-12">
-                <div class="mt-5">
-                </div>
+            <div class="xl:col-9 xs:col-12 mt-5">
                 <div class="card">
                     <!-- ------------------------ Crypto Global Market Cap---------------------- -->
                     <div class="flex align-items-center justify-content-between">
@@ -17,17 +15,14 @@
                             style="margin:0 auto; background-color: transparent;"
                         >Crypto Global</h2>
                     </div>
-                    <app-line-chart
-                        #cryptoMarketCapChart
-                        title=""
-                        [type]="globalChartType"
-                        [provider]="globalMarketCapChartProvider"
-                        [lineColor]="chartLineColor"
-                        [fillColor]="chartFillColor"
-                        [textColor]="textColor"
-                        [backgroundColor]="chartBackgroundColor"
-                    >
-                    </app-line-chart>
+
+                    <div [style]="{'height':globalChartHeight,'width':globalChartWidth}">
+                        <app-big-chart
+                            #globalChart
+                            [chartDataType]="globalChartType"
+                        >
+                        </app-big-chart>
+                    </div>
                 </div>
                 <div class="card">
                     <p-table
@@ -166,9 +161,10 @@
                     <app-editable-card
                         #watchListCard
                         class="card h-fit"
-                        [items]="watchListItems"
+                        [provider]="trackedAssetDataProvider"
                         title="Watch List"
                         (onSelect)="addToWatchList($event, watchListCard)"
+                        (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>
                 </ng-container>
                 <!-- Top Market Share Card -->
