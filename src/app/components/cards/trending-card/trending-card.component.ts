@@ -6,21 +6,23 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
 import { CoinTableView } from 'src/app/models/coin-gecko';
 import { CoinDataService } from 'src/app/services/coin-data.service';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-trending-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ProgressSpinnerModule, SharedModule, NgFor, CardModule, NgIf, SparklineComponent],
+  imports: [CommonModule, ProgressSpinnerModule, SharedModule, NgFor, CardModule, NgIf, SparklineComponent, SkeletonModule],
   templateUrl: './trending-card.component.html',
   styleUrls: ['./trending-card.component.scss']
 })
 export class TrendingCardComponent {
   @Input() items: CoinTableView[] = [];
+  @Input() loading: boolean;
   @Input() title: string;
   @Output() onSelect = new EventEmitter<CoinTableView>();
 
-  constructor(public coinDataService:CoinDataService) { }
+  constructor(public coinDataService: CoinDataService) { }
 
 
 
