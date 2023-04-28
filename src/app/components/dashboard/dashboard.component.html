@@ -169,15 +169,19 @@
                 </ng-container>
                 <!-- Top Market Share Card -->
                 <app-trending-card
+                    #topMarketShareCard
                     class="card h-fit"
                     [items]="topMarketShareItems"
                     title="Top Market Share"
+                    [loading]="isGlobalDataLoading"
                     (onSelect)="onCardClicked($event)"
                 ></app-trending-card>
                 <!-- Top Trending Coins Card -->
                 <app-trending-card
+                    #trendingCard
                     class="card h-fit"
                     title=" Most Active"
+                    [loading]="isTrendingLoading"
                     [items]="trendingItems"
                     (onSelect)="onCardClicked($event)"
                 ></app-trending-card>

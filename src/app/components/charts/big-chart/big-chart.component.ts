@@ -240,7 +240,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 enabled: false
             },
             legend: {
-                enabled: false
+                enabled: true
             },
             yAxis: [{
                 labels: {
@@ -248,19 +248,20 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                     x: -3
                 },
                 title: {
-                    text: 'Market Cap'
+                    text: ''
                 },
-                height: '80%',
+                height: '100%',
                 lineWidth: 2,
                 resize: {
                     enabled: false
                 }
             }, {
                 title: {
-                    text: 'Volume'
+                    text: '',
                 },
                 top: '80%',
                 height: '20%',
+                lineWidth: 1,
                 resize: {
                     enabled: false
                 }
