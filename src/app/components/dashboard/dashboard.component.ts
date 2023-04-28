@@ -293,10 +293,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.dashboardService.isTrackedAsset(id);
   }
 
-  addToWatchList(event: any, watchListComponent: EditableCardComponent) {
-
-  }
-
   ngOnDestroy(): void {
     this.destroySubject$.next(true);
     this.destroySubject$.complete();

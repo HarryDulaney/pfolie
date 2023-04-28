@@ -23,8 +23,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class EditableCardComponent implements OnInit {
   @Input('provider') dataProvider: Observable<CoinFullInfo[]>;
   @Input() title: string;
-  @Output() onSelect = new EventEmitter<CoinTableView>();
-  @Output() onAdd = new EventEmitter<boolean>();
+  @Output('onSelect') onSelect = new EventEmitter<CoinTableView>();
+  @Output('onAdd') onAdd = new EventEmitter<boolean>();
 
   items: CoinTableView[] = [];
   isLoading = false;
@@ -50,23 +50,7 @@ export class EditableCardComponent implements OnInit {
             }
           }));
       }),
-    );/* .subscribe({
-      next: (result) => {
-        if (result) {
-          this.items = result
-        }
-        this.cd.markForCheck();
-
-      },
-      complete: () => {
-        this.isLoading = false;
-        this.cd.markForCheck();
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.log("Watchlist dashboard:: Datasource Initilization Error: " + err);
-      }
-    }); */
+    );
 
   }
 
@@ -74,7 +58,7 @@ export class EditableCardComponent implements OnInit {
     this.onSelect.emit(event);
   }
 
-  add() {
+  add(event) {
     this.onAdd.emit(true);
   }
 

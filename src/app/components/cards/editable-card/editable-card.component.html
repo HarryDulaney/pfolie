@@ -1,18 +1,19 @@
 <div class="editable-card">
     <h3 class="section-title">{{title}}</h3>
     <div class="row w-100">
-        <h4><i
-                id="add-icon"
-                class="fa-solid fa-plus-circle"
-                (click)="add()"
-            ></i></h4>
+        <a (click)="add($event)">
+            <h4><i
+                    id="add-icon"
+                    class="fa-solid fa-plus-circle"
+                ></i>
+            </h4>
+        </a>
     </div>
     <ng-container *ngIf="dataSource$ | async as items">
         <div *ngFor="let g of items; index as i; count as c;">
             <div
                 class="row w-100 justify-content-between editable-card-item align-items-center align-content-center"
                 (click)="select(g)"
-                (onKeyDown)="select(g)"
             >
                 <div class="col-3">
                     <div class="font-bold mb-1 text-sm z-3">{{g.name}}</div>

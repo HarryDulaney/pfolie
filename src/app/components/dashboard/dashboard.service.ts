@@ -216,7 +216,7 @@ export class DashboardService {
       name: eventType,
       event: event
     }
-    this.eventSource.next(event);
+    this.eventSource.next(appEvent);
   }
 
 }
