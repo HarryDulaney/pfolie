@@ -38,7 +38,6 @@ const chartBackgroundColor = documentStyle.getPropertyValue('--chart-fill-color'
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [DashboardService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [EditableCardComponent,

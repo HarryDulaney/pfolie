@@ -1,5 +1,5 @@
 import { AfterContentChecked, AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { Chart } from 'chart.js';
+import { Chart, ChartConfiguration } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 @Component({
   selector: 'app-sparkline',
@@ -19,6 +19,10 @@ export class SparklineComponent implements AfterViewInit {
   @Input('height') height: string;
   @Input('width') width: string;
   @Input('color') color: string = '#006aff';
+  @Input('showUnderline') showUnderline?: boolean = true;
+  @Input('contrastColor') contrastColor: string = '#ffffff';
+
+  style = { 'border-bottom': '1px dashed' + this.contrastColor };
 
   ngAfterViewInit(): void {
     this.draw();
@@ -51,7 +55,8 @@ export class SparklineComponent implements AfterViewInit {
           },
           point: {
             radius: 0,
-          }
+          },
+
         },
         scales: {
           y:
@@ -72,6 +77,6 @@ export class SparklineComponent implements AfterViewInit {
           },
         }
       }
-    });
+    } as ChartConfiguration);
   }
 }

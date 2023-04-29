@@ -12,6 +12,7 @@ import { PortfolioBuilderService } from './portfolio-builder.service';
 import { AppEvent } from 'src/app/models/events';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
+import { StringUtility } from 'src/app/services/string.utility';
 
 
 @Injectable({
@@ -283,8 +284,9 @@ export class PortfolioService {
 
 
   addTracked(id: string) {
+    let isEmpty = StringUtility.isEmpty(id);
     let isValid = PortfolioBuilderService.isUniqueTrackedAsset(id, this.portfolio.getValue());
-    if (!isValid) {
+    if (!isValid || isEmpty) {
       this.toast.showInfoToast('You are already tracking asset: ' + id);
       return;
     }

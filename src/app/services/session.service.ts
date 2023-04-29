@@ -9,11 +9,10 @@ import { PortfolioService } from '../components/portfolio/services/portfolio.ser
 import { SIGN_IN_PERSISTENCE_LEVEL } from '../constants';
 
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class SessionService {
     public static isAuthenticated: boolean = false;
+    public static isGuestLogin = false;
     private user: firebase.User = null;
     public showLoginModal = false;
     private redirectUrlFragment = null;

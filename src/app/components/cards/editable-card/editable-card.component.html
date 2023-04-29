@@ -35,6 +35,8 @@
                         [height]="'50%'"
                         [color]="g.price_change_24h < 0 ? '#ff1100' :'#00ff59'"
                         [chart-data]="g.sparkline"
+                        [showUnderline]="true"
+                        [contrastColor]="contrastColor"
                         [xaxis-labels]="sparklineXAxisLabels"
                     >
                     </app-sparkline>
