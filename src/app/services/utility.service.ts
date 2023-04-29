@@ -128,5 +128,6 @@ export class UtilityService {
         return coinTableViews;
     }
 
+
 }
 

@@ -8,7 +8,6 @@ import { SessionService } from 'src/app/services/session.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import firebase from 'firebase/compat/app';
-import { Portfolio, TrackedAsset } from 'src/app/models/portfolio';
 import { PortfolioService } from '../portfolio/services/portfolio.service';
 import { AppEvent, DashboardEvent } from 'src/app/models/events';
 
@@ -46,15 +45,11 @@ export class DashboardService {
     return this.sessionService.getUser();
   }
 
+
   isUserLoggedIn(): boolean {
     return this.sessionService.authenticated;
   }
 
-  anonymousLogin() {
-    return this.sessionService.signInAnonymously().then(
-
-    )
-  }
 
   getTrending(): Observable<CoinTableView[]> {
     return this.readTrending().pipe(
@@ -67,9 +62,11 @@ export class DashboardService {
     )
   }
 
+
   promptForLogin() {
     this.sessionService.displayLoginModal();
   }
+
 
   getCoinsByMarketCap(event: LazyLoadEvent): Observable<CoinTableView[]> {
     return this.getAllCoinsMarketData(
@@ -88,10 +85,10 @@ export class DashboardService {
     )
   }
 
+
   getGlobalDataSource(): Observable<GlobalData> {
     return this.apiService.getGlobalDataCrypto();
   }
-
 
 
   getTrendingCoinsInfo(trendingItems: Trending[]): Observable<CoinMarket[]> {

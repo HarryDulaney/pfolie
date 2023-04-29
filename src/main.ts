@@ -19,6 +19,7 @@ import { ApiService } from './app/services/api.service';
 import { UtilityService } from './app/services/utility.service';
 import { ToastService } from './app/services/toast.service';
 import { BasicCoinInfoStore } from './app/store/global/basic-coins.store';
+import { SessionService } from './app/services/session.service';
 
 if (environment.production) {
   enableProdMode();
@@ -42,6 +43,7 @@ bootstrapApplication(AppComponent, {
     ConfigService,
     NavService,
     MessageService,
+    SessionService,
     DatePipe,
     CurrencyPipe,
     PercentPipe,

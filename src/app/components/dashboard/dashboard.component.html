@@ -163,6 +163,7 @@
                         class="card h-fit"
                         [provider]="trackedAssetDataProvider"
                         title="Watch List"
+                        [contrastColor]="chartFillColor"
                         (onSelect)="editTrackedAssets($event)"
                         (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>

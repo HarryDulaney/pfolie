@@ -20,6 +20,9 @@ import { TableModule } from 'primeng/table';
 import { AssetSearchSelect } from '../../../search-select/search-select.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
+const documentStyle = getComputedStyle(document.documentElement);
+const overlayBgFancy = documentStyle.getPropertyValue('--hover-bg-fancy');
+
 @Component({
   selector: 'app-tracking',
   templateUrl: './tracking.component.html',
@@ -67,6 +70,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   sparklineWidth = '200';
   openRowPanels: OverlayPanel[] = [];
   sparklineColor = '#006aff';
+  overlayBgColor: string = overlayBgFancy;
 
   totalColumns = 7;
 

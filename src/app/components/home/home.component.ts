@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from "@angular/router";
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MenuItem, MessageService, SharedModule } from 'primeng/api';
@@ -136,9 +136,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private screenService: ScreenService,
     private toastService: ToastService,
     private themeService: ThemeService,
+    private dashboardService: DashboardService,
     private cd: ChangeDetectorRef,
     fb: UntypedFormBuilder,
-    private dashboardService: DashboardService,
     private messageService: MessageService) {
     this.searchForm = fb.group({
       searchField: this.searchField
@@ -198,7 +198,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           this.user = user;
           this.isSignedIn = (user && user !== null && user !== undefined);
           if (this.isSignedIn) {
-            this.userProfilePictureSource = user.photoURL;
+            if (user.isAnonymous) {
+              this.userProfilePictureSource = '../../../assets/img/anonymous-icon-one.png';
+            } else if (user.photoURL) {
+              this.userProfilePictureSource = user.photoURL;
+            } else {
+              this.userProfilePictureSource = '../../../assets/img/image_filler_icon_blank.jpg';
+            }
           }
           this.cd.markForCheck();
 
@@ -240,16 +246,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     );
-
-    this.dashboardService.eventSource$.pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe(
-      event => {
-        if (event && event.name === EDIT_TRACKED_ITEMS) {
-          this.openTrackedAssets();
-        }
-      });
-
   }
 
   isEventTargetOutsideSettings(event: Event, menuBtn: HTMLElement) {
@@ -271,6 +267,15 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   ngAfterViewInit(): void {
+    this.dashboardService.eventSource$.pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe(
+      event => {
+        if (event && event.name === EDIT_TRACKED_ITEMS) {
+          this.openTrackedAssets();
+        }
+      });
+
     this.searchForm.get('searchField').valueChanges.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(word => {

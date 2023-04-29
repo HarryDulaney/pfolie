@@ -23,6 +23,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class EditableCardComponent implements OnInit {
   @Input('provider') dataProvider: Observable<CoinFullInfo[]>;
   @Input() title: string;
+  @Input('contrastColor') contrastColor: string;
   @Output('onSelect') onSelect = new EventEmitter<CoinTableView>();
   @Output('onAdd') onAdd = new EventEmitter<boolean>();
 
@@ -38,7 +39,7 @@ export class EditableCardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.coinDataService.getSparklineLabels();
+    this.sparklineXAxisLabels = this.coinDataService.getSparklineLabels();
     this.dataSource$ = this.dataProvider.pipe(
       map((coins) => {
         return coins.map((coin) => {
