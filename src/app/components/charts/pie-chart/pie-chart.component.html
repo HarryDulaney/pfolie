@@ -1,4 +1,12 @@
-<highcharts-chart style="width: 100%; display: block"
-                  [Highcharts]="Highcharts"
-                  [options]="chartOptions">
+<highcharts-chart
+    #highchart
+    style="width: 100%; display: block"
+    [Highcharts]="Highcharts"
+    [options]="chartOptions"
+    style="width: 100% !important; height: 100%; display: flex;"
+    [Highcharts]="Highcharts"
+    [options]="chartOptions"
+    (chartInstance)="chartInstance = $event"
+    [(update)]="updateFlag"
+>
 </highcharts-chart>

@@ -1,6 +1,4 @@
-<mat-toolbar
-  role="heading"
->
+<mat-toolbar role="heading">
   <button
     mat-flat-button
     (click)="navMenuTogglePressed()"
@@ -239,6 +237,7 @@
     <!-- Bottom-right Toast Message -->
     <p-toast
       position="bottom-right"
+      [style]="{'max-width': '100%'}"
       key="toast"
     ></p-toast>
     <!-- Center Toast with Prompt -->

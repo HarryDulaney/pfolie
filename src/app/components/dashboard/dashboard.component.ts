@@ -27,6 +27,10 @@ import { LineChartComponent } from '../charts/line-chart/line-chart.component';
 import { CoinChartComponent } from '../charts/coin-chart/coin-chart.component';
 import { BigChartComponent } from '../charts/big-chart/big-chart.component';
 import { BigChartService } from '../charts/big-chart/big-chart.service';
+import { PieChartComponent } from '../charts/pie-chart/pie-chart.component';
+import { PieChartService } from '../charts/pie-chart/pie-chart.service';
+import { SELECT_ITEM_EVENT } from '../../constants';
+import { DashboardEvent } from 'src/app/models/events';
 
 
 const documentStyle = getComputedStyle(document.documentElement);
@@ -55,16 +59,21 @@ const chartBackgroundColor = documentStyle.getPropertyValue('--chart-fill-color'
     SparklineComponent,
     TableModule,
     DeltaIcon,
-    TrendingCardComponent]
+    TrendingCardComponent,
+    PieChartComponent]
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
   @ViewChild('globalChart') globalChart: BigChartComponent;
+
   @ViewChild(BigChartService, { 'static': true }) bigChartService: BigChartService;
+  @ViewChild(PieChartService, { 'static': true }) pieChartService: PieChartService;
+
 
   private documentStyle: CSSStyleDeclaration;
   private user: firebase.User | null = null;
   destroySubject$ = new Subject();
+
 
   /* Loading Flags */
   isTrendingLoading: boolean;
@@ -85,7 +94,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   coinsByMarketCap: CoinTableView[] = [];
   topMarketShareItems: CoinTableView[] = [];
   trendingItems: CoinTableView[] = [];
-  globalBigChartProps = {}
   globalData: GlobalData;
   selectedCoin: CoinTableView;
   globalMarketShares: { [key: string]: number } = {};
@@ -268,8 +276,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.openCoinContent(this.selectedCoin.id);
   }
 
-  onCardClicked(coinView: CoinTableView) {
-    this.openCoinContent(coinView.id);
+  onCardItemSelected(event) {
+    const dashEvent: DashboardEvent = { event: event, name: SELECT_ITEM_EVENT };
+    this.dashboardService.sendEvent(dashEvent);
   }
 
   favoriteButtonClicked(coinView: CoinTableView) {

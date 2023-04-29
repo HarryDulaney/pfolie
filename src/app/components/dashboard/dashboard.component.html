@@ -1,6 +1,6 @@
 <p-scrollTop></p-scrollTop>
 <div
-    class="mt-3"
+    class="mt-5 pt-5"
     id="dash"
 >
     <div class="grid-nogutter w-100">
@@ -155,7 +155,7 @@
             </div>
 
             <div class="xl:col-3 xs:col-12">
-                <app-news-carosel></app-news-carosel>
+                    <app-news-carosel></app-news-carosel>
                 <!-- Watch List -->
                 <ng-container *ngIf="dashboardService.isUserLoggedIn()">
                     <app-editable-card
@@ -164,7 +164,7 @@
                         [provider]="trackedAssetDataProvider"
                         title="Watch List"
                         [contrastColor]="chartFillColor"
-                        (onSelect)="editTrackedAssets($event)"
+                        (onSelect)="onCardItemSelected($event)"
                         (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>
                 </ng-container>
@@ -175,7 +175,7 @@
                     [items]="topMarketShareItems"
                     title="Top Market Share"
                     [loading]="isGlobalDataLoading"
-                    (onSelect)="onCardClicked($event)"
+                    (onSelect)="onCardItemSelected($event)"
                 ></app-trending-card>
                 <!-- Top Trending Coins Card -->
                 <app-trending-card
@@ -184,7 +184,7 @@
                     title=" Most Active"
                     [loading]="isTrendingLoading"
                     [items]="trendingItems"
-                    (onSelect)="onCardClicked($event)"
+                    (onSelect)="onCardItemSelected($event)"
                 ></app-trending-card>
             </div>
 
