@@ -123,6 +123,7 @@ export const SHOW = 'show';
 export const HIDE = 'hide';
 export const CLICKED = 'clicked';
 export const EDIT_TRACKED_ITEMS = 'edit-tracked-items';
+export const SELECT_ITEM_EVENT = 'select-item-event';
 
 export declare type PLATFORMS = 'ethereum' | 'tron';
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectorRef, ViewChild } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, EventEmitter, OnChanges, SimpleChanges, ChangeDetectorRef, ViewChild } from "@angular/core";
 import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
 import HIndicators from "highcharts/indicators/indicators";
@@ -9,17 +9,18 @@ import HHightContrastDark from "highcharts/themes/high-contrast-dark"
 import HAnnotationsAdvanced from "highcharts/modules/annotations-advanced";
 import HPriceIndicator from "highcharts/modules/price-indicator";
 import HStockTools from "highcharts/modules/stock-tools";
-import { GlobalMarketCapData } from "src/app/models/coin-gecko";
-import { Observable, Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { CHART_TYPE } from "src/app/constants";
-import { HighchartsChartComponent, HighchartsChartModule } from "highcharts-angular";
 import { BigChartService } from "./big-chart.service";
+import HExportData from "highcharts/modules/export-data";
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { HighchartsChartComponent, HighchartsChartModule } from 'highcharts-angular';
 
+
+HExporting(Highcharts);
+HExportData(Highcharts);
 HIndicators(Highcharts);
 HIndicatorsAll(Highcharts);
 HDragPanes(Highcharts);
-HExporting(Highcharts);
 HAnnotationsAdvanced(Highcharts);
 HPriceIndicator(Highcharts);
 HStockTools(Highcharts);

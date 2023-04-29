@@ -19,7 +19,6 @@ import { SkeletonModule } from 'primeng/skeleton';
     imports: [ProgressSpinnerModule, CarouselModule, SkeletonModule, SharedModule, ArticleCardComponent]
 })
 export class NewsCaroselComponent implements OnInit, OnDestroy {
-  @ViewChild(Carousel) carousel!: Carousel;
   @Input() isMobile: boolean;
 
   feedItems: FeedItem[];

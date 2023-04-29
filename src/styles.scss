@@ -216,6 +216,7 @@ p-header {
 
 .mat-drawer-content {
   background-color: var(--surface-ground);
+  overflow: hidden !important;
 }
 
 .login-logo img {

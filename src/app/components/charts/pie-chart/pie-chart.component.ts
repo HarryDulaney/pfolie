@@ -1,35 +1,43 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as Highcharts from "highcharts/highcharts";
 import { PieChartData } from 'src/app/models/portfolio';
-import HBrandDark from "highcharts/themes/dark-blue"
 import HAccessability from "highcharts/modules/accessibility";
-import { Subject } from 'rxjs';
+import HExporting from "highcharts/modules/exporting";
+import HExportData from "highcharts/modules/export-data";
+import { Observable, Subject } from 'rxjs';
 import { PieChartService } from './pie-chart.service';
 import { takeUntil } from 'rxjs/operators';
-import { HighchartsChartModule } from 'highcharts-angular';
+import { HighchartsChartComponent, HighchartsChartModule } from 'highcharts-angular';
 
-HBrandDark(Highcharts);
+
+HExporting(Highcharts);
+HExportData(Highcharts);
 HAccessability(Highcharts);
 
 @Component({
-    selector: 'app-pie-chart',
-    templateUrl: './pie-chart.component.html',
-    standalone: true,
-    imports: [HighchartsChartModule]
+  selector: 'app-pie-chart',
+  templateUrl: './pie-chart.component.html',
+  styleUrls: ['./pie-chart.component.scss'],
+  standalone: true,
+  imports: [HighchartsChartModule],
+  providers: [PieChartService]
 })
 export class PieChartComponent implements OnInit, OnDestroy {
   @Input('title') title: string;
-  @Input() pieChartService: PieChartService;
+  @Input('provider') provider: Observable<any>;
 
+  @ViewChild('highchart') highchart!: HighchartsChartComponent;
   Highcharts: typeof Highcharts = Highcharts;
-
+  chartInstance: Highcharts.Chart;
+  updateFlag: boolean;
+  chartOptions: Highcharts.Options = {};
   chartData: PieChartData[] = [];
-  chartOptions: any;
   destroySubject$: Subject<boolean> = new Subject<boolean>();
 
 
   constructor(
     private cd: ChangeDetectorRef,
+    private service: PieChartService
   ) { }
 
 
@@ -40,7 +48,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.pieChartService.pieData.pipe(
+    this.service.dataSource$.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(
       (result) => {
@@ -53,13 +61,16 @@ export class PieChartComponent implements OnInit, OnDestroy {
     this.chartData = this.getChartData(data);
     this.chartOptions = {
       chart: {
-        type: 'pie',
         plotBackgroundColor: 'transparent',
         plotBorderColor: '#ffffff00',
         backgroundColor: 'transparent',
         borderWidth: 0,
         borderColor: '#ffffff00',
         plotShadow: false,
+        reflow: true,
+      },
+      credits: {
+        enabled: false,
       },
       title: {
         text: this.title,
@@ -70,7 +81,6 @@ export class PieChartComponent implements OnInit, OnDestroy {
             description: 'Pie chart.',
             enabled: true
           },
-
           allowPointSelect: true,
           cursor: 'pointer',
           dataLabels: {
@@ -80,10 +90,13 @@ export class PieChartComponent implements OnInit, OnDestroy {
         }
       },
       series: [{
-        name: 'Pie',
-        colorByPoint: true,
-        data: this.chartData
+        type: 'pie',
+        allowPointSelect: true,
+        keys: ['name', 'y', 'selected', 'sliced'],
+        data: this.chartData,
+        showInLegend: true
       }]
+
     }
     this.cd.detectChanges();
   }
