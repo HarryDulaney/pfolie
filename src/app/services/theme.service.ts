@@ -28,6 +28,7 @@ export class ThemeService {
             themeLink.href = `${theme}.css`;
             this.themeSource$.next(theme);
         }
+        this.styles = this.initStyles(this.document);
     }
 
     initStyles(document: Document) {

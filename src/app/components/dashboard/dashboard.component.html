@@ -145,6 +145,7 @@
                                         [color]="coinMarket[mainColumnDefs[5].field] < 0 ? '#ff1100' :'#00ff59'"
                                         [maxHeight]="'3rem'"
                                         [maxWidth]="'12rem'"
+                                        [contrastColor]="themeService.styles.textColor"
                                         [chart-data]="coinMarket[mainColumnDefs[8].field]"
                                         [xaxis-labels]="coinDataService.getSparklineLabels()"
                                     >
@@ -157,8 +158,17 @@
 
                 </div>
             </div>
-
-            <div class="xl:col-3 xs:col-12">
+            <div class="xl:col-3 xs:col-12 xl:mt-5 xs:mt-0">
+                <div class="card">
+                    <!-- ------------------------ Crypto Global Market Cap---------------------- -->
+                    <div class="flex align-items-center justify-content-between">
+                        <h4
+                            class="caption-label-md"
+                            style="margin:0 auto; background-color: transparent;"
+                        >Market Share of Top</h4>
+                    </div>
+                    <app-pie-chart #globalPie></app-pie-chart>
+                </div>
                 <app-news-carosel></app-news-carosel>
                 <!-- Watch List -->
                 <ng-container *ngIf="dashboardService.isUserLoggedIn()">
@@ -185,7 +195,7 @@
                 <app-trending-card
                     #trendingCard
                     class="card h-fit"
-                    title=" Most Active"
+                    title="Trending Now"
                     [loading]="isTrendingLoading"
                     [items]="trendingItems"
                     (onSelect)="onCardItemSelected($event)"

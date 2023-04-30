@@ -27,6 +27,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   @Input('provider') provider: Observable<any>;
 
   @ViewChild('highchart') highchart!: HighchartsChartComponent;
+
   Highcharts: typeof Highcharts = Highcharts;
   chartInstance: Highcharts.Chart;
   updateFlag: boolean;
@@ -57,9 +58,24 @@ export class PieChartComponent implements OnInit, OnDestroy {
     )
   }
 
+  reflow() {
+    this.chartInstance.reflow();
+    this.cd.detectChanges();
+  }
+
   setData(data: any) {
     this.chartData = this.getChartData(data);
     this.chartOptions = {
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: [
+              "viewFullscreen",
+              "separator",
+              "downloadPNG"]
+          }
+        }
+      },
       chart: {
         plotBackgroundColor: 'transparent',
         plotBorderColor: '#ffffff00',

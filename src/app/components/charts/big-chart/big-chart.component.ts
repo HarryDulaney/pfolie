@@ -5,6 +5,7 @@ import HIndicators from "highcharts/indicators/indicators";
 import HAccessability from "highcharts/modules/accessibility";
 import HDragPanes from "highcharts/modules/drag-panes";
 import HExporting from "highcharts/modules/exporting"
+import HFullScreen from "highcharts/modules/full-screen";
 import HHightContrastDark from "highcharts/themes/high-contrast-dark"
 import HAnnotationsAdvanced from "highcharts/modules/annotations-advanced";
 import HPriceIndicator from "highcharts/modules/price-indicator";
@@ -15,7 +16,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HighchartsChartComponent, HighchartsChartModule } from 'highcharts-angular';
 
-
+HFullScreen(Highcharts)
 HExporting(Highcharts);
 HExportData(Highcharts);
 HIndicators(Highcharts);
@@ -31,6 +32,12 @@ HAccessability(Highcharts);
     selector: 'app-big-chart',
     templateUrl: './big-chart.component.html',
     standalone: true,
+    styles: [`
+    :host {
+        custom-context-button: {
+            background-color: #00000000;
+        }
+    }`],
     imports: [HighchartsChartModule],
     providers: [BigChartService]
 })
@@ -128,16 +135,9 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 buttons: {
                     contextButton: {
                         menuItems: [
-                            "printChart",
+                            "viewFullscreen",
                             "separator",
-                            "downloadPNG",
-                            "downloadJPEG",
-                            "downloadPDF",
-                            "downloadSVG",
-                            "separator",
-                            "downloadCSV",
-                            "downloadXLS",
-                            "openInCloud"]
+                            "downloadPNG",]
                     }
                 }
             },
@@ -150,16 +150,8 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             chart: {
                 type: 'area',
                 backgroundColor: this.backgroundColor,
-                /*                 panning: {
-                                    enabled: true,
-                                    type: 'x',
-                
-                                }, */
                 reflow: true,
-                /*    panKey: 'shift', */
-                /*                zooming: {
-                                   type: "x",
-                               } */
+
             },
             plotOptions: {
                 series: {
@@ -208,7 +200,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             },
             stockTools: {
                 gui: {
-                    enabled: false
+                    enabled: false,
                 }
             },
             series: [{

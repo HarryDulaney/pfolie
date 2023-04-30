@@ -82,7 +82,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
     private screenService: ScreenService,
     private navService: NavService,
     public decimalPipe: DecimalPipe,
-    private themeService: ThemeService,
+    public themeService: ThemeService,
     public portfolioService: PortfolioService,
     private changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher

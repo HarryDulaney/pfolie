@@ -128,6 +128,16 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
   getBaseOptions(): Highcharts.Options {
     return {
+      exporting: {
+        buttons: {
+            contextButton: {
+                menuItems: [
+                    "viewFullscreen",
+                    "separator",
+                    "downloadPNG",]
+            }
+        }
+    },
       credits: {
         enabled: false
       },
@@ -229,7 +239,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
     baseOptions.stockTools = {
       gui: {
-        enabled: true,
+        enabled: false,
       }
     };
 
