@@ -64,7 +64,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   imports: [MatToolbarModule, MatButtonModule, NgIf, FormsModule, InputTextModule,
     ReactiveFormsModule, MatSidenavModule, PanelMenuModule, SidebarModule, ButtonModule,
     ToastModule, SharedModule, OverlayPanelModule, SearchComponent, MenuModule, RouterOutlet,
-    DialogModule, LoginComponent, RegisterComponent, FooterComponent, AsyncPipe, SettingsComponent, CommonModule]
+    DialogModule, LoginComponent, RegisterComponent, FooterComponent, AsyncPipe, SettingsComponent,
+    CommonModule]
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener('window:scroll', ['$event'])

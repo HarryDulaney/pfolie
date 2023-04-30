@@ -37,10 +37,14 @@ HAccessability(Highcharts);
 export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     /** price | marketcap | volume | ohlc */
     @Input('chartDataType') chartDataType: string;
+    @Input('volumeColor') volumeColor: string;
+    @Input('backgroundColor') backgroundColor: string;
+    @Input('lineColor') lineColor: string;
+    @Input('fillColor') fillColor: string;
+
     loading: EventEmitter<boolean> = new EventEmitter(false);
 
     @ViewChild('highchart') highchart!: HighchartsChartComponent;
-
 
     chartInstance: Highcharts.Chart;
     updateFlag: boolean;
@@ -48,10 +52,6 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     market_caps: Array<Array<number>>;
     total_volumes: Array<Array<number>>;
 
-    upColor = '#ec0000';
-    upBorderColor = '#8A0000';
-    downColor = '#00da3c';
-    downBorderColor = '#008F28';
 
     Highcharts: typeof Highcharts = Highcharts;
     ohlc = [];
@@ -65,9 +65,10 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
 
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.chartDataType) {
+        if (changes.chartDataType || changes.volumeColor || changes.backgroundColor || changes.lineColor || changes.fillColor) {
             this.reload();
         }
+
     }
 
     ngOnDestroy(): void {
@@ -121,88 +122,25 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
 
     }
 
-
-
-    marketCapChart(): Highcharts.Options {
+    comboChart(): Highcharts.Options {
         return {
-            credits: {
-                enabled: false
-            },
-            title: {
-                text: ''
-            },
-            chart: {
-                type: 'area',
-                backgroundColor: '#00000000',
-                panning: {
-                    enabled: true,
-                    type: 'x',
-
-                },
-                reflow: true,
-                panKey: 'shift',
-                zooming: {
-                    type: "x",
-                }
-            },
-            plotOptions: {
-                area: {
-                    dataLabels: {
-                        enabled: false
-                    },
-                    enableMouseTracking: true
-                }
-            },
-            navigator: {
-                enabled: false
-            },
-            legend: {
-                enabled: false
-            },
-            yAxis: [{
-                labels: {
-                    align: 'right',
-                    x: -3
-                },
-                title: {
-                    text: 'Market Cap'
-                },
-                height: '100%',
-                lineWidth: 2,
-                resize: {
-                    enabled: true
-                }
-            }],
-            xAxis: {
-                type: 'datetime',
-            },
-            stockTools: {
-                gui: {
-                    enabled: true,
-                    definitions: {
-                        fullScreen: {
-                            symbol: 'url(https://static.thenounproject.com/png/1985-200.png)'
-                        }
+            exporting: {
+                buttons: {
+                    contextButton: {
+                        menuItems: [
+                            "printChart",
+                            "separator",
+                            "downloadPNG",
+                            "downloadJPEG",
+                            "downloadPDF",
+                            "downloadSVG",
+                            "separator",
+                            "downloadCSV",
+                            "downloadXLS",
+                            "openInCloud"]
                     }
                 }
             },
-            series: [{
-                name: 'Market Cap',
-                type: 'area',
-                data: this.market_caps,
-                tooltip: {
-                    valueDecimals: 2
-                },
-            }],
-            rangeSelector: {
-                selected: 5,
-            },
-        };
-    }
-
-
-    comboChart(): Highcharts.Options {
-        return {
             credits: {
                 enabled: false
             },
@@ -211,22 +149,24 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             },
             chart: {
                 type: 'area',
-                backgroundColor: '#00000000',
-                panning: {
-                    enabled: true,
-                    type: 'x',
-
-                },
+                backgroundColor: this.backgroundColor,
+                /*                 panning: {
+                                    enabled: true,
+                                    type: 'x',
+                
+                                }, */
                 reflow: true,
-                panKey: 'shift',
-                zooming: {
-                    type: "x",
-                }
+                /*    panKey: 'shift', */
+                /*                zooming: {
+                                   type: "x",
+                               } */
             },
             plotOptions: {
                 series: {
                     showInLegend: true,
                     accessibility: {
+                        description: 'Price Chart',
+                        enabled: true,
                         exposeAsGroupOnly: true
                     }
                 },
@@ -244,15 +184,11 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 enabled: true
             },
             yAxis: [{
-                labels: {
-                    align: 'right',
-                    x: -3
-                },
                 title: {
                     text: ''
                 },
                 height: '100%',
-                lineWidth: 2,
+                lineWidth: 1,
                 resize: {
                     enabled: false
                 }
@@ -272,18 +208,14 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             },
             stockTools: {
                 gui: {
-                    enabled: true,
-                    definitions: {
-                        fullScreen: {
-                            symbol: 'url(https://static.thenounproject.com/png/1985-200.png)'
-                        }
-                    }
+                    enabled: false
                 }
             },
             series: [{
                 name: 'Market Cap',
                 type: 'area',
                 data: this.market_caps,
+                fillColor: this.fillColor,
                 tooltip: {
                     valueDecimals: 2
                 },
@@ -291,6 +223,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 type: 'column',
                 id: 'volume',
                 name: 'Volume',
+                color: this.volumeColor,
                 data: this.total_volumes,
                 yAxis: 1
             }],
@@ -300,84 +233,4 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
         };
     }
 
-
-
-    getVolumeOnlyChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
-        baseOptions.yAxis = [{
-            labels: {
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text: 'Volume'
-            },
-
-            height: '100%',
-            lineWidth: 2,
-            offset: 0,
-            resize: {
-                enabled: true
-            }
-        }];
-
-        baseOptions.tooltip = {
-            split: true
-        };
-
-
-        baseOptions.stockTools = {
-            gui: {
-                enabled: true,
-            }
-        };
-
-
-        baseOptions.series = [
-            {
-                type: "area",
-                name: 'Total',
-                data: this.total_volumes,
-                yAxis: 1
-            }];
-
-        return baseOptions;
-    }
-
-    getVolumeChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
-        baseOptions.yAxis = [{
-            labels: {
-                align: 'right',
-                x: -3
-            },
-            title: {
-                text: 'Volume'
-            },
-
-            height: '100%',
-            lineWidth: 2,
-            offset: 0,
-            resize: {
-                enabled: true
-            }
-        }];
-
-
-        baseOptions.stockTools = {
-            gui: {
-                enabled: true,
-            }
-        };
-
-        baseOptions.tooltip = {
-            split: true
-        };
-        baseOptions.series = [
-            {
-                type: "column",
-                name: 'Total',
-                data: this.total_volumes,
-            }];
-
-        return baseOptions;
-    }
 }
