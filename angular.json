@@ -52,6 +52,8 @@
                 "bundleName": "light-indigo"
               },
               "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/highcharts/css/stocktools/gui.css",
+              "node_modules/highcharts/css/annotations/popup.css",
               "node_modules/primeflex/primeflex.css",
               "node_modules/primeicons/primeicons.css"
             ],
@@ -146,6 +148,8 @@
                 "bundleName": "light-indigo"
               },
               "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/highcharts/css/stocktools/gui.css",
+              "node_modules/highcharts/css/annotations/popup.css",
               "node_modules/primeflex/primeflex.css",
               "node_modules/primeicons/primeicons.css"
             ],

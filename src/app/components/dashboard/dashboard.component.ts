@@ -53,12 +53,15 @@ import { ThemeService } from 'src/app/services/theme.service';
     SparklineComponent,
     TableModule,
     DeltaIcon,
+    PieChartComponent,
     TrendingCardComponent,
     PieChartComponent]
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
   @ViewChild('globalChart') globalChart: BigChartComponent;
+  @ViewChild('globalPie') globalPie: PieChartComponent;
+
 
   @ViewChild(BigChartService, { 'static': true }) bigChartService: BigChartService;
   @ViewChild(PieChartService, { 'static': true }) pieChartService: PieChartService;
@@ -84,7 +87,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   trendingItems: CoinTableView[] = [];
   globalData: GlobalData;
   selectedCoin: CoinTableView;
-  globalMarketShares: { [key: string]: number } = {};
   isTrendingSelected = false;
   hideRegisterBanner = false;
   timeInMillis: number = Date.now();
@@ -155,7 +157,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(expandStateChange => {
         this.globalChart.chartInstance.reflow();
-        this.globalChart.cd.detectChanges();
+        this.globalPie.chartInstance.reflow();
         this.cd.markForCheck();
       });
 
@@ -201,6 +203,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         tap((globalData: GlobalData) => {
           if (globalData) {
             this.globalData = globalData;
+            this.pieChartService.setData(globalData.data.market_cap_percentage);
           }
         }),
         concatMap((globalData: GlobalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),

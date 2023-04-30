@@ -4,10 +4,12 @@ import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Injectable()
 export class PieChartService {
-  private dataSource: BehaviorSubject<any[]> = new BehaviorSubject<any>([]);
-  public dataSource$: Observable<any[]> = this.dataSource.asObservable();
+  private dataSource: BehaviorSubject<{ [key: string]: number }> = new BehaviorSubject<{ [key: string]: number }>({});
+  public dataSource$: Observable<{ [key: string]: number }> = this.dataSource.asObservable();
 
-  initializeChart() {
+
+  setData(data: { [key: string]: number }) {
+    this.dataSource.next(data);
   }
 
 }

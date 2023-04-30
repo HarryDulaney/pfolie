@@ -7,6 +7,8 @@
 @import "~@fortawesome/fontawesome-free/css/all.css";
 @import "~@fortawesome/fontawesome-free/css/fontawesome.css";
 @import "~bootstrap/dist/css/bootstrap.css";
+@import url(https://code.highcharts.com/css/stocktools/gui.css);
+@import url(https://code.highcharts.com/css/annotations/popup.css);
 
 html,
 body {
@@ -55,7 +57,7 @@ body {
 
 .card {
   box-shadow: 1px 1px 1px var(--surface-border);
-  background: var(--surface-card);
+  background: var(--card-bg-color);
   padding: 0.3rem;
   border-radius: 10px;
   margin-bottom: 2rem;

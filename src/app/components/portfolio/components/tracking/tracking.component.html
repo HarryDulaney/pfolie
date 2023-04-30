@@ -266,6 +266,8 @@
                                         [maxHeight]="'3rem'"
                                         [maxWidth]="'16rem'"
                                         [color]="sparklineColor"
+                                        [contrastColor]="themeService.styles.textColor"
+                                        [showUnderline]="true"
                                         [chart-data]="rowData['market_data']['sparkline_7d']['price']"
                                         [xaxis-labels]="coinDataService.getSparklineLabels()"
                                     >

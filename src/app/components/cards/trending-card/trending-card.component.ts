@@ -20,6 +20,7 @@ export class TrendingCardComponent {
   @Input() items: CoinTableView[] = [];
   @Input() loading: boolean;
   @Input() title: string;
+  @Input() contrastColor: string;
   @Output() onSelect = new EventEmitter<CoinTableView>();
 
   constructor(public coinDataService: CoinDataService) { }
