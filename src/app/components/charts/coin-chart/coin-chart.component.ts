@@ -159,12 +159,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       },
       stockTools: {
         gui: {
-          enabled: true,
-          definitions: {
-            fullScreen: {
-              symbol: 'url(https://static.thenounproject.com/png/1985-200.png)'
-            }
-          }
+          enabled: false,
         }
       },
       series: [],
@@ -196,7 +191,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
     baseOptions.stockTools = {
       gui: {
-        enabled: true,
+        enabled: false,
       }
     };
 
@@ -277,7 +272,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
     baseOptions.stockTools = {
       gui: {
-        enabled: true,
+        enabled: false,
       }
     };
 
@@ -314,7 +309,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
     baseOptions.stockTools = {
       gui: {
-        enabled: true,
+        enabled: false,
       }
     };
 

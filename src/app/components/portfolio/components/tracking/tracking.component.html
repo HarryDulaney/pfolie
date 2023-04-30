@@ -40,7 +40,6 @@
                     [(visible)]="showAssetSearchDialog"
                     [position]="'top'"
                     [baseZIndex]="9999999"
-                    [responsive]="true"
                     [closeOnEscape]="true"
                     appendTo="body"
                     [dismissableMask]="true"
@@ -62,6 +61,7 @@
                 <div class="card">
                     <p-table
                         #trackedAssetTable
+                        id="tracked-asset-table-id"
                         [value]="view"
                         styleClass="p-table-custom"
                         responsiveLayout="scroll"
@@ -180,6 +180,7 @@
                                  [hideTransitionOptions]="'0.9ms'"
                                  [dismissable]="false"
                                  [baseZIndex]="1000001"
+                                 (onShow)="onRowPanelShow($event)"
                                  appendTo="body"
                              >
                                  <ng-template pTemplate>

@@ -84,9 +84,10 @@
     background-color: transparent !important;
     background: transparent !important;
 }
+
 .card {
     box-shadow: 1px 1px 1px var(--surface-border);
-    background: transparent !important;
+    background: var(--card-bg-color) !important;
     padding: 0.3rem;
     border-radius: 10px;
     margin-bottom: 2rem;
@@ -117,20 +118,6 @@
     background-color: transparent !important;
 }
 
-.card {
-    background: transparent !important;
-    border: solid var(--border-accent) 1px !important;
-    border-radius: 15px !important;
-}
-
-:host ::ng-deep .p-card {
-    transition: transform 0.2s;
-    text-decoration: none;
-}
-
-:host ::ng-deep .p-card:hover {
-    transform: scale(1.05);
-}
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr {
     background: transparent !important;

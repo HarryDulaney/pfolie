@@ -19,6 +19,10 @@
                     <div [style]="{'height':globalChartHeight,'width':globalChartWidth}">
                         <app-big-chart
                             #globalChart
+                            [volumeColor]="themeService.styles.chartVolumeColor"
+                            [lineColor]="themeService.styles.chartLineColor"
+                            [backgroundColor]="themeService.styles.chartBackgroundColor"
+                            [fillColor]="themeService.styles.chartFillColor"
                             [chartDataType]="globalChartType"
                         >
                         </app-big-chart>
@@ -155,7 +159,7 @@
             </div>
 
             <div class="xl:col-3 xs:col-12">
-                    <app-news-carosel></app-news-carosel>
+                <app-news-carosel></app-news-carosel>
                 <!-- Watch List -->
                 <ng-container *ngIf="dashboardService.isUserLoggedIn()">
                     <app-editable-card
@@ -163,7 +167,7 @@
                         class="card h-fit"
                         [provider]="trackedAssetDataProvider"
                         title="Watch List"
-                        [contrastColor]="chartFillColor"
+                        [contrastColor]="themeService.styles.chartFillColor"
                         (onSelect)="onCardItemSelected($event)"
                         (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>

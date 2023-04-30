@@ -1,7 +1,7 @@
-import { DOCUMENT, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { BasicCoin, CoinFullInfo, CoinTableView, GlobalData, GlobalMarketCapChart, GlobalMarketCapData } from 'src/app/models/coin-gecko';
+import { BasicCoin, CoinFullInfo, CoinTableView, GlobalData } from 'src/app/models/coin-gecko';
 import { NavService } from 'src/app/services/nav.service';
 import { DashboardService } from './dashboard.service';
 import { Observable, Subject } from 'rxjs';
@@ -21,23 +21,17 @@ import { TooltipModule } from 'primeng/tooltip';
 import firebase from 'firebase/compat/app';
 import { EditableCardComponent } from '../cards/editable-card/editable-card.component';
 import { CoinMarket } from 'src/app/models/coin-gecko';
-import { TrackedAsset } from 'src/app/models/portfolio';
 import { SkeletonModule } from 'primeng/skeleton';
-import { LineChartComponent } from '../charts/line-chart/line-chart.component';
-import { CoinChartComponent } from '../charts/coin-chart/coin-chart.component';
 import { BigChartComponent } from '../charts/big-chart/big-chart.component';
 import { BigChartService } from '../charts/big-chart/big-chart.service';
 import { PieChartComponent } from '../charts/pie-chart/pie-chart.component';
 import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { SELECT_ITEM_EVENT } from '../../constants';
 import { DashboardEvent } from 'src/app/models/events';
+import { ThemeService } from 'src/app/services/theme.service';
 
 
-const documentStyle = getComputedStyle(document.documentElement);
-const chartFillColor = documentStyle.getPropertyValue('--chart-fill-color');
-const textColor = documentStyle.getPropertyValue('--text-color');
-const chartLineColor = documentStyle.getPropertyValue('--chart-fill-color');
-const chartBackgroundColor = documentStyle.getPropertyValue('--chart-fill-color');
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -70,7 +64,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PieChartService, { 'static': true }) pieChartService: PieChartService;
 
 
-  private documentStyle: CSSStyleDeclaration;
   private user: firebase.User | null = null;
   destroySubject$ = new Subject();
 
@@ -83,11 +76,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   isGlobalChartLoading: boolean;
 
   loadingIcon = 'pi pi-spin pi-spinner';
-  /* Chart Style */
-  chartFillColor: string = chartFillColor;
-  chartLineColor: string = chartLineColor;
-  textColor: string = textColor;
-  chartBackgroundColor: string = chartBackgroundColor;
   globalChartType: string = Const.CHART_TYPE.MARKET_CAP;
 
   screenSize: string;
@@ -127,6 +115,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public coinDataService: CoinDataService,
     private screenService: ScreenService,
+    public readonly themeService: ThemeService,
     public dashboardService: DashboardService,
     private cd: ChangeDetectorRef,
     private datePipe: DatePipe,
@@ -139,8 +128,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.screenSize = screenSize;
       this.cd.markForCheck();
     });
-    this.documentStyle = documentStyle;
-
   }
 
   loadCoinsLazy(event: LazyLoadEvent) {

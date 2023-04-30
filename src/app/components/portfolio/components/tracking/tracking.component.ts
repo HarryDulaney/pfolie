@@ -16,12 +16,13 @@ import { SparklineComponent } from '../../../charts/sparkline/sparkline.componen
 import { DeltaIcon } from '../../../icons/change-icon/delta.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from 'primeng/api';
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { AssetSearchSelect } from '../../../search-select/search-select.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ScreenService } from 'src/app/services/screen.service';
+import { HelperService } from 'src/app/services/helper.service';
+import { ThemeService } from 'src/app/services/theme.service';
 
-const documentStyle = getComputedStyle(document.documentElement);
-const overlayBgFancy = documentStyle.getPropertyValue('--hover-bg-fancy');
 
 @Component({
   selector: 'app-tracking',
@@ -29,7 +30,8 @@ const overlayBgFancy = documentStyle.getPropertyValue('--hover-bg-fancy');
   styleUrls: ['./tracking.component.scss'],
   providers: [DatePipe,
     CurrencyPipe,
-    DecimalPipe],
+    DecimalPipe,
+    HelperService],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgIf,
@@ -46,7 +48,7 @@ const overlayBgFancy = documentStyle.getPropertyValue('--hover-bg-fancy');
     DatePipe]
 })
 export class TrackingComponent implements OnInit, OnDestroy {
-  @ViewChild('trackedAssetTable') trackedTable;
+  @ViewChild('trackedAssetTable') trackedAssetTable: Table;
   @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
   @ViewChild(AssetSearchSelect) assetSelectionList: AssetSearchSelect;
   @ViewChild('assetSearchOverlay') assetSearchOverlay!: OverlayPanel;
@@ -70,15 +72,17 @@ export class TrackingComponent implements OnInit, OnDestroy {
   sparklineWidth = '200';
   openRowPanels: OverlayPanel[] = [];
   sparklineColor = '#006aff';
-  overlayBgColor: string = overlayBgFancy;
+  overlayBgColor: string;
 
   totalColumns = 7;
 
   constructor(
     public coinDataService: CoinDataService,
     private globalStore: BasicCoinInfoStore,
+    private screenService: ScreenService,
     private navService: NavService,
     public decimalPipe: DecimalPipe,
+    private themeService: ThemeService,
     public portfolioService: PortfolioService,
     private changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher
@@ -110,13 +114,16 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.overlayBgColor = this.themeService.getCssVariableValue('--hover-bg-fancy');
     this.isLoading = true;
-    this.globalStore.state$.select('basicCoins').pipe(takeUntil(this.destroySubject$)).subscribe(
-      (coins) => {
-        this.allCoins = coins;
-        this.changeDetectorRef.markForCheck();
-      }
-    );
+    this.globalStore.state$.select('basicCoins')
+      .pipe(takeUntil(this.destroySubject$)
+      ).subscribe(
+        (coins) => {
+          this.allCoins = coins;
+          this.changeDetectorRef.markForCheck();
+        }
+      );
 
     this.isLoading = true;
     this.portfolioService.trackedAssetDataProvider()
@@ -138,6 +145,29 @@ export class TrackingComponent implements OnInit, OnDestroy {
         }
       });
 
+
+    this.screenService.documentClickedSource$.pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe({
+      next: (event) => {
+        if (this.openRowPanels.length !== 0) {
+          if (!this.trackedAssetTable.el.nativeElement.contains(event.target)) {
+            HelperService.closeOverlays(this.openRowPanels);
+          }
+        }
+      }
+    });
+
+  }
+
+  isEventTargetOutsideElement(event: Event, element: HTMLElement) {
+    if (element && element.contains(event.target as HTMLElement)) {
+      return false;
+    }
+
+
+    return true;
+
   }
 
   getTrackedCount(): number {
@@ -156,23 +186,28 @@ export class TrackingComponent implements OnInit, OnDestroy {
   }
 
   onRowClick(event, rowPanel: OverlayPanel) {
-    for (let panel of this.openRowPanels) {
-      if (panel.el.nativeElement.id !== rowPanel.el.nativeElement.id) {
-        panel.hide();
-        this.openRowPanels = this.openRowPanels.slice(this.openRowPanels.indexOf(panel), 1);
+    if (rowPanel.overlayVisible) {
+      rowPanel.hide();
+      this.openRowPanels = this.openRowPanels.slice(this.openRowPanels.indexOf(rowPanel), 1);
+    } else {
+      HelperService.closeOverlays(this.openRowPanels);
+
+      rowPanel.toggle(event, event.currentTarget);
+      if (rowPanel.overlayVisible) {
+        this.openRowPanels.push(rowPanel);
       }
     }
 
-    rowPanel.toggle(event);
-    if (rowPanel.overlayVisible) {
-      this.openRowPanels.push(rowPanel);
-    }
 
+  }
+
+  onRowPanelShow(event) {
+    console.debug("Show Event: " + event);
   }
 
   onRowSelect(event: any) {
     const orgEvent = event.originalEvent as MouseEvent;
-    console.debug("Row Select Event: " + JSON.stringify(orgEvent));
+    console.debug("Row Select Event: " + orgEvent);
 
   }
 

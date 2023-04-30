@@ -20,6 +20,7 @@ import { UtilityService } from './app/services/utility.service';
 import { ToastService } from './app/services/toast.service';
 import { BasicCoinInfoStore } from './app/store/global/basic-coins.store';
 import { SessionService } from './app/services/session.service';
+import { ThemeService } from './app/services/theme.service';
 
 if (environment.production) {
   enableProdMode();
@@ -33,7 +34,15 @@ export function initializeServices(configService: ConfigService) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(HighchartsChartModule, BrowserModule, LayoutModule, HttpClientXsrfModule, FormsModule, AppRoutingModule, ReactiveFormsModule, AngularFireModule.initializeApp(environment.firebaseConfig)),
+    importProvidersFrom(
+      HighchartsChartModule,
+      BrowserModule,
+      LayoutModule,
+      HttpClientXsrfModule,
+      FormsModule,
+      AppRoutingModule,
+      ReactiveFormsModule,
+      AngularFireModule.initializeApp(environment.firebaseConfig)),
     BasicCoinInfoStore,
     ToastService,
     UtilityService,
@@ -42,6 +51,7 @@ bootstrapApplication(AppComponent, {
     CoinDataService,
     ConfigService,
     NavService,
+    ThemeService,
     MessageService,
     SessionService,
     DatePipe,
