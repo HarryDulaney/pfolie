@@ -1,35 +1,46 @@
 <div id="toolbar-element-id">
-    <p-menubar #menuBar
-               [hidden]="!open"
-               [class]="getToolbarStyleClass()">
+    <p-menubar
+        #menuBar
+        [hidden]="!open"
+        [class]="getToolbarStyleClass()"
+    >
         <ng-template pTemplate="start">
         </ng-template>
         <ng-template pTemplate="end">
-            <p-inplace #portfolioNameEditor
-                       id="rename-portfolio-element"
-                       [preventClick]="true"
-                       [style]="{'max-height':'2rem'}">
+            <p-inplace
+                #portfolioNameEditor
+                id="rename-portfolio-element"
+                [preventClick]="true"
+                [style]="{'max-height':'2rem'}"
+            >
                 <ng-template pTemplate="display">
-                    <span (click)="portfolioNameEditor.activate()"
-                          style="font-size:1.2rem"
-                          class="text-white font-bold float-end"> {{portfolioName}} </span>
+                    <span
+                        (click)="portfolioNameEditor.activate()"
+                        class="portfolio-name-label"
+                    > {{portfolioName}} </span>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <span class="float-start">
-                        <p-button *ngIf="showCancelRename"
-                                  icon="fa fa-undo text-danger"
-                                  (click)="handleCancelRename()"></p-button>
-                        <p-button icon="fa fas fa-save text-green-500"
-                                  (click)="handleRename()"></p-button>
+                        <p-button
+                            *ngIf="showCancelRename"
+                            icon="fa fa-undo theme-red"
+                            (click)="handleCancelRename()"
+                        ></p-button>
+                        <p-button
+                            icon="fa fas fa-save theme-green"
+                            (click)="handleRename()"
+                        ></p-button>
                     </span>
-                    <input class="font-bold text-white float-end"
-                           [style]="{'max-height':'2rem'}"
-                           type="text"
-                           pInputText
-                           [value]="portfolioName"
-                           [(ngModel)]="portfolioName"
-                           (keydown.enter)="handleRename()"
-                           (ngModelChange)="portfolioNameChanged($event)">
+                    <input
+                        class="portfolio-name-input"
+                        [style]="{'max-height':'2rem'}"
+                        type="text"
+                        pInputText
+                        [value]="portfolioName"
+                        [(ngModel)]="portfolioName"
+                        (keydown.enter)="handleRename()"
+                        (ngModelChange)="portfolioNameChanged($event)"
+                    >
                 </ng-template>
             </p-inplace>
         </ng-template>

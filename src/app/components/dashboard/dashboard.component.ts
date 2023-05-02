@@ -62,7 +62,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('globalChart') globalChart: BigChartComponent;
   @ViewChild('globalPie') globalPie: PieChartComponent;
 
-
   @ViewChild(BigChartService, { 'static': true }) bigChartService: BigChartService;
   @ViewChild(PieChartService, { 'static': true }) pieChartService: PieChartService;
 
@@ -98,6 +97,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   trackedAssetDataProvider: Observable<CoinFullInfo[]>;
   globalChartHeight: string = '400px';
   globalChartWidth: string = '100%';
+
 
   mainColumnDefs = [
     { header: "Icon", field: 'image' },

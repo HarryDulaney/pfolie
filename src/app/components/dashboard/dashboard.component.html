@@ -145,7 +145,6 @@
                                         [color]="coinMarket[mainColumnDefs[5].field] < 0 ? '#ff1100' :'#00ff59'"
                                         [maxHeight]="'3rem'"
                                         [maxWidth]="'12rem'"
-                                        [contrastColor]="themeService.styles.textColor"
                                         [chart-data]="coinMarket[mainColumnDefs[8].field]"
                                         [xaxis-labels]="coinDataService.getSparklineLabels()"
                                     >
@@ -177,7 +176,6 @@
                         class="card h-fit"
                         [provider]="trackedAssetDataProvider"
                         title="Watch List"
-                        [contrastColor]="themeService.styles.chartFillColor"
                         (onSelect)="onCardItemSelected($event)"
                         (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>

@@ -2,15 +2,19 @@
     cursor: pointer;
 }
 
+.table-header-title {
+    color: var(--text-color) !important;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
 .p-table-custom {
     background-color: transparent !important;
 }
 
-
 .mdc-button {
     color: var(--text-color) !important;
 }
-
 
 .card {
     background: transparent !important;

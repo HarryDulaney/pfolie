@@ -1,3 +1,17 @@
+.ws-caption-label-special {
+    color: var(--text-color);
+    font-size: medium;
+    font-weight: bold;
+    width: 100% !important;
+}
+
+.ws-caption-label-data {
+    color: var(--text-color-secondary);
+    font-size: medium;
+    font-weight: bold;
+    width: 100% !important;
+  }
+
 .workspace--style {
     margin-top: 1rem;
     min-height: 25vh !important;
@@ -6,7 +20,11 @@
 
 .workgrid--totals {
     overflow-x: auto !important;
-    border: 1px solid var(--surface-d);
-    border-radius: 20px 20px 20px 20px;
     padding: 0.5rem !important;
+}
+
+.card {
+    background: transparent !important;
+    border: solid var(--border-accent) 1px !important;
+    border-radius: 15px !important;
 }

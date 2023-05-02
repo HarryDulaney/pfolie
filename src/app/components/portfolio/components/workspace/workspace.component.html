@@ -2,42 +2,44 @@
     <div class="grid-nogutter p-1">
         <div class="row row-cols-xl-4 row-cols-lg-2 workgrid--totals">
             <!-- Portfolio Totals Card -->
-            <div class="col">
-                <div class="caption-label-special">Total Balance:
-                    <span class="caption-label-data">
+            <div class="col m-5 p-1">
+                <div class="card">
+                    <span class="ws-caption-label-special">Total Balance:</span>
+                    <span class="ws-caption-label-data">
                         {{ calculatedValues.totalCurrentValue |
                         currency:'USD':'$':'1.2-2'}}
                     </span>
                 </div>
-
             </div>
-            <div class="col">
-                <div class="caption-label-special">Total Cost Basis:
-                    <span class="caption-label-data">
+
+            <div class="col m-5 p-1">
+                <div class="card">
+                    <span class="ws-caption-label-special">Total Cost Basis:</span>
+                    <span class="ws-caption-label-data">
                         {{calculatedValues.totalCostBasis |
                         currency:'USD':'$':'1.2-2'}}
                     </span>
                 </div>
             </div>
-            <div class="col">
 
-                <div class="caption-label-special">Total Gain/Loss:
-                    <span class="caption-label-data">
+            <div class="col m-5 p-1">
+                <div class="card">
+                    <span class="ws-caption-label-special">Total Gain/Loss:</span>
+                    <span class="ws-caption-label-data">
                         <span [class]="calculatedValues.totalProfitLoss < 0 ? 'decreased' :'increased'">
                             {{calculatedValues.totalProfitLoss |
                             currency:'USD':'$':'1.2-2'}}</span>
                     </span>
                 </div>
-
             </div>
-            <div class="col">
 
-                <div class="caption-label-special">Total Assets:
+            <div class="col m-5 p-1">
+                <div class="card">
+                    <span class="ws-caption-label-special">Total Assets:</span>
                     <span class="caption-label-data">
                         {{getAssetCount()}}
                     </span>
                 </div>
-
             </div>
         </div>
     </div>
