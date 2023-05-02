@@ -3,6 +3,7 @@ import { OwnedAssetView } from 'src/app/models/portfolio';
 import { ChartModule } from 'primeng/chart';
 import { PortfolioService } from '../../services/portfolio.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { ThemeService } from 'src/app/services/theme.service';
 
 
 @Component({
@@ -25,14 +26,15 @@ export class AllocationChartComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
+    private themeService: ThemeService,
     private portfolioService: PortfolioService,
     private utilityService: UtilityService
   ) { }
 
 
   ngOnInit(): void {
-    let documentStyle = getComputedStyle(document.documentElement);
-    this.textColor = documentStyle.getPropertyValue('--text-color');
+    
+    this.textColor = this.themeService.getCssVariableValue('--text-color');
     this.donutChartColorPallete = this.utilityService.getThemeColorPallete();
     this.portfolioService.portfolioAssetViewSource$.subscribe((data) => {
       this.setData(data);

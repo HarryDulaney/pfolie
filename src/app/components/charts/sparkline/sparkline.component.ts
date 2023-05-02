@@ -19,10 +19,8 @@ export class SparklineComponent implements AfterViewInit {
   @Input('height') height: string;
   @Input('width') width: string;
   @Input('color') color: string = '#006aff';
-  @Input('showUnderline') showUnderline?: boolean = true;
-  @Input('contrastColor') contrastColor: string = '#ffffff';
 
-  style = { 'border-bottom': '1px dashed' + this.contrastColor };
+  style = { 'border-bottom': '1px dashed var(--text-color)' };
 
   ngAfterViewInit(): void {
     this.draw();

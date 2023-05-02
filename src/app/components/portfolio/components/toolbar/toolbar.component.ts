@@ -14,6 +14,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
+  styleUrls: ['./toolbar.component.scss'],
   standalone: true,
   imports: [MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
 })

@@ -10,6 +10,7 @@ import { CoinDataService } from 'src/app/services/coin-data.service';
 import { Observable, forkJoin, map, of, tap } from 'rxjs';
 import { TrackedAsset } from 'src/app/models/portfolio';
 import { UtilityService } from 'src/app/services/utility.service';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-editable-card',
@@ -23,7 +24,6 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class EditableCardComponent implements OnInit {
   @Input('provider') dataProvider: Observable<CoinFullInfo[]>;
   @Input() title: string;
-  @Input('contrastColor') contrastColor: string;
   @Output('onSelect') onSelect = new EventEmitter<CoinTableView>();
   @Output('onAdd') onAdd = new EventEmitter<boolean>();
 
@@ -35,8 +35,10 @@ export class EditableCardComponent implements OnInit {
   constructor(
     public coinDataService: CoinDataService,
     private cd: ChangeDetectorRef,
+    private themeService: ThemeService,
     private utilityService: UtilityService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.sparklineXAxisLabels = this.coinDataService.getSparklineLabels();
@@ -46,8 +48,10 @@ export class EditableCardComponent implements OnInit {
           return this.utilityService.mapCoinFullInfoToCoinTableView(coin);
         },
           tap((result) => {
-            if (result) {
+            if (result) 
+            {
               this.isLoading = false;
+              this.cd.markForCheck();
             }
           }));
       }),

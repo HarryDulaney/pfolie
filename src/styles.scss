@@ -297,9 +297,17 @@ p-table .custom-spinner {
 }
 
 .caption-label-data {
-  color: var(--light-blue);
+  color: var(--text-color-secondary);
   font-size: medium;
   font-weight: bold;
+}
+
+.theme-green {
+  color: var(--increase-color) !important;
+}
+
+.theme-red {
+  color: var(--decrease-color) !important;
 }
 
 .p-datatable .p-datatable-thead > tr > th {
@@ -364,43 +372,13 @@ p-table .custom-spinner {
   font-weight: bold;
 }
 
-.toolbar-wrapper-nav-contracted {
-  position: fixed;
-  top: calc(5px + 7vh);
-  z-index: 5000;
-  right: 0;
-  left: 0;
-  width: auto;
-  margin-bottom: 2rem;
-}
-
-.toolbar-wrapper-nav-expanded {
-  position: fixed;
-  top: calc(5px + 7vh);
-  z-index: 5000;
-  right: 0;
-  left: calc(200px);
-  max-width: 100%;
-  margin-bottom: 2rem;
-}
-
-.toolbar-wrapper-mobile {
-  position: fixed;
-  top: calc(5px + 7vh);
-  z-index: 5000;
-  right: 0;
-  left: 0;
-  width: 100%;
-  margin-bottom: 2rem;
-}
-
 :host ::ng-deep .p-menubar {
   height: fit-content !important;
-  background-color: var(--surface-ground);
+  background: var(--surface-a);
 }
 
 :host ::ng-deep .p-menubar .p-submenu-list {
-  background: var(--surface-ground) !important;
+  background: var(--surface-a) !important;
 }
 
 :host ::ng-deep .p-menubar .p-menuitem.p-menuitem-active > .p-menuitem-link {
