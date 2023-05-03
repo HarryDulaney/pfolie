@@ -2,7 +2,7 @@
 <!-- Top Toolbar drawer -->
 <app-toolbar
     #toolbar
-    [isNavExpanded]="isNavExpanded"
+    [navExpandProvider]="navExpandProvider"
     [screenSize]="screenSize"
 ></app-toolbar>
 
@@ -38,7 +38,7 @@
         [assets]="portfolioView"
         [calculatedValues]="calculatedValues"
         [screenSize]="screenSize"
-        [isNavExpanded]="isNavExpanded"
+        [navExpandProvder]="navExpandProvider"
     >
     </app-workspace>
 

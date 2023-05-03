@@ -69,8 +69,8 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   chartOptions: any;
   showAddEditDialog: boolean = false;
   portfolioExpandedSource: any;
-  isNavExpanded: boolean;
   screenSize: string;
+  navExpandProvider: Observable<boolean>;
 
   constructor(
     public coinDataService: CoinDataService,
@@ -85,6 +85,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
 
     this.portfolioService.showToolbar.next(false);
+    this.navExpandProvider = this.navService.navExpandedSource$;
   }
 
   ngOnDestroy(): void {
@@ -156,10 +157,6 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log('Row selected: ' + value);
       }
     );
-
-    this.navService.navExpandedSource$.pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe(isOpen => this.isNavExpanded = isOpen);
 
     this.cd.detectChanges();
 

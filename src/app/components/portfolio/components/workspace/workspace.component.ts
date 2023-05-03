@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Host, Input, OnChanges, OnDestroy, OnInit, SimpleChange, ViewChild } from '@angular/core';
 import { WorkspaceEvent } from 'src/app/models/events';
 import { OwnedAssetView } from 'src/app/models/portfolio';
 import { ComponentService } from '../../services/component.service';
 import { AllocationChartComponent } from '../allocation-chart/allocation-chart.component';
 import { CurrencyPipe } from '@angular/common';
-import { Subject } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { NavService } from 'src/app/services/nav.service';
 
 /**
  * Parent Component for portfolio custom component workspace
@@ -13,25 +14,38 @@ import { Subject } from 'rxjs';
   selector: 'app-workspace',
   templateUrl: './workspace.component.html',
   styleUrls: ['./workspace.component.scss'],
-  providers: [ComponentService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [AllocationChartComponent, CurrencyPipe]
 })
-export class WorkspaceComponent implements OnInit, OnDestroy {
+export class WorkspaceComponent implements OnDestroy, OnInit {
   @Input() calculatedValues;
   @Input() assets: OwnedAssetView[];
   @Input() screenSize: string;
-  @Input() isNavExpanded: boolean;
+  @Input('navExpandProvder') navExpandProvider: Observable<boolean>;
+
+  @ViewChild('allocationChart') allocationChart: AllocationChartComponent;
+
+  isNavExpanded: boolean;
 
   destroySubject$ = new Subject();
-
   assetCount = 0;
   workspaceEvent: EventEmitter<WorkspaceEvent> = new EventEmitter();
   allocationChartHeight: string = '20rem';
-  constructor() { }
+
+  constructor(private cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.navExpandProvider.pipe(
+      takeUntil(this.destroySubject$))
+      .subscribe(
+        isExpanded => {
+          this.isNavExpanded = isExpanded;
+          this.allocationChart.chartInstance.reflow();
+          this.cd.detectChanges();
+        }
+      );
+
   }
 
 
