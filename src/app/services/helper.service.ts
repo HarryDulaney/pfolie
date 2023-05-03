@@ -1,7 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
-import { DOCUMENT } from "@angular/common";
-import { UserPreferences } from "../models/appconfig";
-import { BehaviorSubject } from "rxjs";
+import { Injectable } from '@angular/core';
 import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Injectable()
