@@ -2,6 +2,12 @@
     cursor: pointer;
 }
 
+.table-action-btn {
+    color: var (--text-color) !important;
+    font-weight: bold !important;
+    background: transparent !important;
+}
+
 .table-header-title {
     color: var(--text-color) !important;
     font-size: 0.9rem;

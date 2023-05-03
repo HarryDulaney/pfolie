@@ -88,12 +88,12 @@
                                     mat-flat-button
                                     (click)="showAssetSearchContainer($event)"
                                     type="button"
-                                    class="text-white font-bold bg-transparent"
+                                    class="table-action-btn"
                                     tooltipPosition="left"
                                 >
                                     <i
                                         class="pi pi-plus"
-                                        style="font-size: 1.2rem;"
+                                        style="color:var(--text-color)"
                                     ></i>
                                     <span class="caption-label"> Track New</span>
                                     <p-overlayPanel
@@ -138,7 +138,7 @@
                                     [width]="100"
                                     class="header-text"
                                 >
-                                Icon
+                                    Icon
                                 </th>
                                 <th
                                     [width]="160"
@@ -170,59 +170,59 @@
                             pTemplate="body"
                             let-rowData
                         >
-                                 <!-- Actions/Options Overlay -->
-                                 <p-overlayPanel
-                                 #rowPanel
-                                 [id]="'rowPanel' + rowData.id"
-                                 class="cursor-pointer"
-                                 [style]="{ 'background': overlayBgColor }"
-                                 [showTransitionOptions]="'0.9ms'"
-                                 [hideTransitionOptions]="'0.9ms'"
-                                 [dismissable]="false"
-                                 [baseZIndex]="1000001"
-                                 (onShow)="onRowPanelShow($event)"
-                                 appendTo="body"
-                             >
-                                 <ng-template pTemplate>
-                                     <ul
-                                         style="list-style: none;"
-                                         class="p-0 m-0"
-                                     >
+                            <!-- Actions/Options Overlay -->
+                            <p-overlayPanel
+                                #rowPanel
+                                [id]="'rowPanel' + rowData.id"
+                                class="cursor-pointer"
+                                [style]="{ 'background': overlayBgColor }"
+                                [showTransitionOptions]="'0.9ms'"
+                                [hideTransitionOptions]="'0.9ms'"
+                                [dismissable]="false"
+                                [baseZIndex]="1000001"
+                                (onShow)="onRowPanelShow($event)"
+                                appendTo="body"
+                            >
+                                <ng-template pTemplate>
+                                    <ul
+                                        style="list-style: none;"
+                                        class="p-0 m-0"
+                                    >
 
-                                         <li class="p-0 m-0">
-                                             <a
-                                                 mat-flat-button
-                                                 class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
-                                                 type="button"
-                                                 (click)="deleteTrackedAsset(rowData)"
-                                             >
-                                                 <i
-                                                     class="pi pi-trash"
-                                                     [style]="{'font-size':'1.2rem','cursor':'pointer'}"
-                                                 >
-                                                 </i>
-                                                 Delete
-                                             </a>
-                                         </li>
+                                        <li class="p-0 m-0">
+                                            <a
+                                                mat-flat-button
+                                                class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                type="button"
+                                                (click)="deleteTrackedAsset(rowData)"
+                                            >
+                                                <i
+                                                    class="pi pi-trash"
+                                                    [style]="{'font-size':'1.2rem','cursor':'pointer'}"
+                                                >
+                                                </i>
+                                                Delete
+                                            </a>
+                                        </li>
 
-                                         <li class="p-0 m-0">
-                                             <a
-                                                 mat-flat-button
-                                                 class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
-                                                 type="button"
-                                                 (click)="openAssetInfo(rowData)"
-                                             >
-                                                 <i
-                                                     class="pi pi-external-link"
-                                                     [style]="{'font-size':'1.1rem','cursor':'pointer'}"
-                                                 >
-                                                 </i>
-                                                 Asset Info
-                                             </a>
-                                         </li>
-                                     </ul>
-                                 </ng-template>
-                             </p-overlayPanel>
+                                        <li class="p-0 m-0">
+                                            <a
+                                                mat-flat-button
+                                                class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                type="button"
+                                                (click)="openAssetInfo(rowData)"
+                                            >
+                                                <i
+                                                    class="pi pi-external-link"
+                                                    [style]="{'font-size':'1.1rem','cursor':'pointer'}"
+                                                >
+                                                </i>
+                                                Asset Info
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </ng-template>
+                            </p-overlayPanel>
                             <tr
                                 [pSelectableRow]="rowData"
                                 (click)="onRowClick($event,rowPanel)"
