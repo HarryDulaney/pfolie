@@ -6,7 +6,7 @@ import * as Const from '../../../../constants';
 import { Inplace, InplaceModule } from 'primeng/inplace';
 import { Menubar, MenubarModule } from 'primeng/menubar';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -19,15 +19,18 @@ import { NgIf } from '@angular/common';
   imports: [MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
 })
 export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
+  @Input('navExpandProvider') navExpandProvider: Observable<boolean>;
+  @Input() screenSize: string;
+
   @ViewChild('menuBar') menuBar: Menubar;
   @ViewChild('portfolioNameEditor') portfolioNameEditor: Inplace;
-  @Input() isNavExpanded: boolean;
-  @Input() screenSize: string;
+
 
 
   private toolbarEvent: EventEmitter<ToolbarEvent> = new EventEmitter();
   $toolbarSource = this.toolbarEvent.asObservable();
   showCancelRename: boolean;
+  isNavExpanded: boolean;
 
   emitEvent(event: ToolbarEvent) {
     this.toolbarEvent.emit(event);
@@ -92,6 +95,10 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.open = open;
     });
 
+    this.navExpandProvider.pipe(takeUntil(this.destroySubject$)).subscribe(
+      (open) => {
+        this.isNavExpanded = open;
+      });
   }
 
   setMenuItems() {

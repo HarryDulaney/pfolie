@@ -1,7 +1,9 @@
-<p-chart
-    type="doughnut"
-    [data]="data"
+<highcharts-chart
+    #highchart
+    style="width: 100%; display: block"
+    [Highcharts]="Highcharts"
     [options]="chartOptions"
-    responsive="true"
-    [height]="height"
-></p-chart>
+    (chartInstance)="chartInstance = $event"
+    [(update)]="updateFlag"
+>
+</highcharts-chart>

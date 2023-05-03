@@ -1,98 +1,141 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import * as Highcharts from "highcharts/highcharts";
 import { OwnedAssetView } from 'src/app/models/portfolio';
-import { ChartModule } from 'primeng/chart';
+import HBrandDark from "highcharts/themes/dark-blue"
+import HAccessability from "highcharts/modules/accessibility";
+import HExporting from "highcharts/modules/exporting";
 import { PortfolioService } from '../../services/portfolio.service';
-import { UtilityService } from 'src/app/services/utility.service';
-import { ThemeService } from 'src/app/services/theme.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { HighchartsChartComponent, HighchartsChartModule } from 'highcharts-angular';
 
-
+HBrandDark(Highcharts);
+HAccessability(Highcharts);
+HExporting(Highcharts);
 @Component({
   selector: 'app-allocation-chart',
   templateUrl: './allocation-chart.component.html',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ChartModule],
-  providers: [UtilityService]
+  imports: [HighchartsChartModule],
 })
-export class AllocationChartComponent implements OnInit {
-  @Input('title') title: string;
-  @Input('height') height: string;
+export class AllocationChartComponent implements OnInit, OnDestroy {
+  @ViewChild('highchart') chart: HighchartsChartComponent;
 
-  data: any;
-  chartData: any[] = [];
-  chartOptions: any;
-  textColor: string;
-  donutChartColorPallete: string[] = [];
+  updateFlag: boolean;
+  Highcharts: typeof Highcharts = Highcharts;
+  chartInstance: Highcharts.Chart;
+
+  destroySubject$ = new Subject();
 
   constructor(
-    private cd: ChangeDetectorRef,
-    private themeService: ThemeService,
     private portfolioService: PortfolioService,
-    private utilityService: UtilityService
+    private cd: ChangeDetectorRef
   ) { }
 
 
-  ngOnInit(): void {
-    
-    this.textColor = this.themeService.getCssVariableValue('--text-color');
-    this.donutChartColorPallete = this.utilityService.getThemeColorPallete();
-    this.portfolioService.portfolioAssetViewSource$.subscribe((data) => {
-      this.setData(data);
-      this.cd.markForCheck();
-    });
+  ngOnDestroy(): void {
+    this.destroySubject$.next(true);
+    this.destroySubject$.complete();
   }
 
 
+  ngOnInit(): void {
+    this.portfolioService.portfolioAssetViewSource$.pipe(
+      takeUntil(this.destroySubject$))
+      .subscribe(
+        views => {
+          this.setData(views);
+          this.cd.detectChanges();
+        }
+      )
+  }
 
   setData(assetData: OwnedAssetView[]) {
     this.chartData = [];
-    this.setupChartData(assetData, this.chartData);
+    this.chartData = this.setupChartData(assetData, this.chartData);
     this.chartOptions = {
-      cutout: '60%',
-      plugins: {
-        legend: {
-          labels: {
-            color: this.textColor
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: [
+              "viewFullscreen",
+              "separator",
+              "downloadPNG"]
           }
         }
-      }
-    };
+      },
+      chart: {
+        type: 'pie',
+        plotBackgroundColor: 'transparent',
+        plotBorderColor: '#ffffff00',
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+        borderColor: '#ffffff00',
+        plotShadow: false,
+        reflow: true,
+      },
+      credits: {
+        enabled: false,
+      },
+      title: {
+        text: '',
+      },
+      plotOptions: {
+        pie: {
+          accessibility: {
+            description: 'Portfolio allocation pie chart.',
+            enabled: true
+          },
 
-  }
-
-
-  setupChartData(assetData: OwnedAssetView[], chartData: any[]) {
-    let readyData = this.parseChartData(assetData);
-    chartData.push(...readyData[0]);
-    this.data = {
-      labels: readyData[1],
-      datasets: [{
-        label: 'Allocation',
-        data: this.chartData,
-        hoverOffset: 4
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+          }
+        }
+      },
+      series: [{
+        name: 'Allocation',
+        colorByPoint: true,
+        data: this.chartData
       }]
-    };
-
+    }
   }
 
 
-  parseChartData(assetViews: OwnedAssetView[]): any[][] {
+  setupChartData(assetData: OwnedAssetView[], chartData: any[]): any[] {
+    let readyData = this.getChartData(assetData);
+    chartData.push(...readyData);
+    return chartData;
+
+  }
+
+  chartData: any[] = [];
+
+  chartOptions: any;
+
+
+  getChartData(assetViews: OwnedAssetView[]): any[] {
     let formatedData = [];
-    let labels = [];
     let sortedAssetViews = this.sortByAllocation(assetViews);
 
     for (let i = 0; i < sortedAssetViews.length; i++) {
       let asset = sortedAssetViews[i];
-      labels.push(asset.coinFullInfo.name);
-      formatedData.push(asset.allocation);
+      if (i === 0) {
+        formatedData.push({ name: asset.coinFullInfo.name, y: asset.allocation, sliced: true, selected: true });
+      } else {
+        formatedData.push({ name: asset.coinFullInfo.name, y: asset.allocation });
+      }
     }
 
-    return [formatedData, labels];
+    return formatedData;
   }
 
   sortByAllocation(assetViews: OwnedAssetView[]): OwnedAssetView[] {
     let result = Array.from(assetViews);
     result.sort((a, b) => a.allocation > b.allocation ? 1 : -1);
+
     return result;
   }
 
