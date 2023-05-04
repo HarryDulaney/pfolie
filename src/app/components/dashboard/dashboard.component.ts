@@ -58,7 +58,7 @@ import { ApiService } from 'src/app/services/api.service';
     TrendingCardComponent,
     PieChartComponent]
 })
-export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
   @ViewChild('globalChart') globalChart: BigChartComponent;
   @ViewChild('globalPie') globalPie: PieChartComponent;
@@ -254,15 +254,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         }));
 
   }
-
-  ngAfterViewInit(): void {
-/*     this.globalChart.loading.subscribe(
-      (isLoading: boolean) => {
-        this.isGlobalChartLoading = isLoading;
-        this.cd.markForCheck();
-      }); */
-  }
-
 
   isTracked(id: string) {
     return this.dashboardService.isTrackedAsset(id);
