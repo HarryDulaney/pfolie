@@ -15,6 +15,7 @@ import HExportData from "highcharts/modules/export-data";
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HighchartsChartComponent, HighchartsChartModule } from 'highcharts-angular';
+import { CommonModule } from "@angular/common";
 
 HFullScreen(Highcharts)
 HExporting(Highcharts);
@@ -32,13 +33,7 @@ HAccessability(Highcharts);
     selector: 'app-big-chart',
     templateUrl: './big-chart.component.html',
     standalone: true,
-    styles: [`
-    :host {
-        custom-context-button: {
-            background-color: #00000000;
-        }
-    }`],
-    imports: [HighchartsChartModule],
+    imports: [HighchartsChartModule, CommonModule],
     providers: [BigChartService]
 })
 export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
@@ -49,8 +44,6 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     @Input('lineColor') lineColor: string;
     @Input('fillColor') fillColor: string;
 
-    loading: EventEmitter<boolean> = new EventEmitter(false);
-
     @ViewChild('highchart') highchart!: HighchartsChartComponent;
 
     chartInstance: Highcharts.Chart;
@@ -58,7 +51,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     chartOptions: Highcharts.Options = {};
     market_caps: Array<Array<number>>;
     total_volumes: Array<Array<number>>;
-
+    isLoading: boolean = false;
 
     Highcharts: typeof Highcharts = Highcharts;
     ohlc = [];
@@ -96,7 +89,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     reload() {
-        this.loading.emit(true);
+        this.isLoading = true;
         this.service.dataSource$
             .pipe(takeUntil(this.destroySubject$))
             .subscribe({
@@ -106,15 +99,16 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                         this.total_volumes = this.sortData(responseData.market_cap_chart.volume);
                         this.chartOptions = this.comboChart();
                         this.cd.detectChanges();
+                        this.isLoading = false;
                     }
 
                 },
                 complete: () => {
-                    this.loading.emit(false);
+                    this.isLoading = false;
                     this.cd.detectChanges();
                 },
                 error: () => {
-                    this.loading.emit(false);
+                    this.isLoading = false;
                 }
             });
     }
@@ -141,6 +135,9 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                     }
                 }
             },
+            rangeSelector: {
+                selected: 5,
+            },
             credits: {
                 enabled: false
             },
@@ -148,7 +145,6 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 text: ''
             },
             chart: {
-                type: 'area',
                 backgroundColor: this.backgroundColor,
                 reflow: true,
 
@@ -162,7 +158,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                         exposeAsGroupOnly: true
                     }
                 },
-                area: {
+                line: {
                     dataLabels: {
                         enabled: false
                     },
@@ -205,9 +201,8 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             },
             series: [{
                 name: 'Market Cap',
-                type: 'area',
+                type: 'line',
                 data: this.market_caps,
-                fillColor: this.fillColor,
                 tooltip: {
                     valueDecimals: 2
                 },
@@ -219,9 +214,6 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 data: this.total_volumes,
                 yAxis: 1
             }],
-            rangeSelector: {
-                selected: 5,
-            },
         };
     }
 

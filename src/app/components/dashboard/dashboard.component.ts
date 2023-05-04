@@ -29,6 +29,7 @@ import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { SELECT_ITEM_EVENT } from '../../constants';
 import { DashboardEvent } from 'src/app/models/events';
 import { ThemeService } from 'src/app/services/theme.service';
+import { ApiService } from 'src/app/services/api.service';
 
 
 
@@ -116,6 +117,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     public coinDataService: CoinDataService,
+    private apiService: ApiService,
     private screenService: ScreenService,
     public readonly themeService: ThemeService,
     public dashboardService: DashboardService,
@@ -150,6 +152,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.apiService.getStockNews("BTC").pipe(
+      takeUntil(this.destroySubject$)
+    ).subscribe({
+      next: (news: any[]) => {
+        console.log(news);
+      }
+    });
+
     this.isGlobalChartLoading = true;
     this.bigChartService.initializeChart();
 
@@ -246,11 +256,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.globalChart.loading.subscribe(
+/*     this.globalChart.loading.subscribe(
       (isLoading: boolean) => {
         this.isGlobalChartLoading = isLoading;
         this.cd.markForCheck();
-      });
+      }); */
   }
 
 

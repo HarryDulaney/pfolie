@@ -1,12 +1,24 @@
-<highcharts-chart
-    #highchart
-    style="width: 100% !important; height: 100%; display: flex;"
-    [Highcharts]="Highcharts"
-    [constructorType]="'stockChart'"
-    [options]="chartOptions"
-    (chartInstance)="chartInstance = $event"
-    [(update)]="updateFlag"
-    [oneToOne]="true"
-    (update)="onChartUpdate($event)"
->
-</highcharts-chart>
+<ng-container *ngIf="isLoading">
+    <div class="container d-flex justify-content-center align-items-center">
+        <p-progressSpinner
+            [style]="{height:'20%',width:'20%'}"
+            [strokeWidth]='2'
+            fill="transparent"
+            animationDuration=".1s"
+        ></p-progressSpinner>
+    </div>
+</ng-container>
+<div [hidden]="isLoading">
+    <highcharts-chart
+        #highchart
+        style="width: 100% !important; height: 100%; display: flex;"
+        [Highcharts]="Highcharts"
+        [constructorType]="'stockChart'"
+        [options]="chartOptions"
+        (chartInstance)="chartInstance = $event"
+        [(update)]="updateFlag"
+        [oneToOne]="true"
+        (update)="onChartUpdate($event)"
+    >
+    </highcharts-chart>
+</div>
