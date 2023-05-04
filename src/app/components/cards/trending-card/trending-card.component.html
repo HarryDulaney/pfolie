@@ -1,6 +1,39 @@
 <div class="trending-card">
     <h3 class="dash-section-title">{{title}}</h3>
-    <ng-container *ngIf="!loading">
+    <ng-container *ngIf="loading">
+        <div style="height: 30vh;">
+            <div class="row w-100 justify-content-between trending-card-item">
+                <div class="col-3">
+                    <div
+                        [style]="{'height':'50%'}"
+                        class="font-bold m-1 text-sm z-3"
+                    > <p-skeleton></p-skeleton>
+                    </div>
+                    <div
+                        [style]="{'height':'50%'}"
+                        class="font-bold m-0 p-0 mt-3 text-sm z-3"
+                    >
+                        <div>
+                            <p-skeleton></p-skeleton>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <p-skeleton></p-skeleton>
+                </div>
+
+                <div class="col-4">
+                    <span class="row">
+                        <div class="decreased text-sm font-bold p-1 z-3">
+                            <p-skeleton></p-skeleton>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <div [hidden]="loading">
         <div *ngFor="let g of items; index as i; count as c;">
             <div class="row w-100 justify-content-between trending-card-item">
                 <div class="col-3">
@@ -48,38 +81,6 @@
                             <span class="trending-card-price-change">{{g.price_change_24h + '%'}}<i
                                     class="fa fa-arrow-down"
                                 ></i></span>
-                        </div>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </ng-container>
-    <div *ngIf="loading">
-        <div style="height: 30vh;">
-            <div class="row w-100 justify-content-between trending-card-item">
-                <div class="col-3">
-                    <div
-                        [style]="{'height':'50%'}"
-                        class="font-bold m-1 text-sm z-3"
-                    > <p-skeleton></p-skeleton>
-                    </div>
-                    <div
-                        [style]="{'height':'50%'}"
-                        class="font-bold m-0 p-0 mt-3 text-sm z-3"
-                    >
-                        <div>
-                            <p-skeleton></p-skeleton>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-5">
-                    <p-skeleton></p-skeleton>
-                </div>
-
-                <div class="col-4">
-                    <span class="row">
-                        <div class="decreased text-sm font-bold p-1 z-3">
-                            <p-skeleton></p-skeleton>
                         </div>
                     </span>
                 </div>

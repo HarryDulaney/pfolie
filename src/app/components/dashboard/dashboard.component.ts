@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   timeInMillis: number = Date.now();
   date: string | undefined;
   first = 0;
-  rows = 100;
+  rows = 60;
   totalRecords = 0;
   tooltipOptions = Const.TOOLTIP_OPTIONS;
   trackedAssetDataProvider: Observable<CoinFullInfo[]>;
