@@ -9,10 +9,9 @@ const router = new Router();
 
 
 /* ---------------------- Poloygon.io ----------------------- */
-router.get('/polygon/stocks/all', polygon.getAllStockTickers);
-router.get('/polygon/stocks/:ticker', polygon.getStockTicker);
-router.get('/polygon/news/all', polygon.getNews);
-router.get('/polygon/news/:ticker', polygon.getNewsTicker);
+router.get('/polygon/stocks', polygon.getAggregate);
+router.get('/polygon/stocks/quote/:ticker', polygon.getLastQuote);
+router.get('/polygon/news/:ticker', polygon.getNews);
 /* ---------------------- Portfolios ----------------------- */
 router.get('/portfolio/:uid', portfolioController.findAllPortfoliosByUserId);
 router.get('/portfolio/ids/:uid', portfolioController.findAllPortfolioIdsByUserId);

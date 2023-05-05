@@ -15,7 +15,6 @@ import { CardModule } from 'primeng/card';
 import { NewsCaroselComponent } from '../news/news-carosel/news-carosel.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollTopModule } from 'primeng/scrolltop';
-import { TrendingCardComponent } from '../cards/trending-card/trending-card.component';
 import * as Const from '../../constants';
 import { TooltipModule } from 'primeng/tooltip';
 import firebase from 'firebase/compat/app';
@@ -54,8 +53,6 @@ import { ApiService } from 'src/app/services/api.service';
     SparklineComponent,
     TableModule,
     DeltaIcon,
-    PieChartComponent,
-    TrendingCardComponent,
     PieChartComponent]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -72,10 +69,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   /* Loading Flags */
-  isTrendingLoading: boolean;
   isCoinsByMarketCapLoading: boolean;
-  isGlobalDataLoading: boolean;
-  isWatchListLoading: boolean;
   isGlobalChartLoading: boolean;
 
   loadingIcon = 'pi pi-spin pi-spinner';
@@ -83,8 +77,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   screenSize: string;
   coinsByMarketCap: CoinTableView[] = [];
-  topMarketShareItems: CoinTableView[] = [];
-  trendingItems: CoinTableView[] = [];
   globalData: GlobalData;
   selectedCoin: CoinTableView;
   isTrendingSelected = false;
@@ -96,6 +88,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   totalRecords = 0;
   tooltipOptions = Const.TOOLTIP_OPTIONS;
   trackedAssetDataProvider: Observable<CoinFullInfo[]>;
+  topMarketCapProvider: Observable<CoinTableView[]>;
+  trendingCoinsProvider: Observable<CoinTableView[]>;
   globalChartHeight: string = '400px';
   globalChartWidth: string = '100%';
 
@@ -182,19 +176,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.isTrendingLoading = true;
-    this.dashboardService.getTrending()
+    this.trendingCoinsProvider = this.dashboardService.getTrending()
       .pipe(
-        takeUntil(this.destroySubject$)
-      ).subscribe({
-        next: (trendingView: CoinTableView[]) => {
-          if (trendingView) {
-            this.trendingItems = trendingView;
-            this.isTrendingLoading = false;
-            this.cd.markForCheck();
-          }
-        }
-      });
+        takeUntil(this.destroySubject$));
+
 
     this.dashboardService.coinsSource$
       .pipe(takeUntil(this.destroySubject$))
@@ -207,8 +192,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.isGlobalDataLoading = true;
-    this.dashboardService.getGlobalDataSource()
+    this.topMarketCapProvider = this.dashboardService.getGlobalDataSource()
       .pipe(
         tap((globalData: GlobalData) => {
           if (globalData) {
@@ -223,35 +207,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
           })
         }),
         takeUntil(this.destroySubject$)
-      ).subscribe(
-        {
-          next: (topCoinsData: CoinTableView[]) => {
-            if (topCoinsData) {
-              this.topMarketShareItems = topCoinsData;
-              this.isGlobalDataLoading = false;
-            }
-            this.cd.markForCheck();
-          },
-          error: (error: any) => {
-            this.isGlobalDataLoading = false;
-            this.cd.markForCheck();
-          },
-          complete: () => {
-            this.isGlobalDataLoading = false;
-            this.cd.markForCheck();
-          }
-        }
       );
 
-    this.isWatchListLoading = true;
     this.trackedAssetDataProvider = this.dashboardService.getTrackedAssetDataProvider()
-      .pipe(
-        takeUntil(this.destroySubject$),
-        tap((res) => {
-          if (res) {
-            this.isWatchListLoading = false;
-          }
-        }));
+      .pipe(takeUntil(this.destroySubject$));
 
   }
 

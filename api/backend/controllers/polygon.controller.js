@@ -1,57 +1,42 @@
-const options = {
-    headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${process.env.POLYGON_API_KEY}`
-    }
+const API_KEY = process.env.POLYGON_API_KEY;
+const { restClient } = require('@polygon.io/client-js');
+const rest = restClient(API_KEY, "https://api.polygon.io");
+
+const getAggregate = async (req, res) => {
+    const { ticker, mulitplier, timespan, startdate, enddate } = req.body;
+    await rest.stocks.aggregates(ticker, mulitplier, timespan, startdate, enddate)
+        .then((data) => {
+            res.status(200).send(data);
+        }).catch(e => {
+            res.status(500).send(e.toString());
+        });
+
 }
 
-const BASE_API = 'https://api.polygon.io'
-const NEWS = '/v2/reference/news'
-const TICKER = '/v3/reference/tickers'
-
-
-
-const getAllStockTickers = async (req, res) => {
-    await fetch(BASE_API + TICKER, options).then(response => {
-        res.status(200).send(response.json());
-    }).catch(err => {
-        res.status(500).send(err.toString());
-    });
-}
-
-const getStockTicker = async (req, res) => {
+const getLastQuote = async (req, res) => {
     const { ticker } = req.params;
-    await fetch(`${BASE_API}${TICKER}/${ticker}`, options).then(response => {
-        res.status(200).send(response.json());
-    }).catch(err => {
-        res.status(500).send(err.toString());
+    await rest.stocks.quotes(ticker).then((data) => {
+        res.status(200).send(data);
+    }).catch(e => {
+        res.status(500).send(e.toString());
     });
+
 }
 
 
 const getNews = async (req, res) => {
-    await fetch(BASE_API + NEWS, options).then(response => {
-        res.status(200).send(response.json());
-    }).catch(err => {
-        res.status(500).send(err.toString());
-    });
-}
-
-const getNewsTicker = async (req, res) => {
     const { ticker } = req.params;
-    await fetch(`${BASE_API}${NEWS}?ticker=${ticker}`, options).then(response => {
-        res.status(200).send(response.json());
-    }).catch(err => {
-        res.status(500).send(err.toString());
+    await rest.reference.tickerNews(ticker).then((data) => {
+        res.status(200).send(data);
+    }).catch(e => {
+        res.status(500).send(e.toString());
     });
 }
 
 
 
 module.exports = {
-    getAllStockTickers,
-    getStockTicker,
     getNews,
-    getNewsTicker
+    getAggregate,
+    getLastQuote
 }

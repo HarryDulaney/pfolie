@@ -158,8 +158,8 @@
                 </div>
             </div>
             <div class="xl:col-3 xs:col-12 xl:mt-5 sm:mt-5 sm:pt-1">
+                <!-- ------------------------ Crypto Global Market Cap---------------------- -->
                 <div class="card">
-                    <!-- ------------------------ Crypto Global Market Cap---------------------- -->
                     <div class="flex align-items-center justify-content-between">
                         <h4
                             class="caption-label-md"
@@ -168,36 +168,53 @@
                     </div>
                     <app-pie-chart #globalPie></app-pie-chart>
                 </div>
-                <app-news-carosel></app-news-carosel>
-                <!-- Watch List -->
+                <!-- ------------------------ Blockchain news ---------------------- -->
+
+                <div class="card">
+                    <div class="flex align-items-center justify-content-between">
+                        <h4
+                            class="caption-label-md"
+                            style="margin:0 auto; background-color: transparent;"
+                        >Blockchain News</h4>
+                    </div>
+                    <app-news-carosel></app-news-carosel>
+                </div>
+                <!-- ------------------------ Watchlist ---------------------- -->
                 <ng-container *ngIf="dashboardService.isUserLoggedIn()">
                     <app-editable-card
                         #watchListCard
                         class="card h-fit"
+                        [dataType]="'CoinFullInfo'"
                         [provider]="trackedAssetDataProvider"
+                        [displayAdd]="true"
+                        [displaySparkline]="false"
                         title="Watch List"
                         (onSelect)="onCardItemSelected($event)"
                         (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>
                 </ng-container>
-                <!-- Top Market Share Card -->
-                <app-trending-card
+                <!-- ------------------------ Top Market Cap Crytpo ---------------------- -->
+                <app-editable-card
                     #topMarketShareCard
                     class="card h-fit"
-                    [items]="topMarketShareItems"
+                    [dataType]="'CoinTableView'"
+                    [provider]="topMarketCapProvider"
                     title="Top Market Share"
-                    [loading]="isGlobalDataLoading"
+                    [displayAdd]="false"
+                    [displaySparkline]="false"
                     (onSelect)="onCardItemSelected($event)"
-                ></app-trending-card>
-                <!-- Top Trending Coins Card -->
-                <app-trending-card
+                ></app-editable-card>
+                <!-- ------------------------ Top Trending Crypto ---------------------- -->
+                <app-editable-card
                     #trendingCard
                     class="card h-fit"
                     title="Trending Now"
-                    [loading]="isTrendingLoading"
-                    [items]="trendingItems"
+                    [dataType]="'CoinTableView'"
+                    [provider]="trendingCoinsProvider"
+                    [displayAdd]="false"
+                    [displaySparkline]="false"
                     (onSelect)="onCardItemSelected($event)"
-                ></app-trending-card>
+                ></app-editable-card>
             </div>
 
         </div>

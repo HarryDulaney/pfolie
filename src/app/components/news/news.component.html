@@ -1,6 +1,6 @@
 <div class="p-component container mt-5 pt-3">
     <div class="row text-center mb-1 w-100">
-        <p-header class="news-pg-label text-decoration-none text-2xl font-bold">Trending News</p-header>
+        <p-header class="news-pg-label text-decoration-none text-2xl font-bold">Blockchain News</p-header>
         <div class="flex: 0 0 100%; mt-1">
             <span class="news-pg-label text-md font-bold p-1">Sources:</span>
             <span *ngFor="let c of allCategories">
@@ -25,6 +25,33 @@
                 </p-chip>
             </a>
         </div>
+    </div>
+    <div class="row text-center mb-1 w-100">
+        <p-header class="news-pg-label text-decoration-none text-2xl font-bold">Stock Market News</p-header>
+<!--         <div class="flex: 0 0 100%; mt-1">
+            <span class="news-pg-label text-md font-bold p-1">Sources:</span>
+            <span *ngFor="let c of allCategories">
+                <a
+                    #c
+                    (click)="newsSourceSelected(c)"
+                >
+                    <p-chip
+                        [label]=c
+                        class="m-1 cursor-pointer"
+                        [styleClass]="getStyleClass(c)"
+                    >
+                    </p-chip>
+                </a>
+            </span>
+            <a (click)="selectAllSources()">
+                <p-chip
+                    [label]='"All"'
+                    [styleClass]="filterBy === '' ?'var(hover-bg)' :'var(text-primary)'"
+                    class="m-1 cursor-pointer"
+                >
+                </p-chip>
+            </a>
+        </div> -->
     </div>
     <div class="grid-nogutter w-100">
         <ng-container *ngIf="isLoading">
