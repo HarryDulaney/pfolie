@@ -2,8 +2,8 @@
     width: 100% !important;
     text-align: center;
     color: var(--text-color);
-    margin-bottom: 0.9rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
     font-weight: bold;
 }
 
@@ -15,29 +15,28 @@
     width: 100% !important;
     background-color: var(--bg-mask-styled) !important;
     color: var(--text-color) !important;
-    padding: 0.5rem !important;
+    padding: 0.1rem !important;
     transition: 1s ease !important;
     word-wrap: normal !important;
     text-overflow: ellipsis !important;
 }
 
 .editable-card-item:hover {
-    transform: scale(1.03);
+    transform: scale(1.01);
 }
 
 .editable-card-item {
     cursor: pointer !important;
-    max-height: 6rem !important;
-    padding: 0.5rem !important;
-    margin: 0.2rem !important;
+    padding: 0.1rem !important;
+    margin: 0.1rem !important;
     text-overflow: ellipsis !important;
 }
 
 #add-icon {
     cursor: pointer !important;
     color: var(--button-at-rest-color) !important;
-    font-size: 1.5rem !important;
-    margin: 0.5rem !important;
+    font-size: 1.4rem !important;
+    margin: 0.2rem !important;
     transition: 0.5s ease !important;
 }
 
@@ -47,7 +46,7 @@
 }
 
 .editable-card-thumb {
-    padding: 0.8rem !important;
-    height: 1rem !important;
+    margin: 0.1rem !important;
+    height: 1.5rem !important;
     width: auto !important;
 }

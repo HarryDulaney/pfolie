@@ -64,6 +64,8 @@ body {
 }
 
 .p-table-custom {
+  font-size: 0.8rem;
+  font-weight: bold;
   background-color: transparent !important;
 }
 
@@ -320,7 +322,8 @@ p-table .custom-spinner {
   border: none !important;
   border-width: 0 0 0 0;
   padding: 0.5rem 0.5rem !important;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: bold;
 }
 
 .p-datatable .p-datatable-loading-icon {
@@ -333,11 +336,8 @@ p-table .custom-spinner {
 }
 
 .p-datatable .p-datatable-header {
-  background: transparent !important;
-  border: none !important;
-}
-
-.p-datatable .p-datatable-header {
+  font-size: 0.8rem;
+  font-weight: bold;
   background: transparent !important;
   border: none !important;
   border-width: 0 0 0 0;
@@ -352,23 +352,24 @@ p-table .custom-spinner {
   padding: 0.5rem 0.5rem !important;
 }
 
-.p-datatable .p-paginator-bottom {
-  border-width: 0 0 0 0 !important;
-}
 
 .p-datatable .p-paginator .p-paginator-bottom {
+  font-size: 0.8rem;
+  font-weight: bold;
   background-color: transparent !important;
   background: transparent !important;
 }
 
 .p-datatable > .p-paginator .p-paginator-top {
+  font-size: 0.8rem;
+  font-weight: bold;
   background-color: transparent !important;
   background: transparent !important;
 }
 
 .header-text {
   color: var(--text-color);
-  font-size: medium;
+  font-size: 0.8rem;
   font-weight: bold;
 }
 

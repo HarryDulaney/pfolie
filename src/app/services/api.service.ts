@@ -82,6 +82,11 @@ export class ApiService {
   }
 
 
+  /* --------------------------------------- Polygon  --------------------------------------------- */
+  getStockNews(ticker: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.APP_API_ROOT}/polygon/news/${ticker}`);
+  }
+
   /* ---------------------------------------------- RSS Feed API ---------------------------------------------- */
 
   fetchFeedByUrl(url: string): Observable<RssFeed> {

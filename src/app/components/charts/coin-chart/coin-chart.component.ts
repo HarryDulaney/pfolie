@@ -103,7 +103,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
             this.chartOptions = this.getOHLCChartOptions(baseOptions);
             break;
           case CHART_TYPE.PRICE:
-            this.chartOptions = this.getPriceAreaChartOptions(baseOptions);
+            this.chartOptions = this.getPriceLineChartOptions(baseOptions);
             break;
           case CHART_TYPE.VOLUME:
             this.chartOptions = this.getVolumeChartOptions(baseOptions);
@@ -112,7 +112,7 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
             this.chartOptions = this.getMarketCapChartOptions(baseOptions);
             break;
           default:
-            this.chartOptions = this.getPriceAreaChartOptions(baseOptions);
+            this.chartOptions = this.getPriceLineChartOptions(baseOptions);
         }
         this.cd.detectChanges();
       },
@@ -216,6 +216,45 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
     return baseOptions;
   }
+
+  getPriceLineChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
+    baseOptions.yAxis = [{
+      labels: {
+        align: 'right',
+        x: -3
+      },
+      title: {
+        text: 'Price'
+      },
+      height: '100%',
+      lineWidth: 2,
+      resize: {
+        enabled: true
+      }
+    }];
+
+    baseOptions.tooltip = {
+      shared: true,
+    };
+
+    baseOptions.stockTools = {
+      gui: {
+        enabled: false,
+      }
+    };
+
+    baseOptions.series = [{
+      type: 'line',
+      name: '$USD',
+      data: this.prices,
+      tooltip: {
+        valueDecimals: 2
+      }
+    }];
+
+    return baseOptions;
+  }
+
 
   getMarketCapChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
     baseOptions.yAxis = [{

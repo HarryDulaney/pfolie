@@ -1,6 +1,9 @@
 <div class="editable-card">
     <h3 class="section-title">{{title}}</h3>
-    <div class="row w-100">
+    <div
+        *ngIf="displayAdd"
+        class="row w-100"
+    >
         <a (click)="add($event)">
             <h4><i
                     id="add-icon"
@@ -11,58 +14,107 @@
     </div>
     <ng-container *ngIf="dataSource$ | async as items">
         <div *ngFor="let g of items; index as i; count as c;">
-            <div
-                class="row w-100 justify-content-between editable-card-item align-items-center align-content-center"
-                (click)="select(g)"
-            >
-                <div class="col-3">
-                    <div class="font-bold mb-1 text-sm z-3">{{g.name}}</div>
-                    <img
-                        class="editable-card-thumb"
-                        [src]="g.image"
-                    />
-                    <span class="font-bold mt-1 text-sm z-3">
-                        <div [class]="g.price_change_24h ? 'decreased':'increased'">
-                            {{g.current_price}}
-                        </div>
-                    </span>
-                </div>
-                <div class="col-5">
-                    <app-sparkline
-                        [maxWidth]="'100%'"
-                        [maxHeight]="'80px'"
-                        [width]="'100%'"
-                        [height]="'50%'"
-                        [color]="g.price_change_24h < 0 ? '#ff1100' :'#00ff59'"
-                        [chart-data]="g.sparkline"
-                        [xaxis-labels]="sparklineXAxisLabels"
-                    >
-                    </app-sparkline>
-                </div>
-
-                <div class="col-4">
-                    <span class="row">
-                        <div
-                            *ngIf="g.price_change_24h  >= 0"
-                            class="increased text-sm font-bold p-1 z-3"
+            <ng-container *ngIf="displaySparkline;else noSparkline">
+                <div
+                    style="border-top: 1px solid var(--text-color);"
+                    class="row w-100 justify-content-between editable-card-item align-items-center align-content-center"
+                    (click)="select(g)"
+                >
+                    <div class="font-bold mb-1 text-sm z-3 row w-100 justify-content-center">
+                        <div class="col-2"> <img
+                                class="editable-card-thumb"
+                                [src]="g.image"
+                            /></div>
+                        <div class="float-start align-self-start col-10"> {{g.name}}</div>
+                    </div>
+                    <div class="col-3">
+                        <span class="font-bold mt-1 text-sm z-3">
+                            <div [class]="g.price_change_24h ? 'decreased':'increased'">
+                                {{g.current_price}}
+                            </div>
+                        </span>
+                    </div>
+                    <div class="col-4">
+                        <app-sparkline
+                            [maxWidth]="'100%'"
+                            [maxHeight]="'40px'"
+                            [width]="'100%'"
+                            [height]="'50%'"
+                            [color]="g.price_change_24h < 0 ? '#ff1100' :'#00ff59'"
+                            [chart-data]="g.sparkline"
+                            [xaxis-labels]="coinDataService.getSparklineLabels()"
                         >
-                            <span class="editable-card-price-change font-bold text-sm z-3">{{g.price_change_24h + '%'}}
-                                <i class="fa fa-arrow-up"></i>
-                            </span>
+                        </app-sparkline>
+                    </div>
+                    <div class='col-4'>
+                        <span class="row">
+                            <div
+                                *ngIf="g.price_change_24h  >= 0"
+                                class="increased text-sm font-bold p-1 z-3"
+                            >
+                                <span
+                                    class="editable-card-price-change font-bold text-sm z-3">{{g.price_change_24h + '%'}}
+                                    <i class="fa fa-arrow-up"></i>
+                                </span>
 
-                        </div>
-                        <div
-                            *ngIf="g.price_change_24h < 0"
-                            class="decreased text-sm font-bold p-1 z-3"
-                        >
-                            <span class="editable-card-price-change">{{g.price_change_24h + '%'}}<i
-                                    class="fa fa-arrow-down"
-                                ></i></span>
-                        </div>
-                    </span>
+                            </div>
+                            <div
+                                *ngIf="g.price_change_24h < 0"
+                                class="decreased text-sm font-bold p-1 z-3"
+                            >
+                                <span class="editable-card-price-change">{{g.price_change_24h + '%'}}<i
+                                        class="fa fa-arrow-down"
+                                    ></i></span>
+                            </div>
+                        </span>
+                    </div>
                 </div>
+            </ng-container>
+            <ng-template #noSparkline>
+                <div
+                    style="border-top: 1px solid var(--text-color);"
+                    class="row w-100 justify-content-between editable-card-item align-items-center align-content-center"
+                    (click)="select(g)"
+                >
+                    <div class="col-1">
+                        <img
+                            class="editable-card-thumb"
+                            [src]="g.image"
+                        />
+                    </div>
+                    <div class="col-3 font-bold mb-1 text-sm"> {{g.name}}</div>
+                    <div class="col-3">
+                        <span class="font-bold mt-1 text-sm z-3">
+                            <div [class]="g.price_change_24h ? 'decreased':'increased'">
+                                {{g.current_price}}
+                            </div>
+                        </span>
+                    </div>
+                    <div class='col-3'>
+                        <span class="row">
+                            <div
+                                *ngIf="g.price_change_24h  >= 0"
+                                class="increased text-sm font-bold p-1 z-3"
+                            >
+                                <span
+                                    class="editable-card-price-change font-bold text-sm z-3">{{g.price_change_24h + '%'}}
+                                    <i class="fa fa-arrow-up"></i>
+                                </span>
 
-            </div>
+                            </div>
+                            <div
+                                *ngIf="g.price_change_24h < 0"
+                                class="decreased text-sm font-bold p-1 z-3"
+                            >
+                                <span class="editable-card-price-change">{{g.price_change_24h + '%'}}<i
+                                        class="fa fa-arrow-down"
+                                    ></i></span>
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </ng-template>
+
 
         </div>
     </ng-container>
