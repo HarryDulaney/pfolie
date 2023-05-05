@@ -8,10 +8,14 @@
 }
 
 tr td {
-    padding: 0.5rem 0.5rem;
+    padding: 0.3rem 0.3rem;
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
 .p-datatable .p-datatable-tbody > tr {
+    font-size: 0.9rem;
+    font-weight: bold;
     border-top: 1px solid var(--border-accent);
     border-bottom: 1px solid var(--border-accent);
 }
@@ -30,6 +34,8 @@ tr td {
 }
 
 .p-table-custom {
+    font-size: 0.8rem;
+    font-weight: bold;
     background-color: transparent !important;
 }
 
@@ -53,5 +59,7 @@ tr td {
 }
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    font-size: 0.9rem;
+    font-weight: bold;
     background: transparent !important;
 }
