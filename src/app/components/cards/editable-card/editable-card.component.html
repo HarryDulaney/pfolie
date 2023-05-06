@@ -85,7 +85,7 @@
                     <div class="col-3 font-bold mb-1 text-sm"> {{g.name}}</div>
                     <div class="col-3">
                         <span class="font-bold mt-1 text-sm z-3">
-                            <div [class]="g.price_change_24h ? 'decreased':'increased'">
+                            <div [class]="g.price_change_24h < 0 ? 'decreased':'increased'">
                                 {{g.current_price}}
                             </div>
                         </span>

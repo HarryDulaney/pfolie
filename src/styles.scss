@@ -10,12 +10,12 @@
 @import url(https://code.highcharts.com/css/stocktools/gui.css);
 @import url(https://code.highcharts.com/css/annotations/popup.css);
 
-html,
-body {
-  height: 100%;
+html {
+  font-size: 16px;
 }
 
 body {
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -313,9 +313,9 @@ p-table .custom-spinner {
 }
 
 .p-datatable .p-datatable-thead > tr > th {
-  padding: 0.5rem 0.5rem !important;
-  font-weight: 700;
-}
+  padding: 0.2rem 0.2rem !important;
+  font-size: 0.9rem;
+  font-weight: bold;}
 
 .p-datatable .p-datatable-footer {
   background: transparent !important;
@@ -342,7 +342,6 @@ p-table .custom-spinner {
   border: none !important;
   border-width: 0 0 0 0;
   padding: 0.5rem 0.5rem !important;
-  font-weight: 700;
 }
 
 .p-datatable .p-paginator-bottom {
@@ -351,7 +350,6 @@ p-table .custom-spinner {
   border-width: 0 0 0 0;
   padding: 0.5rem 0.5rem !important;
 }
-
 
 .p-datatable .p-paginator .p-paginator-bottom {
   font-size: 0.8rem;
