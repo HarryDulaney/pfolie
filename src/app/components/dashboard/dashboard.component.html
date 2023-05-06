@@ -19,10 +19,7 @@
                     <div [style]="{'height':globalChartHeight,'width':globalChartWidth}">
                         <app-big-chart
                             #globalChart
-                            [volumeColor]="themeService.styles.chartVolumeColor"
-                            [lineColor]="themeService.styles.chartLineColor"
-                            [backgroundColor]="themeService.styles.chartBackgroundColor"
-                            [fillColor]="themeService.styles.chartFillColor"
+                            [themeProvider]="themeService"
                             [chartDataType]="globalChartType"
                         >
                         </app-big-chart>

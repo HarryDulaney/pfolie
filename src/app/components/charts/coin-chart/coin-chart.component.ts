@@ -16,6 +16,7 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CHART_TYPE } from "src/app/constants";
 import { HighchartsChartComponent, HighchartsChartModule } from "highcharts-angular";
+import { ThemeService } from "src/app/services/theme.service";
 
 HIndicators(Highcharts);
 HIndicatorsAll(Highcharts);
@@ -37,6 +38,8 @@ HAccessability(Highcharts);
 export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   /** price | marketcap | volume | ohlc */
   @Input('chartDataType') chartDataType: string;
+  @Input('themeProvider') themeProvider: ThemeService
+
   @Output() loading: EventEmitter<boolean> = new EventEmitter();
 
   @ViewChild('highchart') highchart!: HighchartsChartComponent;
@@ -97,22 +100,15 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
     ).subscribe({
       next: (responseData) => {
         this.setChartData(responseData);
-        const baseOptions = this.getBaseOptions();
         switch (this.chartDataType) {
-          case CHART_TYPE.OHLC:
-            this.chartOptions = this.getOHLCChartOptions(baseOptions);
-            break;
           case CHART_TYPE.PRICE:
-            this.chartOptions = this.getPriceLineChartOptions(baseOptions);
+            this.chartOptions = this.getLineChartOptions();
             break;
           case CHART_TYPE.VOLUME:
-            this.chartOptions = this.getVolumeChartOptions(baseOptions);
-            break;
-          case CHART_TYPE.MARKET_CAP:
-            this.chartOptions = this.getMarketCapChartOptions(baseOptions);
+            this.chartOptions = this.getVolumeChartOptions();
             break;
           default:
-            this.chartOptions = this.getPriceLineChartOptions(baseOptions);
+            this.chartOptions = this.getLineChartOptions();
         }
         this.cd.detectChanges();
       },
@@ -125,19 +121,56 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-
-  getBaseOptions(): Highcharts.Options {
+  getLineChartOptions(): Highcharts.Options {
     return {
       exporting: {
         buttons: {
-            contextButton: {
-                menuItems: [
-                    "viewFullscreen",
-                    "separator",
-                    "downloadPNG",]
+          contextButton: {
+            menuItems: [
+              "viewFullscreen",
+              "separator",
+              "downloadPNG",]
+          }
+        },
+
+      },
+      rangeSelector: {
+        inputStyle: {
+          color: this.themeProvider.getCssVariableValue('--text-color'),
+          fontWeight: 'bold'
+        },
+        labelStyle: {
+          color: this.themeProvider.getCssVariableValue('--text-color'),
+          fontWeight: 'bold'
+        },
+        buttonTheme: {
+          fill: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+          style: {
+            color: this.themeProvider.getCssVariableValue('--text-color'),
+            fontWeight: 'bold'
+          },
+          states: {
+            hover: {
+              fill: this.themeProvider.getCssVariableValue('--hover-bg-fancy'),
+              stroke: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+              style: {
+                color: this.themeProvider.getCssVariableValue('--text-color'),
+                fontWeight: 'bold'
+              },
+            },
+            select: {
+              fill: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+              stroke: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+              style: {
+                color: this.themeProvider.getCssVariableValue('--text-color'),
+                fontWeight: 'bold'
+              },
             }
-        }
-    },
+
+          }
+        },
+        selected: 5,
+      },
       credits: {
         enabled: false
       },
@@ -145,326 +178,221 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
         text: ''
       },
       chart: {
-        backgroundColor: '#00000000',
-        panning: {
-          enabled: true,
-          type: 'x',
-
-        },
+        backgroundColor: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+        plotBackgroundColor: this.themeProvider.getCssVariableValue('--chart-bg-color'),
         reflow: true,
-        panKey: 'shift',
-        zooming: {
-          type: "x",
+      },
+      plotOptions: {
+        series: {
+          color: this.themeProvider.getCssVariableValue('--chart-line-color'),
+          showInLegend: true,
+          accessibility: {
+            description: 'Price Chart',
+            enabled: true,
+            exposeAsGroupOnly: true
+          }
+        },
+        line: {
+          color: this.themeProvider.getCssVariableValue('--chart-line-color'),
+          dataLabels: {
+            enabled: false
+          },
+          enableMouseTracking: true
         }
       },
       navigator: {
         enabled: false
       },
       legend: {
-        enabled: false
+        itemStyle: {
+          color: this.themeProvider.getCssVariableValue('--text-color')
+        },
+        itemHoverStyle: {
+          color: this.themeProvider.getCssVariableValue('--text-color-secondary')
+        },
+        enabled: true,
+        navigation: {
+          style: {
+            color: this.themeProvider.getCssVariableValue('--text-color')
+          }
+        }
+
       },
-      yAxis: [],
-      tooltip: {
-        shared: true,
+      yAxis: [{
+        title: {
+          text: 'Price'
+        },
+        height: '100%',
+        resize: {
+          enabled: true
+        },
+        lineWidth: 2,
+        labels: {
+          style: {
+            color: this.themeProvider.getCssVariableValue('--text-color')
+          }
+        }
+      }],
+      xAxis: {
+        type: 'datetime',
+        labels: {
+          style: {
+            color: this.themeProvider.getCssVariableValue('--text-color')
+          }
+        }
       },
       stockTools: {
         gui: {
           enabled: false,
         }
       },
-      series: [],
+
+      series: [{
+        type: 'line',
+        name: '$USD',
+        color: this.themeProvider.getCssVariableValue('--chart-line-color'),
+        data: this.prices,
+        tooltip: {
+          valueDecimals: 2
+        },
+      }],
+    };
+  }
+
+
+  getVolumeChartOptions(): Highcharts.Options {
+    return {
+      exporting: {
+        buttons: {
+          contextButton: {
+            menuItems: [
+              "viewFullscreen",
+              "separator",
+              "downloadPNG",]
+          }
+        },
+
+      },
       rangeSelector: {
+        inputStyle: {
+          color: this.themeProvider.getCssVariableValue('--text-color'),
+          fontWeight: 'bold'
+        },
+        labelStyle: {
+          color: this.themeProvider.getCssVariableValue('--text-color'),
+          fontWeight: 'bold'
+        },
+        buttonTheme: {
+          fill: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+          style: {
+            color: this.themeProvider.getCssVariableValue('--text-color'),
+            fontWeight: 'bold'
+          },
+          states: {
+            hover: {
+              fill: this.themeProvider.getCssVariableValue('--hover-bg-fancy'),
+              stroke: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+              style: {
+                color: this.themeProvider.getCssVariableValue('--text-color'),
+                fontWeight: 'bold'
+              },
+            },
+            select: {
+              fill: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+              stroke: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+              style: {
+                color: this.themeProvider.getCssVariableValue('--text-color'),
+                fontWeight: 'bold'
+              },
+            }
+
+          }
+        },
         selected: 5,
       },
-    };
-  }
-
-  getPriceAreaChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
-    baseOptions.yAxis = [{
-      labels: {
-        align: 'right',
-        x: -3
+      credits: {
+        enabled: false
       },
       title: {
-        text: 'Price'
+        text: ''
       },
-      height: '100%',
-      lineWidth: 2,
-      resize: {
-        enabled: true
-      }
-    }];
-
-    baseOptions.tooltip = {
-      shared: true,
-    };
-
-    baseOptions.stockTools = {
-      gui: {
-        enabled: false,
-      }
-    };
-
-    baseOptions.series = [{
-      type: 'area',
-      name: '$USD',
-      data: this.prices,
-      tooltip: {
-        valueDecimals: 2
-      }
-    }];
-
-    return baseOptions;
-  }
-
-  getPriceLineChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
-    baseOptions.yAxis = [{
-      labels: {
-        align: 'right',
-        x: -3
-      },
-      title: {
-        text: 'Price'
-      },
-      height: '100%',
-      lineWidth: 2,
-      resize: {
-        enabled: true
-      }
-    }];
-
-    baseOptions.tooltip = {
-      shared: true,
-    };
-
-    baseOptions.stockTools = {
-      gui: {
-        enabled: false,
-      }
-    };
-
-    baseOptions.series = [{
-      type: 'line',
-      name: '$USD',
-      data: this.prices,
-      tooltip: {
-        valueDecimals: 2
-      }
-    }];
-
-    return baseOptions;
-  }
-
-
-  getMarketCapChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
-    baseOptions.yAxis = [{
-      labels: {
-        align: 'right',
-        x: -3
-      },
-      title: {
-        text: 'Market Cap'
-      },
-      height: '100%',
-      lineWidth: 2,
-      resize: {
-        enabled: true
-      }
-    }];
-
-    baseOptions.tooltip = {
-      shared: true,
-    };
-
-    baseOptions.stockTools = {
-      gui: {
-        enabled: false,
-      }
-    };
-
-    baseOptions.series = [{
-      type: 'area',
-      name: '$USD',
-      data: this.market_caps,
-      tooltip: {
-        valueDecimals: 2
-      }
-    }];
-
-    return baseOptions;
-  }
-
-
-
-  getVolumeOnlyChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
-    baseOptions.yAxis = [{
-      labels: {
-        align: 'right',
-        x: -3
-      },
-      title: {
-        text: 'Volume'
-      },
-
-      height: '100%',
-      lineWidth: 2,
-      offset: 0,
-      resize: {
-        enabled: true
-      }
-    }];
-
-    baseOptions.tooltip = {
-      split: true
-    };
-
-
-    baseOptions.stockTools = {
-      gui: {
-        enabled: false,
-      }
-    };
-
-
-    baseOptions.series = [
-      {
-        type: "area",
-        name: 'Total',
-        data: this.total_volumes,
-        yAxis: 1
-      }];
-
-    return baseOptions;
-  }
-
-  getVolumeChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
-    baseOptions.yAxis = [{
-      labels: {
-        align: 'right',
-        x: -3
-      },
-      title: {
-        text: 'Volume'
-      },
-
-      height: '100%',
-      lineWidth: 2,
-      offset: 0,
-      resize: {
-        enabled: true
-      }
-    }];
-
-
-    baseOptions.stockTools = {
-      gui: {
-        enabled: false,
-      }
-    };
-
-    baseOptions.tooltip = {
-      split: true
-    };
-    baseOptions.series = [
-      {
-        type: "column",
-        name: 'Total',
-        data: this.total_volumes,
-      }];
-
-    return baseOptions;
-  }
-
-  getOHLCChartOptions(baseOptions: Highcharts.Options): Highcharts.Options {
-    return {
       chart: {
-        backgroundColor: '#00000000',
-        zooming: {
-          type: "xy",
-        }
+        backgroundColor: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+        plotBackgroundColor: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+        reflow: true,
       },
-      yAxis: [
-        {
-          labels: {
-            align: "left"
-          },
-          height: "80%",
-          resize: {
-            enabled: true
+      plotOptions: {
+        series: {
+          color: this.themeProvider.getCssVariableValue('--chart-line-color'),
+          showInLegend: true,
+          accessibility: {
+            description: 'Price Chart',
+            enabled: true,
+            exposeAsGroupOnly: true
           }
         },
-        {
-          labels: {
-            align: "left"
+        line: {
+          color: this.themeProvider.getCssVariableValue('--chart-line-color'),
+          dataLabels: {
+            enabled: false
           },
-          top: "80%",
-          height: "20%",
-          offset: 0
+          enableMouseTracking: true
         }
-      ],
-      tooltip: {
-        shape: "square",
-        headerShape: "callout",
-        borderWidth: 0,
-        shadow: false,
-        positioner: function (width, height, point) {
-          let chart = this.chart;
-          let position;
-          //console.log("chart:",chart);
-          if (point.isHeader) {
-            position = {
-              x: Math.max(
-                // Left side limit
-                chart.plotLeft,
-                Math.min(
-                  point.plotX + chart.plotLeft - width / 2,
-                  // Right side limit
-                  chart.chartWidth - width - (chart.chartWidth / 2)
-                )
-              ),
-              y: point.plotY
-            };
-          } else {
-            position = {
-              x: point.series.chart.plotLeft,
-              y: point.series.yAxis.max - chart.plotTop
-            };
+      },
+      navigator: {
+        enabled: false
+      },
+      legend: {
+        itemStyle: {
+          color: this.themeProvider.getCssVariableValue('--text-color')
+        },
+        itemHoverStyle: {
+          color: this.themeProvider.getCssVariableValue('--text-color-secondary')
+        },
+        enabled: true,
+        navigation: {
+          style: {
+            color: this.themeProvider.getCssVariableValue('--text-color')
           }
+        }
 
-          return position;
+      },
+      yAxis: [{
+        title: {
+          text: 'Volume',
+        },
+        height: '100%',
+        lineWidth: 1,
+        labels: {
+          style: {
+            color: this.themeProvider.getCssVariableValue('--text-color')
+          }
+        },
+        resize: {
+          enabled: false
+        }
+
+      }],
+      xAxis: {
+        type: 'datetime',
+        labels: {
+          style: {
+            color: this.themeProvider.getCssVariableValue('--text-color')
+          }
         }
       },
-      series: [
-        {
-          type: "ohlc",
-          id: this.chartService.coinId + '-ohlc',
-          name: this.chartService.coinId + " Price",
-          data: this.ohlc
-        },
-        {
-          type: "column",
-          id: this.chartService.coinId + "-volume",
-          name: this.chartService.coinId + " Volume",
-          data: this.volume,
-          yAxis: 1
+      stockTools: {
+        gui: {
+          enabled: false,
         }
-      ],
-      responsive: {
-        rules: [
-          {
-            condition: {
-              maxWidth: 800
-            },
-            chartOptions: {
-              rangeSelector: {
-                inputEnabled: false
-              }
-            }
-          }
-        ]
-      }
-    }
+      },
+      series: [{
+        type: 'column',
+        id: 'volume',
+        name: 'Volume',
+        color: this.themeProvider.getCssVariableValue('--chart-volume-color'),
+        data: this.total_volumes,
+      }],
+    };
   }
-
-
 }

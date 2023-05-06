@@ -17,6 +17,7 @@ import { CoinChartComponent } from '../charts/coin-chart/coin-chart.component';
 import { NgClass, NgIf, NgFor, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-coin-resources',
@@ -103,6 +104,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
     private changeDetectorRef: ChangeDetectorRef,
     private portfolioService: PortfolioService,
     public sessionService: SessionService,
+    public readonly themeService: ThemeService,
     private domSanitizer: DomSanitizer) {
   }
 
