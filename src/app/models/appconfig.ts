@@ -22,6 +22,7 @@ export const BLUE_DARK_THEME = 'lara-dark-blue';
 export const BLUE_LIGHT_THEME = 'lara-light-blue';
 export const INDIGO_DARK_THEME = 'dark-indigo';
 export const INDIGO_LIGHT_THEME = 'light-indigo';
+export const OLD_THEMES = [BLUE_DARK_THEME, BLUE_LIGHT_THEME, INDIGO_DARK_THEME, INDIGO_LIGHT_THEME];
 export const SOHO_DARK_THEME = 'soho-dark';
 export const SOHO_LIGHT_THEME = 'soho-light';
 
