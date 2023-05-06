@@ -32,7 +32,9 @@ export class EditableCardComponent implements OnInit {
   @Output('onAdd') onAdd = new EventEmitter<boolean>();
 
 
-
+  style = {
+    'font-size': '0.8rem !important', 'font-weight': 'bold'
+  };
   items: CoinTableView[] = [];
   isLoading = false;
   sparklineXAxisLabels: string[] = [];

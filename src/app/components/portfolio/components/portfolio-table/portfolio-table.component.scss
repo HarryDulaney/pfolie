@@ -1,5 +1,6 @@
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr {
     cursor: pointer;
+    font-style: 0.8rem !important;
 }
 
 .table-action-btn {
@@ -10,8 +11,14 @@
 
 .table-header-title {
     color: var(--text-color) !important;
-    font-size: 0.9rem;
+    font-size: 0.8rem !important;
+
     font-weight: bold;
+}
+
+.mdc-button__label {
+    color: var(--text-color) !important;
+    font-size: 0.8rem !important;
 }
 
 .p-table-custom {
@@ -19,6 +26,7 @@
 }
 
 .mdc-button {
+    font-size: 0.8rem !important;
     color: var(--text-color) !important;
 }
 
@@ -39,7 +47,8 @@
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr {
     background: transparent !important;
-    font-size: 0.9rem;
+    font-size: 0.8rem !important;
+
     font-weight: bold;
 }
 
@@ -67,16 +76,20 @@
 
 .p-datatable .p-datatable-thead > tr > th {
     padding: 0.2rem 0.2rem !important;
-    font-size: 0.9rem;
-    font-weight: bold;}
+    font-size: 0.8rem !important;
+
+    font-weight: bold;
+}
 
 .p-datatable .p-datatable-footer {
     background: transparent !important;
     border: none !important;
     border-width: 0 0 0 0;
     padding: 0.2rem 0.2rem !important;
-    font-size: 0.9rem;
-    font-weight: bold;}
+    font-size: 0.8rem !important;
+
+    font-weight: bold;
+}
 
 .p-datatable .p-datatable-loading-icon {
     font-size: 10rem !important;
@@ -92,27 +105,38 @@
     border: none !important;
     border-width: 0 0 0 0;
     padding: 0.2rem 0.2rem !important;
-    font-size: 0.9rem;
-    font-weight: bold;}
+    font-size: 0.8rem !important;
+
+    font-weight: bold;
+}
 
 .p-datatable .p-paginator-bottom {
     background: transparent !important;
     border: none !important;
     border-width: 0 0 0 0;
     padding: 0.2rem 0.2rem !important;
-    font-size: 0.9rem;
+    font-size: 0.8rem !important;
     font-weight: bold;
 }
 
 .p-datatable .p-paginator-bottom {
     border-width: 0 0 0 0 !important;
+    font-size: 0.8rem !important;
 }
 .p-datatable .p-paginator .p-paginator-bottom {
     background-color: transparent !important;
     background: transparent !important;
+    font-size: 0.8rem !important;
 }
 
 .p-datatable > .p-paginator .p-paginator-top {
     background-color: transparent !important;
     background: transparent !important;
+    font-size: 0.8rem !important;
+}
+
+.p-overlaypanel .p-overlaypanel-content {
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+    padding: 0.5rem 0.5rem !important;
 }

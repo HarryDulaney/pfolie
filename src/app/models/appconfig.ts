@@ -22,8 +22,11 @@ export const BLUE_DARK_THEME = 'lara-dark-blue';
 export const BLUE_LIGHT_THEME = 'lara-light-blue';
 export const INDIGO_DARK_THEME = 'dark-indigo';
 export const INDIGO_LIGHT_THEME = 'light-indigo';
+export const SOHO_DARK_THEME = 'soho-dark';
+export const SOHO_LIGHT_THEME = 'soho-light';
+
 export const DEFAULT_USER_PREFS: UserPreferences = {
-    theme: BLUE_DARK_THEME,
+    theme: SOHO_DARK_THEME,
     sideNav: 'expand'
 };
 

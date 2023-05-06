@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { SharedModule } from "primeng/api";
 import { Sidebar, SidebarModule } from "primeng/sidebar";
@@ -16,10 +16,11 @@ import { ReactiveFormsModule } from "@angular/forms";
 })
 export class SettingsComponent implements OnInit {
     @Input() visible: boolean = false;
+    @Input() settings: UserPreferences;
+
+    @Output() settingsChange = new EventEmitter<UserPreferences>();
     @Output() visibleChange = new EventEmitter<boolean>();
 
-    @Input() settings: UserPreferences;
-    @Output() settingsChange = new EventEmitter<UserPreferences>();
     selectedTheme: string;
     el: ElementRef;
 
@@ -35,7 +36,9 @@ export class SettingsComponent implements OnInit {
 
     changeTheme(newTheme) {
         this.settings.theme = newTheme;
+        this.selectedTheme = newTheme;
         this.settingsChange.emit(this.settings);
+        this.cd.markForCheck();
     }
 
 }

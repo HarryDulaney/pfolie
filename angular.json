@@ -32,24 +32,14 @@
             "styles": [
               "src/styles.scss",
               {
-                "input": "src/theme-lara-dark-blue.scss",
+                "input": "src/theme-soho-light.scss",
                 "inject": false,
-                "bundleName": "lara-dark-blue"
+                "bundleName": "soho-light"
               },
               {
-                "input": "src/theme-lara-light-blue.scss",
+                "input": "src/theme-soho-dark.scss",
                 "inject": false,
-                "bundleName": "lara-light-blue"
-              },
-              {
-                "input": "src/theme-dark-indigo.scss",
-                "inject": false,
-                "bundleName": "dark-indigo"
-              },
-              {
-                "input": "src/theme-light-indigo.scss",
-                "inject": false,
-                "bundleName": "light-indigo"
+                "bundleName": "soho-dark"
               },
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/highcharts/css/stocktools/gui.css",
@@ -128,24 +118,14 @@
             "styles": [
               "src/styles.scss",
               {
-                "input": "src/theme-lara-dark-blue.scss",
+                "input": "src/theme-soho-light.scss",
                 "inject": false,
-                "bundleName": "lara-dark-blue"
+                "bundleName": "soho-light"
               },
               {
-                "input": "src/theme-lara-light-blue.scss",
+                "input": "src/theme-soho-dark.scss",
                 "inject": false,
-                "bundleName": "lara-light-blue"
-              },
-              {
-                "input": "src/theme-dark-indigo.scss",
-                "inject": false,
-                "bundleName": "dark-indigo"
-              },
-              {
-                "input": "src/theme-light-indigo.scss",
-                "inject": false,
-                "bundleName": "light-indigo"
+                "bundleName": "soho-dark"
               },
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/highcharts/css/stocktools/gui.css",

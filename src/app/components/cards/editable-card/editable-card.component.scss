@@ -26,6 +26,7 @@
 }
 
 .editable-card-item {
+    border-top: 1px solid var(--text-color) !important;
     cursor: pointer !important;
     padding: 0.1rem !important;
     margin: 0.1rem !important;

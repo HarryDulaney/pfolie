@@ -379,7 +379,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         items: [
           {
             label: 'Settings',
-            icon: 'fa-solid fa-gear',
+            icon: 'pi pi-fw pi-cog',
             id: 'settingMenuButton',
             command: (event) => {
               this.toggleSettings(event);
@@ -387,14 +387,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           {
             label: 'Sign Out',
-            icon: 'fa-solid fa-sign-out',
+            icon: 'pi pi-fw pi-sign-out',
             command: (event) => {
               this.handleSignOut();
             }
           },
           {
             label: 'Privacy Policy',
-            icon: 'fa-solid fa-lock',
+            icon: 'pi pi-fw pi-info-circle',
             command: (event) => {
               this.privacyPolicy();
             }
@@ -403,7 +403,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'Home',
-        icon: 'fa-solid fa-home',
+        icon: 'pi pi-fw pi-home',
         command: (event) => {
           this.home();
         }
@@ -461,31 +461,31 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signedOutNavItems = [
       {
         label: 'Home',
-        icon: 'fa-solid fa-home',
+        icon: 'pi pi-fw pi-home',
         command: (event) => {
           this.home();
         }
       },
       {
         label: 'Account',
-        icon: 'fa-solid fa-user-circle',
+        icon: 'pi pi-fw pi-user',
         items: [{
           label: 'Sign In',
-          icon: 'fa-solid fa-user',
+          icon: 'pi pi-fw pi-sign-in',
           command: (event) => {
             this.openLoginWindow();
           }
         },
         {
           label: 'Register',
-          icon: 'fa-solid fa-user-plus',
+          icon: 'pi pi-fw pi-user-plus',
           command: (event) => {
             this.register();
           }
         },
         {
           label: 'Privacy Policy',
-          icon: 'fa-solid fa-lock',
+          icon: 'pi pi-fw pi-info-circle',
           command: (event) => {
             this.privacyPolicy();
           }
@@ -542,7 +542,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signedOutAccountMenuItems = [
       {
         label: 'Sign In',
-        icon: 'fa-solid fa-user',
+        icon: 'pi pi-fw pi-sign-in',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.sessionService.toggleLoginModal();
@@ -551,7 +551,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       {
         label: 'Register',
-        icon: 'fa-solid fa-user-plus',
+        icon: 'pi pi-fw pi-user-plus',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.sessionService.toggleRegistrationModal();
@@ -563,7 +563,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.accountMenuItems = [
       {
         label: 'Sign Out',
-        icon: 'fa-solid fa-sign-out-alt',
+        icon: 'pi pi-fw pi-sign-out',
         command: (event) => {
           this.handleAccountMenuState().then(() => {
             this.sessionService.signOutUser();

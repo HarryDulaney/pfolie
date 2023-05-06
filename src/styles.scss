@@ -1,9 +1,6 @@
 @import "~primeng/resources/primeng.min.css";
 @import "primeflex/primeflex.scss";
 @import "~@angular/material/prebuilt-themes/purple-green.css";
-@import "~@fortawesome/fontawesome-free/css/brands.css";
-@import "~@fortawesome/fontawesome-free/css/regular.css";
-@import "~@fortawesome/fontawesome-free/css/solid.css";
 @import "~@fortawesome/fontawesome-free/css/all.css";
 @import "~@fortawesome/fontawesome-free/css/fontawesome.css";
 @import "~bootstrap/dist/css/bootstrap.css";
@@ -20,12 +17,6 @@ body {
   overflow-x: hidden;
 }
 
-:host ::ng-deep .p-sidebar .p-sidebar-content {
-  background: var(--surface-b) !important;
-  min-height: 100% !important;
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
 
 ::-webkit-calendar-picker-indicator {
   filter: invert(1) !important;
