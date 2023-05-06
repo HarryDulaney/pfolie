@@ -200,6 +200,10 @@ export class DashboardService {
     this.portfolioService.addTracked(coin.id);
   }
 
+  removeFromWatchList(id: string) {
+    this.portfolioService.deleteTrackedAsset({ id: id });
+  }
+
   isTrackedAsset(id: string): boolean {
     return this.portfolioService.isTracked(id);
   }

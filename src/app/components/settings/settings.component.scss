@@ -1,0 +1,37 @@
+.sidebar-header {
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+}
+
+.sidebar-sub-header {
+    font-size: 0.9rem !important;
+    font-weight: bold !important;
+    height: 100%;
+}
+
+.active-theme {
+    border-radius: 5px 5px 5px 5px;
+    background: var(--active-color) !important;
+    border: solid 1px var(--hover-bg) !important;
+    color: var(--text-color) !important;
+}
+
+.inactive-theme {
+    border-radius: 5px 5px 5px 5px;
+    background: transparent !important;
+    color: var(--text-color) !important;
+    border: solid 1px var(--hover-bg) !important;
+}
+
+.active-theme:hover {
+    border: solid 1px var(--hover-bg-fancy) !important;
+    color: var(--text-color) !important;
+    font-weight: bold;
+}
+
+.inactive-theme:hover {
+    background: var(--hover-bg-fancy) !important;
+    color: var(--text-color) !important;
+    border: solid 1px var(--hover-bg) !important;
+    font-weight: normal;
+}

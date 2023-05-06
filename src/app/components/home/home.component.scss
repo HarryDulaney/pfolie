@@ -9,7 +9,18 @@ mat-toolbar {
   z-index: 1000;
 }
 
+:host ::ng-deep .p-sidebar-right {
+  z-index: 1111111 !important;
+  top: 64px !important;
+  border-radius: 15px 15px 15px 15px !important;
+}
 
+@media screen and (max-width: 800px) {
+  :host ::ng-deep .p-sidebar .p-sidebar-right {
+    top: 56px !important;
+    border-radius: 15px 15px 15px 15px !important;
+  }
+}
 
 .tbar-stat-title {
   color: var(--text-exag-title-color);
@@ -32,12 +43,6 @@ mat-toolbar {
   background-color: var(--surface-a) !important;
   border: 0px transparent !important;
   border-radius: 0px;
-}
-
-:host ::ng-deep .p-sidebar {
-  margin-top: 41px !important;
-  padding-top: 1rem !important;
-  padding-bottom: 41px !important;
 }
 
 .toolbar-nav-itmes {
@@ -249,4 +254,3 @@ p {
   width: 2.1rem;
   height: 2.1rem;
 }
-

@@ -73,6 +73,8 @@ export class TrackingComponent implements OnInit, OnDestroy {
   openRowPanels: OverlayPanel[] = [];
   sparklineColor = '#006aff';
   overlayBgColor: string;
+  decreaseColor: string = 'red';
+  increaseColor: string = 'green';
 
   totalColumns = 7;
 
@@ -115,6 +117,8 @@ export class TrackingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.overlayBgColor = this.themeService.getCssVariableValue('--hover-bg-fancy');
+    this.decreaseColor = this.themeService.getCssVariableValue('--decrease-color');
+    this.increaseColor = this.themeService.getCssVariableValue('--increase-color');
     this.isLoading = true;
     this.globalStore.state$.select('basicCoins')
       .pipe(takeUntil(this.destroySubject$)

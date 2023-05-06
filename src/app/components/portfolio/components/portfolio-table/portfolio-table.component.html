@@ -1,17 +1,17 @@
 <div class="grid-nogutter w-100">
-        <ng-container *ngIf="isLoading">
-            <div
-                class="container d-flex justify-content-center align-items-center"
-                [style]="{height:'90vh',width:'95vw','margin-top':'-5vh'}"
-            >
-                <p-progressSpinner
-                    [style]="{height:'20rem',width:'20rem'}"
-                    [strokeWidth]='2'
-                    fill="transparent"
-                    animationDuration=".1s"
-                ></p-progressSpinner>
-            </div>
-        </ng-container>
+    <ng-container *ngIf="isLoading">
+        <div
+            class="container d-flex justify-content-center align-items-center"
+            [style]="{height:'90vh',width:'95vw','margin-top':'-5vh'}"
+        >
+            <p-progressSpinner
+                [style]="{height:'20rem',width:'20rem'}"
+                [strokeWidth]='2'
+                fill="transparent"
+                animationDuration=".1s"
+            ></p-progressSpinner>
+        </div>
+    </ng-container>
     <p-dialog
         #assetSearchDialog
         header="Select An Asset"
@@ -68,9 +68,7 @@
                     >
                         <div class="flex align-items-center justify-content-between">
                             <span>
-                                <div
-                                    class="table-header-title"
-                                >Holdings</div>
+                                <div class="table-header-title">Holdings</div>
                             </span>
                             <a
                                 mat-flat-button
@@ -274,17 +272,20 @@
                             >
                                 <ng-template pTemplate>
                                     <ul
-                                        style="list-style: none;"
+                                        style="list-style: none;font-size:0.8rem !important;"
                                         class="p-0 m-0"
                                     >
                                         <li class="p-0 m-0">
                                             <a
                                                 mat-flat-button
                                                 type="button"
-                                                class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                class="cursor-pointer bg-transparent border-none p-0"
                                                 (click)="onAddNewTransaction(rowData,rowIndex,$event)"
                                             >
-                                                <i class="pi pi-plus-circle">
+                                                <i
+                                                    class="pi pi-plus-circle"
+                                                    [style]="{'font-size':'0.8rem','cursor':'pointer'}"
+                                                >
                                                 </i>
                                                 Add Transaction
                                             </a>
@@ -293,13 +294,13 @@
                                         <li class="p-0 m-0">
                                             <a
                                                 mat-flat-button
-                                                class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                class="cursor-pointer bg-transparent border-none p-0"
                                                 type="button"
                                                 (click)="onRowRemove(rowData,rowIndex)"
                                             >
                                                 <i
                                                     class="pi pi-trash"
-                                                    [style]="{'font-size':'1.2rem','cursor':'pointer'}"
+                                                    [style]="{'font-size':'0.8rem','cursor':'pointer'}"
                                                 >
                                                 </i>
                                                 Delete
@@ -309,13 +310,13 @@
                                         <li class="p-0 m-0">
                                             <a
                                                 mat-flat-button
-                                                class="cursor-pointer bg-transparent border-none p-0 w-7rem text-left"
+                                                class="cursor-pointer bg-transparent border-none p-0"
                                                 type="button"
                                                 (click)="openAssetInfo(rowData)"
                                             >
                                                 <i
                                                     class="pi pi-external-link"
-                                                    [style]="{'font-size':'1.1rem','cursor':'pointer'}"
+                                                    [style]="{'font-size':'0.8rem','cursor':'pointer'}"
                                                 >
                                                 </i>
                                                 Asset Info

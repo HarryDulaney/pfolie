@@ -1,76 +1,42 @@
 <p-sidebar
     #settingsSidebar
-    [style]="{'max-width': '300px'}"
     [(visible)]="visible"
     [dismissible]="true"
     [closeOnEscape]="true"
     [showCloseIcon]="true"
-    [baseZIndex]="99999999"
+    styleClass="border-1"
+    [blockScroll]="true"
     [modal]="false"
     position="right"
 >
     <ng-template pTemplate="header">
-        <h6>Settings</h6>
+        <div class="sidebar-header">Settings</div>
     </ng-template>
     <ng-template pTemplate="content">
         <div class="p-2">
             <section class="mb-5">
-                <h4>Theme</h4>
-                <div class="flex w-100 gap-3">
-                    <div class="flex align-items-center gap-2">
-                        <p-radioButton
-                            #laraBlueDark
-                            name="theme"
-                            value="lara-dark-blue"
-                            inputId="laraBlueDark"
-                            class="p-element"
-                            [(ngModel)]="selectedTheme"
-                            (click)="changeTheme(laraBlueDark.value)"
-                            (onKeyDown)="changeTheme(laraBlueDark.value)"
+                <div class="row w-100 justify-content-center">
+                    <span class="flex justify-content-around border-1 rounded-1 p-3">
+                        <div class="sidebar-sub-header">Theme</div>
+                        <button
+                            mat-flat-button
+                            id="lightBtn"
+                            [class]="(selectedTheme === 'soho-light')?'active-theme': 'inactive-theme'"
+                            (click)="changeTheme('soho-light')"
                         >
-                        </p-radioButton><label for="laraBlueDark">Dark Blue</label>
-                    </div>
-                    <div class="flex align-items-center gap-2">
-                        <p-radioButton
-                            #darkIndigo
-                            name="theme"
-                            value="dark-indigo"
-                            inputId="darkIndigo"
-                            class="p-element"
-                            [(ngModel)]="selectedTheme"
-                            (click)="changeTheme(darkIndigo.value)"
-                            (onKeyDown)="changeTheme(darkIndigo.value)"
+                            <i class="pi pi-fw pi-sun"></i>
+                        </button>
+                        <button
+                            mat-flat-button
+                            id="darkBtn"
+                            [class]="(selectedTheme === 'soho-dark')?'active-theme': 'inactive-theme'"
+                            (click)="changeTheme('soho-dark')"
                         >
-                        </p-radioButton><label for="laraBlueDark">Dark Indigo</label>
-                    </div>
-                </div>
-                <div class="flex w-100 gap-3 mt-3">
-                    <div class="flex align-items-center gap-2">
-                        <p-radioButton
-                            #lightIndigo
-                            name="theme"
-                            value="light-indigo"
-                            inputId="lightIndigo"
-                            class="p-element"
-                            [(ngModel)]="selectedTheme"
-                            (click)="changeTheme(lightIndigo.value)"
-                            (onKeyDown)="changeTheme(lightIndigo.value)"
-                        >
-                        </p-radioButton><label for="laraBlueLight">Light Indigo</label>
-                        <div class="flex align-items-center gap-2">
-                            <p-radioButton
-                                #laraBlueLight
-                                name="theme"
-                                value="lara-light-blue"
-                                inputId="laraBlueLight"
-                                class="p-element"
-                                [(ngModel)]="selectedTheme"
-                                (click)="changeTheme(laraBlueLight.value)"
-                                (onKeyDown)="changeTheme(laraBlueLight.value)"
-                            >
-                            </p-radioButton><label for="laraBlueLight">Light Blue</label>
-                        </div>
-                    </div>
+                            <i class="pi pi-fw pi-moon"></i>
+                        </button>
+
+
+                    </span>
                 </div>
             </section>
 
