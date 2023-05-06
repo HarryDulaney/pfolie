@@ -16,9 +16,8 @@
         [constructorType]="'stockChart'"
         [options]="chartOptions"
         (chartInstance)="chartInstance = $event"
-        [(update)]="updateFlag"
         [oneToOne]="true"
-        (update)="onChartUpdate($event)"
+        (updateChange)="onChartUpdate($event)"
     >
     </highcharts-chart>
 </div>

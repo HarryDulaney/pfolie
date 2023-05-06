@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { BasicCoin, CoinFullInfo, CoinTableView, GlobalData } from 'src/app/models/coin-gecko';
 import { NavService } from 'src/app/services/nav.service';
