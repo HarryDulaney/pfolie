@@ -265,7 +265,7 @@
                                     <app-sparkline
                                         [maxHeight]="'3rem'"
                                         [maxWidth]="'16rem'"
-                                        [color]="sparklineColor"
+                                        [color]="rowData['market_data']['price_change_percentage_24h_in_currency']['usd'] < 0 ? decreaseColor : increaseColor"
                                         [contrastColor]="themeService.styles.textColor"
                                         [showUnderline]="true"
                                         [chart-data]="rowData['market_data']['sparkline_7d']['price']"

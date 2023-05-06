@@ -302,7 +302,7 @@ export class PortfolioService {
 
 
   deleteTrackedAsset(trackedAsset: TrackedAsset) {
-    let subscription = this.toast.showUserPromptToast('Are you sure you want to delete ' + trackedAsset.id, 'Confirm Delete')
+    let subscription = this.toast.showUserPromptToast('Are you sure you want un-watch  ' + trackedAsset.id, 'Confirm Un-Watch')
       .subscribe({
         next: (result) => {
           if (result) {

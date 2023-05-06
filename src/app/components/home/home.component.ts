@@ -375,11 +375,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.signedInNavItems = [
       {
         label: 'Account',
-        icon: 'fa-solid fa-user-circle',
+        icon: 'pi pi-fw pi-user',
         items: [
           {
             label: 'Settings',
-            icon: 'pi pi-fw pi-cog',
+            icon: 'pi pi-fw pi-sliders-h',
             id: 'settingMenuButton',
             command: (event) => {
               this.toggleSettings(event);

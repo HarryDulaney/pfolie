@@ -233,7 +233,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   favoriteButtonClicked(coinView: CoinTableView) {
     if (this.dashboardService.isUserLoggedIn()) {
-      this.dashboardService.addToWatchList(coinView);
+      if (this.dashboardService.isTrackedAsset(coinView.id)) {
+        this.dashboardService.removeFromWatchList(coinView.id);
+      } else {
+        this.dashboardService.addToWatchList(coinView);
+      }
     } else {
       this.dashboardService.promptForLogin();
     }
