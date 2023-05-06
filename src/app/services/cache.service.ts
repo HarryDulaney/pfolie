@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BasicCoin } from '../models/coin-gecko';
-import { DEFAULT_USER_PREFS, LastCoin, TimeStamp, UserPreferences } from '../models/appconfig';
+import { DEFAULT_USER_PREFS, LastCoin, OLD_THEMES, SOHO_DARK_THEME, SOHO_LIGHT_THEME, TimeStamp, UserPreferences } from '../models/appconfig';
 
 
 
@@ -32,6 +32,10 @@ export class CacheService {
             const userPrefs = JSON.parse(prefs) as UserPreferences;
             if (!userPrefs.theme) {
                 userPrefs.theme = DEFAULT_USER_PREFS.theme;
+            } else if (OLD_THEMES.indexOf(userPrefs.theme) !== -1) {
+                const newTheme = this.convertOldTheme(userPrefs.theme);
+                userPrefs.theme = newTheme;
+                this.setUserPreferences(userPrefs);
             }
 
             if (!userPrefs.sideNav) {
@@ -133,6 +137,16 @@ export class CacheService {
 
     public hasOldLastCoinCache(): boolean {
         return localStorage.getItem(this.OLD_LAST_COIN_VIEWED_KEY) !== null;
+    }
+
+    private convertOldTheme(theme: string): string {
+        switch (theme) {
+            case OLD_THEMES[0]: return SOHO_DARK_THEME;
+            case OLD_THEMES[1]: return SOHO_LIGHT_THEME;
+            case OLD_THEMES[2]: return SOHO_DARK_THEME
+            case OLD_THEMES[3]: return SOHO_LIGHT_THEME;
+        }
+        return SOHO_DARK_THEME;
     }
 
 
