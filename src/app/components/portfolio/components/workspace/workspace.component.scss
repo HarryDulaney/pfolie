@@ -1,16 +1,18 @@
 .ws-caption-label-special {
     color: var(--text-color);
-    font-size: medium;
+    font-size: 1rem;
+    font-weight: bold;
     font-weight: bold;
     width: 100% !important;
 }
 
 .ws-caption-label-data {
     color: var(--text-color-secondary);
-    font-size: medium;
+    font-size: 1rem;
+    font-weight: bold;
     font-weight: bold;
     width: 100% !important;
-  }
+}
 
 .workspace--style {
     margin-top: 1rem;

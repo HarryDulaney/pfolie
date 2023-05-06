@@ -39,6 +39,8 @@
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr {
     background: transparent !important;
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
 :host ::ng-deep .p-datatable-responsive-scroll > .p-datatable-wrapper {
@@ -60,21 +62,21 @@
 }
 
 :host ::ng-deep .p-datatable .p-datatable-header {
-    padding: 0.5rem 0.5rem !important;
+    padding: 0.2rem 0.2rem !important;
 }
 
 .p-datatable .p-datatable-thead > tr > th {
-    padding: 0.5rem 0.5rem !important;
-    font-weight: 700;
-}
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.9rem;
+    font-weight: bold;}
 
 .p-datatable .p-datatable-footer {
     background: transparent !important;
     border: none !important;
     border-width: 0 0 0 0;
-    padding: 0.5rem 0.5rem !important;
-    font-weight: 700;
-}
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.9rem;
+    font-weight: bold;}
 
 .p-datatable .p-datatable-loading-icon {
     font-size: 10rem !important;
@@ -89,15 +91,17 @@
     background: transparent !important;
     border: none !important;
     border-width: 0 0 0 0;
-    padding: 0.5rem 0.5rem !important;
-    font-weight: 700;
-}
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.9rem;
+    font-weight: bold;}
 
 .p-datatable .p-paginator-bottom {
     background: transparent !important;
     border: none !important;
     border-width: 0 0 0 0;
-    padding: 0.5rem 0.5rem !important;
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
 .p-datatable .p-paginator-bottom {

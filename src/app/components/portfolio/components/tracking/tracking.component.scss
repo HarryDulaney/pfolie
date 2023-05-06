@@ -34,7 +34,7 @@
     white-space: nowrap !important;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 0.4rem 0.4rem !important;
+    padding: 0.1rem 0.1rem !important;
 }
 
 :host ::ng-deep .p-component-overlay {
@@ -60,21 +60,26 @@
 :host ::ng-deep .p-datatable .p-datatable-header {
     background: transparent !important;
     border: none !important;
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
 :host ::ng-deep .p-datatable .p-datatable-header {
     background: transparent !important;
     border: none !important;
     border-width: 0 0 0 0;
-    padding: 0.5rem 0.5rem !important;
-    font-weight: 700;
+    padding: 0.1rem 0.1rem !important;
+    font-weight: bold;
+    font-size: 0.9rem;
 }
 
 :host ::ng-deep .p-datatable .p-paginator-bottom {
     background: transparent !important;
     border: none !important;
     border-width: 0 0 0 0;
-    padding: 0.5rem 0.5rem !important;
+    padding: 0.1rem 0.1rem !important;
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
 :host ::ng-deep .p-datatable .p-paginator-bottom {
@@ -100,15 +105,22 @@
 }
 
 .p-datatable .p-datatable-header {
-    padding: 0.4rem 0.4rem !important;
+    padding: 0.1rem 0.1rem !important;
 }
 
 :host ::ng-deep .p-datatable .p-datatable-header {
     padding: 0.2rem 0.2rem !important;
 }
 
+tr td {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-    padding: 0.4rem 0.4rem !important;
+    padding: 0.1rem 0.1rem !important;
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
 :host ::ng-deep .p-datatable .p-datatable-footer {
@@ -119,11 +131,9 @@
     cursor: pointer;
 }
 
-
 .p-table-custom {
     background-color: transparent !important;
 }
-
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr {
     background: transparent !important;
