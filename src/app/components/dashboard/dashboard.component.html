@@ -155,17 +155,7 @@
                 </div>
             </div>
             <div class="xl:col-3 xs:col-12 xl:mt-5 sm:mt-5 sm:pt-1">
-                <!-- ------------------------ Crypto Global Market Cap---------------------- -->
-                <div class="card">
-                    <div class="flex align-items-center justify-content-between">
-                        <h4
-                            class="caption-label-md"
-                            style="margin:0 auto; background-color: transparent;"
-                        >Market Share of Top</h4>
-                    </div>
-                    <app-pie-chart #globalPie></app-pie-chart>
-                </div>
-                <!-- ------------------------ Blockchain news ---------------------- -->
+                <!-- ------------------------ Blockchain News ---------------------- -->
 
                 <div class="card">
                     <div class="flex align-items-center justify-content-between">
@@ -174,8 +164,20 @@
                             style="margin:0 auto; background-color: transparent;"
                         >Blockchain News</h4>
                     </div>
-                    <app-news-carosel></app-news-carosel>
+                    <app-news-carosel [type]="'rssFeed'"></app-news-carosel>
                 </div>
+                <!-- ------------------------ Stock Market News ---------------------- -->
+
+                <div class="card">
+                    <div class="flex align-items-center justify-content-between">
+                        <h4
+                            class="caption-label-md"
+                            style="margin:0 auto; background-color: transparent;"
+                        >Stock Market News</h4>
+                    </div>
+                    <app-news-carosel [type]="'polygon'"></app-news-carosel>
+                </div>
+
                 <!-- ------------------------ Watchlist ---------------------- -->
                 <ng-container *ngIf="dashboardService.isUserLoggedIn()">
                     <app-editable-card
@@ -190,6 +192,16 @@
                         (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>
                 </ng-container>
+                <!-- ------------------------ Crypto Global Market Cap---------------------- -->
+                <div class="card">
+                    <div class="flex align-items-center justify-content-between">
+                        <h4
+                            class="caption-label-md"
+                            style="margin:0 auto; background-color: transparent;"
+                        >Market Share of Top</h4>
+                    </div>
+                    <app-pie-chart #globalPie></app-pie-chart>
+                </div>
                 <!-- ------------------------ Top Market Cap Crytpo ---------------------- -->
                 <app-editable-card
                     #topMarketShareCard

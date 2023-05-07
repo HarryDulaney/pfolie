@@ -13,7 +13,7 @@ import HStockTools from "highcharts/modules/stock-tools";
 import { BigChartService } from "./big-chart.service";
 import HExportData from "highcharts/modules/export-data";
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { skip, skipUntil, takeUntil } from 'rxjs/operators';
 import { HighchartsChartComponent, HighchartsChartModule } from 'highcharts-angular';
 import { CommonModule } from "@angular/common";
 import { ThemeService } from "src/app/services/theme.service";
@@ -33,21 +33,11 @@ HAccessability(Highcharts);
 @Component({
     selector: 'app-big-chart',
     templateUrl: './big-chart.component.html',
-    styles: [`
-    :host {
-        .hide: {
-            display:none;
-        }
-        .show: {
-            display:inherit;
-        }
-    }
-    `],
     standalone: true,
     imports: [HighchartsChartModule, CommonModule],
     providers: [BigChartService]
 })
-export class BigChartComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     /** price | marketcap | volume | ohlc */
     @Input('chartDataType') chartDataType: string;
     @Input('themeProvider') themeProvider: ThemeService;
@@ -59,7 +49,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges, AfterVie
     market_caps: Array<Array<number>>;
     total_volumes: Array<Array<number>>;
     isLoading: boolean = false;
-
+    theme: string;
     Highcharts: typeof Highcharts = Highcharts;
     ohlc = [];
     volume = [];
@@ -70,13 +60,12 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges, AfterVie
         private service: BigChartService
     ) { }
 
-    ngAfterViewInit(): void {
-    }
-
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.chartDataType) {
             this.reload();
+        } else {
+            this.redraw();
         }
 
     }
@@ -88,18 +77,26 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges, AfterVie
 
     onChartUpdate(event) {
         this.cd.detectChanges();
-        this.redraw();
     }
 
     ngOnInit() {
-        this.themeProvider.themeSource$.pipe(takeUntil(this.destroySubject$)).subscribe({
-            next: (theme) => {
-                if (theme) {
-                    this.redraw();
+        this.themeProvider.themeSource$.pipe(
+            skip(1),
+            takeUntil(this.destroySubject$))
+            .subscribe({
+                next: (theme) => {
+                    if (theme) {
+                        this.redraw();
+                        this.cd.detectChanges();
 
+                    }
+                },
+                complete: () => {
+                    this.reflow();
+                    this.cd.detectChanges();
                 }
-            }
-        });
+
+            });
         this.reload();
     }
 
@@ -110,9 +107,8 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges, AfterVie
     }
 
     reflow() {
-        if (this.chartInstance) {
-            this.chartInstance.reflow();
-        }
+        this.chartInstance.reflow();
+        this.cd.detectChanges();
     }
 
     reload() {

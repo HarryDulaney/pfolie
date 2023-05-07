@@ -1,6 +1,6 @@
 <div class="m-0 p-0">
     <p-carousel
-        [value]="feedItems"
+        [value]="newsItems"
         [numVisible]="1"
         [numScroll]="1"
         [circular]="true"
@@ -22,7 +22,7 @@
             <div class="p-1 m-1 pb-0 mb-0 ">
                 <article-card
                     (open)="openHandler($event)"
-                    [rss-item]="feedItem"
+                    [content]="feedItem"
                     [isCarousel]="true"
                     [showImagePreview]="true"
                 >
