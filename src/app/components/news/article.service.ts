@@ -1,5 +1,4 @@
-import { Injectable, SecurityContext } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { NewsItem, CleanedNewsItem } from 'src/app/models/news-feed';
 
@@ -46,57 +45,57 @@ export class ArticleService extends BehaviorSubject<CleanedNewsItem> {
     }
 
     public extractPolygonNewsContent(raw: NewsItem, isCarouselNews: boolean): CleanedNewsItem {
-        let feedContent = new CleanedNewsItem();
-        feedContent.featureImageUrl = raw['image_url'];
-        feedContent.title = raw['title'];
-        feedContent.author = raw['author'];
-        feedContent.link = raw['article_url'];
-        feedContent.subTitle = "By: " + raw.author;
-        feedContent.publishedDate = new Date(raw['published_utc']);
-        feedContent.source = raw['publisher']['name'];
-        feedContent.description = raw['description'];
-        feedContent.tickers = raw['tickers'];
+        let cleanedNewsItem = new CleanedNewsItem();
+        cleanedNewsItem.featureImageUrl = raw['image_url'];
+        cleanedNewsItem.title = raw['title'];
+        cleanedNewsItem.author = raw['author'];
+        cleanedNewsItem.link = raw['article_url'];
+        cleanedNewsItem.subTitle = "By: " + raw.author;
+        cleanedNewsItem.publishedDate = new Date(raw['published_utc']);
+        cleanedNewsItem.source = raw['publisher']['name'];
+        cleanedNewsItem.description = raw['description'];
+        cleanedNewsItem.tickers = raw['tickers'];
 
         if (raw.keywords instanceof Array) {
             for (let i = 0; i < 2 && i < raw.keywords.length; i++) {
-                feedContent.categories.push(raw.keywords[i]);
+                cleanedNewsItem.categories.push(raw.keywords[i]);
             }
         } else {
-            feedContent.categories[0] = '';
+            cleanedNewsItem.categories[0] = '';
         }
 
-        return feedContent;
+        return cleanedNewsItem;
 
     }
 
     public extractRssFeedContent(rssItem: NewsItem, isCarouselNews: boolean): CleanedNewsItem {
-        let feedContent = new CleanedNewsItem();
-        feedContent.media = rssItem['media'];
-        feedContent.enclosures = rssItem['enclosures'];
-        feedContent.featureImageUrl = this.parseImageUrl(feedContent.media, feedContent.enclosures);
+        let cleanedNewsItem = new CleanedNewsItem();
+        cleanedNewsItem.media = rssItem['media'];
+        cleanedNewsItem.enclosures = rssItem['enclosures'];
+        cleanedNewsItem.featureImageUrl = this.parseImageUrl(cleanedNewsItem.media, cleanedNewsItem.enclosures);
 
 
         if (rssItem.category instanceof Array) {
             if (isCarouselNews) {
                 for (let i = 0; i < 2 && i < rssItem.category.length; i++) {
-                    feedContent.categories.push(rssItem.category[i]);
+                    cleanedNewsItem.categories.push(rssItem.category[i]);
                 }
             } else {
-                feedContent.categories.push(...rssItem.category);
+                cleanedNewsItem.categories.push(...rssItem.category);
             }
 
         } else {
-            feedContent.categories[0] = rssItem.category.toString() || '';
+            cleanedNewsItem.categories[0] = rssItem.category.toString() || '';
         }
 
-        feedContent.title = rssItem['title'];
-        feedContent.author = rssItem['author'];
-        feedContent.link = rssItem['link'];
-        feedContent.subTitle = "By: " + feedContent.author;
-        feedContent.publishedDate = new Date(rssItem['published']);
-        feedContent.source = rssItem['source'];
-        feedContent.description = rssItem['description'];
-        return feedContent;
+        cleanedNewsItem.title = rssItem['title'];
+        cleanedNewsItem.author = rssItem['author'];
+        cleanedNewsItem.link = rssItem['link'];
+        cleanedNewsItem.subTitle = "By: " + cleanedNewsItem.author;
+        cleanedNewsItem.publishedDate = new Date(rssItem['published']);
+        cleanedNewsItem.source = rssItem['source'];
+        cleanedNewsItem.description = rssItem['description'];
+        return cleanedNewsItem;
 
     }
 

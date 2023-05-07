@@ -1,34 +1,29 @@
-<a
-    (click)="openArticle($event)"
-    class="cursor-pointer"
->
-    <p-card
-        id="article-card"
-        class="feature-card m-1"
-        [hidden]="showArticle"
+<div class="m-1">
+    <a
+        (click)="openArticle($event)"
+        class="article-card-wrapper"
     >
-        <ng-template pTemplate="header">
+        <div
+            class="article-card-main"
+            [hidden]="showArticle"
+        >
             <div
-                id="article-date"
-                class="float-end pt-1 ps-1 pe-1 pb-0"
-            >{{feedContent.publishedDate | date: 'fullDate'}}
-            </div>
-            <div *ngIf="showImagePreview && feedContent.featureImageUrl !== ''">
+                class="bg-img-wrapper"
+                *ngIf="showImagePreview && cleanedNewsItem.featureImageUrl !== ''"
+            >
                 <img
-                    class="w-6rem h-auto border-round"
+                    class="card-image"
                     alt="news-item-img"
-                    [src]="feedContent.featureImageUrl"
-                    [style]="{'max-width':'6rem'}"
+                    [src]="cleanedNewsItem.featureImageUrl"
                 >
+                <div class="content-wrapper">
+                    <div class="article-date">
+                        {{cleanedNewsItem.publishedDate | date: 'fullDate'}}
+                    </div>
+                    <div class="news-card-title">{{cleanedNewsItem.title}}</div>
+                </div>
             </div>
-        </ng-template>
-        <ng-template pTemplate="body">
-            <div
-                class="news-card-title text-sm center m-0 p-0"
-            >{{feedContent.title}}</div>
-        </ng-template>
-        <ng-template pTemplate="footer">
-            <div class="mb-5"></div>
-        </ng-template>
-    </p-card>
-</a>
+        </div>
+    </a>
+
+</div>
