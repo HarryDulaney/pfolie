@@ -22,6 +22,8 @@ import { BasicCoinInfoStore } from './app/store/global/basic-coins.store';
 import { SessionService } from './app/services/session.service';
 import { ThemeService } from './app/services/theme.service';
 import { StringUtility } from './app/services/string.utility';
+import { ArticleService } from './app/components/news/article.service';
+import { NewsService } from './app/components/news/news.service';
 
 if (environment.production) {
   enableProdMode();
@@ -48,6 +50,8 @@ bootstrapApplication(AppComponent, {
     ToastService,
     UtilityService,
     ApiService,
+    NewsService,
+    ArticleService,
     CacheService,
     CoinDataService,
     ConfigService,

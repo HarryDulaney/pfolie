@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { BasicCoin, CoinFullInfo, CoinMarket, CoinMarketChartResponse, GlobalData, GlobalMarketCapData, SimplePriceResponse, TrendingResponse } from '../models/coin-gecko';
 import { environment } from 'src/environments/environment';
 import { API_ROUTES, API_ROUTES as COINAPI, CONSTANT, IP_SERVICE_URI } from '../constants';
-import { RssFeed } from '../models/rssfeed';
+import { ApiNewsFeed, NewsFeed, NewsItem } from '../models/news-feed';
 import { API_ROOTS } from '../constants'
 import { Portfolio } from '../models/portfolio';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { ToastService } from './toast.service';
 
 @Injectable()
@@ -87,10 +87,15 @@ export class ApiService {
     return this.http.get<any[]>(`${this.APP_API_ROOT}/polygon/news/${ticker}`);
   }
 
+  getRecentStockNews(limit: number): Observable<ApiNewsFeed> {
+    return this.http.get<ApiNewsFeed>(`${this.APP_API_ROOT}/polygon/news/recent/${limit}`)
+      .pipe(catchError(this.handleErrors<ApiNewsFeed>('getRecentStockNews', null)));
+  }
+
   /* ---------------------------------------------- RSS Feed API ---------------------------------------------- */
 
-  fetchFeedByUrl(url: string): Observable<RssFeed> {
-    return this.http.post<RssFeed>(`${this.APP_API_ROOT}/news/fetch-feed`, { url: url });
+  fetchFeedByUrl(url: string): Observable<NewsFeed> {
+    return this.http.post<NewsFeed>(`${this.APP_API_ROOT}/news/fetch-feed`, { url: url });
   }
 
 

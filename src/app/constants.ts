@@ -16,8 +16,11 @@ export const CONSTANT = {
     XL: 'XLarge',
     UNKNOWN: 'Unknown'
   }
-
 };
+export const NEWS_ORIGIN = {
+  POLYGON: 'polygon',
+  RSS: 'rssFeed'
+}
 
 export const CHART_TYPE = {
   PRICE: 'price',

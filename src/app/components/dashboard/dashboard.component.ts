@@ -146,14 +146,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.apiService.getStockNews("BTC").pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe({
-      next: (news: any[]) => {
-        console.log(news);
-      }
-    });
-
     this.isGlobalChartLoading = true;
     this.bigChartService.initializeChart();
 

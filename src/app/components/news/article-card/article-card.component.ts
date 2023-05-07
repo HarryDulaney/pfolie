@@ -1,9 +1,10 @@
-import { DatePipe, NgIf } from '@angular/common';
+import { CommonModule, DatePipe, NgIf, NgSwitch } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FeedItem, ParsedFeedItem } from 'src/app/models/rssfeed';
+import { NewsItem, CleanedNewsItem } from 'src/app/models/news-feed';
 import { ArticleService } from '../article.service';
 import { SharedModule } from 'primeng/api';
 import { CardModule } from 'primeng/card';
+import { NEWS_ORIGIN } from 'src/app/constants';
 
 @Component({
   selector: 'article-card',
@@ -51,15 +52,15 @@ import { CardModule } from 'primeng/card';
 }`],
   providers: [DatePipe],
   standalone: true,
-  imports: [CardModule, SharedModule, NgIf, DatePipe]
+  imports: [CardModule, SharedModule, NgIf, DatePipe, NgSwitch]
 })
 export class ArticleCardComponent implements OnInit {
-  @Input('rss-item') rssItem: FeedItem;
+  @Input('content') content: NewsItem;
   @Input('isCarousel') isCarousel: boolean = false;
   @Input() showImagePreview: boolean = false;
-  @Output() open: EventEmitter<ParsedFeedItem> = new EventEmitter();
+  @Output() open: EventEmitter<CleanedNewsItem> = new EventEmitter();
 
-  feedContent: ParsedFeedItem;
+  feedContent: CleanedNewsItem;
   showArticle: boolean = false;
 
   constructor(
@@ -68,7 +69,11 @@ export class ArticleCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.feedContent = this.articleService.getFeedContent(this.rssItem, this.isCarousel);
+    if (this.content.origin === NEWS_ORIGIN.RSS) {
+      this.feedContent = this.articleService.extractRssFeedContent(this.content, this.isCarousel);
+    } else if (this.content.origin === NEWS_ORIGIN.POLYGON) {
+      this.feedContent = this.articleService.extractPolygonNewsContent(this.content, this.isCarousel);
+    }
   }
 
 

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Carousel, CarouselModule } from 'primeng/carousel';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { FeedItem, ParsedFeedItem } from 'src/app/models/rssfeed';
+import { NewsItem, CleanedNewsItem } from 'src/app/models/news-feed';
 import { ConfigService } from 'src/app/services/config.service';
 import { ArticleService } from '../article.service';
 import { NewsService } from '../news.service';
@@ -11,17 +11,19 @@ import { ArticleCardComponent } from '../article-card/article-card.component';
 import { SharedModule } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
+import { NEWS_ORIGIN } from 'src/app/constants';
 @Component({
-    selector: 'app-news-carosel',
-    templateUrl: './news-carosel.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [ProgressSpinnerModule, CarouselModule, SkeletonModule, SharedModule, ArticleCardComponent]
+  selector: 'app-news-carosel',
+  templateUrl: './news-carosel.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ProgressSpinnerModule, CarouselModule, SkeletonModule, SharedModule, ArticleCardComponent]
 })
 export class NewsCaroselComponent implements OnInit, OnDestroy {
   @Input() isMobile: boolean;
+  @Input() type: string;
 
-  feedItems: FeedItem[];
+  newsItems: NewsItem[];
   isLoading: boolean;
   responsiveOptions;
   destroySubject$ = new Subject();
@@ -31,8 +33,7 @@ export class NewsCaroselComponent implements OnInit, OnDestroy {
   constructor(
     public newsService: NewsService,
     public articleService: ArticleService,
-    private cd: ChangeDetectorRef,
-    private router: Router) {
+    private cd: ChangeDetectorRef) {
     this.responsiveOptions = [
       {
         breakpoint: '1024px',
@@ -52,31 +53,48 @@ export class NewsCaroselComponent implements OnInit, OnDestroy {
     ];
   }
 
+
+  ngOnInit(): void {
+    this.isLoading = true;
+    if (this.type === NEWS_ORIGIN.POLYGON) {
+      let loadedItems = [];
+      this.newsService.getAPIFeedItems().then(
+        (feed) => {
+          if (feed) {
+            loadedItems = feed.results;
+          }
+        }
+      ).finally(() => {
+        this.newsItems = loadedItems;
+        this.isLoading = false;
+        this.cd.markForCheck();
+      });
+
+    } else if (this.type === NEWS_ORIGIN.RSS) {
+      let loadedItems = [];
+      this.newsService.getRSSFeedItems().then(
+        (feeds) => {
+          for (let i = 0; i < feeds.length; i++) {
+            loadedItems.push(...feeds[i].items);
+          }
+        }
+      ).finally(() => {
+        this.newsItems = loadedItems;
+        this.isLoading = false;
+        this.cd.markForCheck();
+      });
+
+    }
+
+  }
+
   ngOnDestroy(): void {
     this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
 
-  ngOnInit(): void {
-    this.isLoading = true;
-    let loadedItems = [];
-    this.newsService.getAllFeedItems().then(
-      (feeds) => {
-        for (let i = 0; i < feeds.length; i++) {
-          loadedItems.push(...feeds[i].items);
-        }
-      }
-    ).finally(() => {
-      this.feedItems = loadedItems;
-      this.isLoading = false;
-      this.cd.markForCheck();
-    });
-  }
-
-  openHandler(feedItem: ParsedFeedItem) {
-    this.articleService.next(feedItem);
-    this.router.navigate(['/', 'feature']);
-
+  openHandler(feedItem: CleanedNewsItem) {
+    window.open(feedItem.link, '_blank');
   }
 
   closeHandler(event: any) {

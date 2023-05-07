@@ -11,7 +11,8 @@ const router = new Router();
 /* ---------------------- Poloygon.io ----------------------- */
 router.get('/polygon/stocks', polygon.getAggregate);
 router.get('/polygon/stocks/quote/:ticker', polygon.getLastQuote);
-router.get('/polygon/news/:ticker', polygon.getNews);
+router.get('/polygon/news/:ticker', polygon.getNewsByTicker);
+router.get('/polygon/news/recent/:limit', polygon.getRecentNews);
 /* ---------------------- Portfolios ----------------------- */
 router.get('/portfolio/:uid', portfolioController.findAllPortfoliosByUserId);
 router.get('/portfolio/ids/:uid', portfolioController.findAllPortfolioIdsByUserId);

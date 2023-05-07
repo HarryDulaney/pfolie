@@ -5,7 +5,6 @@ import { CoinResourcesComponent } from './components/coin-resources/coin-resourc
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NewsComponent } from './components/news/news.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
-import { FeatureComponent } from './components/news/feature/feature.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { SmStatCardComponent } from './components/portfolio/components/parts/sm-stat-card/sm-stat-card.component';
 import { MedStatCardComponent } from './components/portfolio/components/parts/med-stat-card/med-stat-card.component';
@@ -21,7 +20,6 @@ const appRoutes: Routes = [
   { path: 'sm', component: SmStatCardComponent },
   { path: 'md', component: MedStatCardComponent },
   { path: 'news', component: NewsComponent },
-  { path: 'feature', component: FeatureComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'tokens/:id', component: CoinResourcesComponent },
   { path: '**', component: PageNotFoundComponent },

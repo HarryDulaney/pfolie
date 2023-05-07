@@ -24,7 +24,7 @@ const getLastQuote = async (req, res) => {
 }
 
 
-const getNews = async (req, res) => {
+const getNewsByTicker = async (req, res) => {
     const { ticker } = req.params;
     await rest.reference.tickerNews(ticker).then((data) => {
         res.status(200).send(data);
@@ -34,9 +34,19 @@ const getNews = async (req, res) => {
 }
 
 
+const getRecentNews = async (req, res) => {
+    const { limit } = req.params;
+    await rest.reference.tickerNews({ sort: 'published_utc', limit: limit, order: 'desc' }).then((data) => {
+        res.status(200).send(data);
+    }).catch(e => {
+        res.status(500).send(e.toString());
+    });
+
+}
 
 module.exports = {
-    getNews,
+    getNewsByTicker,
+    getRecentNews,
     getAggregate,
     getLastQuote
 }

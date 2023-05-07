@@ -48,7 +48,7 @@ export class ThemeService {
     }
 
     getCssVariableValue(name: string): string {
-        const documentStyle = getComputedStyle(document.documentElement);
+        const documentStyle = getComputedStyle(this.document.documentElement);
         return documentStyle.getPropertyValue(name);
 
     }
