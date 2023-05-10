@@ -1,5 +1,38 @@
 import { PLATFORMS } from '../constants';
 
+
+export interface BasicNft {
+    id: string;
+    contract_address: string;
+    name: string;
+    asset_platform_id: string;
+    symbol: string;
+}
+
+
+export interface NftMarket extends BasicNft {
+    /**
+     * small image only for nft's
+     */
+    image: Image;
+    description: string;
+    native_currency: string;
+    floor_price: NftDataPoint;
+    market_cap: NftDataPoint;
+    volume_24h: NftDataPoint;
+    floor_price_in_usd_24h_percentage_change: number;
+    number_of_unique_addresses: number;
+    number_of_unique_addresses_24h_percentage_change: number;
+    total_supply: number;
+    links: Links;
+
+}
+
+export interface NftDataPoint {
+    native_currency: number;
+    usd: number;
+}
+
 export interface GlobalMarketCapChart {
     market_cap: Array<Array<number>>;
     volume: Array<Array<number>>;

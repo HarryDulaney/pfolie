@@ -6,7 +6,7 @@ import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { Observable, forkJoin, map, of, tap } from 'rxjs';
+import { Observable, finalize, forkJoin, map, of, tap } from 'rxjs';
 import { TrackedAsset } from 'src/app/models/portfolio';
 import { UtilityService } from 'src/app/services/utility.service';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -49,6 +49,7 @@ export class EditableCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     if (this.displaySparkline) {
       this.sparklineXAxisLabels = this.coinDataService.getSparklineLabels();
     }
@@ -62,19 +63,19 @@ export class EditableCardComponent implements OnInit {
           }
         }));
     } else if (this.inputDataType === 'CoinFullInfo') {
-      this.isLoading = true;
       this.dataSource$ = this.dataProvider.pipe(
         map((coins) => {
           return coins.map((coin) => {
             return this.utilityService.mapCoinFullInfoToCoinTableView(coin);
-          },
-            tap((result) => {
-              if (result) {
-                this.isLoading = false;
-                this.cd.markForCheck();
-              }
-            }));
+          });
+
         }),
+        tap((result) => {
+          if (result) {
+            this.isLoading = false;
+            this.cd.markForCheck();
+          }
+        })
       );
     }
 

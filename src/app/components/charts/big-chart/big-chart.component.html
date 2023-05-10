@@ -1,22 +1,16 @@
-<ng-container *ngIf="isLoading">
-    <div class="container d-flex justify-content-center align-items-center">
-        <p-progressSpinner
-            [style]="{height:'20%',width:'20%'}"
-            [strokeWidth]='2'
-            animationDuration=".1s"
-        ></p-progressSpinner>
+<div *ngIf="isLoading" class="spin-mask-overlay">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
     </div>
-</ng-container>
-<div [hidden]="isLoading">
-    <highcharts-chart
-        #highchart
-        style="width: 100% !important; height: 100%; display: flex;"
-        [Highcharts]="Highcharts"
-        [constructorType]="'stockChart'"
-        [options]="chartOptions"
-        (chartInstance)="chartInstance = $event"
-        [oneToOne]="true"
-        (updateChange)="onChartUpdate($event)"
-    >
-    </highcharts-chart>
 </div>
+<highcharts-chart
+    #highchart
+    style="width: 100% !important; height: 100%; display: flex;"
+    [Highcharts]="Highcharts"
+    [constructorType]="'stockChart'"
+    [options]="chartOptions"
+    (chartInstance)="chartInstance = $event"
+    [oneToOne]="true"
+    (updateChange)="onChartUpdate($event)"
+>
+</highcharts-chart>

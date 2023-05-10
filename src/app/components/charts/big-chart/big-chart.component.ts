@@ -17,6 +17,7 @@ import { skip, skipUntil, takeUntil } from 'rxjs/operators';
 import { HighchartsChartComponent, HighchartsChartModule } from 'highcharts-angular';
 import { CommonModule } from "@angular/common";
 import { ThemeService } from "src/app/services/theme.service";
+import { ProgressSpinner } from "primeng/progressspinner";
 
 HFullScreen(Highcharts)
 HExporting(Highcharts);
@@ -43,6 +44,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     @Input('themeProvider') themeProvider: ThemeService;
 
     @ViewChild('highchart') highchart!: HighchartsChartComponent;
+    @ViewChild(ProgressSpinner) spinner: ProgressSpinner;
 
     chartInstance: Highcharts.Chart;
     chartOptions: Highcharts.Options = {};
@@ -107,7 +109,9 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     reflow() {
+        this.isLoading = true;
         this.chartInstance.reflow();
+        this.isLoading = false;
         this.cd.detectChanges();
     }
 
@@ -121,8 +125,9 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                         this.market_caps = this.sortData(responseData.market_cap_chart.market_cap);
                         this.total_volumes = this.sortData(responseData.market_cap_chart.volume);
                         this.chartOptions = this.comboChart();
-                        this.cd.detectChanges();
                         this.isLoading = false;
+                        this.cd.detectChanges();
+
                     }
 
                 },

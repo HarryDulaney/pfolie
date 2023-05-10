@@ -27,7 +27,7 @@ export class ConfigService {
                             let filteredCoins = [];
                             filteredCoins.push(...baseCoins);
                             this.cache.cacheCoinList(baseCoins);
-                            this.basicCoinInfoStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
+                            this.basicCoinInfoStore.state$.set({ basicCoins: baseCoins, filteredCoins: filteredCoins });
                         }
 
                     }).finally(() => {
@@ -39,7 +39,7 @@ export class ConfigService {
             const baseCoins = JSON.parse(cachedCoins);
             let filteredCoins = [];
             filteredCoins.push(...baseCoins);
-            this.basicCoinInfoStore.state$.setState({ basicCoins: baseCoins, filteredCoins: filteredCoins });
+            this.basicCoinInfoStore.state$.set({ basicCoins: baseCoins, filteredCoins: filteredCoins });
         }
 
 
@@ -55,12 +55,12 @@ export class ConfigService {
         } else {
             filterCoins = state.basicCoins;
         }
-        this.basicCoinInfoStore.state$.setState({ filteredCoins: filterCoins });
+        this.basicCoinInfoStore.state$.set({ filteredCoins: filterCoins });
     }
 
     resetFilter() {
         let state = this.basicCoinInfoStore.state$.getCurrentValue();
-        this.basicCoinInfoStore.state$.setState({ filteredCoins: state.basicCoins });
+        this.basicCoinInfoStore.state$.set({ filteredCoins: state.basicCoins });
 
     }
 

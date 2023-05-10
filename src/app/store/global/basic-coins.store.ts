@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CoinsState } from "src/app/models/basic-coins.state";
+import { CoinsState } from "src/app/models/store-model";
 import { Store } from "../store";
 
 
