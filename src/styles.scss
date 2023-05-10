@@ -17,7 +17,6 @@ body {
   overflow-x: hidden;
 }
 
-
 ::-webkit-calendar-picker-indicator {
   filter: invert(1) !important;
 }
@@ -42,6 +41,19 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-hover-thumb);
+}
+
+.spin-mask-overlay {
+  display: flex !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 9999 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 /* ========================== Cards ============================ */
@@ -306,7 +318,8 @@ p-table .custom-spinner {
 .p-datatable .p-datatable-thead > tr > th {
   padding: 0.2rem 0.2rem !important;
   font-size: 0.9rem;
-  font-weight: bold;}
+  font-weight: bold;
+}
 
 .p-datatable .p-datatable-footer {
   background: transparent !important;

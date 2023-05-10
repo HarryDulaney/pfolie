@@ -1,4 +1,15 @@
 <div class="editable-card">
+    <div
+        *ngIf="isLoading"
+        class="spin-mask-overlay"
+    >
+        <div
+            class="spinner-border text-primary"
+            role="status"
+        >
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
     <h3 class="section-title">{{title}}</h3>
     <div
         *ngIf="displayAdd"
