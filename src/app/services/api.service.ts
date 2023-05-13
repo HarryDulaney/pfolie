@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { BasicCoin, CoinFullInfo, CoinMarket, CoinMarketChartResponse, GlobalData, GlobalMarketCapData, SimplePriceResponse, TrendingResponse } from '../models/coin-gecko';
 import { environment } from 'src/environments/environment';
-import { API_ROUTES, API_ROUTES as COINAPI, CONSTANT, IP_SERVICE_URI } from '../constants';
-import { ApiNewsFeed, NewsFeed, NewsItem } from '../models/news-feed';
+import { API_ROUTES, API_ROUTES as COINAPI, IP_SERVICE_URI } from '../constants';
+import { ApiNewsFeed, NewsFeed } from '../models/news-feed';
 import { API_ROOTS } from '../constants'
 import { Portfolio } from '../models/portfolio';
 import { catchError, map } from 'rxjs/operators';
@@ -82,14 +82,14 @@ export class ApiService {
   }
 
 
-  /* --------------------------------------- Polygon  --------------------------------------------- */
+  /* --------------------------------------- Polygon --------------------------------------------- */
   getStockNews(ticker: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.APP_API_ROOT}/polygon/news/${ticker}`);
   }
 
   getRecentStockNews(limit: number): Observable<ApiNewsFeed> {
     return this.http.get<ApiNewsFeed>(`${this.APP_API_ROOT}/polygon/news/recent/${limit}`)
-      .pipe(catchError(this.handleErrors<ApiNewsFeed>('getRecentStockNews', null)));
+      .pipe(catchError(this.handleErrors('getRecentStockNews', null)));
   }
 
   /* ---------------------------------------------- RSS Feed API ---------------------------------------------- */

@@ -67,8 +67,16 @@ export const RSS_FEEDS = {
 
 export const FEED_SOURCES = [
   'CoinTelegraph',
-  'CoinJournal'
+  'CoinJournal',
+  'StockMarket'
 ]
+
+export const NEWS_CATEGORY = {
+  ALL: 'All News',
+  CRYPTO: 'Blockchain and Crypto News',
+  STOCK: 'Stock Market News',
+}
+export const NEWS_CATEGORY_LIST = [NEWS_CATEGORY.ALL, NEWS_CATEGORY.CRYPTO, NEWS_CATEGORY.STOCK];
 
 
 export const API_ROUTES = {

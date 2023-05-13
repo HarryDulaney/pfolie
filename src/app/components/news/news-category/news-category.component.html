@@ -1,0 +1,12 @@
+<a
+    (click)="select(chip)"
+    [class]=""
+>
+    <p-chip
+        #chip
+        [hidden]="activeCategory === category"
+        [label]="category"
+        class="m-1 cursor-pointer"
+    >
+    </p-chip>
+</a>

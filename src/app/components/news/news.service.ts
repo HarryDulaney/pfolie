@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiNewsFeed, NewsFeed } from 'src/app/models/news-feed';
 import { ApiService } from '../../services/api.service';
-import { RSS_FEEDS } from 'src/app/constants';
+import { NEWS_CATEGORY, RSS_FEEDS } from 'src/app/constants';
 import { catchError, firstValueFrom, map, of } from 'rxjs';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class NewsService {
   constructor(public apiService: ApiService) {
   }
 
-  getAllFeedItems(): Promise<NewsFeed[]> {
+  getAllFeedItems(apiLimit: number): Promise<NewsFeed[]> {
     let promises: Promise<NewsFeed>[] = [];
     for (const prop in RSS_FEEDS) {
       const feed = this.getFeedSubscription(RSS_FEEDS[prop], prop);
@@ -28,7 +28,7 @@ export class NewsService {
         promises.push(feed);
       }
     }
-
+    promises.push(this.getAPINewsSource("polygon", apiLimit));
 
     return Promise.all(promises);
   }
@@ -45,8 +45,8 @@ export class NewsService {
     return Promise.all(promises);
   }
 
-  getAPIFeedItems(): Promise<ApiNewsFeed> {
-    return this.getAPINewsSource("polygon");
+  getAPIFeedItems(limit: number): Promise<NewsFeed> {
+    return this.getAPINewsSource("polygon", limit);
   }
 
   getFeedSubscription(feedUrl: string, feedSource: string): Promise<NewsFeed> {
@@ -62,7 +62,7 @@ export class NewsService {
         }
         newsItems.source = feedSource;
         newsItems.items = newsItems.items.map((item) => {
-          item.source = feedSource;
+          item.source = NEWS_CATEGORY.CRYPTO;
           item.origin = "rssFeed";
           return item;
         });
@@ -71,15 +71,22 @@ export class NewsService {
     ));
   }
 
-  getAPINewsSource(source: string): Promise<ApiNewsFeed> {
-    return firstValueFrom(this.apiService.getRecentStockNews(this.fetchLimit).pipe(
+  getAPINewsSource(source: string, fetchLimit: number): Promise<NewsFeed> {
+    return firstValueFrom(this.apiService.getRecentStockNews(fetchLimit).pipe(
+      map((res: ApiNewsFeed) => {
+        return {
+          items: res.results,
+          error: res.error,
+          source: NEWS_CATEGORY.STOCK
+        } as NewsFeed;
+      }),
       map(newsItems => {
         if (!newsItems) {
           return null;
         }
-        newsItems.results = newsItems.results.map((item) => {
+        newsItems.items = newsItems.items.map((item) => {
           item.origin = "polygon";
-          item.source = source;
+          item.source = NEWS_CATEGORY.STOCK;
           return item;
         });
 
@@ -87,5 +94,11 @@ export class NewsService {
       })));
 
   }
+
+  isFeedValid(feed: NewsFeed) {
+    return feed && feed.items && feed.items.length > 0;
+  }
+
+
 }
 

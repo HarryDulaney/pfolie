@@ -1,10 +1,7 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { Carousel, CarouselModule } from 'primeng/carousel';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { CarouselModule } from 'primeng/carousel';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { NewsItem, CleanedNewsItem } from 'src/app/models/news-feed';
-import { ConfigService } from 'src/app/services/config.service';
 import { ArticleService } from '../article.service';
 import { NewsService } from '../news.service';
 import { ArticleCardComponent } from '../article-card/article-card.component';
@@ -58,10 +55,10 @@ export class NewsCaroselComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     if (this.type === NEWS_ORIGIN.POLYGON) {
       let loadedItems = [];
-      this.newsService.getAPIFeedItems().then(
+      this.newsService.getAPIFeedItems(50).then(
         (feed) => {
-          if (feed) {
-            loadedItems = feed.results;
+          if (feed && feed.items) {
+            loadedItems = feed.items;
           }
         }
       ).finally(() => {

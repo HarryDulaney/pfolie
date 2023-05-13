@@ -1,16 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { Coin, CoinFullInfo, CoinMarket, CoinTableView } from 'src/app/models/coin-gecko';
+import { CoinTableView } from 'src/app/models/coin-gecko';
 import { SharedModule } from 'primeng/api';
 import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { Observable, finalize, forkJoin, map, of, tap } from 'rxjs';
-import { TrackedAsset } from 'src/app/models/portfolio';
+import { Observable, finalize, map, tap } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility.service';
 import { ThemeService } from 'src/app/services/theme.service';
-import { TypeReference } from 'typescript';
 
 @Component({
   selector: 'app-editable-card',
@@ -71,15 +69,20 @@ export class EditableCardComponent implements OnInit {
 
         }),
         tap((result) => {
-          if (result) {
+          if (result && result.length > 0) {
+            this.isLoading = false;
+            this.cd.markForCheck();
+          } else if(result.length === 0) {
             this.isLoading = false;
             this.cd.markForCheck();
           }
+        }),
+        finalize(() => {
+          this.isLoading = false;
+          this.cd.markForCheck();
         })
       );
     }
-
-
   }
 
   select(event) {

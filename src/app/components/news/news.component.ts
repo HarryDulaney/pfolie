@@ -1,111 +1,97 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { NewsItem, CleanedNewsItem, NewsFeed, ApiNewsFeed } from 'src/app/models/news-feed';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { NewsItem, CleanedNewsItem, NewsFeed } from 'src/app/models/news-feed';
 import { NewsService } from 'src/app/components/news/news.service';
-import { FEED_SOURCES } from '../../constants';
+import { NEWS_CATEGORY, NEWS_CATEGORY_LIST } from '../../constants';
 import { ArticleService } from './article.service';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { ArticleCardComponent } from './article-card/article-card.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChipModule } from 'primeng/chip';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { NgFor, NgIf, AsyncPipe, CommonModule } from '@angular/common';
 import { SharedModule } from 'primeng/api';
+import { ThemeService } from 'src/app/services/theme.service';
+import { ArticleFeedItemComponent } from './article-feed-item/article-feed-item.component';
+import { NewsCategoryComponent } from './news-category/news-category.component';
+
 @Component({
   selector: 'app-news',
   templateUrl: './news.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [SharedModule, NgFor, ChipModule, NgIf, ProgressSpinnerModule, ArticleCardComponent, AsyncPipe]
+  imports: [CommonModule,SharedModule, NgFor, ChipModule, NgIf, ProgressSpinnerModule, ArticleCardComponent, AsyncPipe, ArticleFeedItemComponent, NewsCategoryComponent]
 })
 export class NewsComponent implements OnInit, OnDestroy {
-
-  rssFeedItems: NewsItem[];
-  filterdRssFeedItems: NewsItem[] = [];
+  title: string = NEWS_CATEGORY.ALL;
+  feedItems: NewsItem[] = [];
+  feedView: NewsItem[] = [];
+  filteredFeedItems: NewsItem[] = [];
   displayedFeed: BehaviorSubject<NewsItem[]> = new BehaviorSubject<NewsItem[]>([]);
 
-
-  stockFeedItems: NewsItem[];
-  filterdStockFeedItems: NewsItem[] = [];
-  displayedStockFeed: BehaviorSubject<NewsItem[]> = new BehaviorSubject<NewsItem[]>([]);
   destorySubject$ = new Subject<boolean>();
-
-  isRssLoading: boolean = false;
-  allCategories: string[] = FEED_SOURCES;
-  stockCategories: string[] = [];
-  rssFilterBy: string = '';
-  stockFilterBy: string = '';
-  isStockLoading: boolean;
+  activeCategory: string = NEWS_CATEGORY.ALL;
+  isLoading: boolean = false;
+  allCategories: string[] = NEWS_CATEGORY_LIST;
+  filterBy: string = '';
 
   constructor(public newsService: NewsService,
-    public articleService: ArticleService
+    public articleService: ArticleService,
+    private themeService: ThemeService,
+    private cd: ChangeDetectorRef
   ) {
   }
 
-
   ngOnInit(): void {
-    this.isRssLoading = true;
-    this.isStockLoading = true;
-    this.rssFeedItems = [];
-    this.stockFeedItems = [];
+    this.displayedFeed.pipe(
+      takeUntil(this.destorySubject$),
+    ).subscribe((feedItems: NewsItem[]) => {
+      if (feedItems) {
+      this.feedView = feedItems;
+      this.isLoading = false;
+      this.cd.markForCheck();
+      }
+    });
 
-    this.newsService.getRSSFeedItems().then(
+    this.isLoading = true;
+    this.newsService.getAllFeedItems(100).then(
       (feeds: NewsFeed[]) => {
-        for (let feed of feeds) {
-          this.rssFeedItems.push(...feed.items);
-        }
+        this.feedItems = [];
+        feeds.forEach((feed: NewsFeed) => {
+          if (this.newsService.isFeedValid(feed)) {
+            this.feedItems.push(...feed.items);
+          }
+        });
+
       }
     ).finally(() => {
-      this.runFilter();
-      this.displayedFeed.next(this.filterdRssFeedItems);
-      this.isRssLoading = false;
+      this.applyFilter();
     });
 
 
-    this.newsService.getAPIFeedItems().then(
-      (feed: ApiNewsFeed) => {
-        this.stockFeedItems = feed.results;
-      }
-    ).finally(() => {
-      this.runStockFilter();
-      this.displayedStockFeed.next(this.filterdStockFeedItems);
-      this.isStockLoading = false;
-    });
   }
 
-  runFilter() {
-    if (this.rssFilterBy && this.rssFilterBy !== '') {
-      this.filterdStockFeedItems = this.stockFeedItems.filter(feedItem => {
-        return feedItem.source === this.rssFilterBy;
+
+  applyFilter() {
+    if (this.filterBy && this.filterBy !== '') {
+      this.filteredFeedItems = this.feedItems.filter(feedItem => {
+        return feedItem.source === this.filterBy;
       });
     } else {
-      this.filterdRssFeedItems = this.rssFeedItems;
+      this.filteredFeedItems = this.feedItems;
     }
-    this.displayedFeed.next(this.filterdRssFeedItems);
+    this.displayedFeed.next(this.filteredFeedItems);
   }
 
-  runStockFilter() {
-    if (this.stockFilterBy && this.stockFilterBy !== '') {
-      this.filterdRssFeedItems = this.rssFeedItems.filter(feedItem => {
-        return feedItem.source === this.stockFilterBy;
-      });
+  selectHandler(category: string) {
+    this.title = category;
+    if (category === NEWS_CATEGORY.ALL) {
+      this.filterBy = '';
     } else {
-      this.filterdStockFeedItems = this.stockFeedItems;
+      this.filterBy = category;
     }
-    this.displayedStockFeed.next(this.filterdStockFeedItems);
+    this.activeCategory = category;
+    this.applyFilter();
+    this.displayedFeed.next(this.filteredFeedItems);
   }
-
-  rssNewsSourceSelected(source: string) {
-    this.rssFilterBy = source;
-    this.runFilter();
-    this.displayedFeed.next(this.filterdRssFeedItems);
-  }
-
-  stockNewsSourceSelected(source: string) {
-    this.stockFilterBy = source;
-    this.runStockFilter();
-    this.displayedStockFeed.next(this.filterdStockFeedItems);
-  }
-
 
   openHandler(feedItem: CleanedNewsItem) {
     window.open(feedItem.link, '_blank');
@@ -115,30 +101,15 @@ export class NewsComponent implements OnInit, OnDestroy {
     this.articleService.next(null);
   }
 
-  selectAllRssSources() {
-    this.rssFilterBy = '';
-    this.filterdRssFeedItems = this.rssFeedItems;
-    this.displayedFeed.next(this.filterdRssFeedItems);
-  }
-
-  selectAllStockSources() {
-    this.stockFilterBy = '';
-    this.filterdStockFeedItems = this.stockFeedItems;
-    this.displayedStockFeed.next(this.filterdStockFeedItems);
-  }
-
-  getStyleClass(source: string) {
-    if (this.rssFilterBy === '') {
-      return 'bg-gray-600';
-    } else if (this.rssFilterBy === source) {
-      return 'bg-blue-300';
-    }
-
-    return 'bg-gray-600';
-
+  selectAllSources() {
+    this.title = NEWS_CATEGORY.ALL;
+    this.filterBy = '';
+    this.filteredFeedItems = this.feedItems;
+    this.displayedFeed.next(this.filteredFeedItems);
   }
 
   ngOnDestroy(): void {
+    this.feedItems = [];
     this.destorySubject$.next(true);
     this.destorySubject$.complete();
   }
