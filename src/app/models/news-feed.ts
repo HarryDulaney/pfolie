@@ -18,6 +18,7 @@ export interface NewsFeed {
 }
 
 export interface ApiNewsFeed {
+    count: number;
     results: NewsItem[];
     error?: any;
     status: string;

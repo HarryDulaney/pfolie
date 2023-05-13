@@ -94,7 +94,6 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                     }
                 },
                 complete: () => {
-                    this.reflow();
                     this.cd.detectChanges();
                 }
 
@@ -110,7 +109,12 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
 
     reflow() {
         this.isLoading = true;
-        this.chartInstance.reflow();
+        if (this.chartInstance) {
+            this.chartInstance.reflow();
+        } else {
+            this.cd.detectChanges();
+            this.chartInstance.reflow();
+        }
         this.isLoading = false;
         this.cd.detectChanges();
     }

@@ -1,0 +1,15 @@
+.news-category {
+    background: var(--badge-bg-color) !important;
+}
+
+.news-category:hover {
+    background: var(--badg-active-bg-color) !important;
+}
+
+a {
+    color: var(--text-color);
+  }
+  
+  a :hover {
+    color: var(--text-color);
+  }
