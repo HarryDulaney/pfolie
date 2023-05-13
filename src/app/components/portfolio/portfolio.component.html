@@ -1,58 +1,65 @@
-<div class="mt-5 pt-3"></div>
 <!-- Top Toolbar drawer -->
 <app-toolbar
     #toolbar
     [navExpandProvider]="navExpandProvider"
     [screenSize]="screenSize"
 ></app-toolbar>
-
-<ng-container *ngIf="portfolioService.isLoading">
+<div class="page-top-margin-medium"></div>
+<div class="p-component container">
     <div
-        class="container d-flex justify-content-center align-items-center"
-        [style]="{height:'90vh',width:'95vw'}"
+        *ngIf="!isMobile()"
+        class="row text-center mb-1 w-100"
     >
-        <p-progressSpinner
-            [style]="{height:'20rem',width:'20rem'}"
-            [strokeWidth]='2'
-            fill="transparent"
-            animationDuration=".1s"
-        ></p-progressSpinner>
+        <p-header class="news-pg-label text-decoration-none text-2xl font-bold">{{title}}</p-header>
     </div>
-</ng-container>
-<!-- Portfolio Container (Tables/Workspace/Cards) -->
-<div
-    id="portfolio-container"
-    class="grid-nogutter ps-3 pe-3"
-    [hidden]="portfolioService.isLoading"
-    (click)="onContainerClick($event)"
->
-
+    <ng-container *ngIf="portfolioService.isLoading">
+        <div
+            class="container d-flex justify-content-center align-items-center"
+            [style]="{height:'90vh',width:'95vw'}"
+        >
+            <p-progressSpinner
+                [style]="{height:'20rem',width:'20rem'}"
+                [strokeWidth]='2'
+                fill="transparent"
+                animationDuration=".1s"
+            ></p-progressSpinner>
+        </div>
+    </ng-container>
+    <!-- Portfolio Container (Tables/Workspace/Cards) -->
     <div
-        class="col-12"
-        style="height: 2vh; margin-top: 2rem;"
+        id="portfolio-container"
+        class="grid-nogutter p-0 m-0"
+        [hidden]="portfolioService.isLoading"
+        (click)="onContainerClick($event)"
     >
-    </div>
-    <!-- Workspace for custom portfolio parts/ componenets to render -->
-    <app-workspace
-        #workspace
-        [assets]="portfolioView"
-        [calculatedValues]="calculatedValues"
-        [screenSize]="screenSize"
-        [navExpandProvder]="navExpandProvider"
-    >
-    </app-workspace>
 
-    <div class="col-12 mt-5 mb-5 bg-transparent">
-        <div class="mt-5 mb-5 bg-transparent">
-            <app-portfolio-table
-                #portfolioTable
-                [view]="portfolioView"
-                [allCoins]="portfolioService.getAllCoins() | async"
-                [portfolio]="getPortfolio()"
-                [calculatedValues]="calculatedValues"
-                [screenSize]="screenSize"
-                selectionMode="single"
-            ></app-portfolio-table>
+        <div
+            class="col-12"
+            style="margin-top: 3rem;"
+        >
+        </div>
+        <!-- Workspace for custom portfolio parts/ componenets to render -->
+        <app-workspace
+            #workspace
+            [assets]="portfolioView"
+            [calculatedValues]="calculatedValues"
+            [screenSize]="screenSize"
+            [navExpandProvder]="navExpandProvider"
+        >
+        </app-workspace>
+
+        <div class="col-12 bg-transparent">
+            <div class="bg-transparent">
+                <app-portfolio-table
+                    #portfolioTable
+                    [view]="portfolioView"
+                    [allCoins]="portfolioService.getAllCoins() | async"
+                    [portfolio]="getPortfolio()"
+                    [calculatedValues]="calculatedValues"
+                    [screenSize]="screenSize"
+                    selectionMode="single"
+                ></app-portfolio-table>
+            </div>
         </div>
     </div>
 </div>

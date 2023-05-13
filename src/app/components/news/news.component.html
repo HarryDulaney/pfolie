@@ -1,4 +1,5 @@
-<div class="p-component container mt-5 pt-3">
+<div class="page-top-margin-small"></div>
+<div class="p-component container">
     <div class="row text-center mb-1 w-100">
         <p-header class="news-pg-label text-decoration-none text-2xl font-bold">{{title}}</p-header>
         <div class="flex: 0 0 100%; mt-1">
@@ -29,13 +30,17 @@
             </div>
         </ng-container>
         <div [hidden]="isLoading">
-            <ng-container *ngFor="let item of feedView">
-                <app-article-feed-item
-                    (open)="openHandler($event)"
-                    [content]="item"
-                >
-                </app-article-feed-item>
+            <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+            <ng-container *ngFor="let item of feedView;let i = index;">
+                    <app-article-feed-item
+                        (open)="openHandler($event)"
+                        [index]="i"
+                        [content]="item"
+                    >
+                    </app-article-feed-item>
             </ng-container>
+        </div>
+
         </div>
     </div>
 </div>

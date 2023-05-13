@@ -4,7 +4,6 @@ import { NewsService } from 'src/app/components/news/news.service';
 import { NEWS_CATEGORY, NEWS_CATEGORY_LIST } from '../../constants';
 import { ArticleService } from './article.service';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { ArticleCardComponent } from './article-card/article-card.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChipModule } from 'primeng/chip';
 import { NgFor, NgIf, AsyncPipe, CommonModule } from '@angular/common';
@@ -18,7 +17,7 @@ import { NewsCategoryComponent } from './news-category/news-category.component';
   templateUrl: './news.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule,SharedModule, NgFor, ChipModule, NgIf, ProgressSpinnerModule, ArticleCardComponent, AsyncPipe, ArticleFeedItemComponent, NewsCategoryComponent]
+  imports: [CommonModule,SharedModule, NgFor, ChipModule, NgIf, ProgressSpinnerModule, AsyncPipe, ArticleFeedItemComponent, NewsCategoryComponent]
 })
 export class NewsComponent implements OnInit, OnDestroy {
   title: string = NEWS_CATEGORY.ALL;

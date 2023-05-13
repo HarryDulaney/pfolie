@@ -18,6 +18,7 @@ import { WorkspaceComponent } from './components/workspace/workspace.component';
 import { PortfolioBuilderService } from './services/portfolio-builder.service';
 import { PortfolioService } from './services/portfolio.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SharedModule } from 'primeng/api';
 
 @Component({
   selector: 'app-portfolio',
@@ -25,7 +26,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   styleUrls: ['./portfolio.component.scss'],
   providers: [DatePipe, CurrencyPipe, DecimalPipe],
   standalone: true,
-  imports: [ToolbarComponent, NgIf, ProgressSpinnerModule, WorkspaceComponent, PortfolioTableComponent, AsyncPipe]
+  imports: [SharedModule, ToolbarComponent, NgIf, ProgressSpinnerModule, WorkspaceComponent, PortfolioTableComponent, AsyncPipe]
 })
 export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -36,7 +37,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('workspace') workspace: WorkspaceComponent;
 
 
-
+  title = 'Portfolio';
 
   /* Component Palette Options */
   isPaletteDismissible: boolean = true;
@@ -240,6 +241,10 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cd.detectChanges();
     });
 
+  }
+
+  isMobile() {
+    return this.screenService.isMobileScreen(this.screenSize)
   }
 
   preventDefault = (event) => {

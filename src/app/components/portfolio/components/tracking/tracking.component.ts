@@ -75,7 +75,7 @@ export class TrackingComponent implements OnInit, OnDestroy {
   overlayBgColor: string;
   decreaseColor: string = 'red';
   increaseColor: string = 'green';
-
+  title = 'Watchlists';
   totalColumns = 7;
 
   constructor(

@@ -16,7 +16,6 @@ import { NEWS_ORIGIN } from 'src/app/constants';
 })
 export class ArticleCardComponent implements OnInit {
   @Input('content') content: NewsItem;
-  @Input('isCarousel') isCarousel: boolean = false;
   @Input() showImagePreview: boolean = false;
   @Output() open: EventEmitter<CleanedNewsItem> = new EventEmitter();
 
@@ -30,19 +29,14 @@ export class ArticleCardComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.content.origin === NEWS_ORIGIN.RSS) {
-      this.cleanedNewsItem = this.articleService.extractRssFeedContent(this.content, this.isCarousel);
+      this.cleanedNewsItem = this.articleService.extractRssFeedContent(this.content, true);
     } else if (this.content.origin === NEWS_ORIGIN.POLYGON) {
-      this.cleanedNewsItem = this.articleService.extractPolygonNewsContent(this.content, this.isCarousel);
+      this.cleanedNewsItem = this.articleService.extractPolygonNewsContent(this.content, true);
     }
   }
 
 
   openArticle(event: any) {
-    if (this.isCarousel) {
-      this.articleService.navOriginIsHome = true;
-    } else {
-      this.articleService.navOriginIsHome = false;
-    }
     this.open.emit(this.cleanedNewsItem);
   }
 

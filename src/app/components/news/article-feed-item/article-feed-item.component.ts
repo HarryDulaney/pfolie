@@ -10,7 +10,7 @@ import { NEWS_ORIGIN } from 'src/app/constants';
   selector: 'app-article-feed-item',
   standalone: true,
   providers: [ DatePipe, ArticleService],
-  imports: [CommonModule, CardModule, SharedModule, NgIf, DatePipe, NgSwitch],
+  imports: [CardModule, SharedModule, NgIf, DatePipe, NgSwitch,CommonModule],
   templateUrl: './article-feed-item.component.html',
   styleUrls: ['./article-feed-item.component.scss']
 })
