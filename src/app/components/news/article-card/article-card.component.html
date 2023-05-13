@@ -8,7 +8,7 @@
             [hidden]="showArticle"
         >
             <div
-                class="bg-img-wrapper"
+                class="card-image-wrapper"
                 *ngIf="showImagePreview && cleanedNewsItem.featureImageUrl !== ''"
             >
                 <img
@@ -16,12 +16,13 @@
                     alt="news-item-img"
                     [src]="cleanedNewsItem.featureImageUrl"
                 >
-                <div class="content-wrapper">
-                    <div class="article-date">
-                        {{cleanedNewsItem.publishedDate | date: 'fullDate'}}
-                    </div>
-                    <div class="news-card-title">{{cleanedNewsItem.title}}</div>
+            </div>
+
+            <div class="article-content-wrapper">
+                <div class="article-date">
+                    {{cleanedNewsItem.publishedDate | date: 'fullDate'}}
                 </div>
+                <div class="news-card-title">{{cleanedNewsItem.title}}</div>
             </div>
         </div>
     </a>

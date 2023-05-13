@@ -191,7 +191,7 @@ body {
 }
 
 .page-top-margin-medium {
-  margin-top: 6rem !important;
+  margin-top: 5rem !important;
 }
 
 .page-top-margin-small {
@@ -428,4 +428,18 @@ p-table .custom-spinner {
 
 .news-pg-label {
   color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+  .page-top-margin-small {
+    margin-top: 0.5rem !important;
+  }
+
+  .page-top-margin-large {
+    margin-top: 0.5rem !important;
+  }
+
+  .page-top-margin-medium {
+    margin-top: 0.5rem !important;
+  }
 }

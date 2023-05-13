@@ -5,6 +5,7 @@ import { NewsItem, CleanedNewsItem } from 'src/app/models/news-feed';
 @Injectable()
 export class ArticleService extends BehaviorSubject<CleanedNewsItem> {
     navOriginIsHome: boolean;
+    imageNotFound = 'assets/img/image_filler_icon_blank.jpg';
 
     constructor() {
         super({} as CleanedNewsItem);
@@ -47,6 +48,9 @@ export class ArticleService extends BehaviorSubject<CleanedNewsItem> {
     public extractPolygonNewsContent(raw: NewsItem, isCarouselNews: boolean): CleanedNewsItem {
         let cleanedNewsItem = new CleanedNewsItem();
         cleanedNewsItem.featureImageUrl = raw['image_url'];
+        if (!cleanedNewsItem.featureImageUrl || cleanedNewsItem.featureImageUrl === '') {
+            cleanedNewsItem.featureImageUrl = this.imageNotFound;
+        }
         cleanedNewsItem.title = raw['title'];
         cleanedNewsItem.author = raw['author'];
         cleanedNewsItem.link = raw['article_url'];
@@ -73,7 +77,9 @@ export class ArticleService extends BehaviorSubject<CleanedNewsItem> {
         cleanedNewsItem.media = rssItem['media'];
         cleanedNewsItem.enclosures = rssItem['enclosures'];
         cleanedNewsItem.featureImageUrl = this.parseImageUrl(cleanedNewsItem.media, cleanedNewsItem.enclosures);
-
+        if (!cleanedNewsItem.featureImageUrl || cleanedNewsItem.featureImageUrl === '') {
+            cleanedNewsItem.featureImageUrl = this.imageNotFound;
+        }
 
         if (rssItem.category instanceof Array) {
             if (isCarouselNews) {
