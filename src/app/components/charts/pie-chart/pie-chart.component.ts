@@ -53,14 +53,19 @@ export class PieChartComponent implements OnInit, OnDestroy {
       takeUntil(this.destroySubject$)
     ).subscribe(
       (result) => {
-        this.setData(result);
+        if (result) {
+          this.setData(result);
+          this.reflow();
+        }
       }
     )
   }
 
   reflow() {
-    this.chartInstance.reflow();
-    this.cd.detectChanges();
+    if (this.chartInstance) {
+      this.chartInstance.reflow();
+      this.cd.detectChanges();
+    }
   }
 
   setData(data: any) {
@@ -114,7 +119,6 @@ export class PieChartComponent implements OnInit, OnDestroy {
       }]
 
     }
-    this.cd.detectChanges();
   }
 
 
