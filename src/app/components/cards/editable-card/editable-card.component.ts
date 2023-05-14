@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { CoinTableView } from 'src/app/models/coin-gecko';
 import { SharedModule } from 'primeng/api';
@@ -6,7 +6,7 @@ import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
 import { CoinDataService } from 'src/app/services/coin-data.service';
-import { Observable, finalize, map, tap } from 'rxjs';
+import { Observable, Subject, finalize, map, takeUntil, tap } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility.service';
 import { ThemeService } from 'src/app/services/theme.service';
 
@@ -19,7 +19,7 @@ import { ThemeService } from 'src/app/services/theme.service';
   templateUrl: './editable-card.component.html',
   styleUrls: ['./editable-card.component.scss']
 })
-export class EditableCardComponent implements OnInit {
+export class EditableCardComponent implements OnInit, OnDestroy {
   @Input('provider') dataProvider: Observable<any>;
   @Input('dataType') inputDataType: string;
   @Input() title: string;
@@ -29,6 +29,7 @@ export class EditableCardComponent implements OnInit {
   @Output('onSelect') onSelect = new EventEmitter<CoinTableView>();
   @Output('onAdd') onAdd = new EventEmitter<boolean>();
 
+  destroySubject$ = new Subject<boolean>();
 
   style = {
     'font-size': '0.8rem !important', 'font-weight': 'bold'
@@ -53,36 +54,51 @@ export class EditableCardComponent implements OnInit {
     }
 
     if (this.inputDataType === 'CoinTableView') {
-      this.dataSource$ = this.dataProvider.pipe(
-        tap((result) => {
+      this.dataProvider.pipe(
+        takeUntil(this.destroySubject$),
+      ).subscribe({
+        next: (result) => {
           if (result) {
+            this.items = result;
             this.isLoading = false;
             this.cd.markForCheck();
           }
-        }));
+        },
+        error: (error) => {
+          console.error(error);
+          this.isLoading = false;
+          this.cd.markForCheck();
+        },
+        complete: () => {
+          this.isLoading = false;
+          this.cd.markForCheck();
+        }
+      }
+      );
     } else if (this.inputDataType === 'CoinFullInfo') {
-      this.dataSource$ = this.dataProvider.pipe(
+      this.dataProvider.pipe(
         map((coins) => {
           return coins.map((coin) => {
             return this.utilityService.mapCoinFullInfoToCoinTableView(coin);
           });
 
-        }),
-        tap((result) => {
-          if (result && result.length > 0) {
-            this.isLoading = false;
-            this.cd.markForCheck();
-          } else if(result.length === 0) {
+        })
+      ).subscribe({
+        next: (result) => {
+          if (result) {
+            this.items = result;
             this.isLoading = false;
             this.cd.markForCheck();
           }
-        }),
-        finalize(() => {
-          this.isLoading = false;
-          this.cd.markForCheck();
-        })
-      );
+        }
+      });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubject$.next(true);
+    this.destroySubject$.complete();
+
   }
 
   select(event) {
