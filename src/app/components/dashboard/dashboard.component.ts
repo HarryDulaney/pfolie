@@ -149,14 +149,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isGlobalChartLoading = true;
     this.bigChartService.initializeChart();
 
-    this.navService.navExpandedSource$
-      .pipe(takeUntil(this.destroySubject$))
-      .subscribe(expandStateChange => {
-        this.globalChart.chartInstance.reflow();
-        this.globalPie.chartInstance.reflow();
-        this.cd.markForCheck();
-      });
-
     this.dashboardService.getUser().pipe(
       takeUntil(this.destroySubject$)
     ).subscribe((user: firebase.User | null) => {
@@ -168,9 +160,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.trendingCoinsProvider = this.dashboardService.getTrending()
+    this.trendingCoinsProvider = this.dashboardService.getTrending();
+    this.trackedAssetDataProvider = this.dashboardService.getTrackedAssetDataProvider();
+    this.topMarketCapProvider = this.dashboardService.getGlobalDataSource()
       .pipe(
-        takeUntil(this.destroySubject$));
+        concatMap((globalData: GlobalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),
+        map((result: CoinMarket[]) => {
+          return result.map((value) => {
+            return this.dashboardService.getMarketDataView(value);
+          })
+        })
+      );
+
+    this.dashboardService.getGlobalDataSource()
+      .pipe(
+        takeUntil(this.destroySubject$)
+      ).subscribe({
+        next: (globalData: GlobalData) => {
+          if (globalData) {
+            this.globalData = globalData;
+            this.pieChartService.setData(globalData.data.market_cap_percentage);
+            this.isGlobalChartLoading = false;
+            this.cd.markForCheck();
+          }
+        },
+        error: (err) => {
+          console.log(err);
+          this.isGlobalChartLoading = false;
+          this.cd.markForCheck();
+        },
+        complete: () => {
+          this.isGlobalChartLoading = false;
+          this.cd.markForCheck();
+        }
+      });
 
 
     this.dashboardService.coinsSource$
@@ -184,25 +207,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       );
 
-    this.topMarketCapProvider = this.dashboardService.getGlobalDataSource()
-      .pipe(
-        tap((globalData: GlobalData) => {
-          if (globalData) {
-            this.globalData = globalData;
-            this.pieChartService.setData(globalData.data.market_cap_percentage);
-          }
-        }),
-        concatMap((globalData: GlobalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),
-        map((result: CoinMarket[]) => {
-          return result.map((value) => {
-            return this.dashboardService.getMarketDataView(value);
-          })
-        }),
-        takeUntil(this.destroySubject$)
-      );
-
-    this.trackedAssetDataProvider = this.dashboardService.getTrackedAssetDataProvider()
-      .pipe(takeUntil(this.destroySubject$));
+    this.navService.navExpandedSource$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(expandStateChange => {
+        this.globalChart.chartInstance.reflow();
+        this.globalPie.chartInstance.reflow();
+        this.cd.markForCheck();
+      });
 
   }
 
