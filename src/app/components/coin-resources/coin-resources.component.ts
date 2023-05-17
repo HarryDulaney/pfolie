@@ -149,7 +149,7 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   initCoinData(coinData: CoinFullInfo) {
     this.coinInfo = coinData;
     this.titleContent = coinData.name;
-    this.descriptionTabHeader = 'What is ' + this.titleContent + ' ?';
+    this.descriptionTabHeader = 'Asset Description';
     this.imageSource = coinData.image.large ? coinData.image.large : coinData.image.small;
     this.description = coinData.description['en'];
     this.htmlDescription = this.cleanDescription(this.description);

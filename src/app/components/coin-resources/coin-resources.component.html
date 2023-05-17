@@ -1,5 +1,6 @@
+<div class="page-top-margin-small"></div>
 <div
-  class="grid-nogutter h-100 mt-5 pt-2"
+  class="grid-nogutter h-100 p-component container"
   style="margin-left: 0 !important;"
 >
   <span class="row w-100 mt-4">
@@ -104,7 +105,7 @@
       >
         <p-chip
           [label]=category
-          styleClass="bg-gray-600 m-1"
+          [style]="{'background-color':'var(--card-bg-color)','margin':'1px'}"
         ></p-chip>
       </span>
 
@@ -119,7 +120,7 @@
         >
           <p-chip
             [label]="'Chat Channel'"
-            styleClass="chip-element-text m-1"
+            [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
             pTooltip="{{chatChannel}}"
           >
             <i class="fa fa-comment"></i>&nbsp;
@@ -137,7 +138,7 @@
         >
           <p-chip
             [label]="'Reddit'"
-            styleClass="chip-element-text m-1"
+            [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
             pTooltip="{{subReddit}}"
           >
             <i class="fa-brands fa-reddit"></i>&nbsp;
@@ -155,7 +156,7 @@
         >
           <p-chip
             [label]="'GitHub'"
-            styleClass="chip-element-text m-1"
+            [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
             pTooltip="{{githubRepoUrl}}"
           >
             <i class="fa-brands fa-github"></i>&nbsp;
@@ -174,7 +175,7 @@
           <p-chip
             class="chip-element-text-dark"
             [label]="'Blockchain Site'"
-            styleClass="m-1"
+            [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
             pTooltip="{{blockChainSite}}"
           >
           </p-chip>
@@ -191,7 +192,7 @@
         >
           <p-chip
             [label]="'Official Forum'"
-            styleClass="chip-element-text m-1"
+            [style]="{'background-color':'var(--badge-bg-color','margin':'1px'}"
             pTooltip="{{officialForum}}"
           >
           </p-chip>
@@ -199,103 +200,98 @@
       </span>
 
       <h3 class="lrg-card-content font-monospace"><span>Social Media: </span></h3>
-      <span
-        class="text-white"
+      <p-chip
         [hidden]="!twitterScreenName"
+        [label]=twitterScreenName
+        [style]="{'background-color':'var(--custom-purple)','margin':'1px'}"
+        pTooltip="Twitter Screen Name"
+        icon="fa-brands fa-twitter"
       >
-        <p-chip
-          [label]=twitterScreenName
-          styleClass="bg-purple-900 m-1"
-          pTooltip="Twitter Screen Name"
-        >
-          <i class="fa-brands fa-twitter"></i>&nbsp;
-        </p-chip>
-      </span>
-      <span
-        class="text-white"
+      </p-chip>
+      <p-chip
         [hidden]="!facebookUserName"
+        [label]=facebookUserName
+        [style]="{'background-color':'var(--custom-purple)','margin':'1px'}"
+        icon="fa-brands fa-facebook"
+        pTooltip="Facebook User Name"
       >
-        <p-chip
-          [label]=facebookUserName
-          styleClass="bg-purple-900 m-1"
-          pTooltip="Facebook User Name"
-        >
-          <i class="fa-brands fa-facebook"></i>&nbsp;
-        </p-chip>
-      </span>
-      <span
-        class="text-white"
-        [hidden]="!telegramChannelId"
-      >
+      </p-chip>
+      <span [hidden]="!telegramChannelId">
         <p-chip
           [label]=telegramChannelId
-          styleClass="bg-purple-900 m-1"
+          [style]="{'background-color':'var(--custom-purple)','margin':'1px'}"
+          icon="fa-brands fa-telegram"
           pTooltip="Telegram Channel Id"
         >
-          <i class="fa-brands fa-telegram"></i>&nbsp;
         </p-chip>
       </span>
     </div>
   </div>
   <hr>
   <div class="col-12">
-
-    <p-card [header]="descriptionTabHeader">
+    <div>
+      <div class="p-component container">
+        <div class="row text-center mb-1 w-100">
+          <p-header class="text-decoration-none text-xl font-bold">{{descriptionTabHeader}}</p-header>
+        </div>
+      </div>
       <div
         [innerHtml]="htmlDescription"
         class="inline--text-description"
       >
       </div>
-    </p-card>
+    </div>
   </div>
 
   <!-- ------------------------------- Tickers  --------------------------------- -->
   <div class="col-12">
-    <p-table
-      [value]="tickers | async"
-      styleClass="p-table-custom"
-      [paginator]="true"
-      [rows]="5"
-      [showCurrentPageReport]="true"
-      responsiveLayout="scroll"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    >
-      <ng-template pTemplate="caption">
-        <div class="flex align-items-center justify-content-between">
-          <h2
-            class="text-white text-2xl font-bold"
-            style="margin:0 auto;"
-          >Recent Transactions</h2>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="header">
-        <tr>
-          <th *ngFor="let col of columnDefs">
-            {{col.header}}
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template
-        pTemplate="body"
-        let-ticker
+    <div class="card">
+      <p-table
+        [value]="tickers | async"
+        [paginator]="true"
+        [rows]="100"
+        styleClass="p-table-custom"
+        [showCurrentPageReport]="true"
+        responsiveLayout="scroll"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
-        <tr>
-          <td>{{ticker[columnDefs[0].field]}}</td>
-          <td [width]="10">{{ticker[columnDefs[1].field]}}</td>
-          <td>{{ticker[columnDefs[2].field]}}</td>
-          <td>{{ticker[columnDefs[3].field]}}</td>
-          <td>{{ticker[columnDefs[4].field]}}</td>
-          <td>{{ticker[columnDefs[5].field]}}</td>
-          <td><a
-              [href]=ticker[columnDefs[6].field]
-              target="_blank"
-              [pTooltip]=ticker[columnDefs[6].field]
-            >
-              <i class="pi pi-window-maximize"></i>
-            </a>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+        <ng-template pTemplate="caption">
+          <div class="flex align-items-center justify-content-between">
+            <h2
+              class="text-xl font-bold"
+              style="margin:0 auto;color:var(--text-color)"
+            >Recent Transactions</h2>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let col of columnDefs">
+              {{col.header}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-ticker
+        >
+          <tr>
+            <td>{{ticker[columnDefs[0].field]}}</td>
+            <td [width]="10">{{ticker[columnDefs[1].field]}}</td>
+            <td>{{ticker[columnDefs[2].field]}}</td>
+            <td>{{ticker[columnDefs[3].field]}}</td>
+            <td>{{ticker[columnDefs[4].field]}}</td>
+            <td>{{ticker[columnDefs[5].field]}}</td>
+            <td><a
+                [href]=ticker[columnDefs[6].field]
+                target="_blank"
+                [pTooltip]=ticker[columnDefs[6].field]
+              >
+                <i class="pi pi-window-maximize"></i>
+              </a>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
   </div>
 </div>

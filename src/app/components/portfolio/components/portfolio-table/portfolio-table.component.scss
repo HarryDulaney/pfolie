@@ -31,9 +31,11 @@
 }
 
 .card {
-    background: transparent !important;
-    border: solid var(--border-accent) 1px !important;
-    border-radius: 15px !important;
+    box-shadow: 1px 1px 1px var(--surface-border);
+    background: var(--card-bg-color) !important;
+    padding: 0.3rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
 }
 
 :host ::ng-deep .p-card {

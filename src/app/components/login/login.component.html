@@ -1,7 +1,4 @@
-<div
-    [style]="{'z-index':'99999999999999'}"
-    class="surface-card shadow-2 border-round w-full lg:w-6"
->
+<div class="p-component container surface-card shadow-2 border-round w-full z-auto">
     <div class="text-center mb-1">
         <div class="login-logo">
             <img
@@ -15,163 +12,100 @@
             [style]="{'font-size':'1.2rem'}"
         >Please choose a sign in method</div>
     </div>
+    <div [style]="contentStyle">
+        <div>
+            <label
+                for="email1"
+                class="block text-900 font-medium mb-1"
+            >Email</label>
+            <input
+                id="email1"
+                placeholder="email@example.com"
+                type="email"
+                pInputText
+                class="w-full mb-1"
+                [(ngModel)]="email"
+            >
 
+            <label
+                for="password1"
+                class="block text-900 font-medium mb-1"
+            >Password</label>
+            <input
+                id="password1"
+                placeholder="password"
+                type="password"
+                pInputText
+                class="w-full mb-1"
+                [(ngModel)]="password"
+            >
 
-
-    <div>
-        <label
-            for="email1"
-            class="block text-900 font-medium mb-1"
-        >Email</label>
-        <input
-            id="email1"
-            placeholder="email@example.com"
-            type="email"
-            pInputText
-            class="w-full mb-1"
-            [(ngModel)]="email"
-        >
-
-        <label
-            for="password1"
-            class="block text-900 font-medium mb-1"
-        >Password</label>
-        <input
-            id="password1"
-            placeholder="password"
-            type="password"
-            pInputText
-            class="w-full mb-1"
-            [(ngModel)]="password"
-        >
-
-        <ng-container *ngIf="isValid(); else disabledButton">
-            <a
-                mat-flat-button
-                class="fed-sign-in-btn-main"
+            <button
+                pButton
+                pRipple
+                label="Sign In"
+                icon="pi pi-user"
+                [disabled]="!isValid()"
+                class="w-full font-bold p-button-raised p-button-rounded p-button-info"
                 (click)="signInHandler($event)"
-            >
-                <span class="float-start">
-                    <i
-                        class="pi pi-user"
-                        style="font-size: large;"
-                    ></i>
-                </span>
-                <span class="float-end">
-                    <div class="text-center font-bold no-wrap pl-2">Sign In</div>
-                </span>
-            </a>
-        </ng-container>
-        <ng-template #disabledButton>
-            <a
-                mat-flat-button
-                disabled
-                class="fed-sign-in-btn-main"
-            >
-                <span class="float-start text-red-500">
-                    <i
-                        class="pi pi-user"
-                        style="font-size: large;"
-                    ></i>
-                </span>
-                <span class="float-end pl-1">
-                    <div class="text-center font-bold text-red-500">Sign In</div>
-                </span>
-            </a>
-        </ng-template>
-    </div>
+            ></button>
+        </div>
 
 
-    <div class="row w-100 text-center justify-content-center"> <span class="text-400 font-medium mb-1">Or</span>
-    </div>
+        <div class="row w-100 text-center"><span class="w-100 font-bold">or</span></div>
+        <button
+            pButton
+            pRipple
+            class="w-full font-bold p-button-raised p-button-rounded"
+            label="Try as Guest User"
+            icon="fas fa-user-shield"
+            (click)="signInTempAccount()"
+        ></button>
 
 
+        <span class="row m-1 w-100"></span>
 
-    <a
-        mat-flat-button
-        class="fed-sign-in-btn-main"
-        (click)="signInTempAccount()"
-    >
-        <span class="float-start">
-            <i
-                class="fa fa-user-ninja"
-                style="font-size: x-large;"
-            ></i>
-        </span>
-        <span class="float-end pl-2">
-            <div
-                style="font-size: large;"
-                class="text-center font-bold no-wrap"
-            >Continue as Guest
+        <div class="mb-1">
+            <button
+                pButton
+                pRipple
+                class="w-full font-bold p-button-raised p-button-rounded"
+                label="Continue with Google"
+                icon="fab fa-google"
+                (click)="googleSignIn()"
+            ></button>
+            <span class="row m-1 w-100"></span>
+            <div class="mb-1">
+                <button
+                    pButton
+                    pRipple
+                    class="w-full font-bold p-button-raised p-button-rounded"
+                    label="Continue with Facebook"
+                    icon="pi pi-facebook"
+                    (click)="facebookSignIn()"
+                ></button>
+                <span class="row m-1 w-100"></span>
+                <button
+                    pButton
+                    pRipple
+                    class="w-full font-bold p-button-raised p-button-rounded"
+                    label="Continue with Github"
+                    icon="pi pi-github"
+                    (click)="githubSignIn()"
+                ></button>
             </div>
-        </span>
-    </a>
-    <span class="row m-1 w-100"></span>
 
-    <div class="mb-1">
-        <a
-            mat-flat-button
-            class="fed-sign-in-btn-main"
-            (click)="googleSignIn()"
-        >
-            <span class="float-start">
-                <img
-                    class="float-start"
-                    style="font-size: x-large;"
-                    [src]="googleIconSrc"
-                >
+            <span class="row text-400 font-medium justify-content-center mb-1 mt-1">
+                <a
+                    id="register"
+                    class="text-color-link ml-2 text-center cursor-pointer no-underline font-large font-bold"
+                    (click)="navigateRegister()"
+                >Register Here
+                </a>
             </span>
-            <span class="float-end pl-2">
-                <div class="text-center font-bold no-wrap">Continue with Google</div>
-            </span>
-        </a>
 
-        <span class="row m-1 w-100"></span>
-
-        <a
-            mat-flat-button
-            class="fed-sign-in-btn-main"
-            (click)="facebookSignIn()"
-        >
-            <span class="float-start">
-                <i
-                    class="pi pi-facebook"
-                    style="font-size: x-large;color:cornflowerblue"
-                ></i>
-            </span>
-            <span class="float-end pl-2">
-                <div class="text-center font-bold  no-wrap"> Continue with Facebook</div>
-            </span>
-        </a>
-
-        <span class="row m-1 w-100"></span>
-
-        <a
-            mat-flat-button
-            class="fed-sign-in-btn-main"
-            (click)="githubSignIn()"
-        >
-            <span class="float-start">
-                <i
-                    class="pi pi-github"
-                    style="font-size: x-large;"
-                ></i>
-            </span>
-            <span class="float-end pl-2">
-                <div class="text-center font-bold no-wrap"> Continue with Github
-                </div>
-            </span>
-        </a>
+        </div>
 
     </div>
-
-    <span class="row text-400 font-medium justify-content-center mb-1 mt-1">
-        <a
-            id="register"
-            class="text-color-link ml-2 text-center cursor-pointer no-underline font-large font-bold"
-            (click)="navigateRegister()"
-        >Register Here
-        </a>
-    </span>
 
 </div>

@@ -109,10 +109,20 @@ mat-toolbar {
   background-color: var(--surface-ground);
 }
 
+:host ::ng-deep .p-panelmenu .p-panelmenu-header > a {
+  padding: 1rem !important;
+  border-radius: 6px;
+  transition: box-shadow 0.2s;
+}
+
+:host ::ng-deep .p-panelmenu .p-panelmenu-panel {
+  margin-bottom: 0px !important;
+}
+
 :host ::ng-deep .p-panelmenu .p-menuitem-link {
   text-align: start !important;
   justify-content: start !important;
-  font-size: 1.5rem !important;
+  font-size: 1.2rem !important;
 }
 
 :host ::ng-deep .p-panelmenu .p-panelmenu-header > a {
@@ -219,6 +229,7 @@ i {
 
 :host ::ng-deep .p-button {
   margin: 0 0.5rem 0 0;
+  max-height: 2rem !important;
 }
 
 p {

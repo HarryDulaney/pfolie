@@ -213,9 +213,9 @@
             <button
               type="button"
               pButton
-              label="Email Address"
-              icon="fa fa-envelope"
-              (click)="createAccount($event)"
+              label="Try as Guest User"
+              icon="fas fa-user-shield"
+              (click)="guestSignIn()"
               class="font-bold px-3 py-2 p-button-sm p-button-raised p-button-rounded white-space-nowrap"
             ></button>
           </div>
@@ -323,6 +323,7 @@
       [modal]="true"
       [style]="(screenSize === 'XSmall' || screenSize === 'Small') ? {width:'100vw'} : {width:'50vw'}"
       [draggable]="false"
+      [baseZIndex]="9999999999"
       [resizable]="false"
     >
       <!-- Bottom-right Toast Message -->
