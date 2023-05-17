@@ -8,8 +8,7 @@ import { CoinDataService } from 'src/app/services/coin-data.service';
 })
 export class ChartService {
   masterData: BehaviorSubject<CoinMarketChartResponse> = new BehaviorSubject<CoinMarketChartResponse>({} as CoinMarketChartResponse);
-
-
+  
   coinId: string;
   coinName: string;
   days: number | string = 'max';

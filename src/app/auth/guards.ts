@@ -16,7 +16,6 @@ export const authGuard = (
                 if (user === null) {
                     let fragment = route.url[0]['path'];
                     sessionService.displayLoginModal(fragment);
-                    router.navigate(['/home']);
                     return false;
                 }
 

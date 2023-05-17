@@ -346,11 +346,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   toggleSettings(event) {
-    if (this.settingsVisible) {
-      this.settingsVisible = false;
-    } else {
-      this.settingsVisible = true;
-    }
+    this.handleNavDrawerState().then(() => {
+      if (this.settingsVisible) {
+        this.settingsVisible = false;
+      } else {
+        this.settingsVisible = true;
+      }
+    });
   }
 
 
@@ -701,6 +703,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   createAccount(event) {
     this.register();
+  }
+
+  guestSignIn() {
+    this.sessionService.signInAnonymously();
   }
 
   googleSignIn() {

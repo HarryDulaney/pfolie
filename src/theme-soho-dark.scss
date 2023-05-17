@@ -30,9 +30,10 @@
     --chart-line-color: #88b8f8;
     --chart-volume-color: #99ff00;
     --hover-bg-fancy: #010a37d7;
-    --card-bg-color: #00000000;
+    --card-bg-color: var(--bg-mask-styled);
     --active-color: #82828245;
     --badge-bg-color: #363636;
+    --custom-purple: var(--purple-900) !important;
     --badge-active-bg-color: #180077;
 
 }

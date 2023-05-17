@@ -1,12 +1,10 @@
 <p-scrollTop></p-scrollTop>
 <div class="page-top-margin-small"></div>
-<div
-    id="dash"
->
+<div id="dash">
     <div class="grid-nogutter w-100">
         <div class="row flex-wrap-reverse">
             <!-- ------------------------ Crypto Table By Market Cap---------------------- -->
-            <div class="xl:col-9 xs:col-12 xl:mt-5 sm:mt-1">
+            <div class="xl:col-9 lg:col-9 md:col-12 sm:col-12 xs:col-12 xl:mt-5 sm:mt-1">
                 <div class="card">
                     <!-- ------------------------ Crypto Global Market Cap---------------------- -->
                     <div class="flex align-items-center justify-content-between">
@@ -154,30 +152,25 @@
 
                 </div>
             </div>
-            <div class="xl:col-3 xs:col-12 xl:mt-5 sm:mt-5 sm:pt-1">
+            <div class="xl:col-3 lg:col-3 md:col-12 sm:col-12 xs:col-12 xl:mt-5 md:pt-1">
                 <!-- ------------------------ Blockchain News ---------------------- -->
-
-                <div class="card">
-                    <div class="flex align-items-center justify-content-between">
-                        <h4
-                            class="caption-label-md"
-                            style="margin:0 auto; background-color: transparent;"
-                        >Blockchain News</h4>
-                    </div>
-                    <app-news-carosel [type]="'rssFeed'"></app-news-carosel>
+                <div class="flex align-items-center justify-content-between">
+                    <h4
+                        class="caption-label-md"
+                        style="margin:0 auto; background-color: transparent;"
+                    >Blockchain News</h4>
                 </div>
+                <app-news-carosel [type]="'rssFeed'"></app-news-carosel>
+                <div class="seperator-medium"></div>
                 <!-- ------------------------ Stock Market News ---------------------- -->
-
-                <div class="card">
-                    <div class="flex align-items-center justify-content-between">
-                        <h4
-                            class="caption-label-md"
-                            style="margin:0 auto; background-color: transparent;"
-                        >Stock Market News</h4>
-                    </div>
-                    <app-news-carosel [type]="'polygon'"></app-news-carosel>
+                <div class="flex align-items-center justify-content-between">
+                    <h4
+                        class="caption-label-md"
+                        style="margin:0 auto; background-color: transparent;"
+                    >Stock Market News</h4>
                 </div>
-
+                <app-news-carosel [type]="'polygon'"></app-news-carosel>
+                <div class="xl:mt-5 sm:mt-1"></div>
                 <!-- ------------------------ Watchlist ---------------------- -->
                 <ng-container *ngIf="dashboardService.isUserLoggedIn()">
                     <app-editable-card
