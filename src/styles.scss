@@ -182,6 +182,15 @@ body {
   background-color: inherit !important;
 }
 
+.custom-btn-style {
+  color: var(--surface-ground) !important;
+}
+
+.custom-btn-style:hover {
+  background: transparent !important;
+  color: var(--text-color) !important;
+}
+
 .inline--text-description a {
   color: var(--blue-400) !important;
 }
