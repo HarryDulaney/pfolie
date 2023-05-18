@@ -1,21 +1,17 @@
-#register {
-    color: var(--text-color) !important;
-}
-
 * {
     color: var(--text-color) !important;
 }
 
-.fed-sign-in-btn-main {
+.sign-in-provider {
     width: 100% !important;
-    border: 1px solid var(--hover-bg) !important;
-    border-radius: 4px;
-    max-height: 2rem !important;
-    text-decoration: none;
-    cursor: pointer;
 }
 
-button {
-    background-color: transparent;
-    color: var(--text-color);
-  }
+.custom-btn-style {
+    color: var(--surface-ground) !important;
+}
+
+
+.custom-btn-style:hover {
+    background: transparent !important;
+    color: var(--text-color) !important;
+}
