@@ -86,13 +86,15 @@
             </div>
         </div>
     </form>
-    <button
-        pButton
-        pRipple
-        label="Create Account"
-        icon="pi pi-user"
-        class="w-full"
-        (click)="registerHandler($event)"
-        [disabled]="!registerForm.valid || !registerForm.touched || emailMatchError || pwordMatchError"
-    ></button>
+    <div class="flex w-100 justify-content-center">
+        <button
+            pButton
+            pRipple
+            label="Create Account"
+            icon="pi pi-user-plus"
+            class="w-50 font-bold p-button-raised p-button-squared custom-btn-style"
+            (click)="registerHandler($event)"
+            [disabled]="!registerForm.valid || !registerForm.touched || emailMatchError || pwordMatchError"
+        ></button>
+    </div>
 </div>

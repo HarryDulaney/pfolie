@@ -1,6 +1,7 @@
 <div class="p-component container surface-card shadow-2 border-round w-full z-auto">
     <div class="text-center">
         <div class="text-900 text-3xl font-medium mb-1">Sign In</div>
+        <span class="text-600 font-medium line-height-1">Please choose a sign in method:</span>
     </div>
     <span class="row text-400 font-medium justify-content-center mb-1 mt-1">
 
@@ -52,7 +53,7 @@
             <div
                 pButton
                 pRipple
-                class="w-75 font-bold p-button-raised p-button-squared custom-btn-style"
+                class="w-50 font-bold p-button-raised p-button-squared custom-btn-style"
                 label="Continue as Guest User"
                 icon="fas fa-user-shield"
                 (click)="signInTempAccount()"
@@ -65,7 +66,7 @@
             <div
                 pButton
                 pRipple
-                class="font-bold p-button-raised p-button-squared custom-btn-style"
+                class="w-50 font-bold p-button-raised p-button-squared custom-btn-style"
                 label="Continue with Google"
                 (click)="googleSignIn()"
             >
@@ -82,7 +83,7 @@
             <div
                 pButton
                 pRipple
-                class="font-bold p-button-raised p-button-squared custom-btn-style"
+                class="w-50 font-bold p-button-raised p-button-squared custom-btn-style"
                 label="Continue with Facebook"
                 (click)="facebookSignIn()"
             > <img
@@ -97,7 +98,7 @@
             <div
                 pButton
                 pRipple
-                class="font-bold p-button-raised p-button-squared custom-btn-style"
+                class="w-50 font-bold p-button-raised p-button-squared custom-btn-style"
                 label="Continue with Github"
                 (click)="githubSignIn()"
             > <img
