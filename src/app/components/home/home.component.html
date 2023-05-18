@@ -326,6 +326,15 @@
       [baseZIndex]="9999999999"
       [resizable]="false"
     >
+      <ng-template pTemplate="header">
+        <div class="login-logo">
+          <img
+            [src]='mainLogoSrc'
+            alt="Image"
+            class="img-fluid m-0 p-0"
+          >
+        </div>
+      </ng-template>
       <!-- Bottom-right Toast Message -->
       <p-toast
         position="top-center"
@@ -342,6 +351,15 @@
       [draggable]="false"
       [resizable]="false"
     >
+      <ng-template pTemplate="header">
+        <div class="login-logo">
+          <img
+            [src]='mainLogoSrc'
+            alt="Image"
+            class="img-fluid m-0 p-0"
+          >
+        </div>
+      </ng-template>
       <app-register #register></app-register>
     </p-dialog>
     <app-footer></app-footer>

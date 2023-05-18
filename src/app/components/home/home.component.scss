@@ -229,7 +229,16 @@ i {
 
 :host ::ng-deep .p-button {
   margin: 0 0.5rem 0 0;
-  max-height: 2rem !important;
+  max-height: 6rem !important;
+  height: 2rem !important;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding: 0.5rem !important;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+  padding: 0.4rem !important;
 }
 
 p {

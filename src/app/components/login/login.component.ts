@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   password: string
   currentRoute: string;
   googleIconSrc = '../../../assets/img/google-icon-org.svg';
+  facebookIconSrc = '../../../assets/img/icons8-facebook.svg';
+  githubIconSrc = '../../../assets/img/icons8-github.svg';
+
   mainLogoSrc = "../../../assets/img/pfolie-logo-1-white.png";
   screenSize: string;
   destroySubject$ = new Subject();

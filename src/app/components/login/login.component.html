@@ -1,17 +1,10 @@
 <div class="p-component container surface-card shadow-2 border-round w-full z-auto">
-    <div class="text-center mb-1">
-        <div class="login-logo">
-            <img
-                [src]='mainLogoSrc'
-                alt="Image"
-                class="mb-1"
-            >
-        </div>
-        <div
-            class="mb-1"
-            [style]="{'font-size':'1.2rem'}"
-        >Please choose a sign in method</div>
+    <div class="text-center">
+        <div class="text-900 text-3xl font-medium mb-1">Sign In</div>
     </div>
+    <span class="row text-400 font-medium justify-content-center mb-1 mt-1">
+
+    </span>
     <div [style]="contentStyle">
         <div>
             <label
@@ -39,73 +32,91 @@
                 class="w-full mb-1"
                 [(ngModel)]="password"
             >
-
-            <button
+            <div class="flex w-100 justify-content-center">
+                <button
+                    pButton
+                    pRipple
+                    label="Sign In"
+                    icon="pi pi-user"
+                    [disabled]="!isValid()"
+                    class="w-75 font-bold p-button-raised p-button-squared p-button-info custom-btn-style"
+                    (click)="signInHandler($event)"
+                ></button>
+            </div>
+        </div>
+        <div class="row w-100 text-center">
+            <span class="w-100 font-bold">or</span>
+        </div>
+        <span class="row m-1 w-100"></span>
+        <div class="flex w-100 justify-content-center">
+            <div
                 pButton
                 pRipple
-                label="Sign In"
-                icon="pi pi-user"
-                [disabled]="!isValid()"
-                class="w-full font-bold p-button-raised p-button-rounded p-button-info"
-                (click)="signInHandler($event)"
-            ></button>
+                class="w-75 font-bold p-button-raised p-button-squared custom-btn-style"
+                label="Continue as Guest User"
+                icon="fas fa-user-shield"
+                (click)="signInTempAccount()"
+            >
+            </div>
         </div>
 
-
-        <div class="row w-100 text-center"><span class="w-100 font-bold">or</span></div>
-        <button
-            pButton
-            pRipple
-            class="w-full font-bold p-button-raised p-button-rounded"
-            label="Try as Guest User"
-            icon="fas fa-user-shield"
-            (click)="signInTempAccount()"
-        ></button>
+        <span class="row m-1 w-100"></span>
+        <div class="flex w-100 justify-content-center">
+            <div
+                pButton
+                pRipple
+                class="font-bold p-button-raised p-button-squared custom-btn-style"
+                label="Continue with Google"
+                (click)="googleSignIn()"
+            >
+                <img
+                    style="max-height:36px !important;margin-right:1rem !important;"
+                    [src]="googleIconSrc"
+                />
+            </div>
+        </div>
 
 
         <span class="row m-1 w-100"></span>
-
-        <div class="mb-1">
-            <button
+        <div class="flex w-100 justify-content-center">
+            <div
                 pButton
                 pRipple
-                class="w-full font-bold p-button-raised p-button-rounded"
-                label="Continue with Google"
-                icon="fab fa-google"
-                (click)="googleSignIn()"
-            ></button>
-            <span class="row m-1 w-100"></span>
-            <div class="mb-1">
-                <button
-                    pButton
-                    pRipple
-                    class="w-full font-bold p-button-raised p-button-rounded"
-                    label="Continue with Facebook"
-                    icon="pi pi-facebook"
-                    (click)="facebookSignIn()"
-                ></button>
-                <span class="row m-1 w-100"></span>
-                <button
-                    pButton
-                    pRipple
-                    class="w-full font-bold p-button-raised p-button-rounded"
-                    label="Continue with Github"
-                    icon="pi pi-github"
-                    (click)="githubSignIn()"
-                ></button>
-            </div>
+                class="font-bold p-button-raised p-button-squared custom-btn-style"
+                label="Continue with Facebook"
+                (click)="facebookSignIn()"
+            > <img
+                    style="max-height:36px !important;margin-right:1rem !important;"
+                    [src]="facebookIconSrc"
+                /></div>
+        </div>
 
-            <span class="row text-400 font-medium justify-content-center mb-1 mt-1">
+
+        <span class="row m-1 w-100"></span>
+        <div class="flex w-100 justify-content-center">
+            <div
+                pButton
+                pRipple
+                class="font-bold p-button-raised p-button-squared custom-btn-style"
+                label="Continue with Github"
+                (click)="githubSignIn()"
+            > <img
+                    style="max-height:36px !important;margin-right:1rem !important;"
+                    [src]="githubIconSrc"
+                /></div>
+        </div>
+
+        <span class="row m-1 w-100"></span>
+
+        <div class="row w-100 flex justify-content-center text-center p-1">
+            <span class="text-600 font-medium">Don't have an account?
                 <a
-                    id="register"
-                    class="text-color-link ml-2 text-center cursor-pointer no-underline font-large font-bold"
+                    class="font-medium no-underline ml-2 cursor-pointer"
                     (click)="navigateRegister()"
-                >Register Here
+                >
+                    <span style="color:var(--blue-500) !important;">Register Here</span>
                 </a>
             </span>
-
         </div>
 
     </div>
-
-</div>
