@@ -227,64 +227,7 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <!-- Settins Menu, right side panel -->
-    <app-settings
-      #settingsComponent
-      [(visible)]="settingsVisible"
-      [settings]="userPreferences"
-      (settingsChange)="settingsChanged($event)"
-    ></app-settings>
-    <!-- Bottom-right Toast Message -->
-    <p-toast
-      position="bottom-right"
-      [style]="{'max-width': '100%'}"
-      key="toast"
-    ></p-toast>
-    <!-- Center Toast with Prompt -->
-    <p-toast
-      position="center"
-      key="prompt-toast"
-      (onClose)="onPromptToastReject($event)"
-    >
-      <ng-template
-        let-message
-        pTemplate="message"
-      >
-        <div
-          class="flex flex-column"
-          style="flex: 1"
-        >
-          <div class="text-center">
-            <i
-              class="pi pi-exclamation-triangle"
-              style="font-size: 3rem"
-            ></i>
-            <h4>{{message.summary}}</h4>
-            <p>{{message.detail}}</p>
-          </div>
-          <div class="grid p-fluid">
-            <div class="col-6">
-              <button
-                type="button"
-                pButton
-                (click)="onPromptToastConfirm($event)"
-                label="Yes"
-                class="p-button-success"
-              ></button>
-            </div>
-            <div class="col-6">
-              <button
-                type="button"
-                pButton
-                (click)="onPromptToastReject($event)"
-                label="No"
-                class="p-button-secondary"
-              ></button>
-            </div>
-          </div>
-        </div>
-      </ng-template>
-    </p-toast>
+
     <!-- Search Dropdown Panel -->
     <p-overlayPanel
       #searchPanel
@@ -316,52 +259,86 @@
     </p-overlayPanel>
     <router-outlet class="div-scrollable">
     </router-outlet>
-
-    <!-- Login Popup Modal -->
-    <p-dialog
-      [(visible)]="sessionService.showLoginModal"
-      [modal]="true"
-      [style]="(screenSize === 'XSmall' || screenSize === 'Small') ? {width:'100vw'} : {width:'50vw'}"
-      [draggable]="false"
-      [baseZIndex]="9999999999"
-      [resizable]="false"
-    >
-      <ng-template pTemplate="header">
-        <div class="login-logo">
-          <img
-            [src]='mainLogoSrc'
-            alt="Image"
-            class="img-fluid m-0 p-0"
-          >
-        </div>
-      </ng-template>
-      <!-- Bottom-right Toast Message -->
-      <p-toast
-        position="top-center"
-        key="login-toast"
-      >
-      </p-toast>
-      <app-login #login></app-login>
-    </p-dialog>
-    <!-- Registration Popup Modal -->
-    <p-dialog
-      [(visible)]="sessionService.showRegisterModal"
-      [modal]="true"
-      [style]="(screenSize === 'XSmall' || screenSize === 'Small') ? {width:'100vw'} : {width:'50vw'}"
-      [draggable]="false"
-      [resizable]="false"
-    >
-      <ng-template pTemplate="header">
-        <div class="login-logo">
-          <img
-            [src]='mainLogoSrc'
-            alt="Image"
-            class="img-fluid m-0 p-0"
-          >
-        </div>
-      </ng-template>
-      <app-register #register></app-register>
-    </p-dialog>
     <app-footer></app-footer>
   </mat-sidenav-content>
 </mat-sidenav-container>
+<!-- Login,Modal Dialog -->
+<app-login
+  #login
+  [(visible)]="sessionService.showLoginModal"
+></app-login>
+<!-- Register Modal Dialog -->
+<app-register
+  #register
+  [(visible)]="sessionService.showRegisterModal"
+></app-register>
+
+<!-- Settins Menu, right side panel -->
+<app-settings
+  #settingsComponent
+  [(visible)]="settingsVisible"
+  [settings]="userPreferences"
+  (settingsChange)="settingsChanged($event)"
+></app-settings>
+<!-- Bottom-right Toast Message -->
+<p-toast
+  position="bottom-right"
+  [style]="{'max-width': '96vw !important','padding': '0.5rem'}"
+  key="toast"
+></p-toast>
+<!-- Center Toast with Prompt -->
+<p-toast
+  position="center"
+  key="prompt-toast"
+  [style]="{'max-width': '96vw !important','padding': '0.5rem'}"
+  (onClose)="onPromptToastReject($event)"
+>
+  <ng-template
+    let-message
+    pTemplate="message"
+  >
+    <div
+      class="flex flex-column"
+      style="flex: 1"
+    >
+      <div class="text-center">
+        <i
+          class="pi pi-exclamation-triangle"
+          style="font-size: 3rem"
+        ></i>
+        <h4>{{message.summary}}</h4>
+        <p>{{message.detail}}</p>
+      </div>
+      <div class="grid p-fluid">
+        <div class="col-6">
+          <button
+            type="button"
+            pButton
+            (click)="onPromptToastConfirm($event)"
+            label="Yes"
+            class="p-button-success"
+          ></button>
+        </div>
+        <div class="col-6">
+          <button
+            type="button"
+            pButton
+            (click)="onPromptToastReject($event)"
+            label="No"
+            class="p-button-secondary"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>
+
+<!-- Top-center Toast Message -->
+<p-toast
+  preventDuplicates="true"
+  [style]="{'max-width': '96vw !important','padding': '0.5rem'}"
+  [baseZIndex]="1000099"
+  position="top-center"
+  key="login-toast"
+>
+</p-toast>

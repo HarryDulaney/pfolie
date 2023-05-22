@@ -233,13 +233,6 @@ i {
   height: 2rem !important;
 }
 
-:host ::ng-deep .p-dialog .p-dialog-content {
-  padding: 0.5rem !important;
-}
-
-:host ::ng-deep .p-dialog .p-dialog-header {
-  padding: 0.4rem !important;
-}
 
 p {
   margin: 0;
@@ -249,14 +242,6 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-:host ::ng-deep .p-dialog {
-  margin-top: 4rem;
-}
-
-:host ::ng-deep .p-dialog {
-  margin-top: 4rem;
 }
 
 :host ::ng-deep .p-toast-message-custom {

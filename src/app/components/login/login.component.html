@@ -1,13 +1,31 @@
-<div class="p-component container surface-card shadow-2 border-round w-full z-auto">
-    <div class="text-center">
-        <div class="text-900 text-3xl font-medium mb-1">Sign In</div>
-        <span class="text-600 font-medium line-height-1">Please choose a sign in method:</span>
-    </div>
-    <span class="row text-400 font-medium justify-content-center mb-1 mt-1">
+<p-dialog
+    [visible]="visible"
+    (visibleChange)="visibleChange.emit($event)"
+    [modal]="true"
+    [style]="{width:'100vw', height:'100vh', 'max-width':'100vw', 'max-height':'100vh'}"
+    [draggable]="false"
+    [baseZIndex]="12009"
+    [resizable]="false"
+    blockScroll="true"
+>
+    <ng-template pTemplate="header">
+        <div class="login-logo">
+            <img
+                [src]='mainLogoSrc'
+                alt="Image"
+                class="img-fluid m-0 p-0"
+            >
+        </div>
+    </ng-template>
+    <div [style]="contentStyle" class="flex justify-content-center">
+        <div class="p-component container surface-card shadow-2 border-round z-auto xl:p-4 lg:p-3 md:p-2 sm:p-0">
+            <div class="text-center">
+                <div class="text-900 text-3xl font-medium mb-1">Sign In</div>
+                <span class="text-600 font-medium line-height-1">Please choose a sign in method:</span>
+            </div>
+            <span class="row text-400 font-medium justify-content-center mb-1 mt-1">
 
-    </span>
-    <div [style]="contentStyle">
-        <div>
+            </span>
             <label
                 for="email1"
                 class="block text-900 font-medium mb-1"
@@ -40,76 +58,76 @@
                     label="Sign In"
                     icon="pi pi-user"
                     [disabled]="!isValid()"
-                    class="w-75 font-bold p-button-raised p-button-squared p-button-info custom-btn-style"
+                    class="w-75 font-bold p-button-raised p-button-squared p-button-info"
                     (click)="signInHandler($event)"
                 ></button>
             </div>
-        </div>
-        <div class="row w-100 text-center">
-            <span class="w-100 font-bold">or</span>
-        </div>
-        <span class="row m-1 w-100"></span>
-        <div class="flex w-100 justify-content-center">
-            <div
-                pButton
-                pRipple
-                class="w-75 font-bold p-button-raised p-button-squared custom-btn-style"
-                label="Continue as Guest User"
-                icon="fas fa-user-shield"
-                (click)="signInTempAccount()"
-            >
+            <div class="flex w-100 justify-content-center font-bold">
+                <div class="row w-100 m-0 p-0">
+                    <div class="col-2"></div>
+                    <div class="straight-line-wrapper col-3">
+                        <div class="straight-line"></div>
+                    </div>
+                    <div class="col-2">
+                        <div class="text-center">or</div>
+                    </div>
+                    <div class="straight-line-wrapper col-3">
+                        <div class="straight-line"></div>
+                    </div>
+                    <div class="col-2"></div>
+
+                </div>
+            </div>
+            <span class="row m-1 w-100"></span>
+            <div class="flex w-100 justify-content-center">
+                <div
+                    pButton
+                    pRipple
+                    class="w-75 font-bold p-button-raised p-button-squared guest-btn-style"
+                    label="Guest User"
+                    icon="fas fa-user-shield"
+                    (click)="signInTempAccount()"
+                >
+                </div>
+            </div>
+
+            <span class="row m-1 w-100"></span>
+            <div class="flex w-100 justify-content-center">
+                <div
+                    pButton
+                    pRipple
+                    class="font-bold p-button-raised p-button-squared custom-btn-style text-center"
+                    (click)="googleSignIn()"
+                >
+                    <img
+                        style="max-height:36px !important;"
+                        [src]="googleIconSrc"
+                    />
+                </div>
+                <div
+                    pButton
+                    pRipple
+                    class="font-bold p-button-raised p-button-squared custom-btn-style text-center"
+                    (click)="facebookSignIn()"
+                > <img
+                        style="max-height:36px !important;"
+                        [src]="facebookIconSrc"
+                    /></div>
+                <div
+                    pButton
+                    pRipple
+                    class="font-bold p-button-raised p-button-squared custom-btn-style text-center"
+                    (click)="githubSignIn()"
+                > <img
+                        style="max-height:36px !important;"
+                        [src]="githubIconSrc"
+                    />
+                </div>
             </div>
         </div>
-
-        <span class="row m-1 w-100"></span>
-        <div class="flex w-100 justify-content-center">
-            <div
-                pButton
-                pRipple
-                class="w-75 font-bold p-button-raised p-button-squared custom-btn-style"
-                label="with Google"
-                (click)="googleSignIn()"
-            >
-                <img
-                    style="max-height:36px !important;margin-right:1rem !important;"
-                    [src]="googleIconSrc"
-                />
-            </div>
-        </div>
-
-
-        <span class="row m-1 w-100"></span>
-        <div class="flex w-100 justify-content-center">
-            <div
-                pButton
-                pRipple
-                class="w-75 font-bold p-button-raised p-button-squared custom-btn-style"
-                label="with Facebook"
-                (click)="facebookSignIn()"
-            > <img
-                    style="max-height:36px !important;margin-right:1rem !important;"
-                    [src]="facebookIconSrc"
-                /></div>
-        </div>
-
-
-        <span class="row m-1 w-100"></span>
-        <div class="flex w-100 justify-content-center">
-            <div
-                pButton
-                pRipple
-                class="w-75 font-bold p-button-raised p-button-squared custom-btn-style"
-                label="with Github"
-                (click)="githubSignIn()"
-            > <img
-                    style="max-height:36px !important;margin-right:1rem !important;"
-                    [src]="githubIconSrc"
-                /></div>
-        </div>
-
-        <span class="row m-1 w-100"></span>
-
-        <div class="row w-100 flex justify-content-center text-center p-1">
+    </div>
+    <ng-template pTemplate="footer">
+        <div class="row w-100 flex justify-content-center text-center p-1 mt-1 pb-5">
             <span class="text-600 font-medium">Don't have an account?
                 <a
                     class="font-medium no-underline ml-2 cursor-pointer"
@@ -119,5 +137,6 @@
                 </a>
             </span>
         </div>
+    </ng-template>
 
-    </div>
+</p-dialog>

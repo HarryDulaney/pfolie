@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { SessionService } from 'src/app/services/session.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { SharedModule } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CONSTANT as Const } from '../../constants'
+import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
 
 
 @Component({
@@ -18,9 +20,12 @@ import { CONSTANT as Const } from '../../constants'
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [FormsModule, InputTextModule, NgIf, MatButtonModule, ButtonModule, SharedModule]
+  imports: [FormsModule, InputTextModule, NgIf, MatButtonModule, ButtonModule, SharedModule, DialogModule, ToastModule]
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  @Input() visible: boolean = false;
+  @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   email: string;
   password: string
   currentRoute: string;
@@ -33,10 +38,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   destroySubject$ = new Subject();
 
   contentStyle = {
-    'padding-right': '3rem !important',
-    'padding-left': '3rem !important',
-    'margin-right': '3rem !important',
-    'margin-left': '3rem !important',
+    'margin': '0 auto !important',
+    'width': '100% !important'
   };
 
   constructor(
@@ -55,38 +58,32 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.screenSize = screen;
           if (screen === Const.SCREEN_SIZE.XS) {
             this.contentStyle = {
-              'padding-right': '0 !important',
-              'padding-left': '0 !important',
-              'margin-right': '0 !important',
-              'margin-left': '0 !important',
+              'margin': '0 auto !important',
+              'width': '100% !important'
+
             }
           } else if (screen === Const.SCREEN_SIZE.S) {
             this.contentStyle = {
-              'padding-right': '1rem !important',
-              'padding-left': '1rem !important',
-              'margin-right': '1px !important',
-              'margin-left': '1px !important',
+              'margin': '0 auto !important',
+              'width': '100% !important'
+
             }
           } else if (screen === Const.SCREEN_SIZE.M) {
             this.contentStyle = {
-              'padding-right': '1rem !important',
-              'padding-left': '1rem !important',
-              'margin-right': '2rem !important',
-              'margin-left': '2rem !important',
+              'margin': '0 auto !important',
+              'width': '100% !important'
+
             }
           } else if (screen === Const.SCREEN_SIZE.L) {
             this.contentStyle = {
-              'padding-right': '2rem !important',
-              'padding-left': '2rem !important',
-              'margin-right': '2rem !important',
-              'margin-left': '2rem !important',
+              'margin': '0 auto !important',
+              'width': '40% !important'
+
             }
           } else {
             this.contentStyle = {
-              'padding-right': '3rem !important',
-              'padding-left': '3rem !important',
-              'margin-right': '3rem !important',
-              'margin-left': '3rem !important',
+              'margin': '0 auto !important',
+              'width': '30% !important'
             };
           }
 

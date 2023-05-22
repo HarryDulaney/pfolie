@@ -7,11 +7,42 @@
 }
 
 .custom-btn-style {
+    background: transparent !important;
+    color: var(--text-color) !important;
+    height: 40px !important;
+    width: 60px !important;
+}
+
+.custom-btn-style:hover {
+    background: var(--highlight-text-color) !important;
     color: var(--surface-ground) !important;
 }
 
 
-.custom-btn-style:hover {
+.guest-btn-style {
     background: transparent !important;
     color: var(--text-color) !important;
+}
+
+.guest-btn-style:hover {
+    background: var(--highlight-text-color) !important;
+    color: var(--surface-ground) !important;
+}
+
+
+
+.straight-line-wrapper {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    align-content: center !important;
+    min-width: 36px !important;
+    max-width: 40% !important;
+}
+
+.straight-line {
+    width: 100% !important;
+    height: 1px !important;
+    background: var(--text-color) !important;
 }
