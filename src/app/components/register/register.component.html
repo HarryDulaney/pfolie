@@ -7,12 +7,13 @@
     [draggable]="false"
     [baseZIndex]="12009"
     [resizable]="false"
-    blockScroll="true"
+    [blockScroll]="true"
 >
     <ng-template pTemplate="header">
-        <div class="login-logo">
+        <div class="dialog-logo text-center">
             <img
                 [src]='mainLogoSrc'
+                [style]="{width:'8rem !important', height:'auto !important'}"
                 alt="Image"
                 class="img-fluid m-0 p-0"
             >

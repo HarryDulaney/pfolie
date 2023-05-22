@@ -9,23 +9,24 @@
     blockScroll="true"
 >
     <ng-template pTemplate="header">
-        <div class="login-logo">
+        <div class="dialog-logo text-center">
             <img
                 [src]='mainLogoSrc'
                 alt="Image"
+                [style]="{width:'8rem !important', height:'auto !important'}"
                 class="img-fluid m-0 p-0"
             >
         </div>
     </ng-template>
-    <div [style]="contentStyle" class="flex justify-content-center">
+    <div
+        [style]="contentStyle"
+        class="flex justify-content-center"
+    >
         <div class="p-component container surface-card shadow-2 border-round z-auto xl:p-4 lg:p-3 md:p-2 sm:p-0">
             <div class="text-center">
                 <div class="text-900 text-3xl font-medium mb-1">Sign In</div>
                 <span class="text-600 font-medium line-height-1">Please choose a sign in method:</span>
             </div>
-            <span class="row text-400 font-medium justify-content-center mb-1 mt-1">
-
-            </span>
             <label
                 for="email1"
                 class="block text-900 font-medium mb-1"
@@ -124,19 +125,18 @@
                     />
                 </div>
             </div>
+            <div class="row w-100 flex justify-content-center text-center p-1 mt-3 pb-2">
+                <span class="text-600 font-medium">Don't have an account?
+                    <a
+                        class="font-medium no-underline ml-2 cursor-pointer"
+                        (click)="navigateRegister()"
+                    >
+                        <span style="color:var(--blue-500) !important;">Register Here</span>
+                    </a>
+                </span>
+            </div>
         </div>
+
     </div>
-    <ng-template pTemplate="footer">
-        <div class="row w-100 flex justify-content-center text-center p-1 mt-1 pb-5">
-            <span class="text-600 font-medium">Don't have an account?
-                <a
-                    class="font-medium no-underline ml-2 cursor-pointer"
-                    (click)="navigateRegister()"
-                >
-                    <span style="color:var(--blue-500) !important;">Register Here</span>
-                </a>
-            </span>
-        </div>
-    </ng-template>
 
 </p-dialog>
