@@ -61,8 +61,9 @@ export const API_ROOTS = {
 };
 
 export const RSS_FEEDS = {
-  CoinTelegraph: 'https://cointelegraph.com/feed',
-  CoinJournal: 'https://coinjournal.net/news/category/analysis/feed/'
+  
+  CoinTelegraph: 'https://cointelegraph.com/rss',
+  CoinJournal: 'https://coinjournal.net/news/category/analysis/rss/'
 };
 
 export const FEED_SOURCES = [
