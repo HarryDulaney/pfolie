@@ -1,100 +1,128 @@
-<div class="surface-card p-1 shadow-2 border-round w-full h-full">
-    <div class="text-center">
-        <div class="text-900 text-3xl font-medium mb-1">Create Account</div>
-        <span class="text-600 font-medium line-height-1">Already have an account?</span>
-        <a
-            class="font-medium no-underline ml-2 text-blue-500 cursor-pointer"
-            (click)="navigateLogin()"
-        >Sign In!</a>
-    </div>
-    <form
-        [formGroup]="registerForm"
-        class="form-group"
-    >
-        <div class="field p-fluid">
-            <label
-                for="email"
-                class="block text-900 font-medium"
-            >Email</label>
-            <input
-                formControlName="email"
-                id="email"
-                placeholder="Ex: email@example.com"
-                type="email"
-                class="w-full"
-                pInputText
-            />
-            <div *ngIf="!registerForm.get('email').hasError('required') && registerForm.get('email').hasError('email')">
-                <small class="p-error">Error: Invalid Email Address</small>
+<!-- Registration Popup Modal -->
+<p-dialog
+    [visible]="visible"
+    (visibleChange)="visibleChange.emit($event)"
+    [modal]="true"
+    [style]="{width:'100vw', height:'100vh', 'max-width':'100vw', 'max-height':'100vh'}"
+    [draggable]="false"
+    [baseZIndex]="12009"
+    [resizable]="false"
+    blockScroll="true"
+>
+    <ng-template pTemplate="header">
+        <div class="login-logo">
+            <img
+                [src]='mainLogoSrc'
+                alt="Image"
+                class="img-fluid m-0 p-0"
+            >
+        </div>
+    </ng-template>
+    <div [style]="contentStyle" class="flex justify-content-center">
+        <div class="p-component container surface-card shadow-2 border-round z-auto xl:p-4 lg:p-3 md:p-2 sm:p-0">
+            <div class="text-center">
+                <div class="text-900 text-3xl font-medium mb-1">Create Account</div>
+                <span class="text-600 font-medium line-height-1">Already have an account?</span>
+                <a
+                    class="font-medium no-underline ml-2 text-blue-500 cursor-pointer"
+                    (click)="navigateLogin()"
+                >Sign In!</a>
+            </div>
+
+            <form
+                [formGroup]="registerForm"
+                class="form-group"
+            >
+                <div class="field p-fluid">
+                    <label
+                        for="email"
+                        class="block text-900 font-medium"
+                    >Email</label>
+                    <input
+                        formControlName="email"
+                        id="email"
+                        placeholder="Ex: email@example.com"
+                        type="email"
+                        class="w-full"
+                        pInputText
+                    />
+                    <div
+                        *ngIf="!registerForm.get('email').hasError('required') && registerForm.get('email').hasError('email')">
+                        <small class="p-error">Error: Invalid Email Address</small>
+                    </div>
+                </div>
+
+                <div class="field p-fluid">
+                    <label
+                        for="confirmEmail"
+                        class="block text-900 font-medium"
+                    >Confirm Email</label>
+                    <input
+                        formControlName="confirmEmail"
+                        id="confirmEmail"
+                        placeholder="Re-enter"
+                        type="email"
+                        pInputText
+                        class="w-full"
+                    />
+                    <div *ngIf="!registerForm.get('confirmEmail').hasError('required') && emailMatchError"><small
+                            class="p-error"
+                        >Error: Email addresses must match</small>
+                    </div>
+                </div>
+                <div class="field p-fluid">
+                    <label
+                        for="password"
+                        class="block text-900 font-medium"
+                    >Password</label>
+                    <input
+                        formControlName="password"
+                        id="password"
+                        placeholder="create password"
+                        type="password"
+                        class="w-full mb-1"
+                        pInputText
+                    />
+                    <div
+                        *ngIf="!registerForm.get('password').hasError('required') && registerForm.get('password').hasError('pattern')">
+                        <small class="p-error">Error: Must be 8 characters long and include an Uppercase and a lowercase
+                            letter,
+                            a
+                            number, and a special
+                            character</small>
+                    </div>
+                </div>
+                <div class="field p-fluid">
+                    <label
+                        for="confirmPassword"
+                        class="block text-900 font-medium"
+                    >Password Confirm</label>
+                    <input
+                        formControlName="confirmPassword"
+                        id="confirmPassword"
+                        placeholder="Re-enter password"
+                        type="password"
+                        class="w-full"
+                        pInputText
+                    />
+                    <div *ngIf="!registerForm.get('confirmPassword').hasError('required') && pwordMatchError">
+                        <small class="p-error">Passwords must match</small>
+                    </div>
+                </div>
+            </form>
+            <div class="flex w-100 justify-content-center">
+                <button
+                    pButton
+                    pRipple
+                    label="Create Account"
+                    icon="pi pi-user-plus"
+                    class="w-75 font-bold p-button-raised p-button-squared custom-btn-style"
+                    (click)="registerHandler($event)"
+                    [disabled]="!registerForm.valid || !registerForm.touched || emailMatchError || pwordMatchError"
+                ></button>
             </div>
         </div>
 
-        <div class="field p-fluid">
-            <label
-                for="confirmEmail"
-                class="block text-900 font-medium"
-            >Confirm Email</label>
-            <input
-                formControlName="confirmEmail"
-                id="confirmEmail"
-                placeholder="Re-enter"
-                type="email"
-                pInputText
-                class="w-full"
-            />
-            <div *ngIf="!registerForm.get('confirmEmail').hasError('required') && emailMatchError"><small
-                    class="p-error"
-                >Error: Email addresses must match</small>
-            </div>
-        </div>
-        <div class="field p-fluid">
-            <label
-                for="password"
-                class="block text-900 font-medium"
-            >Password</label>
-            <input
-                formControlName="password"
-                id="password"
-                placeholder="create password"
-                type="password"
-                class="w-full mb-1"
-                pInputText
-            />
-            <div
-                *ngIf="!registerForm.get('password').hasError('required') && registerForm.get('password').hasError('pattern')">
-                <small class="p-error">Error: Must be 8 characters long and include an Uppercase and a lowercase letter,
-                    a
-                    number, and a special
-                    character</small>
-            </div>
-        </div>
-        <div class="field p-fluid">
-            <label
-                for="confirmPassword"
-                class="block text-900 font-medium"
-            >Password Confirm</label>
-            <input
-                formControlName="confirmPassword"
-                id="confirmPassword"
-                placeholder="Re-enter password"
-                type="password"
-                class="w-full"
-                pInputText
-            />
-            <div *ngIf="!registerForm.get('confirmPassword').hasError('required') && pwordMatchError">
-                <small class="p-error">Passwords must match</small>
-            </div>
-        </div>
-    </form>
-    <div class="flex w-100 justify-content-center">
-        <button
-            pButton
-            pRipple
-            label="Create Account"
-            icon="pi pi-user-plus"
-            class="w-75 font-bold p-button-raised p-button-squared custom-btn-style"
-            (click)="registerHandler($event)"
-            [disabled]="!registerForm.valid || !registerForm.touched || emailMatchError || pwordMatchError"
-        ></button>
     </div>
-</div>
+
+</p-dialog>

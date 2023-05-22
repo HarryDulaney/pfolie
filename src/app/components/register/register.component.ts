@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, NgModel, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SessionService } from 'src/app/services/session.service';
 import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
@@ -7,15 +7,27 @@ import { NgIf } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
 import { ThemeService } from 'src/app/services/theme.service';
 import { Subject, takeUntil } from 'rxjs';
+import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { CONSTANT as Const } from '../../constants'
+import { ScreenService } from 'src/app/services/screen.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, InputTextModule, NgIf, ButtonModule, RippleModule]
+  imports: [FormsModule, ReactiveFormsModule, InputTextModule, NgIf, ButtonModule, RippleModule, DialogModule, ToastModule]
 })
 export class RegisterComponent implements OnInit, OnDestroy {
+  @Input() visible: boolean = false;
+  @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   destroySubject$ = new Subject();
+  contentStyle = {
+    'margin': '0 auto !important',
+    'width': '100% !important'
+  };
+  screenSize: string;
 
   registerForm: UntypedFormGroup;
   private e1: string = '';
@@ -26,9 +38,47 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   constructor(private sessionService: SessionService,
     private themeService: ThemeService,
+    private screenService: ScreenService,
     public cd: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.screenService.screenSource$
+      .subscribe(
+        (screen) => {
+          this.screenSize = screen;
+          if (screen === Const.SCREEN_SIZE.XS) {
+            this.contentStyle = {
+              'margin': '0 auto !important',
+              'width': '100% !important'
+
+            }
+          } else if (screen === Const.SCREEN_SIZE.S) {
+            this.contentStyle = {
+              'margin': '0 auto !important',
+              'width': '100% !important'
+
+            }
+          } else if (screen === Const.SCREEN_SIZE.M) {
+            this.contentStyle = {
+              'margin': '0 auto !important',
+              'width': '100% !important'
+
+            }
+          } else if (screen === Const.SCREEN_SIZE.L) {
+            this.contentStyle = {
+              'margin': '0 auto !important',
+              'width': '40% !important'
+
+            }
+          } else {
+            this.contentStyle = {
+              'margin': '0 auto !important',
+              'width': '30% !important'
+            };
+          }
+
+        });
+
     this.registerForm = new UntypedFormGroup({
       email: new UntypedFormControl('', [
         Validators.required,
