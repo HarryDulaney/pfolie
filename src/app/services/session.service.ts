@@ -21,6 +21,7 @@ export class SessionService {
     /* User tried to watch an item while signed out,
    cache the Id and add to users watchlist after sign in successful */
     private watchItemId = null;
+    public showUpgradeGuestModal = false;
 
     constructor(
         private auth: AngularFireAuth,
@@ -37,11 +38,17 @@ export class SessionService {
                 this.auth.user.subscribe((user) => {
                     if (user) {
                         this.user = user;
+                        if (this.user.isAnonymous) {
+                            SessionService.isGuestLogin = true;
+                        } else {
+                            SessionService.isGuestLogin = false;
+                        }
                         this.portfolioService.handleStartPortfolioSession(this.user);
                         SessionService.isAuthenticated = true;
                         this.initialized = true;
                     } else {
                         user = null;
+                        SessionService.isGuestLogin = false;
                         this.portfolioService.endSession();
                         this.initialized = false;
                         SessionService.isAuthenticated = false;
@@ -53,6 +60,11 @@ export class SessionService {
 
     public get authenticated(): boolean {
         return SessionService.isAuthenticated;
+    }
+
+
+    public get isGuest(): boolean {
+        return SessionService.isGuestLogin;
     }
 
     getCurrentUser(): firebase.User {
@@ -83,6 +95,11 @@ export class SessionService {
         if (firebaseUser.uid) {
             this.user = firebaseUser;
             SessionService.isAuthenticated = true;
+            if (this.user.isAnonymous) {
+                SessionService.isGuestLogin = true;
+            } else {
+                SessionService.isGuestLogin = false;
+            }
             this.toastService.showLoginSuccess();
             this.showLoginModal = false;
             if (this.redirectUrlFragment !== null) {
@@ -99,11 +116,18 @@ export class SessionService {
         }
     }
 
-    private silentSignIn(userCredentials: firebase.auth.UserCredential) {
+    private upgradeGuest(userCredentials: firebase.auth.UserCredential) {
         const firebaseUser = userCredentials.user;
         if (firebaseUser.uid) {
             this.user = firebaseUser;
             SessionService.isAuthenticated = true;
+            if (this.user.isAnonymous) {
+                SessionService.isGuestLogin = true;
+            } else {
+                SessionService.isGuestLogin = false;
+            }
+            this.toastService.showUpgradeSuccess();
+            this.showUpgradeGuestModal = false;
         }
     }
 
@@ -111,6 +135,7 @@ export class SessionService {
         this.auth.signOut().then(res => {
             this.user = null;
             SessionService.isAuthenticated = false;
+            SessionService.isGuestLogin = false;
             this.portfolioService.endSession();
             this.router.navigate(['/', 'home']);
             this.toastService.showSuccessToast('Sign Out Success. Thank you for using Pfolie!');
@@ -155,7 +180,6 @@ export class SessionService {
     }
 
     signInWithGoogle() {
-        this.auth.signInWithPhoneNumber
         this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(
             userCredentials => {
                 this.signIn(userCredentials);
@@ -193,6 +217,55 @@ export class SessionService {
     }
 
     verifyUserEmail() {
+
+    }
+
+    upgradeWithEmail(email: any, password: any) {
+        this.user.linkWithCredential(firebase.auth.EmailAuthProvider.credential(email, password))
+            .then(
+                userCredentials => {
+                    this.upgradeGuest(userCredentials);
+                }
+            ).catch((error) => {
+                this.toastService.showErrorToast("Upgrade Attempt Failed. Error: " + error);
+            });
+
+    }
+
+    upgradeWithGithub() {
+        let provider = new firebase.auth.GithubAuthProvider();
+        provider.addScope('user:email');
+        this.user.linkWithPopup(provider).then(
+            userCredentials => {
+                this.upgradeGuest(userCredentials);
+            }
+        ).catch((error) => {
+            this.toastService.showErrorToast("Upgrade Attempt Failed. Error: " + error);
+
+        });
+    }
+
+    upgradeWithFacebook() {
+        this.user.linkWithPopup(new firebase.auth.FacebookAuthProvider()).then(
+            userCredentials => {
+                this.upgradeGuest(userCredentials);
+            }
+        ).catch((error) => {
+            this.toastService.showErrorToast("Upgrade Attempt Failed. Error: " + error);
+
+        });
+
+    }
+
+    upgradeWithGoogle() {
+        this.user.linkWithPopup(new firebase.auth.GoogleAuthProvider()).then(
+            userCredentials => {
+                this.upgradeGuest(userCredentials);
+            })
+            .catch((error) => {
+                this.toastService.showErrorToast("Upgrade Attempt Failed. Error: " + error);
+
+            });
 
     }
 
