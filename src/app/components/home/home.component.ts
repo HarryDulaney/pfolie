@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router, RouterOutlet } from "@angular/router";
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MenuItem, MessageService, SharedModule } from 'primeng/api';
@@ -35,6 +35,7 @@ import { SettingsComponent } from "../settings/settings.component";
 import { UserPreferences } from 'src/app/models/appconfig';
 import { ThemeService } from 'src/app/services/theme.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { UpgradeGuestComponent } from '../upgrade-guest/upgrade-guest.component';
 
 @Component({
   selector: 'app-home',
@@ -65,7 +66,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     ReactiveFormsModule, MatSidenavModule, PanelMenuModule, SidebarModule, ButtonModule,
     ToastModule, SharedModule, OverlayPanelModule, SearchComponent, MenuModule, RouterOutlet,
     DialogModule, LoginComponent, RegisterComponent, FooterComponent, AsyncPipe, SettingsComponent,
-    CommonModule]
+    CommonModule, UpgradeGuestComponent]
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener('window:scroll', ['$event'])
@@ -91,6 +92,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('loginModal') loginModal: LoginComponent;
   @ViewChild('register') registerComp: RegisterComponent;
   @ViewChild('login') loginComp: LoginComponent;
+  @ViewChild('upgrade') upgradeComponent: UpgradeGuestComponent;
+
   @ViewChild('appSearch') searchComponent: SearchComponent;
   @ViewChild('searchInputWrapper') searchInputTarget: ElementRef;
   @ViewChild('settingsComponent') settingsComponent: SettingsComponent;
@@ -199,8 +202,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           this.user = user;
           this.isSignedIn = (user && user !== null && user !== undefined);
           if (this.isSignedIn) {
+            this.accountMenuItems = this.getUserAccountMenu();
+            this.signedInNavItems = this.getUserNavMenuItems();
             if (user.isAnonymous) {
-              this.userProfilePictureSource = '../../../assets/img/anonymous-icon-one.png';
+              this.signedInNavItems = this.getGuestUserNavMenuItems();
+              this.accountMenuItems = this.getGuestUserAccountMenu();
+              this.userProfilePictureSource = '../../../assets/img/robo-default-avatar-icon.png';
             } else if (user.photoURL) {
               this.userProfilePictureSource = user.photoURL;
             } else {
@@ -374,92 +381,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   initNavMenus() {
-    this.signedInNavItems = [
-      {
-        label: 'Account',
-        icon: 'pi pi-fw pi-user',
-        items: [
-          {
-            label: 'Settings',
-            icon: 'pi pi-fw pi-sliders-h',
-            id: 'settingMenuButton',
-            command: (event) => {
-              this.toggleSettings(event);
-            }
-          },
-          {
-            label: 'Sign Out',
-            icon: 'pi pi-fw pi-sign-out',
-            command: (event) => {
-              this.handleSignOut();
-            }
-          },
-          {
-            label: 'Privacy Policy',
-            icon: 'pi pi-fw pi-info-circle',
-            command: (event) => {
-              this.privacyPolicy();
-            }
-          }
-        ]
-      },
-      {
-        label: 'Home',
-        icon: 'pi pi-fw pi-home',
-        command: (event) => {
-          this.home();
-        }
-      },
-      {
-        label: 'News Aggregator',
-        icon: 'fa-solid fa-newspaper',
-        command: (event) => {
-          this.allNews();
-        }
-      },
-      {
-        label: 'Portfolio',
-        expanded: true,
-        icon: 'fa-solid fa-bar-chart',
-        items: [
-          {
-            label: 'Portfolio Manager',
-            icon: 'fa-solid fa-bar-chart',
-            disabled: false,
-            command: (event) => {
-              this.portfolio();
-            }
-          },
-          {
-            label: 'Watchlist',
-            icon: 'fa-solid fa-eye',
-            disabled: false,
-            command: (event) => {
-              this.openTrackedAssets();
-            }
-          },
-        ],
-      },
-
-      {
-        label: 'Help',
-        icon: 'pi pi-fw pi-question',
-        expanded: true,
-        items: [
-          {
-            label: 'About',
-            icon: 'pi pi-external-link',
-            url: this.aboutPageLink
-          },
-          {
-            label: 'Report A Bug',
-            icon: 'fa fa-bug',
-            url: this.issuesLink
-          }
-        ]
-      }
-    ];
-
+    this.signedInNavItems = this.sessionService.isGuest ? this.getGuestUserNavMenuItems() : this.getUserNavMenuItems();
     this.signedOutNavItems = [
       {
         label: 'Home',
@@ -562,7 +484,225 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     ];
 
-    this.accountMenuItems = [
+    this.accountMenuItems = this.sessionService.isGuest ? this.getGuestUserAccountMenu() : this.getUserAccountMenu();
+  }
+
+
+  getUserNavMenuItems(): MenuItem[] {
+    return [
+      {
+        label: 'Account',
+        icon: 'pi pi-fw pi-user',
+        items: [
+          {
+            label: 'Settings',
+            icon: 'pi pi-fw pi-sliders-h',
+            id: 'settingMenuButton',
+            command: (event) => {
+              this.toggleSettings(event);
+            }
+          },
+          {
+            label: 'Sign Out',
+            icon: 'pi pi-fw pi-sign-out',
+            command: (event) => {
+              this.handleSignOut();
+            }
+          },
+          {
+            label: 'Privacy Policy',
+            icon: 'pi pi-fw pi-info-circle',
+            command: (event) => {
+              this.privacyPolicy();
+            }
+          }
+        ]
+      },
+      {
+        label: 'Home',
+        icon: 'pi pi-fw pi-home',
+        command: (event) => {
+          this.home();
+        }
+      },
+      {
+        label: 'News Aggregator',
+        icon: 'fa-solid fa-newspaper',
+        command: (event) => {
+          this.allNews();
+        }
+      },
+      {
+        label: 'Portfolio',
+        expanded: true,
+        icon: 'fa-solid fa-bar-chart',
+        items: [
+          {
+            label: 'Portfolio Manager',
+            icon: 'fa-solid fa-bar-chart',
+            disabled: false,
+            command: (event) => {
+              this.portfolio();
+            }
+          },
+          {
+            label: 'Watchlist',
+            icon: 'fa-solid fa-eye',
+            disabled: false,
+            command: (event) => {
+              this.openTrackedAssets();
+            }
+          },
+        ],
+      },
+
+      {
+        label: 'Help',
+        icon: 'pi pi-fw pi-question',
+        expanded: true,
+        items: [
+          {
+            label: 'About',
+            icon: 'pi pi-external-link',
+            url: this.aboutPageLink
+          },
+          {
+            label: 'Report A Bug',
+            icon: 'fa fa-bug',
+            url: this.issuesLink
+          }
+        ]
+      }
+    ];
+  }
+
+  getGuestUserNavMenuItems(): MenuItem[] {
+    return [
+      {
+        label: 'Guest Account',
+        icon: 'pi pi-fw pi-user',
+        items: [
+          {
+            label: 'Settings',
+            icon: 'pi pi-fw pi-sliders-h',
+            id: 'settingMenuButton',
+            command: (event) => {
+              this.toggleSettings(event);
+            }
+          },
+          {
+            label: 'Upgrade Account',
+            icon: 'pi pi-fw pi-arrow-up',
+            command: (event) => {
+              this.handleNavDrawerState().then(() => {
+                this.sessionService.showUpgradeGuestModal = true;
+              });
+            }
+          },
+          {
+            label: 'Sign Out',
+            icon: 'pi pi-fw pi-sign-out',
+            command: (event) => {
+              this.handleSignOut();
+            }
+          },
+          {
+            label: 'Privacy Policy',
+            icon: 'pi pi-fw pi-info-circle',
+            command: (event) => {
+              this.privacyPolicy();
+            }
+          }
+        ]
+      },
+      {
+        label: 'Home',
+        icon: 'pi pi-fw pi-home',
+        command: (event) => {
+          this.home();
+        }
+      },
+      {
+        label: 'News Aggregator',
+        icon: 'fa-solid fa-newspaper',
+        command: (event) => {
+          this.allNews();
+        }
+      },
+      {
+        label: 'Portfolio',
+        expanded: true,
+        icon: 'fa-solid fa-bar-chart',
+        items: [
+          {
+            label: 'Portfolio Manager',
+            icon: 'fa-solid fa-bar-chart',
+            disabled: false,
+            command: (event) => {
+              this.portfolio();
+            }
+          },
+          {
+            label: 'Watchlist',
+            icon: 'fa-solid fa-eye',
+            disabled: false,
+            command: (event) => {
+              this.openTrackedAssets();
+            }
+          },
+        ],
+      },
+
+      {
+        label: 'Help',
+        icon: 'pi pi-fw pi-question',
+        expanded: true,
+        items: [
+          {
+            label: 'About',
+            icon: 'pi pi-external-link',
+            url: this.aboutPageLink
+          },
+          {
+            label: 'Report A Bug',
+            icon: 'fa fa-bug',
+            url: this.issuesLink
+          }
+        ]
+      }
+    ];
+  }
+
+  getGuestUserAccountMenu(): MenuItem[] {
+    return [
+      {
+        label: 'Guest Account',
+        disabled: true
+      },
+      {
+        label: 'Sign Out',
+        icon: 'pi pi-fw pi-sign-out',
+        command: (event) => {
+          this.handleAccountMenuState().then(() => {
+            this.sessionService.signOutUser();
+          });
+        }
+      },
+      {
+        label: 'Upgrade Account',
+        icon: 'pi pi-fw pi-arrow-up',
+        command: (event) => {
+          this.handleAccountMenuState().then(() => {
+            this.sessionService.showUpgradeGuestModal = true;
+          });
+        }
+      }
+    ];
+  }
+
+
+  getUserAccountMenu(): MenuItem[] {
+    return [
       {
         label: 'Sign Out',
         icon: 'pi pi-fw pi-sign-out',

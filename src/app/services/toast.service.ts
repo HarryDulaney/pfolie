@@ -102,4 +102,10 @@ export class ToastService {
     this.messageEmitter.next(this.successToast);
   }
 
+
+  public showUpgradeSuccess() {
+    this.successToast.detail = 'Upgrade Successful! Thank you for using Pfolie!';
+    this.messageEmitter.next(this.successToast);
+  }
+
 }
