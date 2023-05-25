@@ -13,6 +13,7 @@ export class ToastService {
     key: 'toast',
     severity: 'info',
     summary: 'Success',
+    life: 2000,
     detail: '',
     sticky: false
   };
@@ -21,6 +22,7 @@ export class ToastService {
     key: 'toast',
     severity: 'error',
     summary: 'Alert!',
+    life: 4000,
     detail: '',
     sticky: false
   };
@@ -30,6 +32,7 @@ export class ToastService {
     key: 'prompt-toast',
     severity: 'info',
     sticky: true,
+    life: 0,
     summary: 'Action Required.',
     detail: ''
   };
@@ -38,6 +41,7 @@ export class ToastService {
     key: 'login-toast',
     severity: 'info',
     summary: 'Accont Required...',
+    life: 2000,
     sticky: false,
     detail: ''
   };
@@ -47,6 +51,7 @@ export class ToastService {
     key: 'toast',
     severity: 'success',
     sticky: false,
+    life: 2000,
     summary: 'Operation Succeeded',
     detail: ''
   };
@@ -55,6 +60,7 @@ export class ToastService {
     key: 'toast',
     severity: 'info',
     sticky: false,
+    life: 2000,
     summary: 'Info',
     detail: ''
   };
