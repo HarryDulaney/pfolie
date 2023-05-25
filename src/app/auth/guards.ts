@@ -1,17 +1,7 @@
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 
 import { SessionService } from '../services/session.service';
-import { map } from 'rxjs';
 import { inject } from '@angular/core';
-
-
-const isValid = (user) => {
-    return (user && user !== null && user !== undefined);
-}
-
-const isNotValid = (user) => {
-    return (user === null || user === undefined);
-}
 
 export const authGuard = (
     route: ActivatedRouteSnapshot,
