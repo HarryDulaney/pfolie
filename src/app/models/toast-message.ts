@@ -4,5 +4,6 @@ export interface ToastMessage {
     summary: string;
     detail: string;
     sticky: boolean;
+    life: number;
 
 }

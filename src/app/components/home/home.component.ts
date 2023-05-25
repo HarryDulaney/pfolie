@@ -790,8 +790,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /* Toast */
   public showToast(toastMessage: ToastMessage) {
-    const { key, severity, summary, detail, sticky } = toastMessage;
-    this.messageService.add({ key: key, severity: severity, summary: summary, detail: detail, sticky: sticky });
+    const { key, severity, summary, detail, sticky, life } = toastMessage;
+    this.messageService.add({ key, severity, summary, detail, sticky, life });
 
   }
   public closeToast() {
