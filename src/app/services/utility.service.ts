@@ -3,6 +3,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { CONSTANT } from '../constants';
 import { ThemeService } from './theme.service';
 import { Coin, CoinFullInfo, CoinTableView } from '../models/coin-gecko';
+import { UserPreferences } from '../models/appconfig';
 
 @Injectable()
 export class UtilityService {
@@ -126,6 +127,19 @@ export class UtilityService {
             coinTableViews.push(this.mapCoinFullInfoToCoinTableView(coinFullInfo));
         });
         return coinTableViews;
+    }
+
+
+    static isValidStoredPreferences(preferences: UserPreferences): boolean {
+        for (const key in preferences) {
+            if (preferences.hasOwnProperty(key)) {
+                const element = preferences[key];
+                if (element === undefined || element === null) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 

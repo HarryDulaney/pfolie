@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ChartService } from '../charts/chart.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { PortfolioService } from '../portfolio/services/portfolio.service';
+import { PortfolioService } from '../../services/portfolio.service';
 import * as Const from '../../constants';
 import { takeUntil } from 'rxjs/operators';
 import { SharedModule } from 'primeng/api';
@@ -14,10 +14,18 @@ import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
 import { ChipModule } from 'primeng/chip';
 import { CoinChartComponent } from '../charts/coin-chart/coin-chart.component';
-import { NgClass, NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { NgClass, NgIf, NgFor, AsyncPipe, CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { ThemeService } from 'src/app/services/theme.service';
+import { WatchListService } from '../../services/watchlist.service';
+import { UserService } from 'src/app/services/user.service';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { FormsModule } from '@angular/forms';
+import { ListCardComponent } from '../cards/list-card/list-card.component';
+import { WatchList, WatchListMeta } from 'src/app/models/portfolio';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-coin-resources',
@@ -25,10 +33,28 @@ import { ThemeService } from 'src/app/services/theme.service';
   styleUrls: ['./coin-resources.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [TooltipModule, MatButtonModule, NgClass, CoinChartComponent, NgIf, NgFor, ChipModule, CardModule, TableModule, SharedModule, AsyncPipe]
+  imports: [
+    SelectButtonModule,
+    OverlayPanelModule,
+    TooltipModule,
+    MatButtonModule,
+    CommonModule,
+    NgClass,
+    CoinChartComponent,
+    NgIf,
+    NgFor,
+    FormsModule,
+    ChipModule,
+    CardModule,
+    TableModule,
+    SharedModule,
+    AsyncPipe,
+    ListCardComponent
+  ]
 })
 export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('chart') chart!: CoinChartComponent;
+  @ViewChild('selectWatchListPanel') selectWatchListPanel!: OverlayPanel;
 
   chartType: string = Const.CHART_TYPE.PRICE; // Default chart type
   /* Interactive Chart attribute values */
@@ -79,11 +105,16 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   maxSupply: undefined;
   circulatingSupply: number;
   currentPrice: string;
+  currentChartType = 'price';
+  chartTypeOptions: any[] = [
+    { name: Const.CHART_TYPE.PRICE, value: Const.CHART_TYPE.PRICE },
+    { name: Const.CHART_TYPE.VOLUME, value: Const.CHART_TYPE.VOLUME },
+  ];
 
   tickers: BehaviorSubject<Ticker[]> = new BehaviorSubject<Ticker[]>([]);
   destroySubject$: Subject<boolean> = new Subject<boolean>();
   isNavExpanded: boolean;
-
+  hasMainWatchList = false;
   columnDefs = [
     { header: "TimeStamp", field: 'timestamp' },
     { header: "Market", field: 'market' },
@@ -94,56 +125,78 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
     { header: "Link", field: 'trade_url' },
   ];
   maximizeChart = false;
-
+  watchListOptions: WatchListMeta[] = [];
 
 
   constructor(
     public utilityService: UtilityService,
     public navService: NavService,
     public chartService: ChartService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private portfolioService: PortfolioService,
+    private cd: ChangeDetectorRef,
+    private toast: ToastService,
     public sessionService: SessionService,
+    private userService: UserService,
+    private watchListService: WatchListService,
     public readonly themeService: ThemeService,
     private domSanitizer: DomSanitizer) {
   }
 
 
   ngOnInit() {
-    this.navService.pipe(takeUntil(this.destroySubject$)).subscribe(coinData => {
-      if (!coinData.id) {
-        this.navService.refreshToLastCoinViewed();
-      } else {
-        this.initCoinData(coinData);
-        this.initLinks(coinData);
-        this.initCategories(coinData);
-        this.initDevData(coinData);
-        this.initMarketData(coinData);
-        this.changeDetectorRef.markForCheck();
+    this.navService
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(coinData => {
+        if (!coinData.id) {
+          this.navService.refreshToLastCoinViewed();
+        } else {
+          this.initCoinData(coinData);
+          this.initLinks(coinData);
+          this.initCategories(coinData);
+          this.initDevData(coinData);
+          this.initMarketData(coinData);
+          this.cd.markForCheck();
 
-      }
-      this.changeDetectorRef.markForCheck();
+        }
+        this.cd.markForCheck();
 
-    });
+      });
 
     this.navService.navExpandedSource$
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(expandStateChange => {
         this.isNavExpanded = expandStateChange;
-        this.chart.chartInstance.reflow();
-        this.chart.cd.detectChanges();
-        this.changeDetectorRef.markForCheck();
-      });
-
-    this.portfolioService.portfolio$.pipe(takeUntil(this.destroySubject$)).subscribe(
-      portfolio => {
-        if (portfolio) {
-          let index = portfolio.portfolioData.trackedAssets.findIndex(x => x.id === this.coinInfo.id);
-          this.isTracked = (index !== -1);
-          this.changeDetectorRef.markForCheck();
+        if (this.chart && this.chart.chartInstance) {
+          this.chart.chartInstance.reflow();
+          this.chart.cd.detectChanges();
+          this.cd.markForCheck();
+          ""
         }
-
       });
+
+    this.watchListService.mainWatchListSource$
+      .pipe(takeUntil(this.destroySubject$)
+      ).subscribe(
+        mainWatchList => {
+          if (mainWatchList) {
+            this.hasMainWatchList = true;
+            if (mainWatchList.watchListData.trackedAssets) {
+              let index = mainWatchList.watchListData.trackedAssets.findIndex(x => x.id === this.coinInfo.id);
+              this.isTracked = (index !== -1);
+            }
+            this.cd.markForCheck();
+          } else {
+            this.hasMainWatchList = false;
+          }
+        });
+
+    this.userService.basicWatchlistSource$.subscribe(
+      wlists => {
+        if (wlists) {
+          this.watchListOptions = wlists;
+          this.cd.markForCheck();
+        }
+      });
+
   }
 
   initCoinData(coinData: CoinFullInfo) {
@@ -209,9 +262,8 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
 
-
   ngAfterViewInit(): void {
-    this.changeDetectorRef.markForCheck();
+    this.cd.markForCheck();
 
   }
 
@@ -219,6 +271,12 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnDestroy(): void {
     this.destroySubject$.next(true);
     this.destroySubject$.complete();
+  }
+
+
+  onChartTypeChange(event: any) {
+    this.chartType = event.value;
+    this.cd.markForCheck();
   }
 
 
@@ -252,23 +310,48 @@ export class CoinResourcesComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
 
-  favoriteButtonClicked(ref: any) {
+  favoriteButtonClicked(ref: any, event: any) {
     if (!this.sessionService.getCurrentUser()) {
       this.sessionService.showLoginModal = true;
-      this.changeDetectorRef.markForCheck();
+      this.cd.markForCheck();
       return;
     }
 
-    if (this.isTracked) {
-      this.portfolioService.removeTrackedFromCurrentUserPortfolio(this.coinInfo.id).then(
+    if (!this.hasMainWatchList) {
+      this.selectWatchListPanel.show(event);
+    } else if (this.isTracked) {
+      this.watchListService.removeFromMainWatchList(this.coinInfo.id).then(
         () => {
           console.log('removed');
-          this.changeDetectorRef.markForCheck();
+          this.cd.markForCheck();
         });
     } else {
-      this.portfolioService.addTrackedToCurrentUserPortfolio(this.coinInfo.id);
-      this.changeDetectorRef.markForCheck();
+      this.watchListService.addToMainWatchList(this.coinInfo.id);
+      this.cd.markForCheck();
 
     }
   }
+
+  onWatchListSelected(event: any) {
+    this.watchListService.addToWatchList(event, this.coinInfo.id);
+    this.cd.markForCheck();
+  }
+
+  createWatchList() {
+    this.watchListService.createNewWatchlist(this.sessionService.getCurrentUser().uid)
+      .subscribe(
+        (watchList: WatchList) => {
+          const newWatchListMeta = {
+            uid: watchList.uid,
+            watchListId: watchList.watchListId,
+            watchListName: watchList.watchListName,
+            isMain: watchList.isMain
+          } as WatchListMeta;
+          this.userService.addWatchListMeta(newWatchListMeta);
+          watchList.isNew = false;
+          this.toast.showSuccessToast('Created New Watch-list, named: ' + watchList.watchListName);
+          this.cd.markForCheck();
+        });
+  }
+
 }

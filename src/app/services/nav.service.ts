@@ -1,22 +1,24 @@
 import { Injectable } from "@angular/core";
 import { CoinFullInfo } from '../models/coin-gecko';
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { CoinDataService } from "./coin-data.service";
 import { Router } from "@angular/router";
 import { CacheService } from "./cache.service";
 import { ChartService } from "../components/charts/chart.service";
+import { PortfolioService } from "./portfolio.service";
+import { PortfolioMeta } from "../models/portfolio";
 
 
 @Injectable()
 export class NavService extends BehaviorSubject<CoinFullInfo> {
-  navExpandedSource$: Subject<boolean> = new Subject();
+  navExpandedSource$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
 
   constructor(
     public coinDataService: CoinDataService,
     public router: Router,
     private cache: CacheService,
-    private chartService: ChartService
+    private chartService: ChartService,
   ) {
     super({});
   }
@@ -38,7 +40,6 @@ export class NavService extends BehaviorSubject<CoinFullInfo> {
         }
       });
   }
-
 
   public refreshToLastCoinViewed() {
     if (this.cache.hasLastCoinCache()) {

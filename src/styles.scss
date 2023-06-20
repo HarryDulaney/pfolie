@@ -43,6 +43,11 @@ body {
   background: var(--scrollbar-hover-thumb);
 }
 
+.p-virtualscroller .p-virtualscroller-content {
+  background: var(--surface-card) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
 .spin-mask-overlay {
   display: flex !important;
   position: absolute !important;
@@ -64,6 +69,17 @@ body {
   padding: 0.3rem;
   border-radius: 10px;
   margin-bottom: 2rem;
+}
+
+.p-tooltip-text {
+  font-size: small !important;
+  font-weight: bold !important;
+}
+
+.p-tooltip .p-tooltip-text {
+  background-color: var(--surface-card) !important;
+  backdrop-filter: blur(10px) !important;
+  color: var(--text-color) !important;
 }
 
 .p-table-custom {
@@ -178,7 +194,7 @@ body {
 }
 
 .mdc-button :hover {
-  color: var(--text-color);
+  color: var(--text-accent) !important;
   background-color: inherit !important;
 }
 
@@ -188,7 +204,7 @@ body {
 
 .custom-btn-style:hover {
   background: transparent !important;
-  color: var(--text-color) !important;
+  color: var(--text-accent) !important;
 }
 
 .inline--text-description a {
@@ -213,16 +229,21 @@ body {
 }
 
 a {
-  color: var(--text-color);
+  color: var(--text-color) !important;
 }
 
 a :hover {
-  color: var(--text-color);
+  color: var(--text-accent) !important;
 }
 
 p-header {
   font-size: 1.5rem;
   padding: 1rem;
+}
+
+.p-dialog-header {
+  background: var(--surface-ground) !important;
+  color: var(--text-color) !important;
 }
 
 .nav-title {
@@ -395,6 +416,14 @@ p-table .custom-spinner {
   background: transparent !important;
 }
 
+.p-overlaypanel .p-overlaypanel-content {
+  padding: 0.8rem !important;
+  background: var(--surface-card) !important;
+  backdrop-filter: blur(10px) !important;
+  border: none !important;
+  border-radius: 15px 15px 15px 15px !important;
+}
+
 .header-text {
   color: var(--text-color);
   font-size: 0.8rem;
@@ -410,12 +439,14 @@ p-table .custom-spinner {
   background: var(--surface-a) !important;
 }
 
-:host ::ng-deep .p-menubar .p-menuitem.p-menuitem-active > .p-menuitem-link {
-  background: var(--hover-bg) !important;
-}
-
 :host ::ng-deep .p-panelmenu .p-panelmenu-content {
   background: transparent;
+}
+
+.p-overlaypanel {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 15px 15px 15px 15px !important;
 }
 
 #hide--button {
@@ -454,8 +485,20 @@ p-table .custom-spinner {
   }
 
   .page-top-margin-medium {
+    margin-top: 5rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-top-margin-medium {
     margin-top: 0.5rem !important;
   }
+}
+
+.p-dialog .p-dialog-content {
+  background: var(--surface-a) !important;
+  color: rgba(255, 255, 255, 0.87);
+  padding: 0 1.5rem 2rem 1.5rem;
 }
 
 .dialog-logo {
@@ -463,4 +506,5 @@ p-table .custom-spinner {
   height: auto !important;
   margin: 0 auto !important;
   display: block !important;
+  background: transparent !important;
 }

@@ -1,19 +1,24 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, Input, EventEmitter, Output, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, EventEmitter, Output, OnDestroy, ViewChild, OnInit } from '@angular/core';
 import { BasicCoin } from 'src/app/models/coin-gecko';
-import { ConfigService } from 'src/app/services/config.service';
 import { NavService } from 'src/app/services/nav.service';
 import { SharedModule } from 'primeng/api';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
+import { SessionService } from 'src/app/services/session.service';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { CommonModule } from '@angular/common';
+import { OverlayModule } from 'primeng/overlay';
+import { Observable } from 'rxjs';
 
 @Component({
-    selector: 'app-search',
-    templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss'],
-    standalone: true,
-    imports: [VirtualScrollerModule, SharedModule]
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.scss'],
+  standalone: true,
+  imports: [VirtualScrollerModule, SharedModule, CommonModule, OverlayPanelModule, OverlayModule]
 })
-export class SearchComponent implements OnDestroy {
+export class SearchComponent implements OnInit, OnDestroy {
+  @ViewChild('searchPanel') searchPanel: OverlayPanel;
 
   @Input('scrollHeight')
   set scrollHeight(sHeight: number) {
@@ -24,44 +29,69 @@ export class SearchComponent implements OnDestroy {
     this.scrollableHeight = height + 'px';
   };
 
-  @Input('ddStyleClass')
-  set dropDownStyle(ddStyleClass: string) {
-    this.dropdownStyle = 'scroll-item';
-    if (ddStyleClass) {
-      this.dropdownStyle = ddStyleClass;
-    }
-  }
+  @Input('optionsProvider') optionsProvider: Observable<BasicCoin[]>;
 
-  @Input() selectOptions: BasicCoin[] = [];
-
-  @Output('selected')
-  selected: EventEmitter<string> = new EventEmitter();
+  @Output('selected') selected: EventEmitter<string> = new EventEmitter();
 
   scrollableHeight: string;
   dropdownStyle: string;
-  onSelect: EventEmitter<string> = new EventEmitter();
   mobileQuery: MediaQueryList;
-  public _mobileQueryListener: () => void;
-
+  mobileQueryListener: () => void;
+  selectOptions = [];
 
   constructor(
-    public coinService: ConfigService,
     public navService: NavService,
-    changeDetectorRef: ChangeDetectorRef,
+    private cd: ChangeDetectorRef,
     media: MediaMatcher
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 900px)');
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addEventListener('change', this._mobileQueryListener);
-
+    this.mobileQueryListener = () => this.cd.detectChanges();
+    this.mobileQuery.addEventListener('change', this.mobileQueryListener);
   }
+
+
+  ngOnInit(): void {
+    this.optionsProvider
+      .subscribe((coins: BasicCoin[]) => {
+        this.selectOptions = coins;
+        this.cd.detectChanges();
+      });
+  }
+
   ngOnDestroy(): void {
-    this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
+    this.mobileQuery.removeEventListener('change', this.mobileQueryListener);
   }
 
-  public select(coinId: string) {
-    this.onSelect.emit(coinId);
+  select(coinId: string) {
     this.selected.emit(coinId);
+  }
+
+  get onShow(): EventEmitter<any> {
+    return this.searchPanel.onShow;
+  }
+
+  get onSelect(): EventEmitter<any> {
+    return this.selected;
+  }
+
+  hide() {
+    this.searchPanel.hide();
+  }
+
+  show(event: Event, target?: any) {
+    this.searchPanel.show(event, target);
+  }
+
+  toggle(event: Event, target?: any) {
+    this.searchPanel.toggle(event, target);
+  }
+
+  get overlayVisible(): boolean {
+    return this.searchPanel.overlayVisible;
+  }
+
+  get overlayHidden(): boolean {
+    return !this.searchPanel.overlayVisible;
   }
 
 }

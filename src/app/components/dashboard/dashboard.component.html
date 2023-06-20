@@ -1,29 +1,45 @@
 <p-scrollTop></p-scrollTop>
-<div class="page-top-margin-small"></div>
+<div [style]="topMarginStyle"></div>
 <div id="dash">
     <div class="grid-nogutter w-100">
         <div class="row flex-wrap-reverse">
-            <!-- ------------------------ Crypto Table By Market Cap---------------------- -->
             <div class="xl:col-9 lg:col-9 md:col-12 sm:col-12 xs:col-12 xl:mt-5 sm:mt-1">
                 <div class="card">
-                    <!-- ------------------------ Crypto Global Market Cap---------------------- -->
-                    <div class="flex align-items-center justify-content-between">
-                        <h2
-                            class="caption-label-md"
-                            style="margin:0 auto; background-color: transparent;"
-                        >Crypto Global</h2>
-                    </div>
-
-                    <div [style]="{'height':globalChartHeight,'width':globalChartWidth}">
-                        <app-big-chart
-                            #globalChart
-                            [themeProvider]="themeService"
-                            [chartDataType]="globalChartType"
-                        >
-                        </app-big-chart>
+                    <div class="bg-transparent">
+                        <!-- ------------------------ Crypto Global Market Cap---------------------- -->
+                        <div class="flex align-items-center justify-content-between">
+                            <h2
+                                class="caption-label-md"
+                                style="margin:0 auto; background-color: transparent;"
+                            >Crypto Global</h2>
+                        </div>
+                        <div [style]="{'height':globalChartHeight,'width':globalChartWidth}">
+                            <app-big-chart
+                                #globalChart
+                                [themeProvider]="themeService"
+                                [chartDataType]="globalChartType"
+                            >
+                            </app-big-chart>
+                        </div>
                     </div>
                 </div>
                 <div class="card">
+                    <p-overlayPanel
+                        #selectWatchListPanel
+                        [dismissable]="true"
+                        [showCloseIcon]="true"
+                        [style]="{width: '16rem'}"
+                    >
+                        <app-list-card
+                            [items]="watchListOptions"
+                            [nameKey]="'watchListName'"
+                            emptyMessage="Create a Watchlist to start tracking."
+                            (emptyAction)="createWatchList()"
+                            (select)="onWatchListSelected($event)"
+                            title="Select the WatchList you want to add to."
+                        >
+                        </app-list-card>
+                    </p-overlayPanel>
                     <p-table
                         #bigCoinsTable
                         [value]="coinsByMarketCap"
@@ -100,7 +116,7 @@
                                 >
                                     <a
                                         #favoriteButtonTable
-                                        (click)="favoriteButtonClicked(coinMarket)"
+                                        (click)="favoriteButtonClicked(coinMarket,$event)"
                                         class="favorite--button-wrapper"
                                     >
                                         <i
@@ -172,7 +188,7 @@
                 <app-news-carosel [type]="'polygon'"></app-news-carosel>
                 <div class="seperator-medium"></div>
                 <!-- ------------------------ Watchlist ---------------------- -->
-                <ng-container *ngIf="dashboardService.isUserLoggedIn()">
+                <!--                 <ng-container *ngIf="dashboardService.isUserLoggedIn()">
                     <app-editable-card
                         #watchListCard
                         class="card h-fit"
@@ -184,7 +200,7 @@
                         (onSelect)="onCardItemSelected($event)"
                         (onAdd)="editTrackedAssets($event)"
                     ></app-editable-card>
-                </ng-container>
+                </ng-container> -->
                 <!-- ------------------------ Crypto Global Market Cap---------------------- -->
                 <div class="card">
                     <div class="flex align-items-center justify-content-between">

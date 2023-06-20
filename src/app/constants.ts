@@ -17,6 +17,10 @@ export const CONSTANT = {
     UNKNOWN: 'Unknown'
   }
 };
+
+export const NEW_WATCHLIST_NAME = 'Watchlist';
+export const NEW_PORTFOLIO_NAME = 'Portfolio';
+
 export const NEWS_ORIGIN = {
   POLYGON: 'polygon',
   RSS: 'rssFeed'
@@ -46,7 +50,9 @@ export const TOOLBAR = {
   NEW_COMPONENT: 'Add Component',
   RENAME: 'Rename',
   DELETE: 'Delete',
+  ADD: 'Add New Asset',
   OPEN: 'Open',
+  DETAILS: 'Transaction Details',
   SIDEBAR_RIGHT: 'Float Right',
   SIDEBAR_BOTTOM: 'Float Bottom',
   CURRENCY: {
@@ -61,7 +67,7 @@ export const API_ROOTS = {
 };
 
 export const RSS_FEEDS = {
-  
+
   CoinTelegraph: 'https://cointelegraph.com/rss',
   CoinJournal: 'https://coinjournal.net/news/category/analysis/rss/'
 };

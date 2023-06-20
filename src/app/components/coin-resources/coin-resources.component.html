@@ -1,68 +1,77 @@
 <div class="page-top-margin-small"></div>
-<div
-  class="grid-nogutter h-100 p-component container"
-  style="margin-left: 0 !important;"
->
-  <span class="row w-100 mt-4">
+<div class="detail-page-wrapper">
+  <div class="surface-ground px-4 py-5 md:px-6 lg:px-8 mt-4">
+    <div class="grid">
+      <!-- Title Banner (Asset/Coin Logo/ Homepage link) -->
+      <div class="col-6 justify-content-center">
+        <a
+          class="text-decoration-none float-start m-1"
+          target="_blank"
+          [href]="homepage"
+          [pTooltip]="homepage"
+        >
+          <img
+            class="token-header-image"
+            [src]="imageSource"
+            alt="main-token-image"
+          />
+          <h1 class="float-end coin-resource-title-content mb-2">{{titleContent}} </h1>
+        </a>
+      </div>
 
-    <!-- Title Banner (Asset/Coin Logo/ Homepage link) -->
-    <div class="col-6 justify-content-center">
-      <a
-        class="text-decoration-none float-start m-1"
-        target="_blank"
-        [href]="homepage"
-        [pTooltip]="homepage"
-      >
-        <img
-          class="token-header-image"
-          [src]="imageSource"
-          alt="main-token-image"
-        />
-        <h1 class="float-end coin-resource-title-content mb-2">{{titleContent}} </h1>
-      </a>
-    </div>
-    <!-- Chart Type Switch -->
-    <div class="col-4">
-      <span class="d-flex flex-row row w-100">
-        <span class="chart-type-btn-wrapper">
-          <button
-            id="priceSwapBtn"
-            class="col w-33"
-            [ngClass]="{'active-chart': chartType === 'price', 'inactive-chart': chartType === 'volume'}"
-            (click)="chartType = 'price'"
-          > Price
-          </button>
-          <button
-            id="volumeSwapBtn"
-            class="col w-33"
-            [ngClass]="{'active-chart': chartType === 'volume', 'inactive-chart': chartType === 'price'}"
-            (click)="chartType = 'volume'"
-          >
-            Volume
-          </button>
+      <!-- Chart Type Switch -->
+      <div class="col-4">
+        <span class="d-flex flex-row row w-100">
+          <span class="chart-type-btn-wrapper">
+            <div class="flex justify-content-center">
+              <p-selectButton
+                [options]="chartTypeOptions"
+                [(ngModel)]="currentChartType"
+                (onChange)="onChartTypeChange($event)"
+                [multiple]="false"
+                optionLabel="name"
+                optionValue="value"
+              ></p-selectButton>
+            </div>
+          </span>
         </span>
-      </span>
 
-    </div>
-    <!-- Add to WatchList (Star) -->
-    <div class="col-2">
-      <a
-        #favoriteButton
-        (click)="favoriteButtonClicked(favoriteButton)"
-        class="favorite--button-wrapper"
+      </div>
+      <!-- Add to WatchList (Star) -->
+      <div class="col-2">
+        <a
+          #favoriteButton
+          (click)="favoriteButtonClicked(favoriteButton,$event)"
+          class="favorite--button-wrapper"
+        >
+          <p-overlayPanel
+            #selectWatchListPanel
+            [dismissable]="true"
+            [showCloseIcon]="true"
+          >
+            <app-list-card
+              [items]="watchListOptions"
+              [nameKey]="'watchListName'"
+              emptyMessage="Create a Watchlist to start tracking."
+              (emptyAction)="createWatchList()"
+              (select)="onWatchListSelected($event)"
+              title="Select the WatchList you want to add to."
+            >
+            </app-list-card>
+          </p-overlayPanel>
+          <i
+            id="favorite--icon"
+            [ngClass]="isTracked ? 'fa-solid fa-star' : 'fa-regular fa-star' "
+            [pTooltip]="favoriteButtonTooltip()"
+            [tooltipOptions]="tooltipOptions"
+          ></i>
+        </a>
+      </div>
+      <!-- Asset Chart -->
+      <div
+        class="col-12 lg:col-8"
+        [style]="{'height':mainChartHeight}"
       >
-        <i
-          id="favorite--icon"
-          [ngClass]="isTracked ? 'fa-solid fa-star' : 'fa-regular fa-star' "
-          [pTooltip]="favoriteButtonTooltip()"
-          [tooltipOptions]="tooltipOptions"
-        ></i>
-      </a>
-    </div>
-  </span>
-  <div class="row w-100 p-1 m-1">
-    <div class="lg:col-8 md:col-12 p-1 m-1 h-100">
-      <div [style]="{'height':mainChartHeight,'width':mainChartWidth}">
         <app-coin-chart
           #chart
           [chartDataType]="chartType"
@@ -71,227 +80,230 @@
         >
         </app-coin-chart>
       </div>
-    </div>
-    <div class="xl:col-3 md:col-12 m-1 p-1">
-      <h3
-        class="lrg-card-content"
-        [hidden]="!symbol"
-      ><span class="font-monospace">Symbol:
+      <div class="xl:col-3 md:col-12 m-1 p-1">
+        <h3
+          class="lrg-card-content"
+          [hidden]="!symbol"
+        ><span class="font-monospace">Symbol:
+          </span>
+          <span class=" dynamic-content">{{symbol}}</span>
+        </h3>
+        <h3
+          class="lrg-card-content"
+          [hidden]="!hashingAlgo"
+        ><span class="font-monospace">Hashing Algorithm:
+          </span>
+          <span class="dynamic-content">{{hashingAlgo}}</span>
+        </h3>
+        <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Rank: </span><span
+            class="dynamic-content">{{rank}}</span></h3>
+        <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Score: </span> <span
+            class="dynamic-content">{{score}}</span></h3>
+        <div *ngIf="countryOfOrigin">
+          <h3 class="lrg-card-content"><span class="font-monospace">Country Origin: </span> <span
+              class="dynamic-content"
+            >{{countryOfOrigin}}</span></h3>
+        </div>
+        <h3 class="lrg-card-content"><span class="font-monospace">Current Price: </span> <span
+            class="dynamic-content">{{currentPrice}}</span></h3>
+
+        <h3 class="lrg-card-content font-monospace"><span>Categories: </span></h3>
+        <span
+          *ngFor="let category of categories"
+          class="med-card-content"
+        >
+          <p-chip
+            [label]=category
+            [style]="{'background-color':'var(--card-bg-color)','margin':'1px'}"
+          ></p-chip>
         </span>
-        <span class=" dynamic-content">{{symbol}}</span>
-      </h3>
-      <h3
-        class="lrg-card-content"
-        [hidden]="!hashingAlgo"
-      ><span class="font-monospace">Hashing Algorithm:
+
+        <h3 class="lrg-card-content font-monospace"><span>Community: </span></h3>
+        <span
+          class="chip-element-text"
+          [hidden]="!chatChannel"
+        >
+          <a
+            class="basic-card-link card-link"
+            [href]=chatChannel
+          >
+            <p-chip
+              [label]="'Chat Channel'"
+              [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
+              pTooltip="{{chatChannel}}"
+            >
+              <i class="fa fa-comment"></i>&nbsp;
+            </p-chip>
+          </a>
         </span>
-        <span class="dynamic-content">{{hashingAlgo}}</span>
-      </h3>
-      <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Rank: </span><span
-          class="dynamic-content">{{rank}}</span></h3>
-      <h3 class="lrg-card-content"><span class="font-monospace">CoinGecko Score: </span> <span
-          class="dynamic-content">{{score}}</span></h3>
-      <div *ngIf="countryOfOrigin">
-        <h3 class="lrg-card-content"><span class="font-monospace">Country Origin: </span> <span
-            class="dynamic-content">{{countryOfOrigin}}</span></h3>
-      </div>
-      <h3 class="lrg-card-content"><span class="font-monospace">Current Price: </span> <span
-          class="dynamic-content">{{currentPrice}}</span></h3>
 
-      <h3 class="lrg-card-content font-monospace"><span>Categories: </span></h3>
-      <span
-        *ngFor="let category of categories"
-        class="med-card-content"
-      >
+        <span
+          class="chip-element-text"
+          [hidden]="!subReddit"
+        >
+          <a
+            class="basic-card-link card-link"
+            [href]=subReddit
+          >
+            <p-chip
+              [label]="'Reddit'"
+              [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
+              pTooltip="{{subReddit}}"
+            >
+              <i class="fa-brands fa-reddit"></i>&nbsp;
+            </p-chip>
+          </a>
+        </span>
+
+        <span
+          class="chip-element-text"
+          [hidden]="!githubRepoUrl"
+        >
+          <a
+            class="basic-card-link card-link"
+            [href]=githubRepoUrl
+          >
+            <p-chip
+              [label]="'GitHub'"
+              [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
+              pTooltip="{{githubRepoUrl}}"
+            >
+              <i class="fa-brands fa-github"></i>&nbsp;
+            </p-chip>
+          </a>
+        </span>
+
+        <span
+          [hidden]="!blockChainSite"
+          class="chip-element-text-dark"
+        >
+          <a
+            class="basic-card-link card-link"
+            [href]=blockChainSite
+          >
+            <p-chip
+              class="chip-element-text-dark"
+              [label]="'Blockchain Site'"
+              [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
+              pTooltip="{{blockChainSite}}"
+            >
+            </p-chip>
+          </a>
+        </span>
+
+        <span
+          class="chip-element-text"
+          [hidden]="!officialForum"
+        >
+          <a
+            class="basic-card-link card-link"
+            [href]=officialForum
+          >
+            <p-chip
+              [label]="'Official Forum'"
+              [style]="{'background-color':'var(--badge-bg-color','margin':'1px'}"
+              pTooltip="{{officialForum}}"
+            >
+            </p-chip>
+          </a>
+        </span>
+
+        <h3 class="lrg-card-content font-monospace"><span>Social Media: </span></h3>
         <p-chip
-          [label]=category
-          [style]="{'background-color':'var(--card-bg-color)','margin':'1px'}"
-        ></p-chip>
-      </span>
-
-      <h3 class="lrg-card-content font-monospace"><span>Community: </span></h3>
-      <span
-        class="chip-element-text"
-        [hidden]="!chatChannel"
-      >
-        <a
-          class="basic-card-link card-link"
-          [href]=chatChannel
-        >
-          <p-chip
-            [label]="'Chat Channel'"
-            [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
-            pTooltip="{{chatChannel}}"
-          >
-            <i class="fa fa-comment"></i>&nbsp;
-          </p-chip>
-        </a>
-      </span>
-
-      <span
-        class="chip-element-text"
-        [hidden]="!subReddit"
-      >
-        <a
-          class="basic-card-link card-link"
-          [href]=subReddit
-        >
-          <p-chip
-            [label]="'Reddit'"
-            [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
-            pTooltip="{{subReddit}}"
-          >
-            <i class="fa-brands fa-reddit"></i>&nbsp;
-          </p-chip>
-        </a>
-      </span>
-
-      <span
-        class="chip-element-text"
-        [hidden]="!githubRepoUrl"
-      >
-        <a
-          class="basic-card-link card-link"
-          [href]=githubRepoUrl
-        >
-          <p-chip
-            [label]="'GitHub'"
-            [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
-            pTooltip="{{githubRepoUrl}}"
-          >
-            <i class="fa-brands fa-github"></i>&nbsp;
-          </p-chip>
-        </a>
-      </span>
-
-      <span
-        [hidden]="!blockChainSite"
-        class="chip-element-text-dark"
-      >
-        <a
-          class="basic-card-link card-link"
-          [href]=blockChainSite
-        >
-          <p-chip
-            class="chip-element-text-dark"
-            [label]="'Blockchain Site'"
-            [style]="{'background-color':'var(--badge-bg-color)','margin':'1px'}"
-            pTooltip="{{blockChainSite}}"
-          >
-          </p-chip>
-        </a>
-      </span>
-
-      <span
-        class="chip-element-text"
-        [hidden]="!officialForum"
-      >
-        <a
-          class="basic-card-link card-link"
-          [href]=officialForum
-        >
-          <p-chip
-            [label]="'Official Forum'"
-            [style]="{'background-color':'var(--badge-bg-color','margin':'1px'}"
-            pTooltip="{{officialForum}}"
-          >
-          </p-chip>
-        </a>
-      </span>
-
-      <h3 class="lrg-card-content font-monospace"><span>Social Media: </span></h3>
-      <p-chip
-        [hidden]="!twitterScreenName"
-        [label]=twitterScreenName
-        [style]="{'background-color':'var(--custom-purple)','margin':'1px'}"
-        pTooltip="Twitter Screen Name"
-        icon="fa-brands fa-twitter"
-      >
-      </p-chip>
-      <p-chip
-        [hidden]="!facebookUserName"
-        [label]=facebookUserName
-        [style]="{'background-color':'var(--custom-purple)','margin':'1px'}"
-        icon="fa-brands fa-facebook"
-        pTooltip="Facebook User Name"
-      >
-      </p-chip>
-      <span [hidden]="!telegramChannelId">
-        <p-chip
-          [label]=telegramChannelId
+          [hidden]="!twitterScreenName"
+          [label]=twitterScreenName
           [style]="{'background-color':'var(--custom-purple)','margin':'1px'}"
-          icon="fa-brands fa-telegram"
-          pTooltip="Telegram Channel Id"
+          pTooltip="Twitter Screen Name"
+          icon="fa-brands fa-twitter"
         >
         </p-chip>
-      </span>
-    </div>
-  </div>
-  <hr>
-  <div class="col-12">
-    <div>
-      <div class="p-component container">
-        <div class="row text-center mb-1 w-100">
-          <p-header class="text-decoration-none text-xl font-bold">{{descriptionTabHeader}}</p-header>
+        <p-chip
+          [hidden]="!facebookUserName"
+          [label]=facebookUserName
+          [style]="{'background-color':'var(--custom-purple)','margin':'1px'}"
+          icon="fa-brands fa-facebook"
+          pTooltip="Facebook User Name"
+        >
+        </p-chip>
+        <span [hidden]="!telegramChannelId">
+          <p-chip
+            [label]=telegramChannelId
+            [style]="{'background-color':'var(--custom-purple)','margin':'1px'}"
+            icon="fa-brands fa-telegram"
+            pTooltip="Telegram Channel Id"
+          >
+          </p-chip>
+        </span>
+      </div>
+      <hr>
+      <!-- Description -->
+      <div class="col-12">
+        <div>
+          <div class="p-component container">
+            <div class="row text-center mb-1 w-100">
+              <p-header class="text-decoration-none text-xl font-bold">{{descriptionTabHeader}}</p-header>
+            </div>
+          </div>
+          <div
+            [innerHtml]="htmlDescription"
+            class="inline--text-description"
+          >
+          </div>
         </div>
       </div>
-      <div
-        [innerHtml]="htmlDescription"
-        class="inline--text-description"
-      >
-      </div>
-    </div>
-  </div>
 
-  <!-- ------------------------------- Tickers  --------------------------------- -->
-  <div class="col-12">
-    <div class="card">
-      <p-table
-        [value]="tickers | async"
-        [paginator]="true"
-        [rows]="100"
-        styleClass="p-table-custom"
-        [showCurrentPageReport]="true"
-        responsiveLayout="scroll"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      >
-        <ng-template pTemplate="caption">
-          <div class="flex align-items-center justify-content-between">
-            <h2
-              class="text-xl font-bold"
-              style="margin:0 auto;color:var(--text-color)"
-            >Recent Transactions</h2>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th *ngFor="let col of columnDefs">
-              {{col.header}}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template
-          pTemplate="body"
-          let-ticker
-        >
-          <tr>
-            <td>{{ticker[columnDefs[0].field]}}</td>
-            <td [width]="10">{{ticker[columnDefs[1].field]}}</td>
-            <td>{{ticker[columnDefs[2].field]}}</td>
-            <td>{{ticker[columnDefs[3].field]}}</td>
-            <td>{{ticker[columnDefs[4].field]}}</td>
-            <td>{{ticker[columnDefs[5].field]}}</td>
-            <td><a
-                [href]=ticker[columnDefs[6].field]
-                target="_blank"
-                [pTooltip]=ticker[columnDefs[6].field]
-              >
-                <i class="pi pi-window-maximize"></i>
-              </a>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+      <!-- ------------------------------- Tickers  --------------------------------- -->
+      <div class="col-12">
+        <div class="card">
+          <p-table
+            [value]="tickers | async"
+            [paginator]="true"
+            [rows]="100"
+            styleClass="p-table-custom"
+            [showCurrentPageReport]="true"
+            responsiveLayout="scroll"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          >
+            <ng-template pTemplate="caption">
+              <div class="flex align-items-center justify-content-between">
+                <h2
+                  class="text-xl font-bold"
+                  style="margin:0 auto;color:var(--text-color)"
+                >Recent Transactions</h2>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of columnDefs">
+                  {{col.header}}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template
+              pTemplate="body"
+              let-ticker
+            >
+              <tr>
+                <td>{{ticker[columnDefs[0].field]}}</td>
+                <td [width]="10">{{ticker[columnDefs[1].field]}}</td>
+                <td>{{ticker[columnDefs[2].field]}}</td>
+                <td>{{ticker[columnDefs[3].field]}}</td>
+                <td>{{ticker[columnDefs[4].field]}}</td>
+                <td>{{ticker[columnDefs[5].field]}}</td>
+                <td><a
+                    [href]=ticker[columnDefs[6].field]
+                    target="_blank"
+                    [pTooltip]=ticker[columnDefs[6].field]
+                  >
+                    <i class="pi pi-window-maximize"></i>
+                  </a>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

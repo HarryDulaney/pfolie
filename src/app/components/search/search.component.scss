@@ -1,10 +1,18 @@
 .scrollbox-wrapper {
   position: relative;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
   text-align: center;
-  max-width: auto !important;
-  max-height: auto !important;
   min-width: fit-content !important;
   min-height: fit-content !important;
+  background: transparent !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.search-dropdown-content {
+  background: var(--surface-card) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
 .scroll-item {
@@ -37,4 +45,12 @@
 .scroll-item-style-2 :hover {
   color: var(--text-color);
   cursor: pointer;
+}
+
+.search-panel-style-class {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+  border: 0px none transparent !important;
+  border-radius: 0px !important;
 }

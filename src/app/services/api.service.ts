@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 import { API_ROUTES, API_ROUTES as COINAPI, IP_SERVICE_URI } from '../constants';
 import { ApiNewsFeed, NewsFeed } from '../models/news-feed';
 import { API_ROOTS } from '../constants'
-import { Portfolio } from '../models/portfolio';
+import { PortfolioMeta, WatchListMeta, Portfolio, PortfolioData, WatchList } from '../models/portfolio';
 import { catchError, map } from 'rxjs/operators';
 import { ToastService } from './toast.service';
 
@@ -58,27 +58,78 @@ export class ApiService {
     };
   }
 
-  /* ---------------------------------------------- PostgreSql API ---------------------------------------------- */
+  /* ---------------------------------------------- Backend and Database APIs ---------------------------------------------- */
 
   /* ------------------------------ Portfolio ---------------------------- */
+  findAllPortfoliosInfo(uid: string): Observable<PortfolioMeta[]> {
+    return this.get<PortfolioMeta[]>(`portfolio/info/${uid}`);
+  }
+
+  getPortfolioData(uid: string, pid: number): Observable<PortfolioData> {
+    return this.get<PortfolioData>(`portfolio/${uid}/${pid}`);
+  }
+
   findAllPortfoliosByUser(uid: string): Observable<any[]> {
     return this.get<any[]>(`portfolio/${uid}`)
   }
 
-  findPortfolioByPortfolioId(pid: number): Observable<Portfolio> {
-    return this.get<Portfolio>(`portfolio/${pid}`);
+  findNextPortfolioId(): Observable<any> {
+    return this.get<any>(`portfolio/next-id`)
+  }
+
+  findPortfolioByPortfolioId(basicPortfolio: PortfolioMeta): Observable<any> {
+    return this.post<any>('portfolio/find-one', basicPortfolio);
   }
 
   createPortfolio(portfolio: Portfolio): Observable<any> {
-    return this.put<any>('portfolio', portfolio);
+    return this.post<any>('portfolio/create', portfolio).pipe(
+      map((res: any) => { return res[0]; }));
   }
 
-  updatePortfolio(portfolio: Portfolio): Observable<any> {
-    return this.post<any>('portfolio', portfolio);
+  updatePortfolio(portfolio: Portfolio): Observable<Portfolio> {
+    return this.post<Portfolio>('portfolio/update', portfolio);
   }
 
-  deletePortfolio(portfolio: Portfolio): Observable<any> {
-    return this.delete<any>('portfolio', portfolio);
+  deletePortfolio(basicPortfolio: PortfolioMeta): Observable<any> {
+    return this.post<any>('portfolio/delete', basicPortfolio);
+  }
+
+  setMainPortfolio(portfolio: Portfolio): Observable<{ message: any, portfolio: Portfolio }> {
+    return this.post<Portfolio>('portfolio/set-main', portfolio).pipe(
+      map((res: any) => { return { message: res, portfolio: portfolio } }));
+  }
+
+  /* -------------------------------  Watchlists and Tracked Assets ------------------------------------  */
+
+  findAllWatchListsInfo(uid: string): Observable<WatchListMeta[]> {
+    return this.get<WatchListMeta[]>(`watch-list/info/${uid}`);
+  }
+
+  findNextWatchListId(): Observable<any> {
+    return this.get<any>(`watch-list/next-id`)
+  }
+
+  findAllWatchListByWatchListId(basicWatchList: WatchListMeta): Observable<any> {
+    return this.post<any>('watch-list/find-one', basicWatchList);
+  }
+
+  updateWatchList(watchList: WatchList): Observable<any> {
+    return this.post<any>('watch-list/update', watchList);
+  }
+
+  createWatchList(watchList: WatchList): Observable<any> {
+    return this.post<any>('watch-list/create', watchList)
+      .pipe(
+        map((res: any) => { return res[0]; }));
+  }
+
+  deleteWatchList(watchListMeta: WatchListMeta): Observable<any> {
+    return this.post<any>('watch-list/delete', watchListMeta);
+  }
+
+  setMainWatchList(watchList: WatchList): Observable<{ message: any, watchlist: WatchList }> {
+    return this.post<any>('watch-list/set-main', watchList).pipe(
+      map((res: any) => { return { message: res, watchlist: watchList } }));
   }
 
 

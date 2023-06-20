@@ -1,13 +1,14 @@
 @import "~primeng/resources/themes/soho-light/theme.css";
 
 * {
+    --surface-a: #f8f9fa;
+    --main-toolbar-bg-color: var(--surface-a);
     --increase-color: #00a53a;
     --decrease-color: #a10d02;
     --light-blue: var(--blue-900);
     --hover-bg: #ababab72;
     --scrollbar-thumb: #161824;
     --scrollbar-hover-thumb: #070709;
-    --surface-bg-exdark: #00012b;
     --toast-bg-color: #eccefa;
     --toast-text-color: #010837;
     --toast-close-color: #013848;
@@ -17,7 +18,6 @@
     --sparkline-color: #011f49;
     --text-exag-title-color: var(--blue-900);
     --text-exag-for-color: #000;
-    --main-toolbar-bg-color: #f8f9fa;
     --text-negative-color: #848484;
     --bg-mask-styled: #bec4e980;
     --table-border-color: #8181814e;
@@ -27,11 +27,15 @@
     --chart-fill-color: #00000096;
     --chart-line-color: #0f1785;
     --chart-bg-color: #00000000;
-    --hover-bg-fancy: #0612c67b;
+    --hover-bg-fancy: #ebecffec;
     --chart-volume-color: #143900;
     --card-bg-color: #00000000;
+    --card-2-bg-color: #282936 !important;
     --badge-bg-color: #c0ceff;
     --badge-active-bg-color: #006bbd;
     --custom-purple: var(--purple-300) !important;
     --active-color: #00000042;
+    --menu-item-hover: var(--primary-color);
+    --text-accent: var(--primary-color);
+    --background-alt: var(--surface-d);
 }

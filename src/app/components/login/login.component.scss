@@ -2,6 +2,9 @@
     color: var(--text-color) !important;
 }
 
+.login-dialog-container {
+    background: var(--surface-d) !important;
+}
 
 .sign-in-provider {
     width: 100% !important;
@@ -19,7 +22,6 @@
     color: var(--surface-ground) !important;
 }
 
-
 .guest-btn-style {
     background: transparent !important;
     color: var(--text-color) !important;
@@ -29,8 +31,6 @@
     background: var(--highlight-text-color) !important;
     color: var(--surface-ground) !important;
 }
-
-
 
 .straight-line-wrapper {
     display: inline-flex !important;

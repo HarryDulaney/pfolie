@@ -3,14 +3,22 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 import { ToastService } from './toast.service';
-import { PortfolioService } from '../components/portfolio/services/portfolio.service';
 import { SIGN_IN_PERSISTENCE_LEVEL } from '../constants';
+import { UserService } from './user.service';
+import { WatchListService } from './watchlist.service';
+import { UserPreferences } from '../models/appconfig';
+import { BasicCoinInfoStore } from '../store/global/basic-coins.store';
+import { ApiService } from './api.service';
+import { CacheService } from './cache.service';
+import { BasicCoin } from '../models/coin-gecko';
+import { PortfolioService } from './portfolio.service';
 
 
 @Injectable()
 export class SessionService {
+    private preferences: UserPreferences = {} as UserPreferences;
     public static isAuthenticated: boolean = false;
     public static isGuestLogin = false;
     private user: firebase.User = null;
@@ -23,39 +31,76 @@ export class SessionService {
     private watchItemId = null;
     public showUpgradeGuestModal = false;
 
+
     constructor(
         private auth: AngularFireAuth,
         private router: Router,
         private toastService: ToastService,
-        private portfolioService: PortfolioService
+        private watchListService: WatchListService,
+        private userService: UserService,
+        private basicCoinInfoStore: BasicCoinInfoStore,
+        private apiService: ApiService,
+        private cache: CacheService
     ) {
-        this.init();
     }
 
-    init(): void {
-        this.auth.setPersistence(SIGN_IN_PERSISTENCE_LEVEL).then(
+    init(): Promise<void> {
+        return this.auth.setPersistence(SIGN_IN_PERSISTENCE_LEVEL).then(
             () => {
                 this.auth.user.subscribe((user) => {
                     if (user) {
+                        SessionService.isAuthenticated = true;
+                        this.initialized = true;
                         this.user = user;
                         if (this.user.isAnonymous) {
                             SessionService.isGuestLogin = true;
                         } else {
                             SessionService.isGuestLogin = false;
                         }
-                        this.portfolioService.handleStartPortfolioSession(this.user);
-                        SessionService.isAuthenticated = true;
-                        this.initialized = true;
+
+                        this.userService.initialize(this.user);
                     } else {
                         user = null;
                         SessionService.isGuestLogin = false;
-                        this.portfolioService.endSession();
-                        this.initialized = false;
+                        this.userService.reset();
                         SessionService.isAuthenticated = false;
                     }
                 });
             });
     }
+
+
+    preload(): Promise<void> {
+        this.preferences = Object.assign(this.preferences, this.cache.getUserPreferences());
+        return Promise.all(
+            [
+                this.init(),
+                firstValueFrom(this.apiService.getListCoins())
+            ]
+        ).then(
+            ([r1, r2]) => {
+                let baseCoins: BasicCoin[] = r2;
+                let filteredCoins = [];
+                filteredCoins.push(...baseCoins);
+                this.basicCoinInfoStore.allCoinsStore.set(baseCoins);
+
+            });
+    }
+
+    getPreferences(): UserPreferences {
+        return this.cache.getUserPreferences();
+    }
+
+    setPreferences(preferences: UserPreferences) {
+        this.cache.setUserPreferences(preferences);
+        this.preferences = this.cache.getUserPreferences();
+    }
+
+
+    getGlobalStore(): BasicCoinInfoStore {
+        return this.basicCoinInfoStore;
+    }
+
 
 
     public get authenticated(): boolean {
@@ -103,12 +148,12 @@ export class SessionService {
             this.toastService.showLoginSuccess();
             this.showLoginModal = false;
             if (this.redirectUrlFragment !== null) {
-                this.router.navigate(['/', this.redirectUrlFragment]).finally(() => {
+                this.router.navigate([this.redirectUrlFragment]).finally(() => {
                     this.redirectUrlFragment = null;
                 });
 
             } else if (this.watchItemId !== null) {
-                this.portfolioService.addTracked(this.watchItemId);
+                this.watchListService.addTracked(this.watchItemId);
                 this.watchItemId = null;
             } else {
                 this.router.navigate(['/home']);
@@ -136,7 +181,6 @@ export class SessionService {
             this.user = null;
             SessionService.isAuthenticated = false;
             SessionService.isGuestLogin = false;
-            this.portfolioService.endSession();
             this.router.navigate(['/', 'home']);
             this.toastService.showSuccessToast('Sign Out Success. Thank you for using Pfolie!');
         });

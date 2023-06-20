@@ -1,12 +1,9 @@
 import { Injectable } from "@angular/core";
-import { CoinsState } from "src/app/models/store-model";
-import { Store } from "../store";
+import { ListStore } from "../list-store";
+import { BasicCoin } from "src/app/models/coin-gecko";
 
 
 @Injectable()
 export class BasicCoinInfoStore {
-    state$: Store<CoinsState> = new Store<CoinsState>({
-        basicCoins: [],
-        filteredCoins: []
-    });
+    allCoinsStore: ListStore<BasicCoin> = new ListStore<BasicCoin>([]);
 }

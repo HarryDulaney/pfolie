@@ -1,59 +1,112 @@
-import { assertPlatform, Component, Type } from "@angular/core";
+import { Type } from "@angular/core";
 import { CoinFullInfo } from "./coin-gecko";
 
-
-
-export interface PieChartData {
+export interface CachedPortfolio {
+    id: number;
     name: string;
-    y: number;
-    sliced?: boolean;
-    selected?: boolean;
+    timeStamp: number;
 }
 
-export class PortfolioPreferences {
-    view: ViewPreferences = { sidebarLocation: 'right', currency: 'usd' };
-
-    constructor(viewPrefs: ViewPreferences, otherPrefs?: any) {
-        if (viewPrefs) {
-            this.view.sidebarLocation = viewPrefs.sidebarLocation;
-        }
-    }
+export interface CachedWatchList {
+    id: number;
+    name: string;
+    timeStamp: number;
 }
 
-export interface ViewPreferences {
-    sidebarLocation: string;
-    currency: string;
+export interface PortfolioMeta {
+    uid: string;
+    portfolioId: number;
+    portfolioName: string;
+    /* Main Portfolio is displayed on Dashboard/homepage */
+    isMain: boolean;
+}
+
+export interface WatchListMeta {
+    uid: string;
+    watchListId: number;
+    watchListName: string;
+    /* Main Watchlist, is displayed on Dashboard/homepage */
+    isMain: boolean;
 }
 
 export class PortfolioData {
-    trackedAssets: TrackedAsset[];
-    components: UiComponent[];
     ownedAssets: OwnedAsset[];
 
-    constructor(trackedAssets: TrackedAsset[], components: UiComponent[], ownedAssets: OwnedAsset[]) {
-        if (trackedAssets.length > 0) {
-            this.trackedAssets = trackedAssets.map(tracked => { return { id: tracked.id } as TrackedAsset });
-        } else {
-            this.trackedAssets = [];
-        }
-
-        if (components.length > 0) {
-            this.components = Array.from(components);
-        } else {
-            this.components = [];
-        }
-
+    constructor(ownedAssets: OwnedAsset[]) {
         if (ownedAssets.length > 0) {
             this.ownedAssets = Array.from(ownedAssets);
         } else {
             this.ownedAssets = [];
-
         }
     }
 }
 
 export interface TrackedAsset {
     id: string;
+}
+
+export class WatchList {
+    watchListId: number = -1;
+    uid: string = '-1';
+    watchListName: string = 'New-WatchList';
+    watchListData: WatchListData = new WatchListData([]);
+    isMain: boolean = false;
+    isNew: boolean = false;
+
+    get name(): string {
+        return this.watchListName;
+    }
+
+    from(uid: string,
+        watchListId: number,
+        watchListName: string,
+        isMain: boolean,
+        watchListData: WatchListData,
+        isNew: boolean): WatchList {
+        this.watchListName = watchListName;
+        if (isNew) {
+            this.watchListName += `-${watchListId}`;
+        }
+
+        this.uid = uid;
+        this.isNew = isNew;
+        this.watchListId = watchListId;
+        this.isMain = isMain;
+        this.watchListData = Object.assign({}, watchListData);
+        return this;
+    }
+
+    fromMeta(watchListMeta: WatchListMeta, isNew: boolean): WatchList {
+        if (watchListMeta) {
+            this.isNew = isNew;
+            this.uid = watchListMeta.uid;
+            this.watchListId = watchListMeta.watchListId;
+            this.watchListName = watchListMeta.watchListName;
+            this.isMain = watchListMeta.isMain;
+
+            if (isNew) {
+                this.watchListName += `-${watchListMeta.watchListId}`;
+            }
+
+            return this;
+        }
+
+        return null;
+
+    }
+
+}
+
+export class WatchListData {
+    trackedAssets: TrackedAsset[];
+
+    constructor(trackedAssets: TrackedAsset[]) {
+        if (trackedAssets.length > 0) {
+            this.trackedAssets = Array.from(trackedAssets);
+        } else {
+            this.trackedAssets = [];
+        }
+    }
 }
 
 export interface OwnedAsset {
@@ -72,13 +125,45 @@ export interface OwnedAssetView extends OwnedAsset {
 
 
 export class Portfolio {
-    portfolioId: number = -1;
     uid: string = '-1';
-    portfolioName: string = 'Click To Change Name';
-    localization: string = 'en';
-    portfolioData: PortfolioData = new PortfolioData([], [], []);
-    preferences?: PortfolioPreferences = { view: { sidebarLocation: 'right', currency: 'usd' } as ViewPreferences };
+    portfolioId: number = -1;
+    portfolioName: string = 'Portfolio';
+    isMain: boolean = false;
+    portfolioData: PortfolioData = new PortfolioData([]);
+    isNew: boolean = false;
+    constructor() { }
 
+    get name(): string {
+        return this.portfolioName;
+    }
+
+    from(uid: string, portfolioId: number, portfolioName: string, isMain: boolean, portfolioData: PortfolioData, isNew: boolean): Portfolio {
+        this.uid = uid;
+        this.portfolioName = portfolioName;
+        this.isNew = isNew;
+        this.portfolioId = portfolioId;
+        this.isMain = isMain;
+        this.portfolioData = Object.assign({}, portfolioData);
+        return this;
+    }
+
+    fromBasic(basicPortfolio?: PortfolioMeta, isNew?: boolean): Portfolio {
+        if (basicPortfolio) {
+            this.uid = basicPortfolio.uid;
+            this.isNew = isNew;
+            this.portfolioId = basicPortfolio.portfolioId;
+            this.portfolioName = basicPortfolio.portfolioName;
+            this.isMain = basicPortfolio.isMain;
+
+            if (isNew) {
+                this.portfolioName += `-${basicPortfolio.portfolioId}`;
+            }
+
+            return this;
+        }
+        return null;
+
+    }
 }
 
 export class Transaction {
@@ -88,6 +173,16 @@ export class Transaction {
     unitPrice: number;
     type: 'buy' | 'sell' | 'trade' | 'swap';
 }
+
+
+
+export interface PieChartData {
+    name: string;
+    y: number;
+    sliced?: boolean;
+    selected?: boolean;
+}
+
 
 export class UiComponent {
     componentId: string = '';
@@ -111,7 +206,6 @@ export interface DragBundle {
     iconHeight: number;
     iconWidth: number;
 }
-
 
 
 

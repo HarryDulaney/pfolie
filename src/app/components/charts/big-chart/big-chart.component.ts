@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, EventEmitter, OnChanges, SimpleChanges, ChangeDetectorRef, ViewChild, AfterViewInit } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef, ViewChild, Inject } from "@angular/core";
 import * as Highcharts from 'highcharts/highstock';
 import HIndicatorsAll from "highcharts/indicators/indicators-all";
 import HIndicators from "highcharts/indicators/indicators";
@@ -12,10 +12,10 @@ import HPriceIndicator from "highcharts/modules/price-indicator";
 import HStockTools from "highcharts/modules/stock-tools";
 import { BigChartService } from "./big-chart.service";
 import HExportData from "highcharts/modules/export-data";
-import { Observable, Subject } from 'rxjs';
-import { skip, skipUntil, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { HighchartsChartComponent, HighchartsChartModule } from 'highcharts-angular';
-import { CommonModule } from "@angular/common";
+import { CommonModule, DOCUMENT } from "@angular/common";
 import { ThemeService } from "src/app/services/theme.service";
 import { ProgressSpinner } from "primeng/progressspinner";
 
@@ -31,6 +31,11 @@ HStockTools(Highcharts);
 HHightContrastDark(Highcharts);
 HAccessability(Highcharts);
 
+
+export function getDocument() {
+    return document;
+}
+
 @Component({
     selector: 'app-big-chart',
     templateUrl: './big-chart.component.html',
@@ -38,7 +43,7 @@ HAccessability(Highcharts);
     imports: [HighchartsChartModule, CommonModule],
     providers: [BigChartService]
 })
-export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
+export class BigChartComponent implements OnInit, OnDestroy {
     /** price | marketcap | volume | ohlc */
     @Input('chartDataType') chartDataType: string;
     @Input('themeProvider') themeProvider: ThemeService;
@@ -56,20 +61,23 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
     ohlc = [];
     volume = [];
     destroySubject$ = new Subject();
+    updateFlag = true;
+    textColor: string;
+    volumeColor: string;
+    lineColor: string;
+    textSecondaryColor: string;
+    chartBackgroundColor: string;
+    hoverBgColor: string;
 
     constructor(
+        @Inject(DOCUMENT) private document: Document,
         public cd: ChangeDetectorRef,
         private service: BigChartService
     ) { }
 
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes.chartDataType) {
-            this.reload();
-        } else {
-            this.redraw();
-        }
-
+    chartInstanceChanged(event: Highcharts.Chart) {
+        this.chartInstance = event;
     }
 
     ngOnDestroy(): void {
@@ -77,38 +85,41 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
         this.destroySubject$.complete();
     }
 
-    onChartUpdate(event) {
-        this.cd.detectChanges();
-    }
 
     ngOnInit() {
+        this.load();
         this.themeProvider.themeSource$.pipe(
-            skip(1),
             takeUntil(this.destroySubject$))
             .subscribe({
                 next: (theme) => {
-                    if (theme) {
-                        this.redraw();
-                        this.cd.detectChanges();
-
-                    }
-                },
-                complete: () => {
-                    this.cd.detectChanges();
+                    this.theme = theme;
+                    this.redraw();
+                    this.updateFlag = true;
                 }
 
             });
-        this.reload();
     }
 
     redraw() {
+        this.isLoading = true;
+        this.loadThemeVariables();
         this.chartOptions = this.comboChart();
-        this.chartInstance.redraw();
+        if (this.chartInstance) {
+            this.chartInstance.redraw();
+        } else {
+            this.updateFlag = true;
+            this.cd.detectChanges();
+            this.chartInstance.redraw();
+        }
+        this.isLoading = false;
+        this.updateFlag = true;
         this.cd.detectChanges();
     }
 
     reflow() {
         this.isLoading = true;
+        this.loadThemeVariables();
+        this.chartOptions = this.comboChart();
         if (this.chartInstance) {
             this.chartInstance.reflow();
         } else {
@@ -116,10 +127,11 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             this.chartInstance.reflow();
         }
         this.isLoading = false;
+        this.updateFlag = true;
         this.cd.detectChanges();
     }
 
-    reload() {
+    load() {
         this.isLoading = true;
         this.service.dataSource$
             .pipe(takeUntil(this.destroySubject$))
@@ -128,14 +140,17 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                     if (responseData && responseData.market_cap_chart) {
                         this.market_caps = this.sortData(responseData.market_cap_chart.market_cap);
                         this.total_volumes = this.sortData(responseData.market_cap_chart.volume);
+                        this.loadThemeVariables();
                         this.chartOptions = this.comboChart();
                         this.isLoading = false;
+                        this.updateFlag = true;
                         this.cd.detectChanges();
 
                     }
 
                 },
                 complete: () => {
+                    this.updateFlag = true;
                     this.isLoading = false;
                     this.cd.detectChanges();
                 },
@@ -155,6 +170,16 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
 
     }
 
+    loadThemeVariables() {
+        this.textColor = this.themeProvider.getCssVariableValue('--text-color', getDocument());
+        this.volumeColor = this.themeProvider.getCssVariableValue('--chart-volume-color', getDocument());
+        this.lineColor = this.themeProvider.getCssVariableValue('--chart-line-color', getDocument());
+        this.textSecondaryColor = this.themeProvider.getCssVariableValue('--text-color-secondary', getDocument());
+        this.chartBackgroundColor = this.themeProvider.getCssVariableValue('--chart-bg-color', getDocument());
+        this.hoverBgColor = this.themeProvider.getCssVariableValue('--hover-bg-fancy', getDocument());
+        this.updateFlag = true;
+    }
+
     comboChart(): Highcharts.Options {
         return {
             exporting: {
@@ -170,33 +195,33 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             },
             rangeSelector: {
                 inputStyle: {
-                    color: this.themeProvider.getCssVariableValue('--text-color'),
+                    color: this.textColor,
                     fontWeight: 'bold'
                 },
                 labelStyle: {
-                    color: this.themeProvider.getCssVariableValue('--text-color'),
+                    color: this.textColor,
                     fontWeight: 'bold'
                 },
                 buttonTheme: {
-                    fill: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+                    fill: this.chartBackgroundColor,
                     style: {
-                        color: this.themeProvider.getCssVariableValue('--text-color'),
+                        color: this.textColor,
                         fontWeight: 'bold'
                     },
                     states: {
                         hover: {
-                            fill: this.themeProvider.getCssVariableValue('--hover-bg-fancy'),
-                            stroke: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+                            fill: this.chartBackgroundColor,
+                            stroke: this.chartBackgroundColor,
                             style: {
-                                color: this.themeProvider.getCssVariableValue('--text-color'),
+                                color: this.textColor,
                                 fontWeight: 'bold'
                             },
                         },
                         select: {
-                            fill: this.themeProvider.getCssVariableValue('--chart-bg-color'),
-                            stroke: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+                            fill: this.chartBackgroundColor,
+                            stroke: this.chartBackgroundColor,
                             style: {
-                                color: this.themeProvider.getCssVariableValue('--text-color'),
+                                color: this.textColor,
                                 fontWeight: 'bold'
                             },
                         }
@@ -212,13 +237,13 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 text: ''
             },
             chart: {
-                backgroundColor: this.themeProvider.getCssVariableValue('--chart-bg-color'),
-                plotBackgroundColor: this.themeProvider.getCssVariableValue('--chart-bg-color'),
+                backgroundColor: this.chartBackgroundColor,
+                plotBackgroundColor: this.chartBackgroundColor,
                 reflow: true,
             },
             plotOptions: {
                 series: {
-                    color: this.themeProvider.getCssVariableValue('--chart-line-color'),
+                    color: this.lineColor,
                     showInLegend: true,
                     accessibility: {
                         description: 'Price Chart',
@@ -227,7 +252,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                     }
                 },
                 line: {
-                    color: this.themeProvider.getCssVariableValue('--chart-line-color'),
+                    color: this.lineColor,
                     dataLabels: {
                         enabled: false
                     },
@@ -239,15 +264,15 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             },
             legend: {
                 itemStyle: {
-                    color: this.themeProvider.getCssVariableValue('--text-color')
+                    color: this.textColor
                 },
                 itemHoverStyle: {
-                    color: this.themeProvider.getCssVariableValue('--text-color-secondary')
+                    color: this.textSecondaryColor
                 },
                 enabled: true,
                 navigation: {
                     style: {
-                        color: this.themeProvider.getCssVariableValue('--text-color')
+                        color: this.textColor
                     }
                 }
 
@@ -263,7 +288,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 },
                 labels: {
                     style: {
-                        color: this.themeProvider.getCssVariableValue('--text-color')
+                        color: this.textColor
                     }
                 }
             }, {
@@ -275,7 +300,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 lineWidth: 1,
                 labels: {
                     style: {
-                        color: this.themeProvider.getCssVariableValue('--text-color')
+                        color: this.textColor
                     }
                 },
                 resize: {
@@ -287,7 +312,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 type: 'datetime',
                 labels: {
                     style: {
-                        color: this.themeProvider.getCssVariableValue('--text-color')
+                        color: this.textColor
                     }
                 }
             },
@@ -298,7 +323,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
             },
             series: [{
                 name: 'Market Cap',
-                color: this.themeProvider.getCssVariableValue('--chart-line-color'),
+                color: this.lineColor,
                 type: 'line',
                 data: this.market_caps,
                 tooltip: {
@@ -308,7 +333,7 @@ export class BigChartComponent implements OnInit, OnDestroy, OnChanges {
                 type: 'column',
                 id: 'volume',
                 name: 'Volume',
-                color: this.themeProvider.getCssVariableValue('--chart-volume-color'),
+                color: this.volumeColor,
                 data: this.total_volumes,
                 yAxis: 1
             }],

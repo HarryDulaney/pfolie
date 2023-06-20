@@ -3,6 +3,11 @@
   float: right;
 }
 
+.detail-page-wrapper {
+  min-height: 80vh !important;
+  width: 100% !important;
+}
+
 tr td {
   padding: 0.3rem 0.3rem;
   font-size: 0.8rem;
@@ -55,7 +60,6 @@ tr td {
   background: var(--card-bg-color) !important;
   padding: 0.5rem 0.5rem !important;
 }
-
 
 .chart-type-btn-wrapper {
   margin-right: 1rem;

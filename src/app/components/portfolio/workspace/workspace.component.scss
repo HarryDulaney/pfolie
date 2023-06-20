@@ -1,0 +1,25 @@
+.ws-caption-label-special {
+    color: var(--primary-color) !important;
+    font-size: 1rem;
+    font-weight: bold;
+    font-weight: bold;
+    width: 100% !important;
+}
+
+.ws-caption-label-data {
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: bold;
+    font-weight: bold;
+    width: 100% !important;
+}
+
+.workspace--style {
+    min-height: 25vh !important;
+    width: 100%;
+}
+
+.workgrid--totals {
+    overflow-x: auto !important;
+    padding: 0.5rem !important;
+}

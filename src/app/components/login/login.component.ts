@@ -42,6 +42,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     'width': '100% !important'
   };
 
+  styleClass = 'login-dialog-container';
+
   constructor(
     public screenService: ScreenService,
     public themeService: ThemeService,

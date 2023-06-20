@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BasicCoin } from '../models/coin-gecko';
 import { DEFAULT_USER_PREFS, LastCoin, OLD_THEMES, SOHO_DARK_THEME, SOHO_LIGHT_THEME, TimeStamp, UserPreferences } from '../models/appconfig';
-
+import { UtilityService } from './utility.service';
+import { CachedPortfolio, CachedWatchList, Portfolio, PortfolioMeta, WatchList } from '../models/portfolio';
 
 
 @Injectable()
 export class CacheService {
     private readonly CACHE_VALID_PERIOD = 86400000; // Milliseconds in one day
 
-    private readonly LAST_PORTFOLIO_WORKSPACE_KEY = "pFoliePreviousPortfolioWorkspace";
+    private readonly CACHE_PORTFOILO_KEY = "pFoliePreviousPortfolioWorkspace";
+    private readonly CACHE_WATCHLIST_KEY = "pFoliePreviousWatchlistWorkspace";
     private readonly COINLIST_STORE_KEY = "pFolieCachedCoinsList";
     private readonly COINLIST_STORE_TIMESTAMP_KEY = "pFolieLastCacheCoinListTimeStamp";
     private readonly LAST_COIN_VIEWED_KEY = "pFolieLastAssetViewed";
@@ -29,19 +31,14 @@ export class CacheService {
     public getUserPreferences(): UserPreferences {
         let prefs = localStorage.getItem(this.USER_PREFS_KEY);
         if (prefs !== null) {
-            const userPrefs = JSON.parse(prefs) as UserPreferences;
-            if (!userPrefs.theme) {
-                userPrefs.theme = DEFAULT_USER_PREFS.theme;
-            } else if (OLD_THEMES.indexOf(userPrefs.theme) !== -1) {
-                const newTheme = this.convertOldTheme(userPrefs.theme);
-                userPrefs.theme = newTheme;
-                this.setUserPreferences(userPrefs);
+            let userPrefs = JSON.parse(prefs) as UserPreferences;
+            if (UtilityService.isValidStoredPreferences(userPrefs)) {
+                return userPrefs;
             }
 
-            if (!userPrefs.sideNav) {
-                userPrefs.sideNav = DEFAULT_USER_PREFS.sideNav;
-            }
-            return userPrefs;
+            this.setUserPreferences(DEFAULT_USER_PREFS);
+            return DEFAULT_USER_PREFS;
+
         } else {
             this.setUserPreferences(DEFAULT_USER_PREFS);
             return DEFAULT_USER_PREFS;
@@ -105,13 +102,44 @@ export class CacheService {
     }
 
     /* ----------------------------- Portfolios ---------------------------------- */
-    public cacheLastWorkspace(pid: number, pName: string) {
-        let cachedPortfolio = { pid: pid, pName: pName };
-        localStorage.setItem(this.LAST_PORTFOLIO_WORKSPACE_KEY, JSON.stringify(cachedPortfolio));
+    hasCachedPortfolio() {
+        return localStorage.getItem(this.CACHE_PORTFOILO_KEY) &&
+            this.getCachedPortfoilo() !== null &&
+            this.getCachedPortfoilo() !== undefined;
     }
 
-    public getCachedLastWorkspace(): any {
-        return JSON.parse(localStorage.getItem(this.LAST_PORTFOLIO_WORKSPACE_KEY));
+    public cachePortfolio(portfolio: Portfolio) {
+        const cachePortfolio: CachedPortfolio = { id: portfolio.portfolioId, name: portfolio.portfolioName, timeStamp: Date.now() };
+        localStorage.setItem(this.CACHE_PORTFOILO_KEY, JSON.stringify(cachePortfolio));
+    }
+
+    public getCachedPortfoilo(): CachedPortfolio {
+        return JSON.parse(localStorage.getItem(this.CACHE_PORTFOILO_KEY));
+    }
+
+    public removeLastWorkspace() {
+        localStorage.removeItem(this.CACHE_PORTFOILO_KEY);
+    }
+
+
+    /* ----------------------------- WatchLists ---------------------------------- */
+    hasCachedWatchList() {
+        return localStorage.getItem(this.CACHE_WATCHLIST_KEY) &&
+            this.getCachedWatchList() !== null &&
+            this.getCachedWatchList() !== undefined;
+    }
+
+    public cacheWatchList(watchList: WatchList) {
+        const cacheWatchList: CachedWatchList = { id: watchList.watchListId, name: watchList.name, timeStamp: Date.now() };
+        localStorage.setItem(this.CACHE_WATCHLIST_KEY, JSON.stringify(cacheWatchList));
+    }
+
+    public getCachedWatchList(): CachedWatchList {
+        return JSON.parse(localStorage.getItem(this.CACHE_WATCHLIST_KEY));
+    }
+
+    removeLastWatchList() {
+        localStorage.removeItem(this.CACHE_WATCHLIST_KEY);
     }
 
     /* ----------------------------- Helper Methods ---------------------------------- */

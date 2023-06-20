@@ -1,0 +1,162 @@
+#tracking-container {
+    height: 100% !important;
+    width: 100% !important;
+    min-height: 81vh !important;
+}
+
+.empty-table-message {
+    white-space: nowrap !important;
+    font-size: large !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.table-action-btn {
+    color: var (--text-color) !important;
+    font-weight: bold !important;
+    background: transparent !important;
+}
+
+.table-options-panel {
+    background: #000000 !important;
+}
+
+:host ::ng-deep .p-overlaypanel .p-overlaypanel-content {
+    background: #000000 !important;
+    padding: 1.25rem;
+    backdrop-filter: blur(10px) !important;
+}
+
+:host ::ng-deep .p-overlaypanel .p-overlaypanel-content {
+    padding: 1.25rem;
+    backdrop-filter: blur(10px);
+}
+
+:host ::ng-deep .p-overlaypanel-content {
+    background: #000000 !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.1rem 0.1rem !important;
+}
+
+:host ::ng-deep .p-component-overlay {
+    display: none !important;
+}
+:host ::ng-deep .p-component-overlay-enter {
+    display: none !important;
+}
+
+:host ::ng-deep .p-sidebar-mask {
+    display: none !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-loading-icon {
+    font-size: 10rem !important;
+    color: var(--text-color) !important;
+}
+
+:host ::ng-deep .p-datatable .p-paginator-top {
+    border-width: 0 0 0 0 !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    background: transparent !important;
+    border: none !important;
+    font-size: 0.8rem !important;
+    font-weight: bold;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.1rem 0.1rem !important;
+    font-weight: bold;
+    font-size: 0.8rem !important;
+}
+
+:host ::ng-deep .p-datatable .p-paginator-bottom {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.1rem 0.1rem !important;
+    font-size: 0.8rem !important;
+    font-weight: bold;
+}
+
+:host ::ng-deep .p-datatable .p-paginator-bottom {
+    border-width: 0 0 0 0 !important;
+}
+
+:host ::ng-deep .p-datatable .p-paginator .p-paginator-bottom {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+:host ::ng-deep .p-datatable > .p-paginator .p-paginator-top {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+.card {
+    box-shadow: 1px 1px 1px var(--surface-border);
+    background: var(--card-bg-color) !important;
+    padding: 0.3rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.p-datatable .p-datatable-header {
+    padding: 0.1rem 0.1rem !important;
+    font-size: 0.8rem !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-header {
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.8rem !important;
+}
+
+tr td {
+    font-size: 0.8rem !important;
+    font-weight: bold;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    padding: 0.1rem 0.1rem !important;
+    font-size: 0.8rem !important;
+    font-weight: bold;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-footer {
+    background: transparent;
+    font-size: 0.8rem !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    cursor: pointer;
+    font-size: 0.8rem !important;
+}
+
+.p-table-custom {
+    background-color: transparent !important;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
+    font-size: 0.8rem !important;
+}
+
+.mdc-button__label {
+    color: var(--text-color) !important;
+    font-size: 0.8rem !important;
+}
+
+.mdc-button {
+    color: var(--text-color) !important;
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+}

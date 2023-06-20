@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@
 import { EventEmitter, Output } from '@angular/core';
 import { BasicCoin } from 'src/app/models/coin-gecko';
 import { UntypedFormGroup, UntypedFormControl, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { VirtualScroller, VirtualScrollerModule } from 'primeng/virtualscroller';
 import { ScrollerOptions } from 'primeng/scroller';
@@ -11,17 +11,17 @@ import { InputTextModule } from 'primeng/inputtext';
 
 
 @Component({
-    selector: 'app-search-select',
-    templateUrl: './search-select.component.html',
-    styleUrls: ['./search-select.component.scss'],
-    standalone: true,
-    imports: [FormsModule, InputTextModule, ReactiveFormsModule, VirtualScrollerModule, SharedModule]
+  selector: 'app-search-select',
+  templateUrl: './search-select.component.html',
+  styleUrls: ['./search-select.component.scss'],
+  standalone: true,
+  imports: [FormsModule, InputTextModule, ReactiveFormsModule, VirtualScrollerModule, SharedModule]
 })
-export class  AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
+export class AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('vs') virtualScroller!: VirtualScroller;
   @Input() maxWidth: string;
   @Input() scrollHeight: string;
-  @Input() selectOptions: BasicCoin[] = [];
+  @Input('optionsProvider') optionsProvider$: Observable<BasicCoin[]>;
   @Output('selected') selected: EventEmitter<string> = new EventEmitter();
 
   filteredAssets: BasicCoin[] = [];
@@ -29,7 +29,7 @@ export class  AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   searchForm: UntypedFormGroup;
   searchField: UntypedFormControl = new UntypedFormControl('');
   destroySubject$ = new Subject();
-
+  selectOptions: BasicCoin[] = [];
   options: ScrollerOptions = {
     autoSize: true,
     step: 40,
@@ -47,8 +47,14 @@ export class  AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.filteredAssets.push(...this.selectOptions);
-
+    this.optionsProvider$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe({
+        next: (options) => {
+          this.selectOptions = options;
+          this.filteredAssets = options;
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -59,10 +65,12 @@ export class  AssetSearchSelect implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.options.scrollHeight = this.scrollHeight;
     this.options.items = this.filteredAssets;
-    this.searchForm.get('searchField').valueChanges.pipe(takeUntil(this.destroySubject$)).subscribe(word => {
-      this.filter(word);
-    });
-
+    this.searchForm.get('searchField').valueChanges
+      .pipe(
+        takeUntil(this.destroySubject$))
+      .subscribe(word => {
+        this.filter(word);
+      });
 
   }
 

@@ -1,6 +1,6 @@
 const db = require('../db').client;
 
-/* ---------------------------- Portfolio Component Parts ------------------------------ */
+/* ---------------------------- Modular UI Builder Parts Controller ------------------------------ */
 
 const findPartByComponentId = async (req, res) => {
     const { cid } = req.params;

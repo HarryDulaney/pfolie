@@ -12,7 +12,6 @@ import { HighchartsChartModule } from 'highcharts-angular';
 import { DatePipe, CurrencyPipe, PercentPipe, DecimalPipe } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { NavService } from './app/services/nav.service';
-import { ConfigService } from './app/services/config.service';
 import { CoinDataService } from './app/services/coin-data.service';
 import { CacheService } from './app/services/cache.service';
 import { ApiService } from './app/services/api.service';
@@ -24,14 +23,21 @@ import { ThemeService } from './app/services/theme.service';
 import { StringUtility } from './app/services/string.utility';
 import { ArticleService } from './app/components/news/article.service';
 import { NewsService } from './app/components/news/news.service';
+import { UserService } from './app/services/user.service';
+import { PortfolioBuilderService } from './app/components/portfolio/portfolio-builder.service';
+import { WatchListService } from './app/services/watchlist.service';
+import { PortfolioService } from './app/services/portfolio.service';
+import { ScreenService } from './app/services/screen.service';
 
 if (environment.production) {
   enableProdMode();
 }
 
-export function initializeServices(configService: ConfigService) {
-  return () => configService.load();
+
+function initializeAppFactory(sessionService: SessionService): () => Promise<void> {
+  return () => sessionService.preload();
 }
+
 
 
 
@@ -54,11 +60,15 @@ bootstrapApplication(AppComponent, {
     ArticleService,
     CacheService,
     CoinDataService,
-    ConfigService,
     NavService,
+    PortfolioService,
+    ScreenService,
     ThemeService,
     StringUtility,
+    PortfolioBuilderService,
+    WatchListService,
     MessageService,
+    UserService,
     SessionService,
     DatePipe,
     CurrencyPipe,
@@ -66,8 +76,8 @@ bootstrapApplication(AppComponent, {
     DecimalPipe,
     {
       'provide': APP_INITIALIZER,
-      'useFactory': initializeServices,
-      'deps': [ConfigService, CacheService, BasicCoinInfoStore],
+      'useFactory': initializeAppFactory,
+      'deps': [SessionService, CacheService, BasicCoinInfoStore, ApiService, UserService, PortfolioService, WatchListService],
       'multi': true,
     },
     provideAnimations(),

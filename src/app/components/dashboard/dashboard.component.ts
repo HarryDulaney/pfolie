@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { BasicCoin, CoinFullInfo, CoinTableView, GlobalData } from 'src/app/models/coin-gecko';
 import { NavService } from 'src/app/services/nav.service';
@@ -28,7 +28,9 @@ import { PieChartService } from '../charts/pie-chart/pie-chart.service';
 import { SELECT_ITEM_EVENT } from '../../constants';
 import { DashboardEvent } from 'src/app/models/events';
 import { ThemeService } from 'src/app/services/theme.service';
-import { ApiService } from 'src/app/services/api.service';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
+import { ListCardComponent } from '../cards/list-card/list-card.component';
+import { WatchListMeta } from 'src/app/models/portfolio';
 
 
 
@@ -53,18 +55,20 @@ import { ApiService } from 'src/app/services/api.service';
     SparklineComponent,
     TableModule,
     DeltaIcon,
+    OverlayPanelModule,
+    ListCardComponent,
     PieChartComponent]
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;
   @ViewChild('globalChart') globalChart: BigChartComponent;
   @ViewChild('globalPie') globalPie: PieChartComponent;
+  @ViewChild('selectWatchListPanel') selectWatchListPanel!: OverlayPanel;
 
   @ViewChild(BigChartService, { 'static': true }) bigChartService: BigChartService;
   @ViewChild(PieChartService, { 'static': true }) pieChartService: PieChartService;
 
 
-  private user: firebase.User | null = null;
   destroySubject$ = new Subject();
 
 
@@ -92,7 +96,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   trendingCoinsProvider: Observable<CoinTableView[]>;
   globalChartHeight: string = '400px';
   globalChartWidth: string = '100%';
-
+  topMarginStyle: any = { 'margin-top': '4rem !important' };
+  watchListOptions: WatchListMeta[] = [];
+  private addToWatchListCoinId: string;
 
   mainColumnDefs = [
     { header: "Icon", field: 'image' },
@@ -111,7 +117,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     public coinDataService: CoinDataService,
-    private apiService: ApiService,
     private screenService: ScreenService,
     public readonly themeService: ThemeService,
     public dashboardService: DashboardService,
@@ -124,8 +129,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
       takeUntil(this.destroySubject$)
     ).subscribe((screenSize: string) => {
       this.screenSize = screenSize;
+      if (this.screenSize === Const.CONSTANT.SCREEN_SIZE.XS) {
+        this.topMarginStyle = { 'margin-top': '0rem !important' };
+      } else if (this.screenSize === Const.CONSTANT.SCREEN_SIZE.S) {
+        this.topMarginStyle = { 'margin-top': '4.5rem !important' };
+      } else if (this.screenSize === Const.CONSTANT.SCREEN_SIZE.M) {
+        this.topMarginStyle = { 'margin-top': '5rem !important' };
+      } else if (this.screenSize === Const.CONSTANT.SCREEN_SIZE.L) {
+        this.topMarginStyle = { 'margin-top': '4rem !important' };
+      } else if (this.screenSize === Const.CONSTANT.SCREEN_SIZE.XL) {
+        this.topMarginStyle = { 'margin-top': '3rem !important' };
+      }
       this.cd.markForCheck();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.navService.navExpandedSource$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe(expandStateChange => {
+        if (expandStateChange !== null) {
+          this.globalChart.reflow();
+          this.globalPie.reflow();
+          this.cd.markForCheck();
+        }
+      });
   }
 
   loadCoinsLazy(event: LazyLoadEvent) {
@@ -149,19 +177,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isGlobalChartLoading = true;
     this.bigChartService.initializeChart();
 
-    this.dashboardService.getUser().pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe((user: firebase.User | null) => {
-      if (user) {
-        this.user = user;
-      } else {
-        this.user = null;
-        this.cd.markForCheck();
-      }
-    });
-
     this.trendingCoinsProvider = this.dashboardService.getTrending();
-    this.trackedAssetDataProvider = this.dashboardService.getTrackedAssetDataProvider();
+    this.trackedAssetDataProvider = this.dashboardService.getMainWatchListDataProvider();
     this.topMarketCapProvider = this.dashboardService.getGlobalDataSource()
       .pipe(
         concatMap((globalData: GlobalData) => this.dashboardService.getGlobalCoinsInfo(globalData)),
@@ -206,14 +223,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
         }
       );
+    this.dashboardService.getWatchListsProvider().subscribe({
+      next: (watchLists: WatchListMeta[]) => {
+        this.watchListOptions = watchLists;
+      }
+    });
 
-    this.navService.navExpandedSource$
-      .pipe(takeUntil(this.destroySubject$))
-      .subscribe(expandStateChange => {
-        this.globalChart.chartInstance.reflow();
-        this.globalPie.chartInstance.reflow();
-        this.cd.markForCheck();
-      });
+
 
   }
 
@@ -234,12 +250,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dashboardService.sendEvent(dashEvent);
   }
 
-  favoriteButtonClicked(coinView: CoinTableView) {
+  favoriteButtonClicked(coinView: CoinTableView, event: any) {
     if (this.dashboardService.isUserLoggedIn()) {
       if (this.dashboardService.isTrackedAsset(coinView.id)) {
         this.dashboardService.removeFromWatchList(coinView.id);
       } else {
-        this.dashboardService.addToWatchList(coinView);
+        if (this.dashboardService.hasMainWatchList()) {
+          this.dashboardService.addToWatchList(coinView);
+        } else {
+          this.addToWatchListCoinId = coinView.id;
+          this.selectWatchListPanel.show(event);
+        }
       }
     } else {
       this.dashboardService.promptForLogin();
@@ -262,5 +283,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
+
+
+  onWatchListSelected(event: any) {
+    this.dashboardService.onWatchListSelected(event, this.addToWatchListCoinId);
+    this.cd.markForCheck();
+  }
+
+  createWatchList() {
+    this.dashboardService.createWatchList();
+  }
+
 }
 

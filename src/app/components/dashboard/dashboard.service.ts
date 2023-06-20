@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { LazyLoadEvent } from 'primeng/api';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { concatMap, map, switchMap } from 'rxjs/operators';
 import { BasicCoin, CoinFullInfo, CoinMarket, CoinTableView, GlobalData, GlobalDataView, GlobalMarketCapChart, GlobalMarketCapData, Trending, TrendingItem } from 'src/app/models/coin-gecko';
 import { ApiService } from 'src/app/services/api.service';
 import { SessionService } from 'src/app/services/session.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import firebase from 'firebase/compat/app';
-import { PortfolioService } from '../portfolio/services/portfolio.service';
 import { AppEvent, DashboardEvent } from 'src/app/models/events';
+import { WatchListService } from '../../services/watchlist.service';
+import { UserService } from 'src/app/services/user.service';
+import { WatchList, WatchListMeta } from 'src/app/models/portfolio';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Injectable()
 export class DashboardService {
@@ -33,11 +36,13 @@ export class DashboardService {
     private apiService: ApiService,
     private utilityService: UtilityService,
     private basicCoinStore: BasicCoinInfoStore,
+    private watchListService: WatchListService,
+    private toast: ToastService,
     private sessionService: SessionService,
-    private portfolioService: PortfolioService
+    private userService: UserService
   ) {
     this.defaultCurrency = this.currencies[0];
-    this.coinsSource$ = basicCoinStore.state$.select('basicCoins');
+    this.coinsSource$ = basicCoinStore.allCoinsStore.select();
 
   }
 
@@ -100,7 +105,7 @@ export class DashboardService {
   }
 
   getGlobalCoinsInfo(globalData: GlobalData): Observable<CoinMarket[]> {
-    const basicCoins = this.basicCoinStore.state$.getCurrentValue().basicCoins;
+    const basicCoins = this.basicCoinStore.allCoinsStore.state;
     let topGlobalByCapIds = [];
     for (const key in globalData.data.market_cap_percentage) {
       const assetId = this.getIdFromSymbol(key, basicCoins);
@@ -197,19 +202,39 @@ export class DashboardService {
 
 
   addToWatchList(coin: CoinTableView) {
-    this.portfolioService.addTracked(coin.id);
+    this.watchListService.addToMainWatchList(coin.id);
   }
 
   removeFromWatchList(id: string) {
-    this.portfolioService.deleteTrackedAsset({ id: id });
+    this.watchListService.removeFromMainWatchList(id);
+  }
+
+  hasMainWatchList() {
+    return this.watchListService.mainWatchList !== null;
   }
 
   isTrackedAsset(id: string): boolean {
-    return this.portfolioService.isTracked(id);
+    const mainWatchList = this.watchListService.mainWatchList;
+    if (mainWatchList !== null && mainWatchList.watchListData !== undefined) {
+      if (mainWatchList.watchListData.trackedAssets) {
+        let index = mainWatchList.watchListData.trackedAssets.findIndex(x => x.id === id);
+        return (index !== -1);
+      }
+    }
+
+    return false;
   }
 
-  getTrackedAssetDataProvider(): Observable<CoinFullInfo[]> {
-    return this.portfolioService.trackedAssetDataProvider();
+  getMainWatchListDataProvider(): Observable<CoinFullInfo[]> {
+    return this.watchListService.mainWatchListSource$.pipe(
+      concatMap((watchList: WatchList) => {
+        return this.watchListService.trackedAssetDataProviderForWatchList(watchList);
+      })
+    )
+  }
+
+  getWatchListsProvider(): Observable<WatchListMeta[]> {
+    return this.userService.basicWatchlistSource$;
   }
 
   publishEvent(eventType: string, event: any) {
@@ -222,5 +247,25 @@ export class DashboardService {
 
   sendEvent(event: DashboardEvent) {
     this.eventSource.next(event);
+  }
+
+  onWatchListSelected(event: any, addToWatchListCoinId: string) {
+    this.watchListService.addToWatchList(event, addToWatchListCoinId);
+  }
+
+  createWatchList() {
+    this.watchListService.createNewWatchlist(this.sessionService.getCurrentUser().uid)
+      .subscribe(
+        (watchList: WatchList) => {
+          const newWatchListMeta = {
+            uid: watchList.uid,
+            watchListId: watchList.watchListId,
+            watchListName: watchList.watchListName,
+            isMain: watchList.isMain
+          } as WatchListMeta;
+          this.userService.addWatchListMeta(newWatchListMeta);
+          watchList.isNew = false;
+          this.toast.showSuccessToast('Created New Watch-list, named: ' + watchList.watchListName);
+        });
   }
 }

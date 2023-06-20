@@ -30,7 +30,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
 
   Highcharts: typeof Highcharts = Highcharts;
   chartInstance: Highcharts.Chart;
-  updateFlag: boolean;
+  updateFlag: boolean = true;
   chartOptions: Highcharts.Options = {};
   chartData: PieChartData[] = [];
   destroySubject$: Subject<boolean> = new Subject<boolean>();
@@ -64,6 +64,7 @@ export class PieChartComponent implements OnInit, OnDestroy {
   reflow() {
     if (this.chartInstance) {
       this.chartInstance.reflow();
+      this.updateFlag = true;
       this.cd.detectChanges();
     }
   }

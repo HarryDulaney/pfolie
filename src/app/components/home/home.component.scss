@@ -12,13 +12,16 @@ mat-toolbar {
 :host ::ng-deep .p-sidebar-right {
   z-index: 1111111 !important;
   top: 64px !important;
-  border-radius: 15px 15px 15px 15px !important;
+  border-radius: 0 !important;
+  border: 0px none transparent !important;
+  background: var(--surface-card) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
 @media screen and (max-width: 800px) {
   :host ::ng-deep .p-sidebar .p-sidebar-right {
     top: 56px !important;
-    border-radius: 15px 15px 15px 15px !important;
+    border-radius: 0 !important;
   }
 }
 
@@ -34,15 +37,8 @@ mat-toolbar {
   width: 100% !important;
   height: 100% !important;
   background: transparent !important;
-  padding: 0.25rem 0;
   border: 0px none transparent !important;
   border-radius: 0px !important;
-}
-
-.p-overlaypanel-account-menu {
-  background-color: var(--surface-a) !important;
-  border: 0px transparent !important;
-  border-radius: 0px;
 }
 
 .toolbar-nav-itmes {
@@ -132,15 +128,18 @@ mat-toolbar {
 
 :host ::ng-deep .p-panelmenu .p-panelmenu-header > a:hover {
   background: var(--hover-bg) !important;
+  color: var(--text-accent) !important;
 }
 
 :host ::ng-deep .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link {
   background: transparent !important;
+  color: var(--text-accent) !important;
   font-size: 0.9rem !important;
 }
 
 :host ::ng-deep .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:hover {
   background: var(--hover-bg) !important;
+  color: var(--text-accent) !important;
 }
 
 :host ::ng-deep .p-panelmenu .p-panelmenu-content {
@@ -232,7 +231,6 @@ i {
   max-height: 6rem !important;
   height: 2rem !important;
 }
-
 
 p {
   margin: 0;

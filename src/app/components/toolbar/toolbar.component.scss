@@ -1,0 +1,56 @@
+.portfolio-name-label {
+    color: var(--text-color) !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    float: inline-end !important;
+}
+
+.portfolio-name-input {
+    color: var(--text-color) !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+    max-height: 2rem !important;
+}
+
+.toolbar-wrapper-nav-contracted {
+    position: fixed;
+    top: 64px !important;
+    z-index: 5000;
+    right: 0;
+    left: 0;
+    width: auto;
+    margin-bottom: 2rem;
+    background: var(--surface-a) !important;
+}
+
+.toolbar-wrapper-nav-expanded {
+    position: fixed;
+    top: 64px !important;
+    z-index: 5000;
+    right: 0;
+    left: calc(200px);
+    max-width: 100%;
+    background: var(--surface-a) !important;
+    margin-bottom: 2rem;
+}
+
+.toolbar-wrapper-mobile {
+    position: fixed;
+    top: 56px !important;
+    z-index: 5000;
+    right: 0;
+    left: 0;
+    width: 100%;
+    background: var(--surface-a) !important;
+    margin-bottom: 2rem;
+}
+
+:host ::ng-deep .p-menubar {
+    background: var(--main-toolbar-bg-color);
+    border-radius: 0 !important;
+    border: none !important;
+}
+
+:host ::ng-deep.p-menubar-button {
+    color: var(--text-color) !important;
+}
