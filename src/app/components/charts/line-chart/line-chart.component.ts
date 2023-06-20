@@ -144,6 +144,7 @@ export class LineChartComponent implements OnInit, OnDestroy {
       ]
     }
   }
+
   getOptions() {
     return {
       elements: {
@@ -158,7 +159,7 @@ export class LineChartComponent implements OnInit, OnDestroy {
           borderWidth: 2,
           pointBackgroundColor: this.fillColor,
           pointBorderColor: this.lineColor,
-          pointBorderWidth: 0, 
+          pointBorderWidth: 0,
           borderJoinStyle: 'round'
         },
       },

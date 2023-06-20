@@ -1,24 +1,32 @@
-<div class="container w-100 h-100 p-1 m-0"
-     [style]="{
-    'width': '100%',
-    'height':'100%'
-    }">
-    <div class="scrollbox-wrapper w-20rem">
-        <p-virtualScroller #vs
-                           [value]='selectOptions'
-                           [scrollHeight]="scrollableHeight"
-                           [itemSize]="45"
-                           [style]="{'text-align': 'center'}">
-            <ng-template pTemplate="item"
-                         let-item
-                         let-i="index"
-                         let-c="count"
-                         style="width:100%">
-                <div (click)="select(item.id)"
-                     [class]="dropdownStyle">
-                    <div class="cursor-pointer">{{item.name}}</div>
-                </div>
-            </ng-template>
-        </p-virtualScroller>
-    </div>
-</div>
+<p-overlayPanel
+    #searchPanel
+    [dismissable]="true"
+>
+    <ng-template pTemplate>
+        <div class="search-panel-style-class">
+            <div class="scrollbox-wrapper w-20rem">
+                <p-virtualScroller
+                    #vs
+                    [value]='selectOptions'
+                    [scrollHeight]="scrollableHeight"
+                    [itemSize]="45"
+                >
+                    <ng-template
+                        pTemplate="item"
+                        let-item
+                        let-i="index"
+                        let-c="count"
+                        style="width:100%"
+                    >
+                        <div
+                            (click)="select(item.id)"
+                            class="scroll-item"
+                        >
+                            <div class="cursor-pointer">{{item.name}}</div>
+                        </div>
+                    </ng-template>
+                </p-virtualScroller>
+            </div>
+        </div>
+    </ng-template>
+</p-overlayPanel>

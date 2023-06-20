@@ -2,17 +2,20 @@
 <app-toolbar
     #toolbar
     [navExpandProvider]="navExpandProvider"
+    [dataSource]="portfolioService.portfolio$"
+    [nameKey]="'portfolioName'"
+    [service]="portfolioService"
+    [menuItems]="toolbarMenuItems"
     [screenSize]="screenSize"
 ></app-toolbar>
 <div class="page-top-margin-medium"></div>
-<div class="p-component container">
+<div class="p-component p-0 m-0">
     <div
         *ngIf="!isMobile()"
-        class="row text-center mb-1 w-100"
+        class="row text-center mb-3 w-100"
     >
-        <p-header class="news-pg-label text-decoration-none text-2xl font-bold">{{title}}</p-header>
     </div>
-    <ng-container *ngIf="portfolioService.isLoading">
+    <ng-container *ngIf="portfolioService.isLoading || isLoading">
         <div
             class="container d-flex justify-content-center align-items-center"
             [style]="{height:'90vh',width:'95vw'}"
@@ -28,11 +31,10 @@
     <!-- Portfolio Container (Tables/Workspace/Cards) -->
     <div
         id="portfolio-container"
-        class="grid-nogutter p-0 m-0"
+        class="grid-nogutter p-0 m-0 w-100"
         [hidden]="portfolioService.isLoading"
         (click)="onContainerClick($event)"
     >
-
         <div
             class="col-12"
             style="margin-top: 3rem;"
@@ -41,8 +43,8 @@
         <!-- Workspace for custom portfolio parts/ componenets to render -->
         <app-workspace
             #workspace
-            [assets]="portfolioView"
-            [calculatedValues]="calculatedValues"
+            [viewSource]="portfolioService.portfolioAssetViewSource$"
+            [calculatedValuesSource]="portfolioService.calculatedValuesSource$"
             [screenSize]="screenSize"
             [navExpandProvder]="navExpandProvider"
         >
@@ -52,10 +54,9 @@
             <div class="bg-transparent">
                 <app-portfolio-table
                     #portfolioTable
-                    [view]="portfolioView"
-                    [allCoins]="portfolioService.getAllCoins() | async"
-                    [portfolio]="getPortfolio()"
-                    [calculatedValues]="calculatedValues"
+                    [viewSource]="portfolioService.portfolioAssetViewSource$"
+                    [portfolioSource]="portfolioService.portfolio$"
+                    [calculatedValuesSource]="portfolioService.calculatedValuesSource$"
                     [screenSize]="screenSize"
                     selectionMode="single"
                 ></app-portfolio-table>

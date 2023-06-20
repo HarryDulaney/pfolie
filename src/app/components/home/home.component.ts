@@ -3,7 +3,6 @@ import { Router, RouterOutlet } from "@angular/router";
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MenuItem, MessageService, SharedModule } from 'primeng/api';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ConfigService } from 'src/app/services/config.service';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { SessionService } from 'src/app/services/session.service';
 import { LoginComponent } from '../login/login.component';
@@ -14,12 +13,12 @@ import firebase from 'firebase/compat/app';
 import { RegisterComponent } from '../register/register.component';
 import { SearchComponent } from '../search/search.component';
 import { NavService } from 'src/app/services/nav.service';
-import { concatMap, map, switchMap, takeUntil } from 'rxjs/operators';
-import { Subject, timer } from 'rxjs';
+import { concatMap, exhaustMap, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
+import { Subject, firstValueFrom, from, timer } from 'rxjs';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { BasicCoin, GlobalData, GlobalDataView } from 'src/app/models/coin-gecko';
 import { ScreenService } from 'src/app/services/screen.service';
-import { CONSTANT as Const, EDIT_TRACKED_ITEMS, PROJECT_LINKS, SELECT_ITEM_EVENT } from '../../constants'
+import { CONSTANT as Const, EDIT_TRACKED_ITEMS, PROJECT_LINKS, SELECT_ITEM_EVENT, NEW_WATCHLIST_NAME, NEW_PORTFOLIO_NAME } from '../../constants'
 import { Observable } from "rxjs"
 import { FooterComponent } from '../footer/footer.component';
 import { DialogModule } from 'primeng/dialog';
@@ -36,6 +35,12 @@ import { UserPreferences } from 'src/app/models/appconfig';
 import { ThemeService } from 'src/app/services/theme.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { UpgradeGuestComponent } from '../upgrade-guest/upgrade-guest.component';
+import { UserService } from 'src/app/services/user.service';
+import { PortfolioMeta, WatchListMeta } from 'src/app/models/portfolio';
+import { PortfolioService } from '../../services/portfolio.service';
+import { WatchListService } from '../../services/watchlist.service';
+import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
+import { ListStore } from 'src/app/store/list-store';
 
 @Component({
   selector: 'app-home',
@@ -69,25 +74,7 @@ import { UpgradeGuestComponent } from '../upgrade-guest/upgrade-guest.component'
     CommonModule, UpgradeGuestComponent]
 })
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event) {
-    if (event) {
-      if (this.searchPanel.overlayVisible) {
-        this.searchPanel.hide();
-        this.searchVisible = false;
-      }
-      if (this.accountPanel.overlayVisible) {
-        this.accountPanel.hide();
-      }
-
-      if (this.settingsVisible) {
-        this.settingsVisible = false;
-      }
-    }
-  }
-
   @ViewChild('snav') snav: MatSidenav;
-  @ViewChild('searchPanel') searchPanel: OverlayPanel;
   @ViewChild('accountPanel') accountPanel: OverlayPanel;
   @ViewChild('loginModal') loginModal: LoginComponent;
   @ViewChild('register') registerComp: RegisterComponent;
@@ -114,6 +101,11 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private user: firebase.User = null;
   private readonly issuesLink = PROJECT_LINKS.ISSUES;
   private readonly aboutPageLink = PROJECT_LINKS.ABOUT;
+  private basicPortfolios: PortfolioMeta[] = [];
+  private basicWatchlists: WatchListMeta[] = [];
+  private filteredCoinsStore: ListStore<BasicCoin> = new ListStore<BasicCoin>([]);
+
+  searchInitialized$ = new Subject<boolean>();
   navbarTitleStart: 'P';
   navbarTitleEnd: string = 'folie';
   isLoading: boolean;
@@ -131,15 +123,20 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   googleIconSrc = '../../../assets/img/google-icon-org.svg';
   userPreferences: UserPreferences = {} as UserPreferences;
   allCoins: BasicCoin[] = [];
+  filteredSearchProvider$: Observable<BasicCoin[]> = this.filteredCoinsStore.select();
+
 
   constructor(
     private router: Router,
     private navService: NavService,
     public sessionService: SessionService,
-    public configService: ConfigService,
     private screenService: ScreenService,
+    private portfolioService: PortfolioService,
+    private watchlistService: WatchListService,
     private toastService: ToastService,
+    private basicCoinInfoStore: BasicCoinInfoStore,
     private themeService: ThemeService,
+    private userService: UserService,
     private dashboardService: DashboardService,
     private cd: ChangeDetectorRef,
     fb: UntypedFormBuilder,
@@ -157,7 +154,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           this.navOpened = false;
           this.cd.markForCheck();
         } else {
-          this.navOpened = this.configService.getPreferences().sideNav === 'expand' ? true : false;
+          this.navOpened = this.sessionService.getPreferences().sideNav === 'expand' ? true : false;
           this.cd.markForCheck();
         }
       });
@@ -181,11 +178,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     );
+
   }
 
 
   ngOnInit() {
-    this.userPreferences = this.configService.getPreferences();
+    this.userPreferences = this.sessionService.getPreferences();
     this.themeService.themeSource$.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(
@@ -195,38 +193,60 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         this.cd.markForCheck();
       }
     );
+
     this.sessionService.getAuth()
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(
         user => {
           this.user = user;
           this.isSignedIn = (user && user !== null && user !== undefined);
-          if (this.isSignedIn) {
-            this.accountMenuItems = this.getUserAccountMenu();
-            this.signedInNavItems = this.getUserNavMenuItems();
-            if (user.isAnonymous) {
-              this.signedInNavItems = this.getGuestUserNavMenuItems();
-              this.accountMenuItems = this.getGuestUserAccountMenu();
-              this.userProfilePictureSource = '../../../assets/img/robo-default-avatar-icon.png';
-            } else if (user.photoURL) {
-              this.userProfilePictureSource = user.photoURL;
-            } else {
-              this.userProfilePictureSource = '../../../assets/img/image_filler_icon_blank.jpg';
-            }
-          }
+          this.userStateChanged(this.isSignedIn, user);
           this.cd.markForCheck();
 
         });
 
-    this.configService.getGlobalStore().state$.select('basicCoins')
-      .pipe(takeUntil(this.destroySubject$))
-      .subscribe(
-        coins => {
-          this.allCoins = coins;
+    this.userService.basicPortfolioSource$.pipe(
+      takeUntil(this.destroySubject$))
+      .subscribe({
+        next: (basicPortfolios) => {
+          this.basicPortfolios = basicPortfolios;
           this.cd.markForCheck();
-        }
+          this.signedInNavItems = this.buildUserNavMenu(this.basicPortfolios, this.basicWatchlists);
+          this.cd.markForCheck();
 
-      );
+        }
+      });
+
+
+    this.userService.basicWatchlistSource$.pipe(
+      takeUntil(this.destroySubject$))
+      .subscribe({
+        next: (basicWatchLists) => {
+          this.basicWatchlists = basicWatchLists;
+          this.signedInNavItems = this.buildUserNavMenu(this.basicPortfolios, this.basicWatchlists);
+          this.cd.markForCheck();
+
+        }
+      });
+
+    this.basicCoinInfoStore.allCoinsStore.select()
+      .pipe(takeUntil(this.searchInitialized$))
+      .subscribe({
+        next: (coins) => {
+          if (coins && coins.length > 0) {
+            this.allCoins = coins;
+            this.filteredCoinsStore.set(this.allCoins);
+            this.cd.markForCheck();
+            this.searchInitialized$.next(true);
+            this.searchInitialized$.complete();
+          }
+
+        },
+        complete: () => {
+          this.searchInitialized$.next(true);
+          this.searchInitialized$.complete();
+        }
+      });
 
     if (this.screenService.isMobileScreen(this.screenSize)) {
       this.navService.navExpandedSource$.next(false);
@@ -254,6 +274,44 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     );
+
+    this.screenService.windowScrollSource$
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe({
+        next: (event) => {
+          if (event) {
+            if (this.searchComponent.overlayVisible) {
+              this.searchComponent.hide();
+              this.searchVisible = false;
+            }
+            if (this.accountPanel.overlayVisible) {
+              this.accountPanel.hide();
+            }
+
+            if (this.settingsVisible) {
+              this.settingsVisible = false;
+            }
+          }
+
+        }
+      });
+  }
+
+
+  userStateChanged(isSignedIn: boolean, user: firebase.User) {
+    if (isSignedIn) {
+      this.accountMenuItems = this.buildUserAccountMenu();
+      this.signedInNavItems = this.buildUserNavMenu(this.basicPortfolios, this.basicWatchlists);
+      if (user.isAnonymous) {
+        this.accountMenuItems = this.buildGuestAccountMenu();
+        this.signedInNavItems = this.buildGuestNavMenu(this.basicPortfolios, this.basicWatchlists);
+        this.userProfilePictureSource = '../../../assets/img/robo-default-avatar-icon.png';
+      } else if (user.photoURL) {
+        this.userProfilePictureSource = user.photoURL;
+      } else {
+        this.userProfilePictureSource = '../../../assets/img/image_filler_icon_blank.jpg';
+      }
+    }
   }
 
   isEventTargetOutsideSettings(event: Event, menuBtn: HTMLElement) {
@@ -295,10 +353,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchForm.get('searchField').valueChanges.pipe(
       takeUntil(this.destroySubject$)
     ).subscribe(word => {
-      if (!this.searchPanel.overlayVisible) {
-        this.searchPanel.show(new Event("change"), this.searchInputTarget.nativeElement);
+      if (this.searchComponent.overlayHidden) {
+        this.searchComponent.show(new Event("change"), this.searchInputTarget.nativeElement);
       }
-      this.configService.filter(word);
+      this.filter(word);
     });
 
     this.toastService.messageEmitter.pipe(
@@ -307,7 +365,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       this.showToast(toastMessage);
     });
 
-    this.searchPanel.onShow.pipe(
+    this.searchComponent.onShow.pipe(
       takeUntil(this.destroySubject$),
       switchMap(show => {
         return this.searchComponent.onSelect;
@@ -315,7 +373,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe(
       selected => {
         if (selected) {
-          this.searchPanel.hide();
+          this.searchComponent.hide();
           this.navService.navigateTo(selected);
         }
       });
@@ -323,13 +381,13 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   navMenuTogglePressed() {
-    let prefs = this.configService.getPreferences();
+    let prefs = this.sessionService.getPreferences();
     if (this.snav.opened) {
       prefs.sideNav = 'contract';
     } else {
       prefs.sideNav = 'expand';
     }
-    this.configService.setPreferences(prefs);
+    this.sessionService.setPreferences(prefs);
     this.snav.toggle();
   }
 
@@ -376,12 +434,34 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.destroySubject$.complete();
   }
 
-  getFilteredCoins(): Observable<BasicCoin[]> {
-    return this.configService.getGlobalStore().state$.select('filteredCoins');
+  addNewPortfolio() {
+    from(this.handleNavDrawerState())
+      .pipe(
+        exhaustMap(() => this.portfolioService.createNewPortfolio(this.user.uid)))
+      .subscribe({
+        next: (portfolio) => {
+          this.portfolioService.setPortfolio(portfolio);
+          this.router.navigate(['portfolio']);
+        }
+      });
+  }
+
+  addNewWatchlist() {
+    from(this.handleNavDrawerState())
+      .pipe(
+        exhaustMap(() => this.watchlistService.createNewWatchlist(this.user.uid)))
+      .subscribe({
+        next: (watchList) => {
+          this.watchlistService.setWatchList(watchList);
+          this.router.navigate(['watch-list']);
+        }
+      });
   }
 
   initNavMenus() {
-    this.signedInNavItems = this.sessionService.isGuest ? this.getGuestUserNavMenuItems() : this.getUserNavMenuItems();
+    this.signedInNavItems = this.sessionService.isGuest ?
+      this.buildGuestNavMenu(this.basicPortfolios, this.basicWatchlists) :
+      this.buildUserNavMenu(this.basicPortfolios, this.basicWatchlists);
     this.signedOutNavItems = [
       {
         label: 'Home',
@@ -423,27 +503,16 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       {
-        label: 'Portfolio',
+        label: 'Portfolios',
         expanded: true,
         icon: 'fa-solid fa-bar-chart',
-        items: [
-          {
-            label: 'Portfolio Manager',
-            icon: 'fa-solid fa-bar-chart',
-            disabled: false,
-            command: (event) => {
-              this.portfolio();
-            }
-          },
-          {
-            label: 'Watchlist',
-            icon: 'fa-solid fa-eye',
-            disabled: false,
-            command: (event) => {
-              this.openTrackedAssets();
-            }
-          },
-        ],
+        items: [this.addSignedOutPortfolioMenuItem()],
+      },
+      {
+        label: 'Watchlists',
+        expanded: true,
+        icon: 'fa-solid fa-eye',
+        items: [this.addSignedOutWatchListMenuItem()],
       },
       {
         label: 'Help',
@@ -484,24 +553,19 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     ];
 
-    this.accountMenuItems = this.sessionService.isGuest ? this.getGuestUserAccountMenu() : this.getUserAccountMenu();
+    this.accountMenuItems = this.sessionService.isGuest ? this.buildGuestAccountMenu() : this.buildUserAccountMenu();
   }
 
 
-  getUserNavMenuItems(): MenuItem[] {
+  buildUserNavMenu(
+    basicPortfolio: PortfolioMeta[],
+    basicWatchlists: WatchListMeta[]
+  ): MenuItem[] {
     return [
       {
         label: 'Account',
         icon: 'pi pi-fw pi-user',
         items: [
-          {
-            label: 'Settings',
-            icon: 'pi pi-fw pi-sliders-h',
-            id: 'settingMenuButton',
-            command: (event) => {
-              this.toggleSettings(event);
-            }
-          },
           {
             label: 'Sign Out',
             icon: 'pi pi-fw pi-sign-out',
@@ -533,29 +597,17 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       {
-        label: 'Portfolio',
+        label: 'Portfolios',
         expanded: true,
         icon: 'fa-solid fa-bar-chart',
-        items: [
-          {
-            label: 'Portfolio Manager',
-            icon: 'fa-solid fa-bar-chart',
-            disabled: false,
-            command: (event) => {
-              this.portfolio();
-            }
-          },
-          {
-            label: 'Watchlist',
-            icon: 'fa-solid fa-eye',
-            disabled: false,
-            command: (event) => {
-              this.openTrackedAssets();
-            }
-          },
-        ],
+        items: this.buildPortfolioNavItems(basicPortfolio),
       },
-
+      {
+        label: 'Watchlists',
+        expanded: true,
+        icon: 'fa-solid fa-eye',
+        items: this.buildWatchListNavItems(basicWatchlists),
+      },
       {
         label: 'Help',
         icon: 'pi pi-fw pi-question',
@@ -576,20 +628,80 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
   }
 
-  getGuestUserNavMenuItems(): MenuItem[] {
+  addPortfolioMenuItem(disabled: boolean): MenuItem {
+    let menuItem: MenuItem =
+    {
+      label: 'New Portfolio',
+      icon: 'fa-solid fa-plus',
+      disabled: disabled,
+      tooltipOptions: disabled ? { tooltipLabel: 'Max Portfolios Reached', tooltipPosition: 'right' } : { tooltipLabel: 'Create New Portfolio', tooltipPosition: 'right' },
+      command: (event) => {
+        this.addNewPortfolio();
+        this.cd.markForCheck();
+      }
+    }
+
+    return menuItem;
+  }
+
+  addWatchListMenuItem(disabled: boolean): MenuItem {
+    let menuItem: MenuItem =
+    {
+      label: 'New Watchlist',
+      badge: disabled ? 'Max' : null,
+      icon: 'fa-solid fa-plus',
+      tooltipOptions: disabled ? { tooltipLabel: 'Max Watchlists Reached', tooltipPosition: 'right' } : { tooltipLabel: 'Create New Watchlist', tooltipPosition: 'right' },
+      disabled: disabled,
+      command: (event) => {
+        this.addNewWatchlist();
+      }
+    }
+
+    return menuItem;
+  }
+
+
+  addSignedOutPortfolioMenuItem(): MenuItem {
+    let menuItem: MenuItem =
+    {
+      label: 'New Portfolio',
+      icon: 'fa-solid fa-plus',
+      disabled: false,
+      command: (event) => {
+        this.handleNavDrawerState().then(() => {
+          this.router.navigate(['portfolio']);
+        });
+      }
+    };
+
+    return menuItem;
+  }
+
+  addSignedOutWatchListMenuItem(): MenuItem {
+    let menuItem: MenuItem =
+    {
+      label: 'New Watchlist',
+      icon: 'fa-solid fa-plus',
+      disabled: false,
+      command: (event) => {
+        this.handleNavDrawerState().then(() => {
+          this.router.navigate(['watch-list']);
+        });
+      }
+    }
+
+    return menuItem;
+  }
+
+  buildGuestNavMenu(
+    basicPortfolio: PortfolioMeta[],
+    basicWatchlists: WatchListMeta[]
+  ): MenuItem[] {
     return [
       {
         label: 'Guest Account',
         icon: 'pi pi-fw pi-user',
         items: [
-          {
-            label: 'Settings',
-            icon: 'pi pi-fw pi-sliders-h',
-            id: 'settingMenuButton',
-            command: (event) => {
-              this.toggleSettings(event);
-            }
-          },
           {
             label: 'Upgrade Account',
             icon: 'pi pi-fw pi-arrow-up',
@@ -630,29 +742,17 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       {
-        label: 'Portfolio',
+        label: 'Portfolios',
         expanded: true,
         icon: 'fa-solid fa-bar-chart',
-        items: [
-          {
-            label: 'Portfolio Manager',
-            icon: 'fa-solid fa-bar-chart',
-            disabled: false,
-            command: (event) => {
-              this.portfolio();
-            }
-          },
-          {
-            label: 'Watchlist',
-            icon: 'fa-solid fa-eye',
-            disabled: false,
-            command: (event) => {
-              this.openTrackedAssets();
-            }
-          },
-        ],
+        items: this.buildPortfolioNavItems(basicPortfolio),
       },
-
+      {
+        label: 'Watchlists',
+        expanded: true,
+        icon: 'fa-solid fa-eye',
+        items: this.buildWatchListNavItems(basicWatchlists),
+      },
       {
         label: 'Help',
         icon: 'pi pi-fw pi-question',
@@ -673,7 +773,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
   }
 
-  getGuestUserAccountMenu(): MenuItem[] {
+  buildGuestAccountMenu(): MenuItem[] {
     return [
       {
         label: 'Guest Account',
@@ -701,7 +801,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  getUserAccountMenu(): MenuItem[] {
+  buildUserAccountMenu(): MenuItem[] {
     return [
       {
         label: 'Sign Out',
@@ -715,6 +815,120 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     ];
   }
 
+
+
+  buildPortfolioNavItems(basicPortfolios: PortfolioMeta[]): MenuItem[] {
+    let navItems = []; // reset menu items
+    let addDisabled = false;
+    if (basicPortfolios.length >= 5) {
+      addDisabled = true;
+    }
+    navItems.push(this.addPortfolioMenuItem(addDisabled));
+
+    for (let i = 0; i < basicPortfolios.length; i++) {
+      const portfolio = basicPortfolios[i];
+      let item = {} as MenuItem;
+      if (portfolio.isMain) {
+        item = {
+          label: portfolio.portfolioName,
+          icon: 'fa-solid fa-star',
+          tooltipOptions: { tooltipLabel: `Open: ${portfolio.portfolioName} (Main)`, tooltipPosition: 'right' },
+          command: (event) => {
+            from(this.handleNavDrawerState())
+              .pipe(
+                exhaustMap(
+                  () => this.portfolioService.loadAndOpen(portfolio)))
+              .subscribe({
+                next: (portfolio) => {
+                  this.portfolioService.setPortfolio(portfolio);
+                  this.router.navigate(['portfolio']);
+                }
+              });
+          }
+        };
+      } else {
+        item = {
+          label: portfolio.portfolioName,
+          icon: 'fa-solid fa-pencil',
+          iconStyle: { fontSize: 'small' },
+          tooltipOptions: { tooltipLabel: `Open: ${portfolio.portfolioName}`, tooltipPosition: 'right' },
+          command: (event) => {
+            from(this.handleNavDrawerState())
+              .pipe(
+                exhaustMap(
+                  () => this.portfolioService.loadAndOpen(portfolio)))
+              .subscribe({
+                next: (portfolio) => {
+                  this.portfolioService.setPortfolio(portfolio);
+                  this.router.navigate(['portfolio']);
+                }
+              });
+          }
+        };
+
+      }
+
+      navItems.push(item);
+
+    }
+    return navItems;
+  }
+
+  buildWatchListNavItems(lists: WatchListMeta[]): MenuItem[] {
+    let navItems = []; // reset menu items
+    let addDisabled = false;
+    if (lists.length >= 5) {
+      addDisabled = true;
+    }
+    navItems.push(this.addWatchListMenuItem(addDisabled));
+
+    for (let i = 0; i < lists.length; i++) {
+      let item = {} as MenuItem;
+      const watchList = lists[i];
+      if (watchList.isMain) {
+        item = {
+          label: watchList.watchListName,
+          icon: 'fa-solid fa-star',
+          tooltipOptions: { tooltipLabel: `Open: ${watchList.watchListName} (Main)`, tooltipPosition: 'right' },
+          command: (event) => {
+            from(this.handleNavDrawerState())
+              .pipe(
+                exhaustMap(
+                  () => this.watchlistService.loadAndOpen(watchList)))
+              .subscribe({
+                next: (res) => {
+                  this.watchlistService.setWatchList(res);
+                  this.router.navigate(['watch-list']);
+                }
+              });
+          }
+        };
+      } else {
+        item = {
+          label: watchList.watchListName,
+          icon: 'fa-solid fa-pencil',
+          iconStyle: { fontSize: 'small' },
+          tooltipOptions: { tooltipLabel: `Open: ${watchList.watchListName}`, tooltipPosition: 'right' },
+          command: (event) => {
+            from(this.handleNavDrawerState())
+              .pipe(
+                exhaustMap(
+                  () => this.watchlistService.loadAndOpen(watchList)))
+              .subscribe({
+                next: (res) => {
+                  this.watchlistService.setWatchList(res);
+                  this.router.navigate(['watch-list']);
+                }
+              });
+          }
+        };
+      }
+      navItems.push(item);
+
+    }
+    return navItems;
+  }
+
   navMenuOpenedChange(event) {
     this.navService.navExpandedSource$.next(this.snav.opened)
   }
@@ -725,9 +939,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+
   openTrackedAssets() {
     this.handleNavDrawerState().then(() => {
-      this.router.navigate(['/', 'tracking']);
+      this.router.navigate(['watch-list']);
     });
 
   }
@@ -746,7 +961,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   portfolio() {
     this.handleNavDrawerState().then(() => {
-      this.router.navigate(['/', 'portfolio']);
+      this.router.navigate(['portfolio']);
     });
 
   }
@@ -785,7 +1000,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   toggleSearchpanel() {
-    this.searchPanel.hide();
+    this.searchComponent.hide();
   }
 
   /* Toast */
@@ -811,7 +1026,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   /* Main Menu SideNav */
   handleNavDrawerState(): Promise<any> {
     if ((this.screenSize === Const.SCREEN_SIZE.XS && this.snav.opened)
-      || (this.configService.getPreferences().sideNav === 'contract' && this.snav.opened)) {
+      || (this.sessionService.getPreferences().sideNav === 'contract' && this.snav.opened)) {
       return this.snav.close();
     }
     return new Promise((resolve, reject) => {
@@ -835,10 +1050,29 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
+  filter(word: string) {
+    let filterCoins = [];
+    if (word && word !== '') {
+      filterCoins = this.allCoins.filter(v => {
+        return v.name.toLowerCase().startsWith(word.toLowerCase())
+      });
+    } else {
+      filterCoins = this.allCoins;
+    }
+    this.filteredCoinsStore.set(filterCoins);
+  }
+
+  resetFilter() {
+    let allCoins = this.basicCoinInfoStore.allCoinsStore.state;
+    this.filteredCoinsStore.set(allCoins);
+
+  }
+
   settingsChanged(userPreferences: UserPreferences) {
-    this.themeService.setTheme(userPreferences.theme);
     this.userPreferences = userPreferences;
-    this.configService.setPreferences(this.userPreferences);
+    this.sessionService.setPreferences(this.userPreferences);
+    this.userPreferences = this.sessionService.getPreferences();
+    this.themeService.setTheme(this.userPreferences.theme);
   }
 
   createAccount(event) {
@@ -863,7 +1097,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private isEventTargetOutsideSearch(event: Event): boolean {
     return this.searchVisible &&
-      !this.searchPanel.overlayVisible &&
+      !this.searchComponent.overlayVisible &&
       this.searchButton.nativeElement &&
       this.searchInputTarget.nativeElement &&
       !this.searchButton.nativeElement.contains(event.target as HTMLElement) &&

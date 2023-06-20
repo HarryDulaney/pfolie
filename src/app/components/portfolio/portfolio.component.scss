@@ -1,6 +1,8 @@
 #portfolio-container {
     height: 100% !important;
     width: 100% !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
     overflow: hidden;
 }
 
@@ -9,17 +11,12 @@
     font-size: 0.8rem !important;
 }
 
-.table-options-panel {
-    background: var(--surface-bg-exdark) !important;
-}
 
 :host ::ng-deep .p-overlaypanel .p-overlaypanel-content {
-    background: var(--surface-bg-exdark) !important;
     font-size: 0.8rem !important;
 }
 
 :host ::ng-deep .p-overlaypanel-content {
-    background: var(--surface-bg-exdark) !important;
     font-size: 0.8rem !important;
 }
 

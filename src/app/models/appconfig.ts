@@ -1,6 +1,8 @@
 export interface UserPreferences {
     theme: string;
     sideNav: 'contract' | 'expand';
+    localization: string;
+    currency: string;
 }
 
 export interface LastCoin {
@@ -8,10 +10,6 @@ export interface LastCoin {
     name: string;
 }
 
-export interface CachedPortfolio {
-    pid: number;
-    pName: string;
-}
 
 export interface TimeStamp {
     timeInMillis: number;
@@ -28,6 +26,9 @@ export const SOHO_LIGHT_THEME = 'soho-light';
 
 export const DEFAULT_USER_PREFS: UserPreferences = {
     theme: SOHO_DARK_THEME,
-    sideNav: 'expand'
+    sideNav: 'expand',
+    localization: 'en',
+    currency: 'usd'
+
 };
 

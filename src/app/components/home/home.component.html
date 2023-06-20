@@ -78,7 +78,7 @@
       </span>
     </button>
     <span
-      (click)="searchPanel.toggle($event)"
+      (click)="appSearch.toggle($event)"
       class="float-start"
       [hidden]="screenSize === 'XSmall'"
     >
@@ -168,13 +168,24 @@
     [style.z-index]="1000"
     [fixedInViewport]="true"
   >
+    <ng-container *ngIf="sessionService.authenticated;else signedOutNav">
+      <p-panelMenu
+        id="nav--menu-main"
+        [style]="{'width': 'auto','height':'auto'}"
+        [model]="signedInNavItems"
+      >
+      </p-panelMenu>
 
-    <p-panelMenu
-      id="nav--menu-main"
-      [style]="{'width': 'auto','height':'auto'}"
-      [model]="sessionService.authenticated ? signedInNavItems : signedOutNavItems"
-    >
-    </p-panelMenu>
+    </ng-container>
+    <ng-template #signedOutNav>
+      <p-panelMenu
+        id="nav--menu-main"
+        [style]="{'width': 'auto','height':'auto'}"
+        [model]="signedOutNavItems"
+      >
+      </p-panelMenu>
+    </ng-template>
+
     <div class="font-monospace">
       <div [hidden]="sessionService.authenticated">
         <div class="px-2 py-4 md:px-3 lg:px-4">
@@ -227,32 +238,17 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-
-    <!-- Search Dropdown Panel -->
-    <p-overlayPanel
-      #searchPanel
-      [dismissable]="true"
-    >
-      <ng-template pTemplate>
-        <app-search
-          #appSearch
-          [selectOptions]="getFilteredCoins() | async"
-          [scrollHeight]="410"
-          [ddStyleClass]=""
-        ></app-search>
-      </ng-template>
-    </p-overlayPanel>
     <!-- Account Menu Dropdown Panel -->
     <p-overlayPanel
       #accountPanel
+      [style]="{'width': '12.5rem'}"
       (onShow)="onShowAccountMenu($event)"
-      styleClass="p-overlaypanel-account-menu"
     >
       <ng-template pTemplate>
         <p-menu
-          styleClass="p-menu-account-menu"
+          pRipple
           [model]="sessionService.authenticated ? accountMenuItems: signedOutAccountMenuItems"
-          class="container w-100 h-100 p-0 m-0"
+          class="w-100 h-100 p-0 m-0"
         >
         </p-menu>
       </ng-template>
@@ -288,6 +284,7 @@
 <!-- Bottom-right Toast Message -->
 <p-toast
   position="bottom-right"
+  [preventDuplicates]="true"
   [style]="{'max-width': '96vw !important','padding': '0.5rem'}"
   key="toast"
 ></p-toast>
@@ -295,6 +292,7 @@
 <p-toast
   position="center"
   key="prompt-toast"
+  [preventDuplicates]="true"
   [style]="{'max-width': '96vw !important','padding': '0.5rem'}"
   (onClose)="onPromptToastReject($event)"
 >
@@ -340,10 +338,16 @@
 
 <!-- Top-center Toast Message -->
 <p-toast
-  [preventOpenDuplicates]="true"
+  [preventDuplicates]="true"
   [style]="{'max-width': '96vw !important','padding': '0.5rem'}"
   [baseZIndex]="1000099"
   position="top-center"
   key="login-toast"
 >
 </p-toast>
+<!-- Search Dropdown Panel -->
+<app-search
+  #appSearch
+  [optionsProvider]="filteredSearchProvider$"
+  [scrollHeight]="410"
+></app-search>

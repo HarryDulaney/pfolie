@@ -60,6 +60,9 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
   volume = [];
   destroySubject$ = new Subject();
 
+  private theme: string;
+  private isInitialized = false;
+
   constructor(
     public chartService: ChartService,
     public cd: ChangeDetectorRef
@@ -86,7 +89,11 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
 
 
   ngOnInit() {
-    this.reload();
+    this.themeProvider.themeSource$.subscribe(
+      (theme) => {
+        this.theme = theme;
+        this.reload();
+      });
   }
 
   reflow() {
@@ -177,6 +184,11 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
       title: {
         text: ''
       },
+      tooltip: {
+        split: false,
+        valueDecimals: 2,
+        valuePrefix: '$',
+      },
       chart: {
         backgroundColor: this.themeProvider.getCssVariableValue('--chart-bg-color'),
         plotBackgroundColor: this.themeProvider.getCssVariableValue('--chart-bg-color'),
@@ -252,9 +264,6 @@ export class CoinChartComponent implements OnInit, OnDestroy, OnChanges {
         name: '$USD',
         color: this.themeProvider.getCssVariableValue('--chart-line-color'),
         data: this.prices,
-        tooltip: {
-          valueDecimals: 2
-        },
       }],
     };
   }

@@ -2,6 +2,8 @@ const API_KEY = process.env.POLYGON_API_KEY;
 const { restClient } = require('@polygon.io/client-js');
 const rest = restClient(API_KEY, "https://api.polygon.io");
 
+/* ------------------------------------- Polygon.io Controller -------------------------------------------- */
+
 const getAggregate = async (req, res) => {
     const { ticker, mulitplier, timespan, startdate, enddate } = req.body;
     await rest.stocks.aggregates(ticker, mulitplier, timespan, startdate, enddate)

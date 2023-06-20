@@ -1,14 +1,16 @@
 @import "~primeng/resources/themes/soho-dark/theme.css";
 
-
 * {
+    --surface-a: #000000;
+    --surface-card: #1d002a71;
+    --surface-ground: #000;
+    --main-toolbar-bg-color: var(--surface-ground);
     --increase-color: #00ff59;
     --decrease-color: #ff1100;
     --light-blue: var(--blue-100);
     --hover-bg: #1414144a;
     --scrollbar-thumb: #24273a;
     --scrollbar-hover-thumb: #15161c;
-    --surface-bg-exdark: #00012b;
     --toast-bg-color: #e1a1ff;
     --border-accent: #c0c0c1b8;
     --toast-text-color: #060d3a;
@@ -18,22 +20,24 @@
     --star-color: rgb(81, 127, 255);
     --text-exag-title-color: var(--blue-400);
     --text-exag-for-color: #fff;
-    --main-toolbar-bg-color: var(--surface-ground);
     --text-negative-color: var(--text-color);
-    --bg-mask-styled: #111111a1;
+    --bg-mask-styled: #2c2c2cc3;
     --table-border-color: #81818121;
     --hover-icon-color: #7e7e7e;
     --button-at-rest-color: var(--hover-icon-color);
     --button-hover-color: var(--text-color);
     --chart-fill-color: #006eff69;
     --chart-bg-color: #00000000;
-    --chart-line-color: #88b8f8;
-    --chart-volume-color: #99ff00;
-    --hover-bg-fancy: #010a37d7;
-    --card-bg-color: var(--bg-mask-styled);
+    --chart-line-color: var(--primary-color);
+    --chart-volume-color: #ddecff;
+    --hover-bg-fancy: #01082aec;
+    --card-bg-color: var(--surface-card);
+    --card-2-bg-color: var(--surface-card) !important;
     --active-color: #82828245;
     --badge-bg-color: #363636;
     --custom-purple: var(--purple-900) !important;
     --badge-active-bg-color: #180077;
-
+    --menu-item-hover: var(--primary-color);
+    --background-alt: var(--surface-d);
+    --text-accent: var(--primary-color);
 }

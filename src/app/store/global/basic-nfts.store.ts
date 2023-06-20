@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CoinsState, NftState } from "src/app/models/store-model";
-import { Store, SetOptions } from "../store";
+import { Store, UpdateOptions } from "../store";
 
 
 @Injectable()
@@ -13,7 +13,7 @@ export class BasicNftStore {
 
 
     initialize() {
-        this.state$.set(new SetOptions('list', []));
-        this.state$.set(new SetOptions('filtered', []));
+        this.state$.update(new UpdateOptions('list', []));
+        this.state$.update(new UpdateOptions('filtered', []));
     }
 }

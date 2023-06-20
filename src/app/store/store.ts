@@ -2,7 +2,6 @@ import { BehaviorSubject } from "rxjs";
 import { distinctUntilChanged } from "rxjs/operators";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { setOptions } from "highcharts";
 
 // When updating the state, the caller has the option to define the new state partial
 // using a a callback. This callback will provide the current state snapshot.
@@ -10,7 +9,7 @@ interface SetStateCallback<T> {
   (currentState: T): Partial<T>;
 }
 
-export class SetOptions<StoreType> {
+export class UpdateOptions<StoreType> {
   _key: keyof StoreType;
   _value: StoreType[keyof StoreType];
 
@@ -54,14 +53,17 @@ export class Store<StoreType = any> {
     );
     return (selectStream);
   }
-
-  public set(options: SetOptions<StoreType>): void;
-  public set(_callback: SetStateCallback<StoreType>): void;
-  public set(_partialState: Partial<StoreType>): void;
-  public set(setter: any): void {
+  public set(newState: StoreType): void {
+    this.state$.next(newState);
+  }
+  
+  public update(options: UpdateOptions<StoreType>): void;
+  public update(_callback: SetStateCallback<StoreType>): void;
+  public update(_partialState: Partial<StoreType>): void;
+  public update(setter: any): void {
     var currentState = this.getCurrentValue();
     switch (setter) {
-      case (setter instanceof SetOptions):
+      case (setter instanceof UpdateOptions):
         this.state$.next({
           ...this.state,
           [setter.key]: setter.value,
@@ -81,13 +83,11 @@ export class Store<StoreType = any> {
         });
     }
 
-
-
   }
 
-  // I get the current state snapshot.
+  // Get Current State snapshot
   public getCurrentValue(): StoreType {
-    return (this.state$.getValue());
+    return this.state$.getValue();
 
   }
 

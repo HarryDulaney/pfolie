@@ -1,0 +1,67 @@
+<div id="toolbar-element-id">
+    <p-menubar
+        #menuBar
+        [model]="menuItems"
+        [class]="styleClass"
+    >
+        <ng-template pTemplate="start">
+            <div *ngIf="isMain">
+                <span
+                    style="font-size:small;font-weight: bold;color:var(--primary-color);"
+                    pTooltip
+                    [tooltipOptions]="{
+                        position: tooltipOptions.position,
+                         event: tooltipOptions.event,
+                         life: tooltipOptions.life,
+                         autoHide: tooltipOptions.autoHide,
+                    tooltipLabel: 'Main is used as target for global actions, like favorites, watchlist, etc.'}"
+                    class="p-1"
+                >
+                    <i
+                        class="fa-solid fa-star"
+                        style="font-size:small;font-weight: bold;color:var(--primary-color);"
+                    ></i>
+                    Main
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <p-inplace
+                #nameEditor
+                id="rename-portfolio-element"
+                [preventClick]="true"
+                [style]="{'max-height':'2rem'}"
+            >
+                <ng-template pTemplate="display">
+                    <span
+                        (click)="nameEditor.activate()"
+                        class="portfolio-name-label"
+                    > {{toolbarLabel}} </span>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <span class="float-start">
+                        <p-button
+                            *ngIf="showCancelRename"
+                            icon="fa fa-undo theme-red"
+                            (click)="handleCancelRename()"
+                        ></p-button>
+                        <p-button
+                            icon="fa fas fa-save theme-green"
+                            (click)="handleRename()"
+                        ></p-button>
+                    </span>
+                    <input
+                        class="portfolio-name-input"
+                        [style]="{'max-height':'2rem'}"
+                        type="text"
+                        pInputText
+                        [value]="toolbarLabel"
+                        [(ngModel)]="toolbarLabel"
+                        (keydown.enter)="handleRename()"
+                        (ngModelChange)="nameChanged($event)"
+                    >
+                </ng-template>
+            </p-inplace>
+        </ng-template>
+    </p-menubar>
+</div>

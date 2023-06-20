@@ -1,4 +1,5 @@
 import { BasicCoin, BasicNft } from "./coin-gecko";
+import { PortfolioMeta, WatchListMeta } from "./portfolio";
 
 export interface CoinsState {
     basicCoins: BasicCoin[];
