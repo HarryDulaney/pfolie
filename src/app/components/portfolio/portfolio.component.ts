@@ -196,14 +196,20 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
       icon: 'fa fa-bolt',
       items: [
         {
-          label: 'Mark As Main',
-          disabled: this.portfolioService.current.isMain,
-          tooltipOptions: this.portfolioService.current.isMain ?
-            { tooltipLabel: 'This is already Marked as Main', tooltipPosition: 'right' } :
-            { tooltipLabel: 'Make this the Main Portfolio', tooltipPosition: 'right' },
-          icon: 'fa-solid fa-check-circle',
+          label: 'Set as Main',
+          visible: !this.isMain,
+          tooltipOptions: { tooltipLabel: 'Make this the Main Portfolio', tooltipPosition: 'right' },
+          icon: 'fa-solid fa-star',
           command: (event) => {
             this.handleAssignMain(event, this.portfolioService.current);
+          }
+        }, {
+          label: 'Unset as Main',
+          visible: this.isMain,
+          tooltipOptions: { tooltipLabel: 'Remove the Main marking from this Portoflio', tooltipPosition: 'right' },
+          icon: 'fa-solid fa-star',
+          command: (event) => {
+            this.handleUnAssignMain(event, this.portfolioService.current);
           }
         }, {
           label: 'Delete',
@@ -221,7 +227,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           label: 'Add New',
           icon: 'pi pi-plus',
-          tooltipOptions: { tooltipLabel: 'Add a new asset to Portfolio', tooltipPosition: 'right'},
+          tooltipOptions: { tooltipLabel: 'Add a new asset to Portfolio', tooltipPosition: 'right' },
           command: (event) => {
             this.handleAddPortfolioEvent(event);
           }
@@ -242,11 +248,35 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
             this.isMain = true;
             this.portfolioService.toast.showSuccessToast('Portfolio ' + result.name + ' is now the Main portfolio.');
             this.portfolioService.setPortfolio(result);
-            this.cd.markForCheck();
+            this.cd.detectChanges();
           }
         },
         complete: () => {
-          this.cd.markForCheck();
+          this.cd.detectChanges();
+        }
+      });
+
+  }
+
+
+  handleUnAssignMain(event: any, current: Portfolio) {
+    this.portfolioService.unAssignMain(current)
+      .pipe(
+        take(1),
+      )
+      .subscribe({
+        next: (result) => {
+          if (result) {
+            this.isMain = false;
+            this.portfolioService.toast.showSuccessToast('Main status removed from Portfoilo' + result.name + '.');
+            this.portfolioService.setPortfolio(result);
+            this.setToolbarMenuItems();
+            this.cd.detectChanges();
+            this.toolbar.detectChanges();
+          }
+        },
+        complete: () => {
+          this.cd.detectChanges();
         }
       });
 

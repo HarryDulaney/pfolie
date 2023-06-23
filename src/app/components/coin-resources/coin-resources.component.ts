@@ -1,12 +1,11 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, SecurityContext, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, SecurityContext, ViewChild } from '@angular/core';
 import { CoinFullInfo, DeveloperData, Links, MarketData, Ticker } from '../../models/coin-gecko'
 import { NavService } from 'src/app/services/nav.service';
 import { SessionService } from 'src/app/services/session.service';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ChartService } from '../charts/chart.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { PortfolioService } from '../../services/portfolio.service';
 import * as Const from '../../constants';
 import { takeUntil } from 'rxjs/operators';
 import { SharedModule } from 'primeng/api';

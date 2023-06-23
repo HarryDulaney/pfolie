@@ -40,7 +40,8 @@ import { WatchListMeta } from 'src/app/models/portfolio';
   styleUrls: ['./dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [EditableCardComponent,
+  imports: [
+    EditableCardComponent,
     NgClass,
     TooltipModule,
     ScrollTopModule,
@@ -57,7 +58,8 @@ import { WatchListMeta } from 'src/app/models/portfolio';
     DeltaIcon,
     OverlayPanelModule,
     ListCardComponent,
-    PieChartComponent]
+    PieChartComponent
+  ]
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('bigCoinsTable') bigCoinsTable: Table;

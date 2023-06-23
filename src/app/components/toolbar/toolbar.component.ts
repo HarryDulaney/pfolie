@@ -10,7 +10,7 @@ import { Observable, Subject } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { ScreenService } from 'src/app/services/screen.service';
 import { Portfolio, WatchList } from 'src/app/models/portfolio';
 import { Watch } from 'typescript';
@@ -23,7 +23,7 @@ import { TooltipOptions } from 'primeng/tooltip';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
   standalone: true,
-  imports: [MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
+  imports: [CommonModule, MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
 })
 export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input('nameKey') nameKey: string;
@@ -86,16 +86,16 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(
         (data) => {
-          if (!data) {
-            this.currentData = null;
-            this.toolbarLabel = 'loading...';
-            this.cd.detectChanges();
-          } else {
+          if (data) {
             this.currentData = Object.assign({}, data);
-            this.toolbarLabel = this.currentData[this.nameKey]; 
+            this.toolbarLabel = this.currentData[this.nameKey];
             this.isMain = this.currentData.isMain;
             this.cd.detectChanges();
-
+          } else {
+            this.currentData = {} as Portfolio | WatchList;
+            this.toolbarLabel = 'loading...';
+            this.isMain = false;
+            this.cd.detectChanges();
           }
         }
       );
@@ -124,6 +124,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       );
   }
+
 
 
   ngOnDestroy(): void {

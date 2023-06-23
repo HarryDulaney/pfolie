@@ -179,6 +179,21 @@ export class UserService {
     this.basicWatchListStore.set(this.currentWatchLists);
   }
 
+  resetMainPortfolio() {
+    for (let i = 0; i < this.currentPortfolios.length; i++) {
+      this.currentPortfolios[i].isMain = false;
+    }
+    this.basicPortfolioStore.set(this.currentPortfolios);
+  }
+
+
+  resetMainWatchList() {
+    for (let i = 0; i < this.currentWatchLists.length; i++) {
+      this.currentWatchLists[i].isMain = false;
+    }
+    this.basicWatchListStore.set(this.currentWatchLists);
+  }
+
   addWatchListMeta(watchList: WatchListMeta) {
     const index = this.currentWatchLists.findIndex(p => p.watchListId === watchList.watchListId);
     if (index !== -1) {

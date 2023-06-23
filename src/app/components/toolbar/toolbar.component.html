@@ -1,7 +1,7 @@
 <div id="toolbar-element-id">
     <p-menubar
         #menuBar
-        [model]="menuItems"
+        [(model)]="menuItems"
         [class]="styleClass"
     >
         <ng-template pTemplate="start">
@@ -14,14 +14,11 @@
                          event: tooltipOptions.event,
                          life: tooltipOptions.life,
                          autoHide: tooltipOptions.autoHide,
-                    tooltipLabel: 'Main is used as target for global actions, like favorites, watchlist, etc.'}"
+                    tooltipLabel: 'Main is used as default for global actions, like favorites, watchlist, etc.'}"
                     class="p-1"
                 >
-                    <i
-                        class="fa-solid fa-star"
-                        style="font-size:small;font-weight: bold;color:var(--primary-color);"
-                    ></i>
-                    Main
+                    <p-badge> Main
+                    </p-badge>
                 </span>
             </div>
         </ng-template>

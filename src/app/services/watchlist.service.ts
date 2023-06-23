@@ -4,7 +4,7 @@ import { CoinDataService } from "src/app/services/coin-data.service";
 import { ToastService } from "src/app/services/toast.service";
 import { UtilityService } from "src/app/services/utility.service";
 import { PortfolioBuilderService } from "../components/portfolio/portfolio-builder.service";
-import { BehaviorSubject, Observable, Subject, concatMap, firstValueFrom, forkJoin, lastValueFrom, map, mergeMap, of, takeUntil, tap } from "rxjs";
+import { BehaviorSubject, Observable, Subject, concatMap, firstValueFrom, forkJoin, lastValueFrom, map, mergeMap, of, take, takeUntil, tap } from "rxjs";
 import { WatchListMeta, TrackedAsset, WatchList, WatchListData } from "src/app/models/portfolio";
 import { StringUtility } from 'src/app/services/string.utility';
 import { CoinFullInfo } from "src/app/models/coin-gecko";
@@ -55,6 +55,7 @@ export class WatchListService {
         private apiService: ApiService
     ) {
         this.userService.mainWatchListProvider
+            .pipe(take(1))
             .subscribe(res => {
                 if (res) {
                     this.loadAndOpen(res).subscribe(res => {
@@ -118,6 +119,10 @@ export class WatchListService {
 
 
     setWatchList(watchList: WatchList) {
+        if (!watchList.watchListData || !watchList.watchListData.trackedAssets) {
+            watchList.watchListData = new WatchListData([]);
+        }
+
         if (watchList && watchList.watchListId !== -1) {
             if (watchList.isNew) {
                 const newWatchListMeta = {
@@ -130,9 +135,8 @@ export class WatchListService {
                 watchList.isNew = false;
                 this.toast.showSuccessToast('Created New Watch-list, named: ' + watchList.watchListName);
             }
-
-            this.updateView(watchList);
             this.watchListSource.next(watchList);
+            this.updateView(watchList);
 
         }
 
@@ -393,6 +397,13 @@ export class WatchListService {
             .pipe(map((res) => {
                 return res['watchlist'];
             }));
+    }
+
+    unAssignMain(current: WatchList): Observable<WatchList> {
+        current.isMain = false;
+        this.userService.resetMainWatchList();
+        this.mainWatchListStore.set(null);
+        return this.apiService.updateWatchList(current);
     }
 
     clearCache(watchListMeta: WatchListMeta) {

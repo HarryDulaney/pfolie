@@ -1,4 +1,4 @@
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlSegment } from '@angular/router';
 
 import { SessionService } from '../services/session.service';
 import { inject } from '@angular/core';
@@ -17,8 +17,7 @@ export const authGuard = (
                     if (result) {
                         return true;
                     } else {
-                        let fragment = route.url[0];
-                        sessionService.displayLoginModal(fragment.path + '/' + route.url[1].path);
+                        sessionService.displayLoginModal();
                         return false;
                     }
                 }
@@ -30,8 +29,7 @@ export const authGuard = (
             if (user !== null) {
                 return true;
             } else {
-                let fragment = route.url[0];
-                sessionService.displayLoginModal(fragment.path + '/' + route.url[1].path);
+                sessionService.displayLoginModal();
                 return false;
             }
         }

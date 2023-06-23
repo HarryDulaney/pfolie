@@ -1,14 +1,14 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { CurrencyPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { UntypedFormGroup } from '@angular/forms';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { NavService } from 'src/app/services/nav.service';
 import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
-import { Portfolio, TrackedAsset, WatchList } from 'src/app/models/portfolio';
-import { exhaustMap, take, takeUntil, tap } from 'rxjs/operators';
-import { forkJoin, from, Observable, of, Subject } from 'rxjs';
+import { TrackedAsset, WatchList } from 'src/app/models/portfolio';
+import { take, takeUntil, tap } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
@@ -49,6 +49,7 @@ import { TooltipOptions } from 'primeng/tooltip';
     SharedModule,
     MatButtonModule,
     ToolbarComponent,
+    CommonModule,
     OverlayPanelModule,
     DeltaIcon,
     SparklineComponent,
@@ -97,8 +98,6 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   modalPostion: string;
   tooltipOptions: TooltipOptions;
   isMain = false;
-  private isMainTooltip;
-  private isNotMainTooltip;
 
   constructor(
     public coinDataService: CoinDataService,
@@ -114,19 +113,6 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
     media: MediaMatcher
   ) {
     this.tooltipOptions = this.screenService.tooltipOptions;
-    this.isMainTooltip = {
-      tooltipLabel: 'This is already Marked as Main',
-      tooltipPosition: this.tooltipOptions.tooltipPosition,
-      tooltipEvent: this.tooltipOptions.tooltipEvent,
-      life: this.tooltipOptions.life
-    };
-
-    this.isNotMainTooltip = {
-      tooltipLabel: 'Make this Watchlist the Main watchlist',
-      tooltipPosition: this.tooltipOptions.tooltipPosition,
-      tooltipEvent: this.tooltipOptions.tooltipEvent,
-      life: this.tooltipOptions.life
-    };
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.navExpandProvider = this.navService.navExpandedSource$;
 
@@ -171,16 +157,12 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
         takeUntil(this.destroySubject$)
       ).subscribe({
         next: (result) => {
-          if (result && result.isNew) {
-            this.watchListService.toast.showSuccessToast('New Watchlist created with name: ' + result.name);
-          } else if (result) {
+          if (result) {
             this.isMain = result.isMain;
-            this.setToolbarMenuItems();
+            this.setToolbarMenuItems(result);
             this.cd.markForCheck();
           }
-
         }
-
       });
 
     this.screenService.screenSource$
@@ -237,24 +219,25 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  setToolbarMenuItems() {
+  setToolbarMenuItems(watchList: WatchList) {
     this.toolbarMenuItems = [{
       label: 'Watchlist',
       icon: 'fa fa-bolt',
       items: [
         {
-          label: 'Mark As Main',
-          disabled: this.isMain ? true : false,
-          tooltipOptions: this.isMain ? this.isMainTooltip : this.isNotMainTooltip,
-
-          icon: 'fa-solid fa-check-circle',
-          command: (event) => {
+          label: watchList.isMain ? 'Unset as Main' : 'Set as Main',
+          tooltipOptions: watchList.isMain ?
+            { tooltipLabel: 'Unset this as your default watchlist', tooltipPosition: 'right' } :
+            { tooltipLabel: 'Make this your default watchlist', tooltipPosition: 'right' },
+          icon: 'fa-solid fa-star',
+          command: watchList.isMain ? (event) => {
+            this.handleUnAssignMain(event, this.watchListService.current);
+          } : (event) => {
             this.handleAssignMain(event, this.watchListService.current);
           }
-        },
-        {
+        }, {
           label: 'Delete',
-          tooltipOptions: { tooltipLabel: 'Delete the current Watchlist', tooltipPosition: 'right' },
+          tooltipOptions: { tooltipLabel: 'Delete this watchlist', tooltipPosition: 'right' },
           icon: 'pi pi-trash',
           command: (event) => {
             this.handleDeleteWatchListEvent(event, this.watchListService.current);
@@ -275,6 +258,30 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
     }];
   }
 
+  handleUnAssignMain(event: any, current: WatchList) {
+    this.watchListService.unAssignMain(current)
+      .pipe(take(1)).subscribe({
+        next: (result) => {
+          if (result) {
+            this.isMain = false;
+            this.watchListService.toast.showSuccessToast('Reset: ' + current.name + ' watchlist to non-main.');
+            this.watchListService.setWatchList(result);
+            this.setToolbarMenuItems(result);
+            this.cd.markForCheck();
+            this.toolbar.detectChanges();
+          }
+        },
+        complete: () => {
+          this.cd.markForCheck();
+        },
+        error: (err) => {
+          window.alert('Error: ' + JSON.stringify(err));
+          this.cd.markForCheck();
+        }
+
+      });
+  }
+
   handleAssignMain(event: any, current: WatchList) {
     this.watchListService.assignMain(current)
       .pipe(
@@ -286,6 +293,7 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
             this.isMain = true;
             this.watchListService.toast.showSuccessToast('Watchlist ' + current.name + ' is now the Main watchlist');
             this.watchListService.setWatchList(current);
+            this.setToolbarMenuItems(result);
             this.cd.markForCheck();
           }
         },
@@ -314,7 +322,7 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           });
 
-    this.cd.detectChanges();
+    this.cd.markForCheck();
 
   }
 

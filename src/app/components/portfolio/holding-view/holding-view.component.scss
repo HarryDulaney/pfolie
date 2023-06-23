@@ -1,0 +1,143 @@
+:host ::ng-deep {
+    .p-datatable .p-datatable-tbody > tr {
+        cursor: pointer;
+        font-style: 0.8rem !important;
+    }
+
+    .p-card {
+        transition: transform 0.2s;
+        text-decoration: none;
+    }
+
+    .p-card:hover {
+        transform: scale(1.05);
+    }
+
+    .p-datatable .p-datatable-tbody > tr {
+        background: transparent !important;
+        font-size: 0.8rem !important;
+
+        font-weight: bold;
+    }
+
+    .p-datatable-responsive-scroll > .p-datatable-wrapper {
+        min-height: 25vh !important;
+    }
+
+    .p-paginator {
+        background: transparent !important;
+    }
+
+    p-table .p-paginator {
+        background: transparent !important;
+    }
+
+    p-table .custom-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .p-datatable .p-datatable-header {
+        padding: 0.2rem 0.2rem !important;
+    }
+}
+
+.table-action-btn {
+    color: var (--text-color) !important;
+    font-weight: bold !important;
+    background: transparent !important;
+}
+
+.table-header-title {
+    color: var(--text-color) !important;
+    font-size: 0.8rem !important;
+
+    font-weight: bold;
+}
+
+.mdc-button__label {
+    color: var(--text-color) !important;
+    font-size: 0.8rem !important;
+}
+
+.p-table-custom {
+    background-color: transparent !important;
+}
+
+.mdc-button {
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+    color: var(--text-color) !important;
+}
+
+.card {
+    box-shadow: 1px 1px 1px var(--surface-border);
+    background: var(--card-bg-color) !important;
+    padding: 0.3rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.8rem !important;
+
+    font-weight: bold;
+}
+
+.p-datatable .p-datatable-footer {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.8rem !important;
+
+    font-weight: bold;
+}
+
+.p-datatable .p-datatable-loading-icon {
+    font-size: 10rem !important;
+    color: var(--text-color) !important;
+}
+
+.p-datatable .p-paginator-top {
+    border-width: 0 0 0 0 !important;
+}
+
+.p-datatable .p-datatable-header {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.8rem !important;
+
+    font-weight: bold;
+}
+
+.p-datatable .p-paginator-bottom {
+    background: transparent !important;
+    border: none !important;
+    border-width: 0 0 0 0;
+    padding: 0.2rem 0.2rem !important;
+    font-size: 0.8rem !important;
+    font-weight: bold;
+}
+
+.p-datatable .p-paginator .p-paginator-bottom {
+    background-color: transparent !important;
+    background: transparent !important;
+    font-size: 0.8rem !important;
+}
+
+.p-datatable > .p-paginator .p-paginator-top {
+    background-color: transparent !important;
+    background: transparent !important;
+    font-size: 0.8rem !important;
+}
+
+.p-overlaypanel .p-overlaypanel-content {
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+    padding: 0.5rem 0.5rem !important;
+}
