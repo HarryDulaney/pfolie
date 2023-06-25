@@ -65,7 +65,7 @@
                             [dismissableMask]="true"
                             [closeOnEscape]="true"
                             [modal]="true"
-                            [style]="{ 'width': 'auto', 'height': 'auto' }"
+                            [style]="{ 'width': dialogWidth, 'height': dialogHeight }"
                             [draggable]="false"
                             [closable]="true"
                             [focusTrap]="true"
@@ -79,7 +79,7 @@
                             >
                             </app-search-select>
                         </p-dialog>
-                        <div class="card">
+                        <div class="card" (click)="onContainerClick($event)">
                             <p-table
                                 #trackedAssetTable
                                 id="tracked-asset-table-id"

@@ -40,13 +40,12 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   showCancelRename: boolean;
   isNavExpanded: boolean;
   isMobile: boolean = false;
-  isMain = false;
 
   styleClass: string;
 
   open: boolean = true;
-  toolbarLabel: string;
-  private currentData;
+  label: string;
+  currentData: any;
   fileMenuItems: MenuItem;
   actionItems: MenuItem;
   destroySubject$ = new Subject();
@@ -87,13 +86,12 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(
         (data) => {
           if (!data) {
-            this.currentData = null;
-            this.toolbarLabel = 'loading...';
+            this.currentData = {isMain: false, name: ''};
+            this.label = 'loading...';
             this.cd.detectChanges();
           } else {
             this.currentData = Object.assign({}, data);
-            this.toolbarLabel = this.currentData[this.nameKey]; 
-            this.isMain = this.currentData.isMain;
+            this.label = this.currentData[this.nameKey]; 
             this.cd.detectChanges();
 
           }
@@ -155,8 +153,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /* ------------------------------------ Rename ------------------------------------- */
   handleRename() {
-    if (this.toolbarLabel && this.toolbarLabel.trim() !== '' &&
-      this.currentData[this.nameKey] !== this.toolbarLabel) {
+    if (this.label && this.label.trim() !== '' &&
+      this.currentData[this.nameKey] !== this.label) {
       this.rename();
     } else {
       this.nameEditor.deactivate();
@@ -166,7 +164,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   rename() {
-    this.service.rename(this.toolbarLabel).then(
+    this.service.rename(this.label).then(
       () => {
         this.nameEditor.deactivate();
 
@@ -186,7 +184,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   handleCancelRename() {
     this.nameEditor.deactivate();
-    this.toolbarLabel = this.currentData[this.nameKey];
+    this.label = this.currentData[this.nameKey];
     this.showCancelRename = false;
   }
 

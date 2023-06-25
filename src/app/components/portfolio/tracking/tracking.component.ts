@@ -1,14 +1,14 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { CurrencyPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe, NgIf } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { UntypedFormGroup } from '@angular/forms';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { NavService } from 'src/app/services/nav.service';
 import { BasicCoin, CoinFullInfo } from 'src/app/models/coin-gecko';
-import { Portfolio, TrackedAsset, WatchList } from 'src/app/models/portfolio';
-import { exhaustMap, take, takeUntil, tap } from 'rxjs/operators';
-import { forkJoin, from, Observable, of, Subject } from 'rxjs';
+import { TrackedAsset, WatchList } from 'src/app/models/portfolio';
+import { take, takeUntil, tap } from 'rxjs/operators';
+import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
@@ -22,12 +22,13 @@ import { ScreenService } from 'src/app/services/screen.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { WatchListService } from '../../../services/watchlist.service';
 import { Router } from '@angular/router';
-import { ToolbarComponent } from '../../toolbar/toolbar.component';
 import * as Const from '../../../constants';
 import { UserService } from 'src/app/services/user.service';
 import { AppEvent } from 'src/app/models/events';
 import { ListStore } from 'src/app/store/list-store';
 import { TooltipOptions } from 'primeng/tooltip';
+import { ToolbarComponent } from 'src/app/shared/toolbar/toolbar.component';
+import { CacheService } from 'src/app/services/cache.service';
 
 
 @Component({
@@ -49,6 +50,7 @@ import { TooltipOptions } from 'primeng/tooltip';
     SharedModule,
     MatButtonModule,
     ToolbarComponent,
+    CommonModule,
     OverlayPanelModule,
     DeltaIcon,
     SparklineComponent,
@@ -69,13 +71,10 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   percentFormat: string = '1.2-6';
   renamePortfolioFormGroup: UntypedFormGroup;
   currentDate: Date = new Date();
-  scrollHeight: string = "500px";
   showAssetSearchDialog: boolean;
   destroySubject$ = new Subject();
   loadingIcon = 'pi pi-spin pi-spinner';
   selectedAsset: TrackedAsset;
-  mobileQuery: MediaQueryList;
-  public _mobileQueryListener: () => void;
   sparklineWidth = '200';
   openRowPanels: OverlayPanel[] = [];
   sparklineColor = '#006aff';
@@ -97,8 +96,8 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   modalPostion: string;
   tooltipOptions: TooltipOptions;
   isMain = false;
-  private isMainTooltip;
-  private isNotMainTooltip;
+  dialogHeight: string;
+  dialogWidth: string;
 
   constructor(
     public coinDataService: CoinDataService,
@@ -108,50 +107,21 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
     public decimalPipe: DecimalPipe,
     private userService: UserService,
     private router: Router,
+    private cache: CacheService,
     public themeService: ThemeService,
     public watchListService: WatchListService,
     private cd: ChangeDetectorRef,
     media: MediaMatcher
   ) {
     this.tooltipOptions = this.screenService.tooltipOptions;
-    this.isMainTooltip = {
-      tooltipLabel: 'This is already Marked as Main',
-      tooltipPosition: this.tooltipOptions.tooltipPosition,
-      tooltipEvent: this.tooltipOptions.tooltipEvent,
-      life: this.tooltipOptions.life
-    };
-
-    this.isNotMainTooltip = {
-      tooltipLabel: 'Make this Watchlist the Main watchlist',
-      tooltipPosition: this.tooltipOptions.tooltipPosition,
-      tooltipEvent: this.tooltipOptions.tooltipEvent,
-      life: this.tooltipOptions.life
-    };
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.navExpandProvider = this.navService.navExpandedSource$;
 
-    if (this.mobileQuery.matches) {
-      this.scrollHeight = '60vh';
-    } else {
-      this.scrollHeight = '35vh';
-    }
-
-    this._mobileQueryListener = () => {
-      if (this.mobileQuery.matches) {
-        this.scrollHeight = '60vh';
-      } else {
-        this.scrollHeight = '35vh';
-      }
-      this.cd.markForCheck()
-    };
-    this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
 
   ngOnDestroy(): void {
     this.watchListService.isInitialized = false;
     this.destroySubject$.next(true);
     this.destroySubject$.complete();
-    this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
 
   }
 
@@ -171,16 +141,12 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
         takeUntil(this.destroySubject$)
       ).subscribe({
         next: (result) => {
-          if (result && result.isNew) {
-            this.watchListService.toast.showSuccessToast('New Watchlist created with name: ' + result.name);
-          } else if (result) {
+          if (result) {
             this.isMain = result.isMain;
-            this.setToolbarMenuItems();
+            this.setToolbarMenuItems(result);
             this.cd.markForCheck();
           }
-
         }
-
       });
 
     this.screenService.screenSource$
@@ -237,24 +203,25 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  setToolbarMenuItems() {
+  setToolbarMenuItems(watchList: WatchList) {
     this.toolbarMenuItems = [{
       label: 'Watchlist',
       icon: 'fa fa-bolt',
       items: [
         {
-          label: 'Mark As Main',
-          disabled: this.isMain ? true : false,
-          tooltipOptions: this.isMain ? this.isMainTooltip : this.isNotMainTooltip,
-
-          icon: 'fa-solid fa-check-circle',
-          command: (event) => {
+          label: watchList.isMain ? 'Unset as Main' : 'Set as Main',
+          tooltipOptions: watchList.isMain ?
+            { tooltipLabel: 'Unset this as your default watchlist', tooltipPosition: 'right' } :
+            { tooltipLabel: 'Make this your default watchlist', tooltipPosition: 'right' },
+          icon: 'fa-solid fa-star',
+          command: watchList.isMain ? (event) => {
+            this.handleUnAssignMain(event, this.watchListService.current);
+          } : (event) => {
             this.handleAssignMain(event, this.watchListService.current);
           }
-        },
-        {
+        }, {
           label: 'Delete',
-          tooltipOptions: { tooltipLabel: 'Delete the current Watchlist', tooltipPosition: 'right' },
+          tooltipOptions: { tooltipLabel: 'Delete this watchlist', tooltipPosition: 'right' },
           icon: 'pi pi-trash',
           command: (event) => {
             this.handleDeleteWatchListEvent(event, this.watchListService.current);
@@ -275,6 +242,30 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
     }];
   }
 
+  handleUnAssignMain(event: any, current: WatchList) {
+    this.watchListService.unAssignMain(current)
+      .pipe(take(1)).subscribe({
+        next: (result) => {
+          if (result) {
+            this.isMain = false;
+            this.watchListService.toast.showSuccessToast('Reset: ' + current.name + ' watchlist to non-main.');
+            this.watchListService.setWatchList(result);
+            this.setToolbarMenuItems(result);
+            this.cd.markForCheck();
+            this.toolbar.detectChanges();
+          }
+        },
+        complete: () => {
+          this.cd.markForCheck();
+        },
+        error: (err) => {
+          window.alert('Error: ' + JSON.stringify(err));
+          this.cd.markForCheck();
+        }
+
+      });
+  }
+
   handleAssignMain(event: any, current: WatchList) {
     this.watchListService.assignMain(current)
       .pipe(
@@ -286,6 +277,7 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
             this.isMain = true;
             this.watchListService.toast.showSuccessToast('Watchlist ' + current.name + ' is now the Main watchlist');
             this.watchListService.setWatchList(current);
+            this.setToolbarMenuItems(result);
             this.cd.markForCheck();
           }
         },
@@ -314,22 +306,32 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           });
 
-    this.cd.detectChanges();
+    this.cd.markForCheck();
 
   }
 
-
   initScreenSizes() {
     switch (this.screenSize) {
-      case Const.CONSTANT.SCREEN_SIZE.XS:
-        this.searchScrollHeight = '60vh';
+      case Const.CONSTANT.SCREEN_SIZE.S:
+        this.searchScrollHeight = '70vh';
         this.maxSearchWidth = '80vw';
         this.modalPostion = 'top';
+        this.dialogHeight = '90vh';
+        this.dialogWidth = '86vw';
+        break;
+      case Const.CONSTANT.SCREEN_SIZE.XS:
+        this.searchScrollHeight = '70vh';
+        this.maxSearchWidth = '80vw';
+        this.modalPostion = 'top';
+        this.dialogHeight = '90vh';
+        this.dialogWidth = '86vw';
         break;
       case Const.CONSTANT.SCREEN_SIZE.M:
       case Const.CONSTANT.SCREEN_SIZE.L:
       case Const.CONSTANT.SCREEN_SIZE.XL:
         this.searchScrollHeight = '40vh';
+        this.dialogHeight = '50vh';
+        this.dialogWidth = '80vw';
         this.maxSearchWidth = '60vw';
         this.modalPostion = 'center';
         break;
@@ -337,6 +339,8 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
         this.searchScrollHeight = '35vh';
         this.maxSearchWidth = '50vw';
         this.modalPostion = 'center';
+        this.dialogHeight = '60vh';
+        this.dialogWidth = '80vw';
     }
   }
 

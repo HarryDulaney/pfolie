@@ -21,37 +21,11 @@
     background: #000000 !important;
 }
 
-:host ::ng-deep .p-overlaypanel .p-overlaypanel-content {
-    background: #000000 !important;
-    padding: 1.25rem;
-    backdrop-filter: blur(10px) !important;
-}
-
-:host ::ng-deep .p-overlaypanel .p-overlaypanel-content {
-    padding: 1.25rem;
-    backdrop-filter: blur(10px);
-}
-
-:host ::ng-deep .p-overlaypanel-content {
-    background: #000000 !important;
-}
-
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
     white-space: nowrap !important;
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0.1rem 0.1rem !important;
-}
-
-:host ::ng-deep .p-component-overlay {
-    display: none !important;
-}
-:host ::ng-deep .p-component-overlay-enter {
-    display: none !important;
-}
-
-:host ::ng-deep .p-sidebar-mask {
-    display: none !important;
 }
 
 :host ::ng-deep .p-datatable .p-datatable-loading-icon {

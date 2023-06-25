@@ -1,5 +1,5 @@
 import { CurrencyPipe, DecimalPipe, CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Observable, Subject } from 'rxjs';
@@ -10,12 +10,12 @@ import { CoinDataService } from 'src/app/services/coin-data.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { NavService } from 'src/app/services/nav.service';
 import { PortfolioTableComponent } from './portfolio-table/portfolio-table.component';
-import { ToolbarComponent } from '../toolbar/toolbar.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { PortfolioService } from '../../services/portfolio.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { UserService } from 'src/app/services/user.service';
+import { ToolbarComponent } from 'src/app/shared/toolbar/toolbar.component';
 
 @Component({
   selector: 'app-portfolio',
@@ -23,6 +23,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./portfolio.component.scss'],
   providers: [CurrencyPipe, DecimalPipe],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     SharedModule,
@@ -86,21 +87,15 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (data) => {
           if (data) {
             this.isMain = data.isMain;
-            this.setToolbarMenuItems();
+            this.setToolbarMenuItems(data);
             this.isLoading = false;
-            this.cd.detectChanges();
-          } else if (this.userService.lastPortfolio) {
-            this.portfolioService.loadAndOpen(this.userService.lastPortfolio)
-              .subscribe({
-                next: (portfolio) => {
-                  this.portfolioService.setPortfolio(portfolio);
-                }
-              });
+            this.cd.markForCheck();
+            this.toolbar.detectChanges();
           }
         },
         complete: () => {
           this.isLoading = false;
-          this.cd.detectChanges();
+          this.cd.markForCheck();
         },
         error: () => {
           this.isLoading = false;
@@ -112,7 +107,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
       takeUntil(this.destroySubject$)
     ).subscribe(screenSize => {
       this.screenSize = screenSize;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     });
 
   }
@@ -144,7 +139,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       );
 
-    this.cd.detectChanges();
+    this.cd.markForCheck();
 
   }
 
@@ -190,19 +185,20 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  setToolbarMenuItems() {
+  setToolbarMenuItems(portfolio: Portfolio) {
     this.toolbarMenuItems = [{
       label: 'Portfolio',
       icon: 'fa fa-bolt',
       items: [
         {
-          label: 'Mark As Main',
-          disabled: this.portfolioService.current.isMain,
-          tooltipOptions: this.portfolioService.current.isMain ?
-            { tooltipLabel: 'This is already Marked as Main', tooltipPosition: 'right' } :
-            { tooltipLabel: 'Make this the Main Portfolio', tooltipPosition: 'right' },
-          icon: 'fa-solid fa-check-circle',
-          command: (event) => {
+          label: portfolio.isMain ? 'Unset as Main' : 'Set as Main',
+          tooltipOptions: portfolio.isMain ?
+            { tooltipLabel: 'Unset this as your default portfolio', tooltipPosition: 'right' } :
+            { tooltipLabel: 'Make this your default portfolio', tooltipPosition: 'right' },
+          icon: 'fa-solid fa-star',
+          command: portfolio.isMain ? (event) => {
+            this.handleUnAssignMain(event, this.portfolioService.current);
+          } : (event) => {
             this.handleAssignMain(event, this.portfolioService.current);
           }
         }, {
@@ -210,7 +206,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
           tooltipOptions: { tooltipLabel: 'Delete the current Portoflio', tooltipPosition: 'right' },
           icon: 'pi pi-trash',
           command: (event) => {
-            this.handleDeletePortfolioEvent(event, this.portfolioService.current);
+            this.handleDeletePortfolioEvent(event, portfolio);
           }
         }]
     },
@@ -221,7 +217,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         {
           label: 'Add New',
           icon: 'pi pi-plus',
-          tooltipOptions: { tooltipLabel: 'Add a new asset to Portfolio', tooltipPosition: 'right'},
+          tooltipOptions: { tooltipLabel: 'Add a new asset to Portfolio', tooltipPosition: 'right' },
           command: (event) => {
             this.handleAddPortfolioEvent(event);
           }
@@ -232,17 +228,40 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   handleAssignMain(event: any, current: Portfolio) {
+    this.isMain = true;
     this.portfolioService.assignMain(current)
-      .pipe(
-        take(1)
-      )
+      .pipe(take(1))
       .subscribe({
         next: (result) => {
           if (result) {
             this.isMain = true;
             this.portfolioService.toast.showSuccessToast('Portfolio ' + result.name + ' is now the Main portfolio.');
             this.portfolioService.setPortfolio(result);
+            this.setToolbarMenuItems(result);
             this.cd.markForCheck();
+          }
+        },
+        complete: () => {
+          this.cd.markForCheck();
+        }
+      });
+
+  }
+
+
+  handleUnAssignMain(event: any, current: Portfolio) {
+    this.portfolioService.unAssignMain(current)
+      .pipe(
+        take(1))
+      .subscribe({
+        next: (result) => {
+          if (result) {
+            this.isMain = false;
+            this.portfolioService.toast.showSuccessToast('Main status removed from Portfoilo: ' + current.name + '.');
+            this.portfolioService.setPortfolio(result);
+            this.setToolbarMenuItems(result);
+            this.cd.markForCheck();
+            this.toolbar.detectChanges();
           }
         },
         complete: () => {

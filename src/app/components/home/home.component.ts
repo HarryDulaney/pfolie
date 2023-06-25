@@ -251,7 +251,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.screenService.isMobileScreen(this.screenSize)) {
       this.navService.navExpandedSource$.next(false);
     } else {
-
       this.navService.navExpandedSource$.next(true);
     }
 
@@ -648,7 +647,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     let menuItem: MenuItem =
     {
       label: 'New Watchlist',
-      badge: disabled ? 'Max' : null,
       icon: 'fa-solid fa-plus',
       tooltipOptions: disabled ? { tooltipLabel: 'Max Watchlists Reached', tooltipPosition: 'right' } : { tooltipLabel: 'Create New Watchlist', tooltipPosition: 'right' },
       disabled: disabled,
@@ -831,7 +829,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       if (portfolio.isMain) {
         item = {
           label: portfolio.portfolioName,
-          icon: 'fa-solid fa-star',
+          icon: 'fa-solid fa-pencil',
+          badge: 'Main',
           tooltipOptions: { tooltipLabel: `Open: ${portfolio.portfolioName} (Main)`, tooltipPosition: 'right' },
           command: (event) => {
             from(this.handleNavDrawerState())
@@ -888,7 +887,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       if (watchList.isMain) {
         item = {
           label: watchList.watchListName,
-          icon: 'fa-solid fa-star',
+          badge: 'Main',
+          icon: 'fa-solid fa-pencil',
           tooltipOptions: { tooltipLabel: `Open: ${watchList.watchListName} (Main)`, tooltipPosition: 'right' },
           command: (event) => {
             from(this.handleNavDrawerState())

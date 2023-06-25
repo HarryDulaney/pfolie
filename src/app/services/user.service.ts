@@ -17,6 +17,8 @@ export class UserService {
   mainWatchListProvider = new BehaviorSubject<WatchListMeta>(null);
   mainPortfolioProvider = new BehaviorSubject<PortfolioMeta>(null);
 
+  lastWatchListProvider = new BehaviorSubject<WatchListMeta>(null);
+
   private currentPortfolios: PortfolioMeta[] = []
   private currentWatchLists: WatchListMeta[] = []
   private cachedPortfolio: CachedPortfolio;
@@ -29,10 +31,6 @@ export class UserService {
   private cachedWatchList: CachedWatchList;
   private _lastWatchList: WatchListMeta = null;
 
-  public get lastWatchList(): WatchListMeta {
-    return this._lastWatchList;
-  }
-
 
   initialized$: Subject<boolean> = new Subject();
   private _user: firebase.User;
@@ -41,7 +39,10 @@ export class UserService {
     return this._user;
   }
 
-  constructor(private apiService: ApiService, private cache: CacheService) { }
+  constructor(
+    private apiService: ApiService,
+    private cache: CacheService
+  ) { }
 
   initialize(user: firebase.User) {
     this._user = user;
@@ -49,14 +50,14 @@ export class UserService {
       if (this.cache.hasCachedPortfolio()) {
         const val = this.cache.getCachedPortfoilo();
         if (val) {
-          Object.assign(this.cachedPortfolio, val);
+          this.cachedPortfolio = Object.assign({}, val);
         }
       }
 
       if (this.cache.hasCachedWatchList()) {
         const val = this.cache.getCachedWatchList();
         if (val) {
-          Object.assign(this.cachedWatchList, val);
+          this.cachedWatchList = Object.assign({}, val);
         }
       }
       zip([this.apiService.findAllPortfoliosInfo(user.uid),
@@ -72,8 +73,9 @@ export class UserService {
                   this._lastPortfolio = this.currentPortfolios.find(p => p.portfolioId === this.cachedPortfolio.id);
                 }
 
-                if (this.cachedWatchList !== null && this.cachedWatchList !== undefined) {
+                if (this.cachedWatchList) {
                   this._lastWatchList = this.currentWatchLists.find(p => p.watchListId === this.cachedWatchList.id);
+                  this.lastWatchListProvider.next(this._lastWatchList);
                 }
                 let idxMainWatchList = this.currentWatchLists.findIndex(wl => wl.isMain === true);
                 let idxMainPortfolio = this.currentPortfolios.findIndex(p => p.isMain === true);
@@ -175,6 +177,21 @@ export class UserService {
       } else {
         this.currentWatchLists[i].isMain = true;
       }
+    }
+    this.basicWatchListStore.set(this.currentWatchLists);
+  }
+
+  resetMainPortfolio() {
+    for (let i = 0; i < this.currentPortfolios.length; i++) {
+      this.currentPortfolios[i].isMain = false;
+    }
+    this.basicPortfolioStore.set(this.currentPortfolios);
+  }
+
+
+  resetMainWatchList() {
+    for (let i = 0; i < this.currentWatchLists.length; i++) {
+      this.currentWatchLists[i].isMain = false;
     }
     this.basicWatchListStore.set(this.currentWatchLists);
   }

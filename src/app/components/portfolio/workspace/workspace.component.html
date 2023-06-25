@@ -71,7 +71,24 @@
             </div>
         </div>
     </div>
-    <!-- Portfolio Allocation Pie Chart -->
-    <app-allocation-chart #allocationChart></app-allocation-chart>
+    <ng-container *ngIf="isShowAllocationChart">
+        <!-- Portfolio Allocation Pie Chart -->
+        <app-allocation-chart #allocationChart></app-allocation-chart>
+    </ng-container>
+    <ng-container *ngIf="isShowLineChart">
+        <!-- Line Chart -->
+        <div
+            class="col-12 lg:col-8"
+            [style]="{'height':mainChartHeight}"
+        >
+            <app-coin-chart
+                #chart
+                [chartDataType]="chartType"
+                [themeProvider]="themeService"
+                (loading)="isLoading"
+            >
+            </app-coin-chart>
+        </div>
+    </ng-container>
 
 </div>

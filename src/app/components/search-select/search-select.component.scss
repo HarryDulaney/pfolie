@@ -1,22 +1,56 @@
+.search-panel-style-class {
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+    border: 0px none transparent !important;
+    border-radius: 0px !important;
+}
+
 .scrollbox-wrapper {
     position: relative;
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
     text-align: center;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    min-width: 100% !important;
-    min-height: 100% !important;
+    min-width: fit-content !important;
+    min-height: fit-content !important;
+    background: transparent !important;
+    backdrop-filter: blur(10px) !important;
 }
 
 .scroll-item {
     display: inline-block;
-    width: 100% !important;
-    min-width: 100% !important;
+    position: relative;
+    padding: 0.6rem;
+    width: 100%;
     margin-top: 0.2rem;
     margin-bottom: 0.2rem;
+    font-size: large;
     cursor: pointer;
 }
 
 .scroll-item :hover {
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.search-dropdown-content {
+    background: var(--surface-card) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.scroll-item-style-2 {
+    display: inline-block;
+    position: relative;
+    padding: 0.6rem;
+    width: 100%;
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+    font-size: medium;
+    color: #fff;
+}
+
+.scroll-item-style-2 :hover {
     color: var(--text-color);
     cursor: pointer;
 }

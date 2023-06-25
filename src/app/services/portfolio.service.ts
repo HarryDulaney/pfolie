@@ -355,6 +355,13 @@ export class PortfolioService {
       );
   }
 
+  unAssignMain(current: Portfolio): Observable<Portfolio> {
+    current.isMain = false;
+    this.userService.resetMainPortfolio();
+    this.mainPortfolioStore.set(null);
+    return this.apiService.updatePortfolio(current);
+  }
+
   clearCache(basicPortfolio: PortfolioMeta) {
     this.cache.removeLastWorkspace();
   }

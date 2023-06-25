@@ -1,11 +1,11 @@
 <div id="toolbar-element-id">
     <p-menubar
         #menuBar
-        [model]="menuItems"
+        [(model)]="menuItems"
         [class]="styleClass"
     >
         <ng-template pTemplate="start">
-            <div *ngIf="isMain">
+            <div *ngIf="currentData.isMain">
                 <span
                     style="font-size:small;font-weight: bold;color:var(--primary-color);"
                     pTooltip
@@ -14,14 +14,11 @@
                          event: tooltipOptions.event,
                          life: tooltipOptions.life,
                          autoHide: tooltipOptions.autoHide,
-                    tooltipLabel: 'Main is used as target for global actions, like favorites, watchlist, etc.'}"
+                    tooltipLabel: 'Main is used as default for global actions, like favorites, watchlist, etc.'}"
                     class="p-1"
                 >
-                    <i
-                        class="fa-solid fa-star"
-                        style="font-size:small;font-weight: bold;color:var(--primary-color);"
-                    ></i>
-                    Main
+                    <p-badge> Main
+                    </p-badge>
                 </span>
             </div>
         </ng-template>
@@ -36,7 +33,7 @@
                     <span
                         (click)="nameEditor.activate()"
                         class="portfolio-name-label"
-                    > {{toolbarLabel}} </span>
+                    > {{label}} </span>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <span class="float-start">
@@ -55,8 +52,8 @@
                         [style]="{'max-height':'2rem'}"
                         type="text"
                         pInputText
-                        [value]="toolbarLabel"
-                        [(ngModel)]="toolbarLabel"
+                        [value]="label"
+                        [(ngModel)]="label"
                         (keydown.enter)="handleRename()"
                         (ngModelChange)="nameChanged($event)"
                     >
