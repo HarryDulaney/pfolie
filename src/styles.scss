@@ -508,3 +508,25 @@ p-table .custom-spinner {
   display: block !important;
   background: transparent !important;
 }
+
+
+.p-dialog {
+  background: transparent !important;
+  backdrop-filter: blur(10px) !important;
+  border: none !important;
+  border-radius: 15px 15px 15px 15px !important;
+}
+
+.p-dialog .p-dialog-header {
+  background: var(--surface-card) !important;
+  border: none !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.p-dialog .p-dialog-content {
+  padding: 0.8rem !important;
+  background: var(--surface-card) !important;
+  backdrop-filter: blur(10px) !important;
+  border: none !important;
+  overflow-y: hidden !important;
+}

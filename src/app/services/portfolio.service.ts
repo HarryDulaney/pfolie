@@ -14,6 +14,7 @@ import { CacheService } from 'src/app/services/cache.service';
 import { UserService } from 'src/app/services/user.service';
 import { CONSTANT as Const, EDIT_TRACKED_ITEMS, PROJECT_LINKS, SELECT_ITEM_EVENT, NEW_WATCHLIST_NAME, NEW_PORTFOLIO_NAME } from '../constants'
 import { Store } from '../store/store';
+import { ListStore } from '../store/list-store';
 
 @Injectable()
 export class PortfolioService {
@@ -39,6 +40,9 @@ export class PortfolioService {
 
   private mainPortfolioStore: Store<Portfolio> = new Store<Portfolio>(null);
   mainPortfolioSource$: Observable<Portfolio> = this.mainPortfolioStore.selectAll();
+
+  private coinSource: ListStore<BasicCoin> = null;
+  public coinSource$: Observable<BasicCoin[]> = null;
 
 
   /* Datasource for Owned Asset Views
@@ -364,5 +368,14 @@ export class PortfolioService {
 
   clearCache(basicPortfolio: PortfolioMeta) {
     this.cache.removeLastWorkspace();
+  }
+
+
+  getCoinSource(): Observable<BasicCoin[]> {
+    if (this.coinSource === null) {
+      this.coinSource = this.globalStore.allCoinsStore.clone();
+      this.coinSource$ = this.coinSource.select();
+    }
+    return this.coinSource$;
   }
 }

@@ -83,7 +83,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   searchScrollHeight: string;
   maxSearchWidth: string;
   modalPostion: string;
-
+  dialogStyle = { 'width': '80vw', 'height': '90vh', 'overflow-y': 'hidden' };
   protected selectedRowData: any = undefined;
   imagePreviewSrc: string = '../assets/img/image_filler_icon_blank.jpg';
   defaultId: string = '-1';
@@ -95,7 +95,6 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     public portfolioService: PortfolioService,
     public coinDataService: CoinDataService,
-    private coinSource: BasicCoinInfoStore,
     private transactionService: TransactionService,
     private themeService: ThemeService,
     private toastService: ToastService,
@@ -117,7 +116,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.coinSource$ = this.coinSource.allCoinsStore.select();
+    this.coinSource$ = this.portfolioService.getCoinSource();
     this.initScreenSizes();
     this.viewSource$
       .pipe(takeUntil(this.destroySubject$)
@@ -177,34 +176,32 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   initScreenSizes() {
     switch (this.screenSize) {
       case Const.CONSTANT.SCREEN_SIZE.S:
-        this.searchScrollHeight = '60vh';
-        this.maxSearchWidth = '80vw';
+        this.searchScrollHeight = '68vh';
+        this.maxSearchWidth = '90vw';
         this.modalPostion = 'top';
-        this.dialogHeight = '80vh';
-        this.dialogWidth = '86vw';
+        this.dialogStyle = { 'width': '90vw', 'height': '90vh', 'overflow-y': 'hidden' };
+
         break;
       case Const.CONSTANT.SCREEN_SIZE.XS:
-        this.searchScrollHeight = '60vh';
-        this.maxSearchWidth = '80vw';
+        this.searchScrollHeight = '68vh';
+        this.maxSearchWidth = '90vw';
         this.modalPostion = 'top';
-        this.dialogHeight = '80vh';
-        this.dialogWidth = '86vw';
+        this.dialogStyle = { 'width': '90vw', 'height': '90vh', 'overflow-y': 'hidden' };
         break;
+
       case Const.CONSTANT.SCREEN_SIZE.M:
       case Const.CONSTANT.SCREEN_SIZE.L:
       case Const.CONSTANT.SCREEN_SIZE.XL:
-        this.searchScrollHeight = '40vh';
-        this.dialogHeight = '50vh';
-        this.dialogWidth = '80vw';
+        this.searchScrollHeight = '42vh';
+        this.dialogStyle = { 'width': '60vw', 'height': '60vh', 'overflow-y': 'hidden' };
         this.maxSearchWidth = '60vw';
         this.modalPostion = 'center';
         break;
       default:
-        this.searchScrollHeight = '35vh';
+        this.searchScrollHeight = '42vh';
         this.maxSearchWidth = '50vw';
         this.modalPostion = 'center';
-        this.dialogHeight = '60vh';
-        this.dialogWidth = '80vw';
+        this.dialogStyle = { 'width': '80vw', 'height': '60vh', 'overflow-y': 'hidden' };
     }
   }
 

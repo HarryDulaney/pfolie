@@ -9,6 +9,30 @@
     [screenSize]="screenSize"
 ></app-toolbar>
 <div class="page-top-margin-medium"></div>
+<p-dialog
+    #assetSearchDialog
+    header="Search and Select"
+    [(visible)]="showAssetSearchDialog"
+    [position]="modalPostion"
+    [baseZIndex]="9999999"
+    appendTo="body"
+    [dismissableMask]="true"
+    [closeOnEscape]="true"
+    [modal]="true"
+    [style]="dialogStyle"
+    [draggable]="false"
+    [closable]="true"
+    [focusTrap]="true"
+    [resizable]="false"
+>
+    <app-search-select
+        [optionsProvider]="coinSource$"
+        [scrollHeight]="searchScrollHeight"
+        [maxWidth]="maxSearchWidth"
+        (selected)="addTrackSelected($event)"
+    >
+    </app-search-select>
+</p-dialog>
 <div class="p-component p-0 m-0">
     <div
         *ngIf="!isMobile()"
@@ -55,31 +79,10 @@
                         </div>
                     </div>
                     <div class="col-12 w-100">
-                        <p-dialog
-                            #assetSearchDialog
-                            header="Select An Asset"
-                            [(visible)]="showAssetSearchDialog"
-                            [position]="modalPostion"
-                            [baseZIndex]="9999999"
-                            appendTo="body"
-                            [dismissableMask]="true"
-                            [closeOnEscape]="true"
-                            [modal]="true"
-                            [style]="{ 'width': dialogWidth, 'height': dialogHeight }"
-                            [draggable]="false"
-                            [closable]="true"
-                            [focusTrap]="true"
-                            [resizable]="false"
+                        <div
+                            class="card"
+                            (click)="onContainerClick($event)"
                         >
-                            <app-search-select
-                                [optionsProvider]="coinSource$"
-                                [scrollHeight]="searchScrollHeight"
-                                [maxWidth]="maxSearchWidth"
-                                (selected)="addTrackSelected($event)"
-                            >
-                            </app-search-select>
-                        </p-dialog>
-                        <div class="card" (click)="onContainerClick($event)">
                             <p-table
                                 #trackedAssetTable
                                 id="tracked-asset-table-id"

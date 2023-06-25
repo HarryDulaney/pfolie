@@ -25,10 +25,8 @@ import { Router } from '@angular/router';
 import * as Const from '../../../constants';
 import { UserService } from 'src/app/services/user.service';
 import { AppEvent } from 'src/app/models/events';
-import { ListStore } from 'src/app/store/list-store';
 import { TooltipOptions } from 'primeng/tooltip';
 import { ToolbarComponent } from 'src/app/shared/toolbar/toolbar.component';
-import { CacheService } from 'src/app/services/cache.service';
 
 
 @Component({
@@ -82,13 +80,11 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   overlayBgColor: string;
   decreaseColor: string;
   increaseColor: string;
-  title = 'Watchlists';
   totalColumns = 7;
 
   isNavExpanded: boolean = false;
   screenSize: string;
   navExpandProvider: Observable<boolean>;
-  private allCoinSource: ListStore<BasicCoin>;
   coinSource$: Observable<BasicCoin[]>;
   toolbarMenuItems: MenuItem[];
   maxSearchWidth: string;
@@ -96,22 +92,19 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   modalPostion: string;
   tooltipOptions: TooltipOptions;
   isMain = false;
-  dialogHeight: string;
-  dialogWidth: string;
+  dialogStyle = { 'width': '80vw', 'height': '90vh', 'overflow-y': 'hidden' };
+
 
   constructor(
     public coinDataService: CoinDataService,
-    private coinStore: BasicCoinInfoStore,
     private screenService: ScreenService,
     private navService: NavService,
     public decimalPipe: DecimalPipe,
     private userService: UserService,
     private router: Router,
-    private cache: CacheService,
     public themeService: ThemeService,
     public watchListService: WatchListService,
-    private cd: ChangeDetectorRef,
-    media: MediaMatcher
+    private cd: ChangeDetectorRef
   ) {
     this.tooltipOptions = this.screenService.tooltipOptions;
     this.navExpandProvider = this.navService.navExpandedSource$;
@@ -126,16 +119,15 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.allCoinSource = this.coinStore.allCoinsStore.clone();
-    this.coinSource$ = this.allCoinSource.select();
-    this.initScreenSizes();
-
+    this.coinSource$ = this.watchListService.getCoinSource();
     this.overlayBgColor = this.themeService.getCssVariableValue('--hover-bg-fancy');
     this.decreaseColor = this.themeService.getCssVariableValue('--decrease-color');
     this.increaseColor = this.themeService.getCssVariableValue('--increase-color');
     this.textColor = this.themeService.getCssVariableValue('--text-color');
 
     this.isLoading = true;
+    this.cd.markForCheck();
+
     this.watchListService.watchListSource$
       .pipe(
         takeUntil(this.destroySubject$)
@@ -203,6 +195,27 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
+  ngAfterViewInit(): void {
+    this.screenService.documentClickedSource$
+      .pipe(
+        takeUntil(this.destroySubject$),
+        tap(event => {
+          this.watchListService.eventSource$.next({ name: 'click', event: event } as AppEvent);
+        })
+      ).subscribe();
+
+    this.screenService.documentKeydownSource$
+      .pipe(
+        takeUntil(this.destroySubject$)).subscribe(
+          event => {
+            if (event.key === 'Enter') {
+              this.toolbar.handleRename();
+            }
+          });
+    this.initScreenSizes();
+    this.cd.markForCheck();
+
+  }
   setToolbarMenuItems(watchList: WatchList) {
     this.toolbarMenuItems = [{
       label: 'Watchlist',
@@ -288,59 +301,35 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
 
-  ngAfterViewInit(): void {
-    this.screenService.documentClickedSource$
-      .pipe(
-        takeUntil(this.destroySubject$),
-        tap(event => {
-          this.watchListService.eventSource$.next({ name: 'click', event: event } as AppEvent);
-        })
-      ).subscribe();
-
-    this.screenService.documentKeydownSource$
-      .pipe(
-        takeUntil(this.destroySubject$)).subscribe(
-          event => {
-            if (event.key === 'Enter') {
-              this.toolbar.handleRename();
-            }
-          });
-
-    this.cd.markForCheck();
-
-  }
-
   initScreenSizes() {
     switch (this.screenSize) {
       case Const.CONSTANT.SCREEN_SIZE.S:
-        this.searchScrollHeight = '70vh';
-        this.maxSearchWidth = '80vw';
+        this.searchScrollHeight = '68vh';
+        this.maxSearchWidth = '90vw';
         this.modalPostion = 'top';
-        this.dialogHeight = '90vh';
-        this.dialogWidth = '86vw';
+        this.dialogStyle = { 'width': '90vw', 'height': '90vh', 'overflow-y': 'hidden' };
+
         break;
       case Const.CONSTANT.SCREEN_SIZE.XS:
-        this.searchScrollHeight = '70vh';
-        this.maxSearchWidth = '80vw';
+        this.searchScrollHeight = '68vh';
+        this.maxSearchWidth = '90vw';
         this.modalPostion = 'top';
-        this.dialogHeight = '90vh';
-        this.dialogWidth = '86vw';
+        this.dialogStyle = { 'width': '90vw', 'height': '90vh', 'overflow-y': 'hidden' };
         break;
+
       case Const.CONSTANT.SCREEN_SIZE.M:
       case Const.CONSTANT.SCREEN_SIZE.L:
       case Const.CONSTANT.SCREEN_SIZE.XL:
-        this.searchScrollHeight = '40vh';
-        this.dialogHeight = '50vh';
-        this.dialogWidth = '80vw';
+        this.searchScrollHeight = '42vh';
+        this.dialogStyle = { 'width': '60vw', 'height': '60vh', 'overflow-y': 'hidden' };
         this.maxSearchWidth = '60vw';
         this.modalPostion = 'center';
         break;
       default:
-        this.searchScrollHeight = '35vh';
+        this.searchScrollHeight = '42vh';
         this.maxSearchWidth = '50vw';
         this.modalPostion = 'center';
-        this.dialogHeight = '60vh';
-        this.dialogWidth = '80vw';
+        this.dialogStyle = { 'width': '80vw', 'height': '60vh', 'overflow-y': 'hidden' };
     }
   }
 

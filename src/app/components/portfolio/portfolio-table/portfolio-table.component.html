@@ -14,7 +14,7 @@
     </ng-container>
     <p-dialog
         #assetSearchDialog
-        header="Select An Asset"
+        header="Search and Select"
         [(visible)]="showAssetSearchDialog"
         [position]="modalPostion"
         [baseZIndex]="9999999"
@@ -22,7 +22,7 @@
         [dismissableMask]="true"
         [closeOnEscape]="true"
         [modal]="true"
-        [style]="{ 'width': dialogWidth, 'height': dialogHeight }"
+        [style]="dialogStyle"
         [draggable]="false"
         [closable]="true"
         [focusTrap]="true"
