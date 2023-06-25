@@ -30,29 +30,28 @@ ____
  - #### News from multiple sources
  - #### Article reader
 ____
-### **Home Page** ![](img/coinetc-ss-1.png)
+### **Beautiful Analytics Dashboard** ![](.attachments/images/readme-pic-1.png)
 ----
-### **Quick Search** ![](img/QuickSearchSS.png)
+### **Quick Search** ![](.attachments/images/readme-pic-quick-search.png)
 
 ----
-### **Real-Time Price and Market data** ![](img/coinetc-ss-2.png)
+### **Real-Time Price and Market data** ![](.attachments/images/readme-pic-3.png)
 ----
-### **Historical Price and asset metadata** ![](img/coinetc-ss-5.png)
+### **Historical Price and asset metadata**
 ----
 
-### **Create a Watchlist and Track Assets** ![](img/coinetc-ss-6.png)
+### **Create a Watchlist and Track Assets**
 ----
  ## **Build and Track your Portfolio** 
- ### **Build** ![](img/allocation_portfolio_workspace.png)
-### **Track** ![](img/portfolioManagerScreenShot.png)
+ ### **Build** 
+### **Track**
 
-### **Your Portfolio** ![](img/coinetc-ss-17.png)
+### **Your Portfolio** 
 
 ----
 
 ## Aggregated Market News and Sentiment
-### Multiple News Sources ![](img/coinetc-ss-17.png)
-### Full Articles ![](img/coinetc-ss-12.png)
+### Multiple News Sources ![](.attachments/images/readme-news.png)
 ----
 ## License
 
