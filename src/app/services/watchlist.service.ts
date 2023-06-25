@@ -7,12 +7,14 @@ import { PortfolioBuilderService } from "../components/portfolio/portfolio-build
 import { BehaviorSubject, Observable, Subject, concatMap, firstValueFrom, forkJoin, lastValueFrom, map, mergeMap, of, take, takeUntil, tap } from "rxjs";
 import { WatchListMeta, TrackedAsset, WatchList, WatchListData } from "src/app/models/portfolio";
 import { StringUtility } from 'src/app/services/string.utility';
-import { CoinFullInfo } from "src/app/models/coin-gecko";
+import { BasicCoin, CoinFullInfo } from "src/app/models/coin-gecko";
 import { AppEvent } from "src/app/models/events";
 import { UserService } from "./user.service";
 import { NEW_WATCHLIST_NAME } from "../constants";
 import { CacheService } from "./cache.service";
 import { Store } from "../store/store";
+import { ListStore } from "../store/list-store";
+import { BasicCoinInfoStore } from "../store/global/basic-coins.store";
 
 @Injectable()
 export class WatchListService {
@@ -35,6 +37,9 @@ export class WatchListService {
     private watchlistViewSource: BehaviorSubject<CoinFullInfo[]> = new BehaviorSubject<CoinFullInfo[]>(this.currentWatchListView);
     public watchListViewSource$ = this.watchlistViewSource.asObservable();
 
+    private coinSource: ListStore<BasicCoin> = null;
+    public coinSource$: Observable<BasicCoin[]> = null;
+
     /* Observe portfolio events inside the portfolio component */
     eventSource$: Subject<AppEvent> = new Subject();
 
@@ -54,6 +59,7 @@ export class WatchListService {
         public coinDataService: CoinDataService,
         private cache: CacheService,
         public utilityService: UtilityService,
+        private globalStore: BasicCoinInfoStore,
         private builder: PortfolioBuilderService,
         public toast: ToastService,
         private userService: UserService,
@@ -440,5 +446,13 @@ export class WatchListService {
 
     clearCache(watchListMeta: WatchListMeta) {
         this.cache.removeLastWatchList();
+    }
+
+    getCoinSource(): Observable<BasicCoin[]> {
+        if (this.coinSource === null) {
+            this.coinSource = this.globalStore.allCoinsStore.clone();
+            this.coinSource$ = this.coinSource.select();
+        }
+        return this.coinSource$;
     }
 }
