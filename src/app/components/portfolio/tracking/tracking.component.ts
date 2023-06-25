@@ -22,12 +22,13 @@ import { ScreenService } from 'src/app/services/screen.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { WatchListService } from '../../../services/watchlist.service';
 import { Router } from '@angular/router';
-import { ToolbarComponent } from '../../toolbar/toolbar.component';
 import * as Const from '../../../constants';
 import { UserService } from 'src/app/services/user.service';
 import { AppEvent } from 'src/app/models/events';
 import { ListStore } from 'src/app/store/list-store';
 import { TooltipOptions } from 'primeng/tooltip';
+import { ToolbarComponent } from 'src/app/shared/toolbar/toolbar.component';
+import { CacheService } from 'src/app/services/cache.service';
 
 
 @Component({
@@ -70,13 +71,10 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   percentFormat: string = '1.2-6';
   renamePortfolioFormGroup: UntypedFormGroup;
   currentDate: Date = new Date();
-  scrollHeight: string = "500px";
   showAssetSearchDialog: boolean;
   destroySubject$ = new Subject();
   loadingIcon = 'pi pi-spin pi-spinner';
   selectedAsset: TrackedAsset;
-  mobileQuery: MediaQueryList;
-  public _mobileQueryListener: () => void;
   sparklineWidth = '200';
   openRowPanels: OverlayPanel[] = [];
   sparklineColor = '#006aff';
@@ -98,6 +96,8 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   modalPostion: string;
   tooltipOptions: TooltipOptions;
   isMain = false;
+  dialogHeight: string;
+  dialogWidth: string;
 
   constructor(
     public coinDataService: CoinDataService,
@@ -107,37 +107,21 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
     public decimalPipe: DecimalPipe,
     private userService: UserService,
     private router: Router,
+    private cache: CacheService,
     public themeService: ThemeService,
     public watchListService: WatchListService,
     private cd: ChangeDetectorRef,
     media: MediaMatcher
   ) {
     this.tooltipOptions = this.screenService.tooltipOptions;
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.navExpandProvider = this.navService.navExpandedSource$;
 
-    if (this.mobileQuery.matches) {
-      this.scrollHeight = '60vh';
-    } else {
-      this.scrollHeight = '35vh';
-    }
-
-    this._mobileQueryListener = () => {
-      if (this.mobileQuery.matches) {
-        this.scrollHeight = '60vh';
-      } else {
-        this.scrollHeight = '35vh';
-      }
-      this.cd.markForCheck()
-    };
-    this.mobileQuery.addEventListener('change', this._mobileQueryListener);
   }
 
   ngOnDestroy(): void {
     this.watchListService.isInitialized = false;
     this.destroySubject$.next(true);
     this.destroySubject$.complete();
-    this.mobileQuery.removeEventListener('change', this._mobileQueryListener);
 
   }
 
@@ -326,18 +310,28 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-
   initScreenSizes() {
     switch (this.screenSize) {
-      case Const.CONSTANT.SCREEN_SIZE.XS:
-        this.searchScrollHeight = '60vh';
+      case Const.CONSTANT.SCREEN_SIZE.S:
+        this.searchScrollHeight = '70vh';
         this.maxSearchWidth = '80vw';
         this.modalPostion = 'top';
+        this.dialogHeight = '90vh';
+        this.dialogWidth = '86vw';
+        break;
+      case Const.CONSTANT.SCREEN_SIZE.XS:
+        this.searchScrollHeight = '70vh';
+        this.maxSearchWidth = '80vw';
+        this.modalPostion = 'top';
+        this.dialogHeight = '90vh';
+        this.dialogWidth = '86vw';
         break;
       case Const.CONSTANT.SCREEN_SIZE.M:
       case Const.CONSTANT.SCREEN_SIZE.L:
       case Const.CONSTANT.SCREEN_SIZE.XL:
         this.searchScrollHeight = '40vh';
+        this.dialogHeight = '50vh';
+        this.dialogWidth = '80vw';
         this.maxSearchWidth = '60vw';
         this.modalPostion = 'center';
         break;
@@ -345,6 +339,8 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
         this.searchScrollHeight = '35vh';
         this.maxSearchWidth = '50vw';
         this.modalPostion = 'center';
+        this.dialogHeight = '60vh';
+        this.dialogWidth = '80vw';
     }
   }
 

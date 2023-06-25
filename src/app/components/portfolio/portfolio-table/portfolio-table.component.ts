@@ -77,7 +77,8 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
   portfolio: Portfolio;
   calculatedValues: any = {};
   coinSource$: Observable<BasicCoin[]>;
-
+  dialogWidth: string;
+  dialogHeight: string;
   showAssetSearchDialog: boolean;
   searchScrollHeight: string;
   maxSearchWidth: string;
@@ -175,15 +176,26 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
 
   initScreenSizes() {
     switch (this.screenSize) {
+      case Const.CONSTANT.SCREEN_SIZE.S:
+        this.searchScrollHeight = '60vh';
+        this.maxSearchWidth = '80vw';
+        this.modalPostion = 'top';
+        this.dialogHeight = '80vh';
+        this.dialogWidth = '86vw';
+        break;
       case Const.CONSTANT.SCREEN_SIZE.XS:
         this.searchScrollHeight = '60vh';
         this.maxSearchWidth = '80vw';
         this.modalPostion = 'top';
+        this.dialogHeight = '80vh';
+        this.dialogWidth = '86vw';
         break;
       case Const.CONSTANT.SCREEN_SIZE.M:
       case Const.CONSTANT.SCREEN_SIZE.L:
       case Const.CONSTANT.SCREEN_SIZE.XL:
         this.searchScrollHeight = '40vh';
+        this.dialogHeight = '50vh';
+        this.dialogWidth = '80vw';
         this.maxSearchWidth = '60vw';
         this.modalPostion = 'center';
         break;
@@ -191,6 +203,8 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
         this.searchScrollHeight = '35vh';
         this.maxSearchWidth = '50vw';
         this.modalPostion = 'center';
+        this.dialogHeight = '60vh';
+        this.dialogWidth = '80vw';
     }
   }
 

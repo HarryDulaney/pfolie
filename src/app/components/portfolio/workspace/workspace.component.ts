@@ -40,8 +40,8 @@ export class WorkspaceComponent implements OnDestroy, OnInit, AfterViewInit {
   mainChartHeight: string = '60vh';
   chartType: string = Const.CHART_TYPE.PRICE; // Default chart type
   isLoading: boolean;
-  isShowAllocationChart = false;
-  isShowLineChart = true;
+  isShowAllocationChart = true;
+  isShowLineChart = false;
 
   constructor(
     private navService: NavService,

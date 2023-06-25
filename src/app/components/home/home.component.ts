@@ -251,7 +251,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.screenService.isMobileScreen(this.screenSize)) {
       this.navService.navExpandedSource$.next(false);
     } else {
-
       this.navService.navExpandedSource$.next(true);
     }
 

@@ -19,15 +19,20 @@ export class WatchListService {
     public isLoading: boolean;
     public isInitialized = false;
 
+
+    private currentWatchList: WatchList = null;
     /* Watchlist Observable */
-    private watchListSource: BehaviorSubject<WatchList> = new BehaviorSubject(null);
+    private watchListSource: BehaviorSubject<WatchList> = new BehaviorSubject(this.currentWatchList);
     public watchListSource$ = this.watchListSource.asObservable();
 
-    /* Tracked Assets Observable , the Tracked Asset Table's datasource */
-    private trackedSource: BehaviorSubject<TrackedAsset[]> = new BehaviorSubject<TrackedAsset[]>([]);
+    private currentTrackedList: TrackedAsset[] = [];
+    /* Tracked Assets Observable , Watchlist workspace data source for watched items */
+    private trackedSource: BehaviorSubject<TrackedAsset[]> = new BehaviorSubject<TrackedAsset[]>(this.currentTrackedList);
     public trackedSource$ = this.trackedSource.asObservable();
 
-    private watchlistViewSource: BehaviorSubject<CoinFullInfo[]> = new BehaviorSubject<CoinFullInfo[]>([]);
+    private currentWatchListView: CoinFullInfo[] = [];
+    /* Watchlist View Observable , the Watchlist Table's datasource */
+    private watchlistViewSource: BehaviorSubject<CoinFullInfo[]> = new BehaviorSubject<CoinFullInfo[]>(this.currentWatchListView);
     public watchListViewSource$ = this.watchlistViewSource.asObservable();
 
     /* Observe portfolio events inside the portfolio component */
@@ -88,11 +93,25 @@ export class WatchListService {
     }
 
     get current(): WatchList {
-        return this.watchListSource.getValue();
+        return this.currentWatchList;
+    }
+
+    cacheListProvider(): Observable<WatchList> {
+        return this.userService.lastWatchListProvider.pipe(
+            mergeMap(res => {
+                if (res) {
+                    return this.loadAndOpen(res);
+                }
+                return of(null);
+            }
+            ));
+
+
     }
 
     reset() {
-        this.watchListSource.next(null);
+        this.currentWatchList = null;
+        this.watchListSource.next(this.currentWatchList);
         this.isInitialized = false;
         this.trackedSource.next([]);
         this.initialized$.next(false);
@@ -104,11 +123,14 @@ export class WatchListService {
     }
 
     save(watchList: WatchList) {
-        return lastValueFrom(this.apiService.updateWatchList(watchList)).then(result => this.userService.updateWatchlistMeta(watchList));
+        this.currentWatchList = Object.assign({}, watchList);
+        return lastValueFrom(this.apiService.updateWatchList(this.currentWatchList))
+            .then(result => this.userService.updateWatchlistMeta(this.currentWatchList));
     }
 
     saveAs(watchList: WatchList): Observable<any> {
-        return this.apiService.updateWatchList(watchList);
+        this.currentWatchList = Object.assign({}, watchList);
+        return this.apiService.updateWatchList(this.currentWatchList);
     }
 
     setInitialized() {
@@ -117,38 +139,48 @@ export class WatchListService {
         this.initialized$.complete();
     }
 
+    cacheForReload(w: WatchList) {
+        this.cache.cacheWatchList(w);
+    }
 
     setWatchList(watchList: WatchList) {
-        if (!watchList.watchListData || !watchList.watchListData.trackedAssets) {
-            watchList.watchListData = new WatchListData([]);
+        this.currentWatchList = Object.assign({}, watchList);
+        if (!this.currentWatchList.watchListData || !this.currentWatchList.watchListData.trackedAssets) {
+            this.currentWatchList.watchListData = new WatchListData([]);
         }
 
-        if (watchList && watchList.watchListId !== -1) {
-            if (watchList.isNew) {
+        if (this.currentWatchList && this.currentWatchList.watchListId !== -1) {
+            if (this.currentWatchList.isNew) {
                 const newWatchListMeta = {
-                    uid: watchList.uid,
-                    watchListId: watchList.watchListId,
-                    watchListName: watchList.watchListName,
-                    isMain: watchList.isMain
+                    uid: this.currentWatchList.uid,
+                    watchListId: this.currentWatchList.watchListId,
+                    watchListName: this.currentWatchList.watchListName,
+                    isMain: this.currentWatchList.isMain
                 } as WatchListMeta;
                 this.userService.addWatchListMeta(newWatchListMeta);
-                watchList.isNew = false;
-                this.toast.showSuccessToast('Created New Watch-list, named: ' + watchList.watchListName);
+                this.currentWatchList.isNew = false;
+                this.toast.showSuccessToast('Created New Watch-list, named: ' + this.currentWatchList.watchListName);
             }
-            this.watchListSource.next(watchList);
-            this.updateView(watchList);
+            this.cacheForReload(this.currentWatchList);
+            this.watchListSource.next(this.currentWatchList);
+            this.updateView(this.currentWatchList);
 
         }
 
     }
 
     updateView(watchList: WatchList) {
+        this.currentWatchList = watchList;
         this.viewProvider(watchList.watchListData.trackedAssets)
             .subscribe({
                 next: (results: CoinFullInfo[]) => {
                     if (results) {
-                        this.watchlistViewSource.next(results);
-                        this.trackedSource.next(watchList.watchListData.trackedAssets);
+                        this.currentWatchListView = results;
+                        this.watchlistViewSource.next(this.currentWatchListView);
+
+                        this.currentTrackedList = watchList.watchListData.trackedAssets;
+                        this.trackedSource.next(this.currentTrackedList);
+
                         this.setInitialized();
                         this.isLoading = false;
                     }

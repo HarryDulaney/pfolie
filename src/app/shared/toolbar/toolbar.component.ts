@@ -10,7 +10,7 @@ import { Observable, Subject } from 'rxjs';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { CommonModule, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { ScreenService } from 'src/app/services/screen.service';
 import { Portfolio, WatchList } from 'src/app/models/portfolio';
 import { Watch } from 'typescript';
@@ -23,7 +23,7 @@ import { TooltipOptions } from 'primeng/tooltip';
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
   standalone: true,
-  imports: [CommonModule, MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
+  imports: [MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule]
 })
 export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input('nameKey') nameKey: string;
@@ -40,13 +40,12 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   showCancelRename: boolean;
   isNavExpanded: boolean;
   isMobile: boolean = false;
-  isMain = false;
 
   styleClass: string;
 
   open: boolean = true;
-  toolbarLabel: string;
-  private currentData;
+  label: string;
+  currentData: any;
   fileMenuItems: MenuItem;
   actionItems: MenuItem;
   destroySubject$ = new Subject();
@@ -86,16 +85,15 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject$))
       .subscribe(
         (data) => {
-          if (data) {
-            this.currentData = Object.assign({}, data);
-            this.toolbarLabel = this.currentData[this.nameKey];
-            this.isMain = this.currentData.isMain;
+          if (!data) {
+            this.currentData = {isMain: false, name: ''};
+            this.label = 'loading...';
             this.cd.detectChanges();
           } else {
-            this.currentData = {} as Portfolio | WatchList;
-            this.toolbarLabel = 'loading...';
-            this.isMain = false;
+            this.currentData = Object.assign({}, data);
+            this.label = this.currentData[this.nameKey]; 
             this.cd.detectChanges();
+
           }
         }
       );
@@ -124,7 +122,6 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       );
   }
-
 
 
   ngOnDestroy(): void {
@@ -156,8 +153,8 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /* ------------------------------------ Rename ------------------------------------- */
   handleRename() {
-    if (this.toolbarLabel && this.toolbarLabel.trim() !== '' &&
-      this.currentData[this.nameKey] !== this.toolbarLabel) {
+    if (this.label && this.label.trim() !== '' &&
+      this.currentData[this.nameKey] !== this.label) {
       this.rename();
     } else {
       this.nameEditor.deactivate();
@@ -167,7 +164,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   rename() {
-    this.service.rename(this.toolbarLabel).then(
+    this.service.rename(this.label).then(
       () => {
         this.nameEditor.deactivate();
 
@@ -187,7 +184,7 @@ export class ToolbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   handleCancelRename() {
     this.nameEditor.deactivate();
-    this.toolbarLabel = this.currentData[this.nameKey];
+    this.label = this.currentData[this.nameKey];
     this.showCancelRename = false;
   }
 

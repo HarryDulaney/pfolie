@@ -5,7 +5,7 @@
         [class]="styleClass"
     >
         <ng-template pTemplate="start">
-            <div *ngIf="isMain">
+            <div *ngIf="currentData.isMain">
                 <span
                     style="font-size:small;font-weight: bold;color:var(--primary-color);"
                     pTooltip
@@ -33,7 +33,7 @@
                     <span
                         (click)="nameEditor.activate()"
                         class="portfolio-name-label"
-                    > {{toolbarLabel}} </span>
+                    > {{label}} </span>
                 </ng-template>
                 <ng-template pTemplate="content">
                     <span class="float-start">
@@ -52,8 +52,8 @@
                         [style]="{'max-height':'2rem'}"
                         type="text"
                         pInputText
-                        [value]="toolbarLabel"
-                        [(ngModel)]="toolbarLabel"
+                        [value]="label"
+                        [(ngModel)]="label"
                         (keydown.enter)="handleRename()"
                         (ngModelChange)="nameChanged($event)"
                     >
