@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { FloatingButtonService } from './floating-button.service';
-import * as Constants from '../../constants';
+import * as Constants from '../../../constants';
 import { AsyncPipe } from '@angular/common';
 import { TooltipModule } from 'primeng/tooltip';
 import { RippleModule } from 'primeng/ripple';

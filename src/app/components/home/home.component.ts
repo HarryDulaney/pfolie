@@ -11,7 +11,7 @@ import { Toast, ToastModule } from 'primeng/toast';
 import { ToastService } from 'src/app/services/toast.service';
 import firebase from 'firebase/compat/app';
 import { RegisterComponent } from '../register/register.component';
-import { SearchComponent } from '../search/search.component';
+import { SearchComponent } from '../shared/search/search.component';
 import { NavService } from 'src/app/services/nav.service';
 import { concatMap, exhaustMap, map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { Subject, firstValueFrom, from, timer } from 'rxjs';

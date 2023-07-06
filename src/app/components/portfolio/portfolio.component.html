@@ -1,12 +1,11 @@
 <!-- Top Toolbar drawer -->
 <app-toolbar
     #toolbar
-    [navExpandProvider]="navExpandProvider"
-    [dataSource]="portfolioService.portfolio$"
-    [nameKey]="'portfolioName'"
-    [service]="portfolioService"
-    [menuItems]="toolbarMenuItems"
-    [screenSize]="screenSize"
+    [styleClass]="isNavExpanded ? 'toolbar-wrapper-nav-expanded' : 'toolbar-wrapper-nav-contracted'"
+    [tooltipOptions]="tooltipOptions"
+    [isMain]="isMain"
+    [label]="portfolioName"
+    (onRename)="onRename($event)"
 ></app-toolbar>
 <div class="page-top-margin-medium"></div>
 <div class="p-component p-0 m-0">
@@ -52,14 +51,25 @@
 
         <div class="col-12 bg-transparent">
             <div class="bg-transparent">
-                <app-portfolio-table
-                    #portfolioTable
-                    [viewSource]="portfolioService.portfolioAssetViewSource$"
-                    [portfolioSource]="portfolioService.portfolio$"
-                    [calculatedValuesSource]="portfolioService.calculatedValuesSource$"
-                    [screenSize]="screenSize"
-                    selectionMode="single"
-                ></app-portfolio-table>
+                <ng-container *ngIf="tableType === 'portfolio-table-main'">
+                    <app-portfolio-table
+                        #portfolioTable
+                        [viewSource]="portfolioService.portfolioAssetViewSource$"
+                        [portfolioSource]="portfolioService.portfolio$"
+                        [calculatedValuesSource]="portfolioService.calculatedValuesSource$"
+                        [screenSize]="screenSize"
+                        (onEdit)="openTransactionView($event)"
+                        selectionMode="single"
+                    ></app-portfolio-table>
+                </ng-container>
+                <ng-container *ngIf="tableType === 'portfolio-transaction-table'">
+                    <app-transaction-table
+                        #transactionsTable
+                        [service]="transactionService"
+                        [screenSize]="screenSize"
+                        (onBack)="onCloseTransactionView($event)"
+                    ></app-transaction-table>
+                </ng-container>
             </div>
         </div>
     </div>

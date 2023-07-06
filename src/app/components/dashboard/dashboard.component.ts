@@ -9,7 +9,7 @@ import { concatMap, map, takeUntil, tap } from 'rxjs/operators';
 import { ScreenService } from 'src/app/services/screen.service';
 import { LazyLoadEvent, SharedModule } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
-import { DeltaIcon } from '../icons/change-icon/delta.component';
+import { DeltaIcon } from '../shared/change-icon/delta.component';
 import { SparklineComponent } from '../charts/sparkline/sparkline.component';
 import { CardModule } from 'primeng/card';
 import { NewsCaroselComponent } from '../news/news-carosel/news-carosel.component';
@@ -18,7 +18,7 @@ import { ScrollTopModule } from 'primeng/scrolltop';
 import * as Const from '../../constants';
 import { TooltipModule } from 'primeng/tooltip';
 import firebase from 'firebase/compat/app';
-import { EditableCardComponent } from '../cards/editable-card/editable-card.component';
+import { EditableCardComponent } from '../shared/editable-card/editable-card.component';
 import { CoinMarket } from 'src/app/models/coin-gecko';
 import { SkeletonModule } from 'primeng/skeleton';
 import { BigChartComponent } from '../charts/big-chart/big-chart.component';
@@ -29,7 +29,7 @@ import { SELECT_ITEM_EVENT } from '../../constants';
 import { DashboardEvent } from 'src/app/models/events';
 import { ThemeService } from 'src/app/services/theme.service';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
-import { ListCardComponent } from '../cards/list-card/list-card.component';
+import { ListCardComponent } from '../shared/list-card/list-card.component';
 import { WatchListMeta } from 'src/app/models/portfolio';
 
 

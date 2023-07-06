@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PortfolioTableExpandComponent } from './portfolio-table-expand.component';
+import { PortfolioTableExpandComponent } from './transaction-table.component';
 
 describe('PortfolioTableExpandComponent', () => {
   let component: PortfolioTableExpandComponent;

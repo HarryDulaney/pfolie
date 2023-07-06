@@ -15,8 +15,12 @@ export const CONSTANT = {
     L: 'Large',
     XL: 'XLarge',
     UNKNOWN: 'Unknown'
-  }
+  },
+
 };
+
+export const PORTFOLIO_TABLE_MAIN = 'portfolio-table-main';
+export const PORTFOLIO_TRANSACTION_TABLE = 'portfolio-transaction-table';
 
 export const NEW_WATCHLIST_NAME = 'Watchlist';
 export const NEW_PORTFOLIO_NAME = 'Portfolio';

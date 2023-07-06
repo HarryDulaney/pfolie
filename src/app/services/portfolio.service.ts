@@ -6,7 +6,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { UtilityService } from './utility.service';
 import { ToastService } from 'src/app/services/toast.service';
-import { PortfolioBuilderService } from '../components/portfolio/portfolio-builder.service';
+import { PortfolioBuilderService } from './portfolio-builder.service';
 import { AppEvent } from 'src/app/models/events';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { BasicCoin } from 'src/app/models/coin-gecko';
@@ -31,9 +31,7 @@ export class PortfolioService {
   /* Observe portfolio events inside the portfolio component */
   eventSource$: Subject<AppEvent> = new Subject();
 
-  /* Subject controls opening and closing the Toolbar */
-  showToolbar: Subject<boolean> = new Subject();
-
+  private currentPortfolio: Portfolio = null;
   /* Portfolio Observable - contains Portfolio data and Owned Asset Info */
   private portfolio: BehaviorSubject<Portfolio> = new BehaviorSubject(null);
   public portfolio$ = this.portfolio.asObservable();
@@ -111,7 +109,7 @@ export class PortfolioService {
 
 
   get current(): Portfolio {
-    return this.portfolio.getValue();
+    return this.currentPortfolio;
   }
 
 
@@ -166,11 +164,12 @@ export class PortfolioService {
           this.setInitialized();
         }
       });
-
-    this.portfolio.next(p);
+    this.currentPortfolio = p;
+    this.portfolio.next(this.currentPortfolio);
   }
 
   save(portfolio: Portfolio) {
+    this.currentPortfolio = portfolio;
     return lastValueFrom(this.apiService.updatePortfolio(portfolio)).then(result => this.userService.updatePortfolioMeta(portfolio));
   }
 
@@ -179,6 +178,7 @@ export class PortfolioService {
   }
 
   saveAs(portfolio: Portfolio): Observable<any> {
+    this.currentPortfolio = portfolio;
     return this.apiService.updatePortfolio(portfolio);
   }
 
@@ -190,18 +190,16 @@ export class PortfolioService {
 
   /* ----------------------------- Portfolio Assets ----------------------------- */
   private add(asset: OwnedAsset): Portfolio {
-    let updated = this.portfolio.getValue();
-    updated.portfolioData.ownedAssets.push(asset);
-    return updated;
+    this.currentPortfolio.portfolioData.ownedAssets.push(asset);
+    return this.currentPortfolio;
   }
 
   private update(asset: OwnedAsset): Portfolio {
     let id = asset.id;
-    let updated = this.portfolio.getValue();
-    let idx = updated.portfolioData.ownedAssets.findIndex(a => a.id === id);
-    updated.portfolioData.ownedAssets.splice(idx, 1);
-    updated.portfolioData.ownedAssets.push(asset);
-    return updated;
+    let idx = this.currentPortfolio.portfolioData.ownedAssets.findIndex(a => a.id === id);
+    this.currentPortfolio.portfolioData.ownedAssets.splice(idx, 1);
+    this.currentPortfolio.portfolioData.ownedAssets.push(asset);
+    return this.currentPortfolio;
   }
 
 
@@ -235,15 +233,14 @@ export class PortfolioService {
 
 
   private publishPortfolioChange(ownedAsset: OwnedAsset) {
-    let current = this.portfolio.getValue();
-    let values = current.portfolioData.ownedAssets;
+    let values = this.currentPortfolio.portfolioData.ownedAssets;
     let idx = values.findIndex(a => a.id === ownedAsset.id);
     if (idx !== -1) {
       values.splice(idx, 1);
     }
     values.push(ownedAsset);
-    current.portfolioData.ownedAssets = values;
-    this.portfolio.next(current);
+    this.currentPortfolio.portfolioData.ownedAssets = values;
+    this.portfolio.next(this.currentPortfolio);
   }
 
 
@@ -269,11 +266,10 @@ export class PortfolioService {
 
 
   private deleteFromPortfolio(id: string): Promise<void> {
-    let curr = this.portfolio.getValue();
-    let index = curr.portfolioData.ownedAssets.findIndex(x => x.id === id);
-    curr.portfolioData.ownedAssets.splice(index, 1);
-    this.portfolio.next(curr);
-    return this.save(curr);
+    let index = this.currentPortfolio.portfolioData.ownedAssets.findIndex(x => x.id === id);
+    this.currentPortfolio.portfolioData.ownedAssets.splice(index, 1);
+    this.portfolio.next(this.currentPortfolio);
+    return this.save(this.currentPortfolio);
   }
 
   private updateCalculatedHoldings(updated: Portfolio) {
@@ -299,21 +295,6 @@ export class PortfolioService {
       });
   }
 
-  /* ------------------  Handle Events outside of the Portfoilio Builder ------------------ */
-
-  openToolbar() {
-    this.showToolbar.next(true);
-  }
-
-
-  hideToolbar() {
-    this.showToolbar.next(false);
-  }
-
-
-  closeToolbar() {
-    this.showToolbar.next(false);
-  }
 
 
   triggerSelectProjectPopup(): Observable<Portfolio> {
@@ -328,10 +309,9 @@ export class PortfolioService {
 
 
   async rename(name: string): Promise<void> {
-    let portfolio = Object.assign({}, this.portfolio.getValue());
-    portfolio.portfolioName = name;
-    await this.save(portfolio);
-    this.portfolio.next(portfolio);
+    this.currentPortfolio.portfolioName = name;
+    await this.save(this.currentPortfolio);
+    this.portfolio.next(this.currentPortfolio );
     return this.toast.showSuccessToast("Renamed: " + name);
   }
 
@@ -378,4 +358,5 @@ export class PortfolioService {
     }
     return this.coinSource$;
   }
+
 }

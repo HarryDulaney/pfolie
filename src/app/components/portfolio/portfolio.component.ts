@@ -1,11 +1,11 @@
 import { CurrencyPipe, DecimalPipe, CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Observable, Subject } from 'rxjs';
 import { tap, takeUntil, take } from 'rxjs/operators';
 import { AppEvent } from 'src/app/models/events';
-import { OwnedAssetView, Portfolio } from 'src/app/models/portfolio';
+import { OwnedAssetView, Portfolio, Transaction } from 'src/app/models/portfolio';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { NavService } from 'src/app/services/nav.service';
@@ -15,13 +15,17 @@ import { PortfolioService } from '../../services/portfolio.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { UserService } from 'src/app/services/user.service';
-import { ToolbarComponent } from 'src/app/shared/toolbar/toolbar.component';
+import { ToolbarComponent } from 'src/app/components/shared/toolbar/toolbar.component';
+import { TooltipOptions } from 'highcharts';
+import { PORTFOLIO_TABLE_MAIN, PORTFOLIO_TRANSACTION_TABLE } from 'src/app/constants';
+import { TransactionTableComponent } from './transaction-table/transaction-table.component';
+import { TransactionService } from './transaction-table/transaction.service';
 
 @Component({
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.scss'],
-  providers: [CurrencyPipe, DecimalPipe],
+  providers: [TransactionService, CurrencyPipe, DecimalPipe],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -30,17 +34,29 @@ import { ToolbarComponent } from 'src/app/shared/toolbar/toolbar.component';
     ToolbarComponent,
     ProgressSpinnerModule,
     WorkspaceComponent,
-    PortfolioTableComponent
+    PortfolioTableComponent,
+    TransactionTableComponent
   ]
 })
 export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('toolbar') toolbar: ToolbarComponent;
   @ViewChild('portfolioTable') portfolioTable: PortfolioTableComponent;
+  @ViewChild('transactionsTable') transactionsTable: TransactionTableComponent;
+  @ViewChild('toolbar') toolbar: ToolbarComponent;
   @ViewChild('searchTrackPanel') searchTrackedPanel: OverlayPanel;
   @ViewChild('rowPanel') rowPanel: OverlayPanel;
   @ViewChild('workspace') workspace: WorkspaceComponent;
 
 
+  coinDataService: CoinDataService = inject(CoinDataService);
+  portfolioService: PortfolioService = inject(PortfolioService);
+  private userService: UserService = inject(UserService);
+  private navService: NavService = inject(NavService);
+  private cd: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private router: Router = inject(Router);
+  private screenService: ScreenService = inject(ScreenService);
+  transactionService: TransactionService = inject(TransactionService);
+
+  tableType: string = PORTFOLIO_TABLE_MAIN;
   title = 'Portfolio';
 
   /* Component Palette Options */
@@ -62,24 +78,37 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   screenSize: string;
   navExpandProvider: Observable<boolean>;
   isLoading: boolean = false;
-  toolbarMenuItems: MenuItem[];
   isMain = false;
+  portfolioName = '';
+  tooltipOptions: TooltipOptions
 
-  constructor(
-    public coinDataService: CoinDataService,
-    public portfolioService: PortfolioService,
-    private userService: UserService,
-    private navService: NavService,
-    private cd: ChangeDetectorRef,
-    private router: Router,
-    private screenService: ScreenService) {
+  constructor() {
+    this.navService.navExpandedSource$
+      .subscribe({
+        next: (isExpanded) => {
+          this.isNavExpanded = isExpanded;
+          this.cd.markForCheck();
+        }
+      });
     this.navExpandProvider = this.navService.navExpandedSource$;
-    this.portfolioService.openToolbar();
+    this.tooltipOptions = this.screenService.tooltipOptions;
   }
 
 
   ngOnInit(): void {
     this.isLoading = true;
+
+    this.screenService.screenSource$
+      .pipe(
+        takeUntil(this.destroySubject$)
+      ).subscribe(screenSize => {
+        this.screenSize = screenSize;
+        this.cd.markForCheck();
+      });
+
+  }
+
+  ngAfterViewInit(): void {
     this.portfolioService.portfolio$
       .pipe(
         takeUntil(this.destroySubject$),
@@ -87,10 +116,10 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (data) => {
           if (data) {
             this.isMain = data.isMain;
-            this.setToolbarMenuItems(data);
+            this.portfolioName = data.name;
+            this.toolbar.service.setMenuSource(this.toolbarMenuItems(data));
             this.isLoading = false;
             this.cd.markForCheck();
-            this.toolbar.detectChanges();
           }
         },
         complete: () => {
@@ -102,22 +131,11 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
-
-    this.screenService.screenSource$.pipe(
-      takeUntil(this.destroySubject$)
-    ).subscribe(screenSize => {
-      this.screenSize = screenSize;
-      this.cd.markForCheck();
-    });
-
-  }
-
-  ngAfterViewInit(): void {
     this.screenService.documentClickedSource$
       .pipe(
         takeUntil(this.destroySubject$),
         tap(event => {
-          this.portfolioService.eventSource$.next({ name: 'click', event: event } as AppEvent);
+          this.toolbar.service.setEventSource({ name: 'click', event: event } as AppEvent);
         })
       ).subscribe();
 
@@ -150,6 +168,26 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     this.destroySubject$.complete();
   }
 
+  onRename(newName: string) {
+    this.portfolioService.rename(newName).then(
+      () => {
+        this.toolbar.label = newName;
+
+      }
+    )
+  }
+
+
+  openTransactionView() {
+    this.tableType = PORTFOLIO_TRANSACTION_TABLE;
+    this.cd.markForCheck();
+  }
+
+  onCloseTransactionView(event) {
+    // Save the transaction here
+    this.tableType = PORTFOLIO_TABLE_MAIN;
+    this.cd.markForCheck();
+  }
 
   handleAddPortfolioEvent(event: any) {
     this.portfolioTable.showAssetSearchContainer(event.event);
@@ -185,8 +223,8 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  setToolbarMenuItems(portfolio: Portfolio) {
-    this.toolbarMenuItems = [{
+  toolbarMenuItems(portfolio: Portfolio): MenuItem[] {
+    return [{
       label: 'Portfolio',
       icon: 'fa fa-bolt',
       items: [
@@ -237,7 +275,8 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
             this.isMain = true;
             this.portfolioService.toast.showSuccessToast('Portfolio ' + result.name + ' is now the Main portfolio.');
             this.portfolioService.setPortfolio(result);
-            this.setToolbarMenuItems(result);
+            this.toolbar.label = result.name;
+            this.toolbar.service.setMenuSource(this.toolbarMenuItems(result));
             this.cd.markForCheck();
           }
         },
@@ -259,9 +298,9 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
             this.isMain = false;
             this.portfolioService.toast.showSuccessToast('Main status removed from Portfoilo: ' + current.name + '.');
             this.portfolioService.setPortfolio(result);
-            this.setToolbarMenuItems(result);
+            this.toolbar.label = result.name;
+            this.toolbar.service.setMenuSource(this.toolbarMenuItems(result));
             this.cd.markForCheck();
-            this.toolbar.detectChanges();
           }
         },
         complete: () => {

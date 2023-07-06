@@ -3,7 +3,7 @@ import { ApiService } from "src/app/services/api.service";
 import { CoinDataService } from "src/app/services/coin-data.service";
 import { ToastService } from "src/app/services/toast.service";
 import { UtilityService } from "src/app/services/utility.service";
-import { PortfolioBuilderService } from "../components/portfolio/portfolio-builder.service";
+import { PortfolioBuilderService } from "./portfolio-builder.service";
 import { BehaviorSubject, Observable, Subject, concatMap, firstValueFrom, forkJoin, lastValueFrom, map, mergeMap, of, take, takeUntil, tap } from "rxjs";
 import { WatchListMeta, TrackedAsset, WatchList, WatchListData } from "src/app/models/portfolio";
 import { StringUtility } from 'src/app/services/string.utility';
@@ -20,7 +20,6 @@ import { BasicCoinInfoStore } from "../store/global/basic-coins.store";
 export class WatchListService {
     public isLoading: boolean;
     public isInitialized = false;
-
 
     private currentWatchList: WatchList = null;
     /* Watchlist Observable */
@@ -125,7 +124,7 @@ export class WatchListService {
     }
 
     saveCurrent(): Promise<any> {
-        return this.save(this.current);
+        return this.save(this.currentWatchList);
     }
 
     save(watchList: WatchList) {
@@ -361,12 +360,11 @@ export class WatchListService {
 
 
     deleteTracked(id: string): Promise<void> {
-        let curr = this.watchListSource.getValue();
-        let index = curr.watchListData.trackedAssets.findIndex(x => x.id === id);
-        curr.watchListData.trackedAssets.splice(index, 1);
-        this.watchListSource.next(curr);
-        this.trackedSource.next(curr.watchListData.trackedAssets);
-        return this.save(curr);
+        let index = this.currentWatchList.watchListData.trackedAssets.findIndex(x => x.id === id);
+        this.currentWatchList.watchListData.trackedAssets.splice(index, 1);
+        this.watchListSource.next(this.currentWatchList);
+        this.trackedSource.next(this.currentWatchList.watchListData.trackedAssets);
+        return this.save(this.currentWatchList);
     }
 
 
@@ -392,12 +390,14 @@ export class WatchListService {
     }
 
 
-    async rename(name: string): Promise<void> {
-        let current = Object.assign({}, this.watchListSource.getValue());
-        current.watchListName = name;
-        await this.save(current);
-        this.watchListSource.next(current);
-        return this.toast.showSuccessToast("Renamed: " + name);
+    rename(name: string): Promise<void> {
+        this.currentWatchList.watchListName = name;
+        return this.save(this.currentWatchList).then(
+            res => {
+                this.watchListSource.next(this.currentWatchList);
+                this.toast.showSuccessToast("Renamed: " + name);
+            }
+        );
     }
 
 

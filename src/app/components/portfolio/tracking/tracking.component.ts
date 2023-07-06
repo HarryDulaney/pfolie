@@ -12,11 +12,11 @@ import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
-import { DeltaIcon } from '../../icons/change-icon/delta.component';
+import { DeltaIcon } from '../../shared/change-icon/delta.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
-import { AssetSearchSelect } from '../../search-select/search-select.component';
+import { AssetSearchSelect } from '../../shared/search-select/search-select.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScreenService } from 'src/app/services/screen.service';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -26,7 +26,8 @@ import * as Const from '../../../constants';
 import { UserService } from 'src/app/services/user.service';
 import { AppEvent } from 'src/app/models/events';
 import { TooltipOptions } from 'primeng/tooltip';
-import { ToolbarComponent } from 'src/app/shared/toolbar/toolbar.component';
+import { ToolbarComponent } from 'src/app/components/shared/toolbar/toolbar.component';
+import { ToolbarService } from '../../shared/toolbar/toolbar.service';
 
 
 @Component({
@@ -81,19 +82,16 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   decreaseColor: string;
   increaseColor: string;
   totalColumns = 7;
-
   isNavExpanded: boolean = false;
   screenSize: string;
-  navExpandProvider: Observable<boolean>;
   coinSource$: Observable<BasicCoin[]>;
-  toolbarMenuItems: MenuItem[];
   maxSearchWidth: string;
   searchScrollHeight: string;
   modalPostion: string;
   tooltipOptions: TooltipOptions;
   isMain = false;
   dialogStyle = { 'width': '80vw', 'height': '90vh', 'overflow-y': 'hidden' };
-
+  watchListName = '';
 
   constructor(
     public coinDataService: CoinDataService,
@@ -107,7 +105,12 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
     private cd: ChangeDetectorRef
   ) {
     this.tooltipOptions = this.screenService.tooltipOptions;
-    this.navExpandProvider = this.navService.navExpandedSource$;
+    this.navService.navExpandedSource$.subscribe({
+      next: (result) => {
+        this.isNavExpanded = result;
+        this.cd.markForCheck();
+      }
+    });
 
   }
 
@@ -126,20 +129,6 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
     this.textColor = this.themeService.getCssVariableValue('--text-color');
 
     this.isLoading = true;
-    this.cd.markForCheck();
-
-    this.watchListService.watchListSource$
-      .pipe(
-        takeUntil(this.destroySubject$)
-      ).subscribe({
-        next: (result) => {
-          if (result) {
-            this.isMain = result.isMain;
-            this.setToolbarMenuItems(result);
-            this.cd.markForCheck();
-          }
-        }
-      });
 
     this.screenService.screenSource$
       .pipe(
@@ -196,11 +185,30 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.watchListService.watchListSource$
+      .pipe(
+        takeUntil(this.destroySubject$)
+      ).subscribe({
+        next: (result) => {
+          if (result) {
+            this.isMain = result.isMain;
+            this.watchListName = result.watchListName;
+            this.toolbar.service.setMenuSource(this.toolbarMenuItems(result));
+            this.isLoading = false;
+            this.cd.markForCheck();
+          }
+        },
+        complete: () => {
+          this.isLoading = false;
+          this.cd.markForCheck();
+        }
+      });
+
     this.screenService.documentClickedSource$
       .pipe(
         takeUntil(this.destroySubject$),
         tap(event => {
-          this.watchListService.eventSource$.next({ name: 'click', event: event } as AppEvent);
+          this.toolbar.service.setEventSource({ name: 'click', event: event } as AppEvent);
         })
       ).subscribe();
 
@@ -212,12 +220,24 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
               this.toolbar.handleRename();
             }
           });
+
     this.initScreenSizes();
     this.cd.markForCheck();
 
   }
-  setToolbarMenuItems(watchList: WatchList) {
-    this.toolbarMenuItems = [{
+
+
+  onRename(newName: string) {
+    this.watchListService.rename(newName).then(
+      () => {
+        this.watchListName = newName;
+        this.cd.markForCheck();
+      }
+    )
+  }
+
+  toolbarMenuItems(watchList: WatchList): MenuItem[] {
+    return [{
       label: 'Watchlist',
       icon: 'fa fa-bolt',
       items: [
@@ -261,9 +281,10 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
         next: (result) => {
           if (result) {
             this.isMain = false;
-            this.watchListService.toast.showSuccessToast('Reset: ' + current.name + ' watchlist to non-main.');
+            this.watchListService.toast.showSuccessToast('Reset: ' + current.watchListName + ' watchlist to non-main.');
             this.watchListService.setWatchList(result);
-            this.setToolbarMenuItems(result);
+            this.toolbar.service.setMenuSource(this.toolbarMenuItems(result));
+
             this.cd.markForCheck();
             this.toolbar.detectChanges();
           }
@@ -288,9 +309,9 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
         next: (result) => {
           if (result) {
             this.isMain = true;
-            this.watchListService.toast.showSuccessToast('Watchlist ' + current.name + ' is now the Main watchlist');
+            this.watchListService.toast.showSuccessToast('Watchlist ' + current.watchListName + ' is now the Main watchlist');
             this.watchListService.setWatchList(current);
-            this.setToolbarMenuItems(result);
+            this.toolbar.service.setMenuSource(this.toolbarMenuItems(result));
             this.cd.markForCheck();
           }
         },

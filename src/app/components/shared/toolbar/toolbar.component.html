@@ -1,0 +1,72 @@
+<p-menubar
+    #menuBar
+    id="toolbar-element-id"
+    [model]="menuItems"
+    [class]="styleClass"
+>
+    <ng-template pTemplate="start">
+        <div *ngIf="isMain">
+            <span
+                style="font-size:small;font-weight: bold;color:var(--primary-color);"
+                pTooltip
+                [tooltipOptions]="{
+                        position: tooltipOptions.position,
+                         event: tooltipOptions.event,
+                         life: tooltipOptions.life,
+                         autoHide: tooltipOptions.autoHide,
+                    tooltipLabel: 'Main is used as default for global actions, like favorites, watchlist, etc.'}"
+                class="p-1"
+            >
+                <p-badge> Main
+                </p-badge>
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="end">
+        <p-inplace
+            #nameEditor
+            id="rename-toolbar-element"
+            [style]="{'max-height':'2rem'}"
+        >
+            <ng-template pTemplate="display">
+                <span
+                    (click)="onEdit($event)"
+                    class="toolbar-name-label"
+                > {{label}} </span>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <span class="edit-name-btns-wrapper">
+                    <span class="float-left">
+                        <p-button
+                            *ngIf="showCancelRename"
+                            icon="fa fa-undo theme-red"
+                            (click)="handleCancelRename()"
+                        ></p-button>
+                        <p-button
+                            icon="fa fas fa-save theme-green"
+                            (click)="handleRename()"
+                        ></p-button>
+                    </span>
+                </span>
+                <div
+                    [formGroup]="editFormGroup"
+                    class="edit-name-input-wrapper"
+                    id="input--wrapper-element-id"
+                >
+                    <input
+                        #nameInputElement
+                        id="input-element-id"
+                        formControlName="name"
+                        [style]="{'max-height':'2rem'}"
+                        class="toolbar-name-input"
+                        type="text"
+                        [value]="label"
+                        pInputText
+                        (keydown.enter)="handleRename()"
+                    >
+                </div>
+
+            </ng-template>
+        </p-inplace>
+    </ng-template>
+</p-menubar>
