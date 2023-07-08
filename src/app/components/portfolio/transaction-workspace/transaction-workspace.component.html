@@ -1,0 +1,106 @@
+<div class="workspace--style" (click)="handleClick($event)">
+    <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+        <div class="grid">
+            <div class="col-12 lg:col-6 xl:col-3">
+                <div class="surface-card shadow-2 border-round">
+                    <div class="p-3 flex align-items-start">
+                        <span class="text-700">
+                            <span class="ws-caption-label-special">Current Balance:</span>
+                        </span>
+
+                        <div class="p-2 border-round ml-auto">
+                            <span class="ws-caption-label-data">
+                                {{ assetView.balance |
+                            currency:'USD':'$':'1.2-2'}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="surface-card shadow-2 border-round">
+                    <div class="p-3 flex align-items-start">
+                        <div>
+                            <span class="text-700">
+                                <span class="ws-caption-label-special">Total Cost Basis:</span>
+                            </span>
+                        </div>
+                        <div class="p-2 border-round ml-auto">
+                            <span class="ws-caption-label-data">
+                                {{assetView.totalCostBasis |
+                                currency:'USD':'$':'1.2-2'}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="surface-card shadow-2 border-round">
+                    <div class="p-3 flex align-items-start">
+                        <div><span class="text-700">
+                                <span class="ws-caption-label-special">Total Gain/Loss:</span>
+
+                            </span>
+                        </div>
+                        <div class="p-2 border-round ml-auto">
+                            <span class="ws-caption-label-data">
+                                <span [class]="getGainLoss() < 0 ? 'decreased' :'increased'">
+                                    {{getGainLoss() |
+                                    currency:'USD':'$':'1.2-2'}}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="surface-card shadow-2 border-round">
+                    <div class="p-3 flex align-items-start">
+                        <div>
+                            <span class="text-700">
+                                <span class="ws-caption-label-special">Total Quantity:</span>
+                            </span>
+                        </div>
+                        <div class="p-2 border-round ml-auto">
+                            <span class="ws-caption-label-data">
+                                {{getQuantity()}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <div class="surface-card shadow-2 border-round">
+                    <div class="p-3 flex align-items-start">
+                        <div>
+                            <span class="text-700">
+                                <span class="ws-caption-label-special">Allocation:</span>
+                            </span>
+                        </div>
+                        <div class="p-2 border-round ml-auto">
+                            <span class="ws-caption-label-data">
+                                {{assetView.allocation}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="isShowLineChart">
+        <!-- Line Chart -->
+        <div
+            class="col-12"
+            [style]="{'height':transactionWorkspaceApi.mainChartHeight}"
+        >
+            <app-coin-chart
+                #chart
+                [chartDataType]="chartType"
+                [themeProvider]="themeService"
+                (loading)="isLoading"
+            >
+            </app-coin-chart>
+        </div>
+    </ng-container>
+
+</div>

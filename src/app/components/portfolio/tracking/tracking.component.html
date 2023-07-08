@@ -3,6 +3,7 @@
     #toolbar
     [styleClass]="isNavExpanded ? 'toolbar-wrapper-nav-expanded' : 'toolbar-wrapper-nav-contracted'"
     [isMain]="isMain"
+    [mainLabelToolTip]="'Main is used as default for global actions, like favorites, watchlist, etc.'"
     [tooltipOptions]="tooltipOptions"
     [label]="watchListName"
     (onRename)="onRename($event)"

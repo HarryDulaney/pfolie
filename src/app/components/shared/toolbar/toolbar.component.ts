@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { Inplace, InplaceModule } from 'primeng/inplace';
 import { Menubar, MenubarModule } from 'primeng/menubar';
@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule, NgIf } from '@angular/common';
 import { TooltipOptions } from 'primeng/tooltip';
 import { ToolbarService } from './toolbar.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 
 @Component({
@@ -21,9 +22,10 @@ import { ToolbarService } from './toolbar.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, MenubarModule, SharedModule, InplaceModule, NgIf, ButtonModule, FormsModule, InputTextModule, ReactiveFormsModule]
 })
-export class ToolbarComponent implements OnDestroy, OnInit, AfterViewInit {
+export class ToolbarComponent implements OnDestroy, OnInit, AfterViewInit, OnChanges {
   @Input('styleClass') styleClass: string;
   @Input('tooltipOptions') tooltipOptions: TooltipOptions;
+  @Input('mainLabelToolTip') mainLabelToolTip: string;
   @Input('isMain') isMain: boolean;
   @Input('label') label = 'loading...';
 
@@ -32,12 +34,14 @@ export class ToolbarComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild('menuBar') menuBar: Menubar;
   @ViewChild('nameEditor') nameEditor: Inplace;
 
+  toast: ToastService = inject(ToastService);
+  private toolbarService: ToolbarService = inject(ToolbarService);
+  private cd: ChangeDetectorRef = inject(ChangeDetectorRef);
 
   showCancelRename: boolean;
   menuItems: MenuItem[];
   editFormGroup: UntypedFormGroup = new UntypedFormGroup({});
   nameControl: UntypedFormControl = new UntypedFormControl('');
-  editedLabel = '';
   destroySubject$ = new Subject();
 
   detectChanges() {
@@ -45,10 +49,15 @@ export class ToolbarComponent implements OnDestroy, OnInit, AfterViewInit {
   }
 
   constructor(
-    private toolbarService: ToolbarService,
-    private cd: ChangeDetectorRef
   ) {
     this.toolbarService.openToolbar();
+  }
+
+  ngOnChanges(changes: any): void {
+    if (changes.label) {
+      this.nameControl.setValue(this.label);
+      this.cd.markForCheck();
+    }
   }
 
   ngOnInit(): void {
@@ -61,13 +70,6 @@ export class ToolbarComponent implements OnDestroy, OnInit, AfterViewInit {
         }
       });
 
-    this.toolbarService.eventSource$
-      .pipe(takeUntil(this.destroySubject$))
-      .subscribe(
-        (ev) => {
-          this.handleOutsideClick(ev.event);
-        }
-      );
   }
 
   ngAfterViewInit(): void {
@@ -80,7 +82,6 @@ export class ToolbarComponent implements OnDestroy, OnInit, AfterViewInit {
   }
 
   onEdit(event: any) {
-    this.nameControl.setValue(this.label);
     this.editFormGroup = new UntypedFormGroup({
       name: this.nameControl
     });
@@ -105,42 +106,52 @@ export class ToolbarComponent implements OnDestroy, OnInit, AfterViewInit {
     this.toolbarService.openToolbar();
   }
 
-  handleOutsideClick(event: any) {
-    if (event.type === 'click' && this.menuBar.el.nativeElement.contains(event.target)) {
-      if (this.nameEditor.active) {
+  /* ------------------------------------ Rename ------------------------------------- */
+
+  /**
+   * Handle validating the name input and emitting the rename event
+   */
+  handleRename() {
+    if (this.nameEditor.active) {
+      const editedName = this.editFormGroup.controls['name'].value;
+      if (!editedName || editedName.trim() === '') {
         this.handleCancelRename();
+        this.toast.showErrorToast('No input provided for rename, please enter a valid name before submit');
+      } else if (!this.isChanged(editedName)) {
+        this.handleCancelRename();
+        this.toast.showInfoToast('Name value unchanged, no save required...');
+      } else if (!this.isValidName(editedName)) {
+        this.handleCancelRename();
+        this.toast.showErrorToast('Invalid rename, the name must be less than 30 characters.');
+      } else {
+        this.onRename.emit(editedName);
       }
+
+      this.showCancelRename = false;
+
     }
   }
 
+  isValidName(name: string) {
+    return name.length <= 30;
+  }
 
-  /* ------------------------------------ Rename ------------------------------------- */
-  handleRename() {
-    if (this.label &&
-      this.label.trim() !== '' &&
-      this.label !== this.editedLabel) {
-      this.onRename.emit(this.editedLabel);
-    } else {
-      this.nameEditor.deactivate();
-    }
-    this.showCancelRename = false;
-
+  isChanged(name: string) {
+    return name !== this.label;
   }
 
   nameInputChanged(value: any) {
     if (value && value !== this.label || value === '') {
-      this.editedLabel = value;
       this.showCancelRename = true;
     } else {
-      this.editedLabel = '';
       this.showCancelRename = false;
     }
   }
 
 
   handleCancelRename() {
+    this.nameControl.patchValue(this.label);
     this.nameEditor.deactivate();
-    this.editedLabel = '';
     this.showCancelRename = false;
     this.cd.markForCheck();
   }

@@ -19,8 +19,8 @@ export const CONSTANT = {
 
 };
 
-export const PORTFOLIO_TABLE_MAIN = 'portfolio-table-main';
-export const PORTFOLIO_TRANSACTION_TABLE = 'portfolio-transaction-table';
+export const PORTFOLIO_MAIN_VIEW = 'portfolio-main-view';
+export const PORTFOLIO_TRANSACTION_VIEW = 'portfolio-transaction-view';
 
 export const NEW_WATCHLIST_NAME = 'Watchlist';
 export const NEW_PORTFOLIO_NAME = 'Portfolio';

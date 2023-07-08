@@ -131,11 +131,10 @@ export class Portfolio {
     isMain: boolean = false;
     portfolioData: PortfolioData = new PortfolioData([]);
     isNew: boolean = false;
-    constructor() { }
+    isCreated?: boolean = false;
+    isRefreshed?: boolean = false;
 
-    get name(): string {
-        return this.portfolioName;
-    }
+    constructor() { }
 
     from(uid: string, portfolioId: number, portfolioName: string, isMain: boolean, portfolioData: PortfolioData, isNew: boolean): Portfolio {
         this.uid = uid;
@@ -166,12 +165,16 @@ export class Portfolio {
     }
 }
 
+export type TransactionType = 'buy' | 'sell' | 'trade' | 'swap';
+
 export class Transaction {
     transactionId: number;
     assetId: string;
     quantity: number;
     unitPrice: number;
-    type: 'buy' | 'sell' | 'trade' | 'swap';
+    transactionDateMillis: number = Date.now();
+    date: Date = new Date(this.transactionDateMillis);
+    type: TransactionType = 'buy';
 }
 
 

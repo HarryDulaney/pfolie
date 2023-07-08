@@ -33,16 +33,14 @@
         <div class="col-12 w-100">
             <div class="card">
                 <p-table
-                    #edt
-                    id="transactionTable"
+                    #table
+                    id="transaction-table"
                     [dataKey]="'transactionId'"
                     [value]="transactions"
                     [editingRowKeys]="editingRowKeys"
                     [showLoader]="true"
                     [loading]="isLoading"
                     [paginator]="isShowPaginator()"
-                    responsiveLayout="scroll"
-                    responsive="true"
                     [scrollable]="true"
                     [scrollDirection]="'vertical'"
                     [rows]="5"
@@ -66,10 +64,25 @@
                                 <span class="caption-label"> Back to Portfolio</span>
                             </a>
                         </div>
-
+                        <div class="flex align-items-center justify-content-end">
+                            <a
+                                mat-flat-button
+                                (click)="addNewTransaction()"
+                                type="button"
+                                class="table-action-btn"
+                                tooltipPosition="left"
+                            >
+                                <i
+                                    class="pi pi-plus"
+                                    style="font-size: 0.9rem;font-weight: bold;"
+                                ></i>
+                                <span class="caption-label">Add Transaction</span>
+                            </a>
+                        </div>
                     </ng-template>
                     <ng-template pTemplate="colgroup">
                         <colgroup>
+                            <col style="max-width:20%;">
                             <col style="max-width:20%;">
                             <col style="max-width:20%;">
                             <col style="max-width:20%;">
@@ -107,9 +120,14 @@
                             >
                                 Quantity
                             </th>
-
-                            <!-- Row Actions Header -->
                             <th
+                                class="expanded-table-header"
+                                style="border-bottom: 1px solid #062b5f;"
+                            >
+                                Date
+                            </th>
+                            <th
+                                *ngIf="editing"
                                 class="expanded-table-header"
                                 style="border-bottom: 1px solid #062b5f;"
                             >
@@ -120,14 +138,15 @@
                     <ng-template
                         pTemplate="body"
                         let-editing="editing"
-                        let-rowIndex
+                        let-rowIndex="rowIndex"
                         let-rowData
                     >
                         <tr
+                            [pSelectableRow]="rowData"
+                            (click)="onRowClick($event,rowPanel)"
                             [pEditableRow]="rowData"
                             class="cell-box-special"
                         >
-
                             <!-- Transaction Id -->
                             <td>
                                 <p-cellEditor>
@@ -217,26 +236,39 @@
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
-                            <!-- Actions -->
+                            <!-- Transaction Date -->
                             <td
                                 class="m-0 p-0"
                                 style="padding:0.3rem 0.3rem; cursor: pointer;"
                             >
-                                <a
-                                    #rowOptionsIcon
-                                    mat-flat-button
-                                    *ngIf="!editing"
-                                    (click)="nestedActionPanel.toggle($event)"
-                                    class="cursor-pointer bg-transparent"
-                                >
-                                    <i
-                                        class="pi pi-ellipsis-v"
-                                        [style]="{'font-size':'1.2rem','cursor':'pointer'}"
-                                    >
-                                    </i>
-                                </a>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <div class="p-fluid">
+                                            <p-calendar
+                                                [(ngModel)]="rowData.date"
+                                                [showTime]="true"
+                                                [showSeconds]="true"
+                                                appendTo="body"
+                                            ></p-calendar>
+                                            <small
+                                                *ngIf="errorMap[rowData.id] && errorMap[rowData.id]['date']['required']"
+                                                class="p-error block"
+                                            >Date Required </small>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        <div> {{rowData.date | date:'short'}}</div>
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <!-- Actions -->
+                            <td
+                                *ngIf="editing"
+                                class="m-0 p-0"
+                                style="padding:0.3rem 0.3rem; cursor: pointer;"
+                            >
+
                                 <button
-                                    *ngIf="editing"
                                     [disabled]="hasErrors()"
                                     pButton
                                     type="button"
@@ -246,7 +278,6 @@
                                     class="p-button-rounded p-button-text p-button-success mr-2"
                                 ></button>
                                 <button
-                                    *ngIf="editing"
                                     pButton
                                     type="button"
                                     pCancelEditableRow
@@ -257,11 +288,13 @@
                             </td>
                             <!-- Actions/Options Overlay -->
                             <p-overlayPanel
-                                #nestedActionPanel
+                                #rowPanel
+                                [style]="{ 'background': overlayBgColor}"
                                 appendTo="body"
                                 class="cursor-pointer"
                                 [showTransitionOptions]="'0.9ms'"
                                 [hideTransitionOptions]="'0.9ms'"
+                                (onShow)="onRowPanelShow($event,rowData,rowIndex)"
                                 [dismissable]="true"
                                 [baseZIndex]="1000001"
                             >

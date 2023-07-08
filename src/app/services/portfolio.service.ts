@@ -131,6 +131,7 @@ export class PortfolioService {
       } as PortfolioMeta;
       this.userService.addPortfolioMeta(newPortfoiloMeta);
       p.isNew = false;
+      p.isCreated = true;
       this.toast.showSuccessToast('Created New Portfolio, named: ' + p.portfolioName);
 
     }

@@ -4,7 +4,7 @@ import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { Table, TableModule } from 'primeng/table';
-import { OwnedAsset, OwnedAssetView, Portfolio, Transaction } from 'src/app/models/portfolio';
+import { OwnedAsset, OwnedAssetView, Portfolio } from 'src/app/models/portfolio';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NavService } from 'src/app/services/nav.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -12,7 +12,6 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { PortfolioBuilderService } from '../../../services/portfolio-builder.service';
 import { PortfolioService } from '../../../services/portfolio.service';
 import * as Const from '../../../constants';
-import { TransactionService } from '../transaction-table/transaction.service';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -24,6 +23,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScreenService } from 'src/app/services/screen.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { BasicCoin } from 'src/app/models/coin-gecko';
+import { PortfolioEvent, WorkspaceEvent } from 'src/app/models/events';
 
 @Component({
   selector: 'app-portfolio-table',
@@ -47,14 +47,9 @@ import { BasicCoin } from 'src/app/models/coin-gecko';
   ]
 })
 export class PortfolioTableComponent implements OnInit, OnDestroy {
-  @ViewChild('pdt') pdt: Table;
-  @ViewChild('rowPanel') rowPanel: OverlayPanel;
-  @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
-
-
-  @Input('viewSource') viewSource$: Observable<OwnedAssetView[]>;
-  @Input('calculatedValuesSource') calculatedValuesSource$: Observable<any>;
-  @Input('portfolioSource') portfolioSource$: Observable<Portfolio>;
+  @Input('viewSource$') viewSource$: Observable<OwnedAssetView[]>;
+  @Input('calculatedValuesSource$') calculatedValuesSource$: Observable<any>;
+  @Input('portfolioSource$') portfolioSource$: Observable<Portfolio>;
   @Input('screenSize') screenSize: string;
 
   @Input('selectionMode')
@@ -65,8 +60,13 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     }
   }
 
+
   @Output() onSelect: EventEmitter<any> = new EventEmitter();
-  @Output() onEdit: EventEmitter<any> = new EventEmitter();
+  @Output() onEdit: EventEmitter<PortfolioEvent> = new EventEmitter();
+
+  @ViewChild('table') table: Table;
+  @ViewChild('rowPanel') rowPanel: OverlayPanel;
+  @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
 
   selectMode: string;
   isLoading: boolean;
@@ -173,7 +173,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (event) => {
         if (this.openRowPanels.length !== 0) {
-          if (!this.pdt.el.nativeElement.contains(event.target)) {
+          if (!this.table.el.nativeElement.contains(event.target)) {
             ScreenService.closeOverlays(this.openRowPanels);
           }
         }
@@ -271,16 +271,6 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
       }
 
     }
-
-  }
-
-  onRowEditInit(item: OwnedAssetView) {
-    this.clonedItems[item.id] = { ...item };
-  }
-
-  onRowEditCancel(item: OwnedAssetView, rowIndex: number) {
-    this.view[rowIndex] = this.clonedItems[item.id];
-    delete this.clonedItems[item.id];
 
   }
 

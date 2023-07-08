@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { Observable, Subject } from 'rxjs';
 import { tap, takeUntil, take } from 'rxjs/operators';
-import { AppEvent } from 'src/app/models/events';
-import { OwnedAssetView, Portfolio, Transaction } from 'src/app/models/portfolio';
+import { AppEvent, PortfolioEvent } from 'src/app/models/events';
+import { OwnedAssetView, Portfolio } from 'src/app/models/portfolio';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { ScreenService } from 'src/app/services/screen.service';
 import { NavService } from 'src/app/services/nav.service';
@@ -17,9 +17,10 @@ import { MenuItem, SharedModule } from 'primeng/api';
 import { UserService } from 'src/app/services/user.service';
 import { ToolbarComponent } from 'src/app/components/shared/toolbar/toolbar.component';
 import { TooltipOptions } from 'highcharts';
-import { PORTFOLIO_TABLE_MAIN, PORTFOLIO_TRANSACTION_TABLE } from 'src/app/constants';
 import { TransactionTableComponent } from './transaction-table/transaction-table.component';
 import { TransactionService } from './transaction-table/transaction.service';
+import * as Const from '../../constants';
+import { TransactionWorkspaceComponent } from './transaction-workspace/transaction-workspace.component';
 
 @Component({
   selector: 'app-portfolio',
@@ -34,6 +35,7 @@ import { TransactionService } from './transaction-table/transaction.service';
     ToolbarComponent,
     ProgressSpinnerModule,
     WorkspaceComponent,
+    TransactionWorkspaceComponent,
     PortfolioTableComponent,
     TransactionTableComponent
   ]
@@ -45,6 +47,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('searchTrackPanel') searchTrackedPanel: OverlayPanel;
   @ViewChild('rowPanel') rowPanel: OverlayPanel;
   @ViewChild('workspace') workspace: WorkspaceComponent;
+  @ViewChild('transactionWorkspace') transactionWorkspace: TransactionWorkspaceComponent;
 
 
   coinDataService: CoinDataService = inject(CoinDataService);
@@ -56,7 +59,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   private screenService: ScreenService = inject(ScreenService);
   transactionService: TransactionService = inject(TransactionService);
 
-  tableType: string = PORTFOLIO_TABLE_MAIN;
+  viewType: string = Const.PORTFOLIO_MAIN_VIEW;
   title = 'Portfolio';
 
   /* Component Palette Options */
@@ -69,6 +72,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   assetSource$: Observable<OwnedAssetView[]>;
   portfolioView: OwnedAssetView[];
   destroySubject$ = new Subject();
+  switchToPortfolioSubject$ = new Subject();
 
   chartData: any;
   chartOptions: any;
@@ -81,6 +85,13 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   isMain = false;
   portfolioName = '';
   tooltipOptions: TooltipOptions
+  allocationChartHeight: string = '20rem';
+  mainChartHeight: string = '60vh';
+  chartType: string = Const.CHART_TYPE.PRICE; // Default chart type
+  isShowAllocationChart = true;
+  mainLabelToolTipPortfolio: string = 'Main is used as default for global actions, like favorites, watchlist, etc.';
+  mainLabelToolTipTransaction: string = 'You are editing an asset in the Main portfolio.';
+  mainLabelToolTip = this.mainLabelToolTipPortfolio;
 
   constructor() {
     this.navService.navExpandedSource$
@@ -97,7 +108,6 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.isLoading = true;
-
     this.screenService.screenSource$
       .pipe(
         takeUntil(this.destroySubject$)
@@ -115,9 +125,15 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
       ).subscribe({
         next: (data) => {
           if (data) {
+            if ((data.isCreated || data.isRefreshed) &&
+              this.viewType === Const.PORTFOLIO_TRANSACTION_VIEW) {
+              data.isCreated = false;
+              data.isRefreshed = false;
+              this.onCloseTransactionView(new Event('click'));
+            }
             this.isMain = data.isMain;
-            this.portfolioName = data.name;
-            this.toolbar.service.setMenuSource(this.toolbarMenuItems(data));
+            this.portfolioName = data.portfolioName;
+            this.handleMenuItems(data);
             this.isLoading = false;
             this.cd.markForCheck();
           }
@@ -148,14 +164,14 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
             }
           });
 
-    this.portfolioTable.onSelect
+    this.portfolioService.portfolioAssetViewSource$
       .pipe(
-        takeUntil(this.destroySubject$)
-      ).subscribe(
-        value => {
-          console.log('Row selected: ' + value);
-        }
-      );
+        takeUntil(this.destroySubject$),
+        tap((data: OwnedAssetView[]) => {
+          this.transactionService.updateTransactions(data);
+        })
+
+      )
 
     this.cd.markForCheck();
 
@@ -164,6 +180,8 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.portfolioService.isInitialized = false;
+    this.switchToPortfolioSubject$.next(true);
+    this.switchToPortfolioSubject$.complete();
     this.destroySubject$.next(true);
     this.destroySubject$.complete();
   }
@@ -172,20 +190,29 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     this.portfolioService.rename(newName).then(
       () => {
         this.toolbar.label = newName;
+        this.toolbar.nameEditor.deactivate();
 
       }
     )
   }
 
 
-  openTransactionView() {
-    this.tableType = PORTFOLIO_TRANSACTION_TABLE;
+  openTransactionView(event: PortfolioEvent) {
+    this.transactionService.setAssetToEdit(event.view);
+    this.viewType = Const.PORTFOLIO_TRANSACTION_VIEW;
+    this.handleMenuItems(this.portfolioService.current);
+    this.mainLabelToolTip = this.mainLabelToolTipTransaction;
+    this.isLoading = false;
     this.cd.markForCheck();
+
   }
 
   onCloseTransactionView(event) {
+    this.switchToPortfolioSubject$.next(true);
     // Save the transaction here
-    this.tableType = PORTFOLIO_TABLE_MAIN;
+    this.viewType = Const.PORTFOLIO_MAIN_VIEW;
+    this.handleMenuItems(this.portfolioService.current);
+    this.mainLabelToolTip = this.mainLabelToolTipPortfolio;
     this.cd.markForCheck();
   }
 
@@ -223,7 +250,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  toolbarMenuItems(portfolio: Portfolio): MenuItem[] {
+  portfolioMenuItems(portfolio: Portfolio): MenuItem[] {
     return [{
       label: 'Portfolio',
       icon: 'fa fa-bolt',
@@ -265,6 +292,54 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  transactionMenuItems(portfolio: Portfolio): MenuItem[] {
+    return [{
+      label: 'Back to Portfolio',
+      icon: 'fa fa-arrow-left',
+      command: (event) => {
+        this.onCloseTransactionView(event);
+      }
+    }, {
+      label: 'Asset',
+      icon: 'fa fa-dollar-sign',
+      items: [{
+        label: 'Remove',
+        tooltipOptions: { tooltipLabel: 'Remove the current Asset from this portfolio', tooltipPosition: 'right' },
+        icon: 'pi pi-trash',
+        command: (event) => {
+          this.handleRemoveTransactionMenuEvent(event, portfolio);
+        }
+      }]
+    },
+    {
+      label: 'Edit',
+      icon: 'fa fa-pen-square',
+      items: [
+        {
+          label: 'Add Transaction',
+          icon: 'pi pi-plus',
+          tooltipOptions: { tooltipLabel: 'Add a new transaction', tooltipPosition: 'right' },
+          command: (event) => {
+            this.handleAddTransactionMenuEvent(event, portfolio);
+          }
+        }]
+    },
+    ];
+
+  }
+
+  handleAddTransactionMenuEvent(event: any, portfolio: Portfolio) {
+
+  }
+
+
+  handleRemoveTransactionMenuEvent(event: any, portfolio: Portfolio) {
+
+  }
+
+  onTransactionWorkspaceClick(event: any) {
+  }
+
   handleAssignMain(event: any, current: Portfolio) {
     this.isMain = true;
     this.portfolioService.assignMain(current)
@@ -273,10 +348,10 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (result) => {
           if (result) {
             this.isMain = true;
-            this.portfolioService.toast.showSuccessToast('Portfolio ' + result.name + ' is now the Main portfolio.');
+            this.portfolioService.toast.showSuccessToast('Portfolio ' + result.portfolioName + ' is now the Main portfolio.');
             this.portfolioService.setPortfolio(result);
-            this.toolbar.label = result.name;
-            this.toolbar.service.setMenuSource(this.toolbarMenuItems(result));
+            this.toolbar.label = result.portfolioName;
+            this.handleMenuItems(result);
             this.cd.markForCheck();
           }
         },
@@ -296,10 +371,10 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (result) => {
           if (result) {
             this.isMain = false;
-            this.portfolioService.toast.showSuccessToast('Main status removed from Portfoilo: ' + current.name + '.');
+            this.portfolioService.toast.showSuccessToast('Main status removed from Portfoilo: ' + current.portfolioName + '.');
             this.portfolioService.setPortfolio(result);
-            this.toolbar.label = result.name;
-            this.toolbar.service.setMenuSource(this.toolbarMenuItems(result));
+            this.toolbar.label = result.portfolioName;
+            this.handleMenuItems(result);
             this.cd.markForCheck();
           }
         },
@@ -308,6 +383,14 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
+  }
+
+  handleMenuItems(portfoilo: Portfolio) {
+    if (this.viewType === Const.PORTFOLIO_MAIN_VIEW) {
+      this.toolbar.service.setMenuSource(this.portfolioMenuItems(portfoilo));
+    } else if (this.viewType === Const.PORTFOLIO_TRANSACTION_VIEW) {
+      this.toolbar.service.setMenuSource(this.transactionMenuItems(portfoilo));
+    }
   }
 
   isMobile() {
@@ -327,4 +410,5 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
       this.toolbar.handleCancelRename();
     }
   }
+
 }

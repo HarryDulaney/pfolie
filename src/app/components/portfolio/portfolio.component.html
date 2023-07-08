@@ -3,6 +3,7 @@
     #toolbar
     [styleClass]="isNavExpanded ? 'toolbar-wrapper-nav-expanded' : 'toolbar-wrapper-nav-contracted'"
     [tooltipOptions]="tooltipOptions"
+    [mainLabelToolTip]="mainLabelToolTip"
     [isMain]="isMain"
     [label]="portfolioName"
     (onRename)="onRename($event)"
@@ -39,30 +40,51 @@
             style="margin-top: 3rem;"
         >
         </div>
-        <!-- Workspace for custom portfolio parts/ componenets to render -->
-        <app-workspace
-            #workspace
-            [viewSource]="portfolioService.portfolioAssetViewSource$"
-            [calculatedValuesSource]="portfolioService.calculatedValuesSource$"
-            [screenSize]="screenSize"
-            [navExpandProvder]="navExpandProvider"
-        >
-        </app-workspace>
+        <div [ngSwitch]="viewType">
+            <ng-container *ngSwitchCase="'portfolio-main-view'">
+                <app-workspace
+                    #workspace
+                    [viewSource$]="portfolioService.portfolioAssetViewSource$"
+                    [calculatedValuesSource$]="portfolioService.calculatedValuesSource$"
+                    [screenSize]="screenSize"
+                    [navExpandProvider]="navExpandProvider"
+                    [allocationChartHeight]="allocationChartHeight"
+                    [mainChartHeight]="mainChartHeight"
+                    [chartType]="chartType"
+                    [isShowAllocationChart]="isShowAllocationChart"
+                >
+                </app-workspace>
+            </ng-container>
+            <ng-container *ngSwitchCase="'portfolio-transaction-view'">
+                <app-transaction-workspace
+                    #transactionWorkspace
+                    [transactionService]="transactionService"
+                    [screenSize]="screenSize"
+                    [navExpandProvider]="navExpandProvider"
+                    [mainChartHeight]="mainChartHeight"
+                    (onClick)="onTransactionWorkspaceClick($event)"
+                >
+                </app-transaction-workspace>
+            </ng-container>
+        </div>
 
         <div class="col-12 bg-transparent">
-            <div class="bg-transparent">
-                <ng-container *ngIf="tableType === 'portfolio-table-main'">
+            <div
+                class="bg-transparent"
+                [ngSwitch]="viewType"
+            >
+                <ng-container *ngSwitchCase="'portfolio-main-view'">
                     <app-portfolio-table
                         #portfolioTable
-                        [viewSource]="portfolioService.portfolioAssetViewSource$"
-                        [portfolioSource]="portfolioService.portfolio$"
-                        [calculatedValuesSource]="portfolioService.calculatedValuesSource$"
+                        [viewSource$]="portfolioService.portfolioAssetViewSource$"
+                        [portfolioSource$]="portfolioService.portfolio$"
+                        [calculatedValuesSource$]="portfolioService.calculatedValuesSource$"
                         [screenSize]="screenSize"
                         (onEdit)="openTransactionView($event)"
                         selectionMode="single"
                     ></app-portfolio-table>
                 </ng-container>
-                <ng-container *ngIf="tableType === 'portfolio-transaction-table'">
+                <ng-container *ngSwitchCase="'portfolio-transaction-view'">
                     <app-transaction-table
                         #transactionsTable
                         [service]="transactionService"

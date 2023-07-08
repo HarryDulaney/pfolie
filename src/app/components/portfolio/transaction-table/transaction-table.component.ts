@@ -1,6 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { CommonModule, CurrencyPipe, NgIf } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { Table, TableModule } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import * as Const from '../../../constants';
 import { PortfolioBuilderService } from '../../../services/portfolio-builder.service';
 import { PortfolioService } from '../../../services/portfolio.service';
 import { TransactionService } from './transaction.service';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { ButtonModule } from 'primeng/button';
 import { MatButtonModule } from '@angular/material/button';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -17,6 +17,10 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { SharedModule } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
+import { ScreenService } from 'src/app/services/screen.service';
+import { ThemeService } from 'src/app/services/theme.service';
+import { UtilityService } from 'src/app/services/utility.service';
+import { CalendarModule } from 'primeng/calendar';
 
 @Component({
   selector: 'app-transaction-table',
@@ -34,14 +38,15 @@ import { DialogModule } from 'primeng/dialog';
     NgIf,
     MatButtonModule,
     ButtonModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    CalendarModule
   ]
 })
 export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @Input('service') transactionService!: TransactionService;
   @Input('screenSize') screenSize: string;
 
-  @ViewChild('transactionTable') transactionTable: Table;
+  @ViewChild('table') table: Table;
 
   @Output() onBack: EventEmitter<any> = new EventEmitter();
 
@@ -60,21 +65,25 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
   modalPostion: string;
   dialogStyle = { 'width': '80vw', 'height': '90vh', 'overflow-y': 'hidden' };
   showTransactionDialog: boolean;
+  overlayBgColor: string;
+  openRowPanels: OverlayPanel[] = [];
 
   transactionTypeOptions = [
     { type: 'buy' },
-    { type: 'sell' },
-    { type: 'trade' },
-    { type: 'swap' }
+    /*     { type: 'sell' },
+        { type: 'trade' },
+        { type: 'swap' } */
   ];
 
   destroySubject$ = new Subject();
 
+  private utilityService: UtilityService = inject(UtilityService);
 
   constructor(
     private cd: ChangeDetectorRef,
     public currencyPipe: CurrencyPipe,
     private builder: PortfolioBuilderService,
+    private themeService: ThemeService,
     private portfolioService: PortfolioService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -85,15 +94,6 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
 
 
   ngOnInit(): void {
-  }
-
-  ngOnDestroy(): void {
-    this.destroySubject$.next(true);
-    this.destroySubject$.complete();
-  }
-
-  ngAfterViewInit(): void {
-    this.initScreenSizes();
     this.transactionService.assetSource$
       .pipe(takeUntil(this.destroySubject$))
       .subscribe({
@@ -103,6 +103,16 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
           this.cd.detectChanges();
         }
       });
+
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubject$.next(true);
+    this.destroySubject$.complete();
+  }
+
+  ngAfterViewInit(): void {
+    this.initScreenSizes();
 
   }
 
@@ -140,6 +150,28 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
   }
 
 
+  onRowClick(event, rowPanel: OverlayPanel) {
+    if (rowPanel.overlayVisible) {
+      rowPanel.hide();
+      this.openRowPanels = this.openRowPanels.slice(this.openRowPanels.indexOf(rowPanel), 1);
+    } else {
+      ScreenService.closeOverlays(this.openRowPanels);
+
+      rowPanel.toggle(event);
+      if (rowPanel.overlayVisible) {
+        this.openRowPanels.push(rowPanel);
+      }
+    }
+
+  }
+
+  onRowPanelShow(event) {
+    this.overlayBgColor = this.themeService.getCssVariableValue('--hover-bg-fancy');
+    this.cd.markForCheck();
+  }
+
+
+
   hasErrors(): boolean {
     return this.errorMap.length > 0;
   }
@@ -157,7 +189,7 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
     let transaction = this.getRawTransaction(this.editAsset);
     this.transactions.push(transaction);
     this.editAsset.transactions.push(transaction);
-    this.transactionTable.initRowEdit(transaction);
+    this.table.initRowEdit(transaction);
     this.cd.detectChanges();
   }
 
@@ -172,7 +204,9 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
       assetId: assetView.id,
       quantity: 0,
       unitPrice: 0,
-      type: 'buy'
+      type: 'buy',
+      transactionDateMillis: Date.now(),
+      date: new Date(Date.now())
     } as Transaction;
   }
 
@@ -194,6 +228,7 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
     );
     return highestId;
   }
+
 
   onRowEditInit(item: Transaction, rowIndex: number) {
     this.clonedItems[item.transactionId] = { ...item };
@@ -225,6 +260,10 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
     asset.averageUnitCost = this.builder.calculateAverageUnitCost(asset);
     this.editingRowKeys[transaction.transactionId] = false;
     this.portfolioService.updatePortfolioAsset(asset);
+  }
+
+  formatDate(date: any) {
+    return this.utilityService.format(date, 'dt');
   }
 
 

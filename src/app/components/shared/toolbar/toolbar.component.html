@@ -14,7 +14,7 @@
                          event: tooltipOptions.event,
                          life: tooltipOptions.life,
                          autoHide: tooltipOptions.autoHide,
-                    tooltipLabel: 'Main is used as default for global actions, like favorites, watchlist, etc.'}"
+                    tooltipLabel: mainLabelToolTip}"
                 class="p-1"
             >
                 <p-badge> Main
@@ -35,8 +35,8 @@
                 > {{label}} </span>
             </ng-template>
             <ng-template pTemplate="content">
-                <span class="edit-name-btns-wrapper">
-                    <span class="float-left">
+                <span class="d-flex justify-content-between align-items-center">
+                    <span class="d-flex justify-content-between align-items-center">
                         <p-button
                             *ngIf="showCancelRename"
                             icon="fa fa-undo theme-red"
@@ -47,25 +47,23 @@
                             (click)="handleRename()"
                         ></p-button>
                     </span>
-                </span>
-                <div
-                    [formGroup]="editFormGroup"
-                    class="edit-name-input-wrapper"
-                    id="input--wrapper-element-id"
-                >
-                    <input
-                        #nameInputElement
-                        id="input-element-id"
-                        formControlName="name"
-                        [style]="{'max-height':'2rem'}"
-                        class="toolbar-name-input"
-                        type="text"
-                        [value]="label"
-                        pInputText
-                        (keydown.enter)="handleRename()"
+                    <div
+                        [formGroup]="editFormGroup"
+                        class="edit-name-input-wrapper"
+                        id="input--wrapper-element-id"
                     >
-                </div>
-
+                        <input
+                            #nameInputElement
+                            id="input-element-id"
+                            [formControlName]="'name'"
+                            [style]="{'max-height':'2rem'}"
+                            class="toolbar-name-input"
+                            type="text"
+                            pInputText
+                            (keydown.enter)="handleRename()"
+                        >
+                    </div>
+                </span>
             </ng-template>
         </p-inplace>
     </ng-template>
