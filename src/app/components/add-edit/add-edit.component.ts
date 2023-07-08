@@ -3,15 +3,15 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChi
 import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { switchMap } from 'rxjs/operators';
-import { SearchComponent } from 'src/app/components/search/search.component';
-import { PortfolioBuilderService } from '../portfolio/portfolio-builder.service';
+import { SearchComponent } from 'src/app/components/shared/search/search.component';
+import { PortfolioBuilderService } from '../../services/portfolio-builder.service';
 import { PortfolioService } from '../../services/portfolio.service';
 import { AddEditService } from './add-edit.service';
 import { RippleModule } from 'primeng/ripple';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { SearchComponent as SearchComponent_1 } from '../search/search.component';
+import { SearchComponent as SearchComponent_1 } from '../shared/search/search.component';
 import { SharedModule } from 'primeng/api';
 import { NgIf } from '@angular/common';
 import { SessionService } from 'src/app/services/session.service';

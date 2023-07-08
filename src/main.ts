@@ -24,7 +24,7 @@ import { StringUtility } from './app/services/string.utility';
 import { ArticleService } from './app/components/news/article.service';
 import { NewsService } from './app/components/news/news.service';
 import { UserService } from './app/services/user.service';
-import { PortfolioBuilderService } from './app/components/portfolio/portfolio-builder.service';
+import { PortfolioBuilderService } from './app/services/portfolio-builder.service';
 import { WatchListService } from './app/services/watchlist.service';
 import { PortfolioService } from './app/services/portfolio.service';
 import { ScreenService } from './app/services/screen.service';

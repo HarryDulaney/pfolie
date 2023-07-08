@@ -40,8 +40,8 @@
         <div class="col-12 w-100">
             <div class="card">
                 <p-table
-                    #pdt
-                    id="portfolioDataTable"
+                    #table
+                    id="portfolio-table"
                     dataKey="id"
                     styleClass="p-table-custom"
                     [style]="{'width':'100%'}"
@@ -50,8 +50,7 @@
                     [defaultSortOrder]="defaultSortOrder"
                     [value]="view"
                     [loading]="isLoading"
-                    [loadingIcon]="loadingIcon"
-                    [expandedRowKeys]="expandedRowKeys"
+                    [loadingIcon]="'pi pi-spin pi-spinner'"
                     [paginator]="true"
                     [showFirstLastIcon]="false"
                     responsiveLayout="scroll"
@@ -152,7 +151,6 @@
 
                     <ng-template
                         pTemplate="body"
-                        let-expanded="expanded"
                         let-rowIndex="rowIndex"
                         let-rowData
                     >
@@ -239,14 +237,14 @@
                                                 mat-flat-button
                                                 type="button"
                                                 class="cursor-pointer bg-transparent border-none p-0"
-                                                (click)="onAddNewTransaction(rowData,rowIndex,$event)"
+                                                (click)="onOpenTransactions(rowData,rowIndex,$event)"
                                             >
                                                 <i
                                                     class="pi pi-plus-circle"
                                                     [style]="{'font-size':'0.8rem','cursor':'pointer'}"
                                                 >
                                                 </i>
-                                                Add Transaction
+                                                View/Edit Asset
                                             </a>
                                         </li>
 
@@ -302,9 +300,12 @@
                                 class="text-center"
                                 style="white-space: nowrap; font-size: x-large;margin:0 auto;vertical-align:middle;"
                             >
-                                <span>
+                                <div
+                                    (click)="showAssetSearchContainer($event)"
+                                    class="w-100 cursor-pointer"
+                                >
                                     + Add New assets to this portfolio to get started.
-                                </span>
+                                </div>
                             </th>
                         </tr>
                     </ng-template>

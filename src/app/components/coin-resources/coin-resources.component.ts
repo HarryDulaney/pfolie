@@ -22,7 +22,7 @@ import { UserService } from 'src/app/services/user.service';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
-import { ListCardComponent } from '../cards/list-card/list-card.component';
+import { ListCardComponent } from '../shared/list-card/list-card.component';
 import { WatchList, WatchListMeta } from 'src/app/models/portfolio';
 import { ToastService } from 'src/app/services/toast.service';
 

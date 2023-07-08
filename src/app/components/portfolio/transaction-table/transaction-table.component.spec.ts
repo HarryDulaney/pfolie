@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HoldingViewComponent } from './holding-view.component';
 
-describe('HoldingViewComponent', () => {
-  let component: HoldingViewComponent;
-  let fixture: ComponentFixture<HoldingViewComponent>;
+describe('PortfolioTableExpandComponent', () => {
+  let component: PortfolioTableExpandComponent;
+  let fixture: ComponentFixture<PortfolioTableExpandComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ HoldingViewComponent ]
-    })
+    imports: [PortfolioTableExpandComponent]
+})
     .compileComponents();
+  });
 
-    fixture = TestBed.createComponent(HoldingViewComponent);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(PortfolioTableExpandComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

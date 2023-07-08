@@ -4,27 +4,26 @@ import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { Table, TableModule } from 'primeng/table';
-import { OwnedAsset, OwnedAssetView, Portfolio, Transaction } from 'src/app/models/portfolio';
+import { OwnedAsset, OwnedAssetView, Portfolio } from 'src/app/models/portfolio';
 import { CoinDataService } from 'src/app/services/coin-data.service';
 import { NavService } from 'src/app/services/nav.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { PortfolioBuilderService } from '../portfolio-builder.service';
+import { PortfolioBuilderService } from '../../../services/portfolio-builder.service';
 import { PortfolioService } from '../../../services/portfolio.service';
 import * as Const from '../../../constants';
-import { TransactionService } from '../portfolio-table-expand/transaction.service';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PortfolioTableExpandComponent } from '../portfolio-table-expand/portfolio-table-expand.component';
-import { DeltaIcon } from '../../icons/change-icon/delta.component';
+import { TransactionTableComponent } from '../transaction-table/transaction-table.component';
+import { DeltaIcon } from '../../shared/change-icon/delta.component';
 import { MatButtonModule } from '@angular/material/button';
-import { AssetSearchSelect } from '../../search-select/search-select.component';
+import { AssetSearchSelect } from '../../shared/search-select/search-select.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScreenService } from 'src/app/services/screen.service';
 import { ThemeService } from 'src/app/services/theme.service';
-import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
 import { BasicCoin } from 'src/app/models/coin-gecko';
+import { PortfolioEvent, WorkspaceEvent } from 'src/app/models/events';
 
 @Component({
   selector: 'app-portfolio-table',
@@ -32,17 +31,25 @@ import { BasicCoin } from 'src/app/models/coin-gecko';
   styleUrls: ['./portfolio-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, ProgressSpinnerModule, DialogModule, AssetSearchSelect, TableModule, SharedModule, MatButtonModule, DeltaIcon, OverlayPanelModule, PortfolioTableExpandComponent, CurrencyPipe, DatePipe]
+  imports: [
+    NgIf,
+    ProgressSpinnerModule,
+    DialogModule,
+    AssetSearchSelect,
+    TableModule,
+    SharedModule,
+    MatButtonModule,
+    DeltaIcon,
+    OverlayPanelModule,
+    TransactionTableComponent,
+    CurrencyPipe,
+    DatePipe
+  ]
 })
 export class PortfolioTableComponent implements OnInit, OnDestroy {
-  @ViewChild('pdt') pdt: Table;
-  @ViewChild('rowPanel') rowPanel: OverlayPanel;
-  @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
-
-
-  @Input('viewSource') viewSource$: Observable<OwnedAssetView[]>;
-  @Input('calculatedValuesSource') calculatedValuesSource$: Observable<any>;
-  @Input('portfolioSource') portfolioSource$: Observable<Portfolio>;
+  @Input('viewSource$') viewSource$: Observable<OwnedAssetView[]>;
+  @Input('calculatedValuesSource$') calculatedValuesSource$: Observable<any>;
+  @Input('portfolioSource$') portfolioSource$: Observable<Portfolio>;
   @Input('screenSize') screenSize: string;
 
   @Input('selectionMode')
@@ -53,10 +60,15 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     }
   }
 
+
   @Output() onSelect: EventEmitter<any> = new EventEmitter();
+  @Output() onEdit: EventEmitter<PortfolioEvent> = new EventEmitter();
+
+  @ViewChild('table') table: Table;
+  @ViewChild('rowPanel') rowPanel: OverlayPanel;
+  @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
 
   selectMode: string;
-  loadingIcon = 'pi pi-spin pi-spinner';
   isLoading: boolean;
   sortOrder = 1;
   sortField = 'id';
@@ -95,7 +107,6 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     public portfolioService: PortfolioService,
     public coinDataService: CoinDataService,
-    private transactionService: TransactionService,
     private themeService: ThemeService,
     private toastService: ToastService,
     public utilityService: UtilityService,
@@ -162,7 +173,7 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (event) => {
         if (this.openRowPanels.length !== 0) {
-          if (!this.pdt.el.nativeElement.contains(event.target)) {
+          if (!this.table.el.nativeElement.contains(event.target)) {
             ScreenService.closeOverlays(this.openRowPanels);
           }
         }
@@ -263,16 +274,6 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
 
   }
 
-  onRowEditInit(item: OwnedAssetView) {
-    this.clonedItems[item.id] = { ...item };
-  }
-
-  onRowEditCancel(item: OwnedAssetView, rowIndex: number) {
-    this.view[rowIndex] = this.clonedItems[item.id];
-    delete this.clonedItems[item.id];
-
-  }
-
   onRowRemove(item: OwnedAssetView) {
     this.portfolioService.deletePortfolioAsset(item);
   }
@@ -285,16 +286,9 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     this.onRowAddInit(id);
   }
 
-  onAddNewTransaction(view: OwnedAssetView, rowIndex: number, event) {
-    if (this.view[rowIndex].transactions === undefined) {
-      this.view[rowIndex].transactions = [];
-    }
-    let transaction = this.getRawTransaction(view);
-    this.view[rowIndex].transactions.push(transaction);
-    this.expandedRowKeys[view.id] = true;
-    this.transactionService.addNew(transaction, rowIndex, event)
+  onOpenTransactions(view: OwnedAssetView, rowIndex: number, event) {
+    this.onEdit.emit({ view: view, rowIndex: rowIndex, event: event });
     this.cd.markForCheck();
-
   }
 
   hasErrors(): boolean {
@@ -352,31 +346,5 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     this.navService.navigateTo(ownedAssetView.id);
   }
 
-  getRawTransaction(assetView: OwnedAsset): Transaction {
-    return {
-      transactionId: this.getNewTransactionId(assetView),
-      assetId: assetView.id,
-      quantity: 0,
-      unitPrice: 0,
-      type: 'buy'
-    } as Transaction;
-  }
 
-  getNewTransactionId(assetView: OwnedAsset): number {
-    if (assetView.transactions && assetView.transactions.length > 0) {
-      let lastTransactionId = this.getLastTransactionId(assetView.transactions);
-      return lastTransactionId + 1;
-    }
-    return 1;
-  }
-
-  getLastTransactionId(transactions: Transaction[]): number {
-    let highestId = -1;
-    transactions.forEach(
-      transaction => {
-        highestId = Math.max(transaction.transactionId, highestId);
-      }
-    );
-    return highestId;
-  }
 }

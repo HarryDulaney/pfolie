@@ -1,12 +1,12 @@
 <!-- Top Toolbar drawer -->
 <app-toolbar
     #toolbar
-    [navExpandProvider]="navExpandProvider"
-    [dataSource]="watchListService.watchListSource$"
-    [nameKey]="'watchListName'"
-    [service]="watchListService"
-    [menuItems]="toolbarMenuItems"
-    [screenSize]="screenSize"
+    [styleClass]="isNavExpanded ? 'toolbar-wrapper-nav-expanded' : 'toolbar-wrapper-nav-contracted'"
+    [isMain]="isMain"
+    [mainLabelToolTip]="'Main is used as default for global actions, like favorites, watchlist, etc.'"
+    [tooltipOptions]="tooltipOptions"
+    [label]="watchListName"
+    (onRename)="onRename($event)"
 ></app-toolbar>
 <div class="page-top-margin-medium"></div>
 <p-dialog

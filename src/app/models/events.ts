@@ -1,3 +1,5 @@
+import { OwnedAsset, OwnedAssetView } from "./portfolio";
+
 export interface AppEvent {
   name?: string;
   event: any;
@@ -5,6 +7,9 @@ export interface AppEvent {
   rowIndex?: number;
 }
 
+export interface PortfolioEvent extends AppEvent {
+  view: OwnedAssetView;
+}
 
 export interface WorkspaceEvent extends AppEvent {
 

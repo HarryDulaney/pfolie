@@ -241,38 +241,38 @@ export class PortfolioBuilderService {
     asset.transactions.forEach(
       transaction => {
         if (transaction.type === 'buy') {
-          total += transaction.quantity * transaction.unitPrice;
-        }
-      }
+      total += transaction.quantity * transaction.unitPrice;
+    }
+  }
     );
     return total;
   }
 
-  getBasicOwnedAssetObject(
-    id: string,
-    quantity: number,
-    costBasis?: number,
-    transactions?: Transaction[]): OwnedAsset {
-    return {
-      id: id,
-      totalQuantity: quantity,
-      totalCostBasis: costBasis,
-      allocation: 0,
-      transactions: transactions
-    } as OwnedAsset;
+getBasicOwnedAssetObject(
+  id: string,
+  quantity: number,
+  costBasis ?: number,
+  transactions ?: Transaction[]): OwnedAsset {
+  return {
+    id: id,
+    totalQuantity: quantity,
+    totalCostBasis: costBasis,
+    allocation: 0,
+    transactions: transactions
+  } as OwnedAsset;
 
-  }
+}
 
 
-  /**
-   * Get the amount of the asset 
-   * that can be purchased for one usd dollar.
-   * 
-   * [USD] = [USD/BTC] * [BTC]
-   * Used to weight asset values to determine portfolio allocation.
-   */
-  getDollarToAssetWeight(currentPrice: number) {
-    const exchangeRate = 1 / currentPrice;
-    return exchangeRate * currentPrice;
-  }
+/**
+ * Get the amount of the asset 
+ * that can be purchased for one usd dollar.
+ * 
+ * [USD] = [USD/BTC] * [BTC]
+ * Used to weight asset values to determine portfolio allocation.
+ */
+getDollarToAssetWeight(currentPrice: number) {
+  const exchangeRate = 1 / currentPrice;
+  return exchangeRate * currentPrice;
+}
 }
