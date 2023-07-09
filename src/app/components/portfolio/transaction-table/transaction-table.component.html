@@ -36,8 +36,7 @@
                     #table
                     id="transaction-table"
                     [dataKey]="'transactionId'"
-                    [value]="transactions"
-                    [editingRowKeys]="editingRowKeys"
+                    [value]="editAsset.transactions"
                     [showLoader]="true"
                     [loading]="isLoading"
                     [paginator]="isShowPaginator()"
@@ -143,7 +142,7 @@
                     >
                         <tr
                             [pSelectableRow]="rowData"
-                            (click)="onRowClick($event,rowPanel)"
+                            (click)="onRowClick($event,rowPanel,editing,rowIndex)"
                             [pEditableRow]="rowData"
                             class="cell-box-special"
                         >

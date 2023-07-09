@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, PercentPipe } from '@angular/common';
 import { ThemeService } from 'ng2-charts';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { OwnedAssetView } from 'src/app/models/portfolio';
@@ -13,7 +13,7 @@ import { TransactionService } from '../transaction-table/transaction.service';
   selector: 'app-transaction-workspace',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, AllocationChartComponent, CurrencyPipe, CoinChartComponent,],
+  imports: [PercentPipe,CommonModule, AllocationChartComponent, CurrencyPipe, CoinChartComponent,],
   templateUrl: './transaction-workspace.component.html',
   styleUrls: ['./transaction-workspace.component.scss'],
 })

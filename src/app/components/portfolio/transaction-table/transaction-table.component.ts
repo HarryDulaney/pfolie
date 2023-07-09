@@ -50,7 +50,6 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
 
   @Output() onBack: EventEmitter<any> = new EventEmitter();
 
-  transactions: Transaction[] = [];
   editAsset: OwnedAssetView;
   editingRowKeys: { [s: string]: boolean } = {};
   errorMap: { [s: string]: any } = {};
@@ -94,12 +93,12 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
 
 
   ngOnInit(): void {
+    this.editAsset = {} as OwnedAssetView;
     this.transactionService.assetSource$
       .pipe(takeUntil(this.destroySubject$))
       .subscribe({
         next: (ownedAssetView: OwnedAssetView) => {
           this.editAsset = ownedAssetView;
-          this.transactions = ownedAssetView.transactions;
           this.cd.detectChanges();
         }
       });
@@ -150,16 +149,18 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
   }
 
 
-  onRowClick(event, rowPanel: OverlayPanel) {
+  onRowClick(event, rowPanel: OverlayPanel, isEditing: boolean, rowIndex: number) {
     if (rowPanel.overlayVisible) {
       rowPanel.hide();
       this.openRowPanels = this.openRowPanels.slice(this.openRowPanels.indexOf(rowPanel), 1);
     } else {
-      ScreenService.closeOverlays(this.openRowPanels);
+      if (!isEditing) {
+        ScreenService.closeOverlays(this.openRowPanels);
+        rowPanel.toggle(event);
 
-      rowPanel.toggle(event);
-      if (rowPanel.overlayVisible) {
-        this.openRowPanels.push(rowPanel);
+        if (rowPanel.overlayVisible) {
+          this.openRowPanels.push(rowPanel);
+        }
       }
     }
 
@@ -171,23 +172,20 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
   }
 
 
-
   hasErrors(): boolean {
     return this.errorMap.length > 0;
   }
 
   isShowPaginator() {
-    return (this.transactions.length >= 5);
+    return (this.editAsset.transactions.length >= 5);
   }
 
   addNewTransaction() {
-    if (this.transactions === undefined) {
-      this.transactions = [];
+    if (!this.editAsset.transactions || !this.editAsset.transactions === undefined) {
       this.editAsset.transactions = [];
     }
 
     let transaction = this.getRawTransaction(this.editAsset);
-    this.transactions.push(transaction);
     this.editAsset.transactions.push(transaction);
     this.table.initRowEdit(transaction);
     this.cd.detectChanges();
@@ -236,7 +234,7 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   onRowEditCancel(event, item: Transaction, rowIndex: number) {
-    this.transactions[rowIndex] = this.clonedItems[item.transactionId];
+    this.editAsset.transactions[rowIndex] = this.clonedItems[item.transactionId];
     delete this.clonedItems[item.transactionId];
     this.editingRowKeys[item.transactionId] = false;
 
@@ -256,7 +254,7 @@ export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestr
     delete this.clonedItems[transaction.transactionId];
     let totalQuantity = this.builder.calculateTotalQuantity(this.editAsset);
     let totalCostBasis = this.builder.calculateTotalCostBasis(this.editAsset);
-    let asset = this.builder.getBasicOwnedAssetObject(this.editAsset.id, totalQuantity, totalCostBasis, this.transactions);
+    let asset = this.builder.getBasicOwnedAssetObject(this.editAsset.id, totalQuantity, totalCostBasis, this.editAsset.transactions);
     asset.averageUnitCost = this.builder.calculateAverageUnitCost(asset);
     this.editingRowKeys[transaction.transactionId] = false;
     this.portfolioService.updatePortfolioAsset(asset);
