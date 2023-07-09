@@ -839,7 +839,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
                   () => this.portfolioService.loadAndOpen(portfolio)))
               .subscribe({
                 next: (portfolio) => {
-                  portfolio.isRefreshed = true;
+                  portfolio.isRefreshRequired = true;
                   this.portfolioService.setPortfolio(portfolio);
                   this.router.navigate(['portfolio']);
                 }
@@ -859,7 +859,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
                   () => this.portfolioService.loadAndOpen(portfolio)))
               .subscribe({
                 next: (portfolio) => {
-                  portfolio.isRefreshed = true;
+                  portfolio.isRefreshRequired = true;
                   this.portfolioService.setPortfolio(portfolio);
                   this.router.navigate(['portfolio']);
                 }

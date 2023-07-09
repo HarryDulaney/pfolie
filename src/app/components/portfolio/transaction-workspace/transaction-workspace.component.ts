@@ -49,21 +49,6 @@ export class TransactionWorkspaceComponent implements OnDestroy, OnInit, AfterVi
 
 
   ngAfterViewInit(): void {
-    this.transactionService.assetSource$
-      .pipe(takeUntil(this.destroySubject$))
-      .subscribe(
-        view => {
-          if (this.assetView) {
-            this.assetView = view;
-            if (!this.assetView.balance) {
-              this.assetView.balance = 0;
-            }
-          }
-          this.isLoading = false;
-          this.cd.markForCheck();
-        }
-      );
-
     this.navExpandProvider.pipe(
       takeUntil(this.destroySubject$))
       .subscribe(
@@ -84,6 +69,21 @@ export class TransactionWorkspaceComponent implements OnDestroy, OnInit, AfterVi
 
   ngOnInit(): void {
     this.isLoading = true;
+    this.transactionService.assetSource$
+    .pipe(takeUntil(this.destroySubject$))
+    .subscribe(
+      view => {
+        if (view) {
+          this.assetView = view;
+          if (!this.assetView.balance) {
+            this.assetView.balance = 0;
+          }
+        }
+        this.isLoading = false;
+        this.cd.markForCheck();
+      }
+    );
+
   }
 
 

@@ -87,7 +87,7 @@
                 <ng-container *ngSwitchCase="'portfolio-transaction-view'">
                     <app-transaction-table
                         #transactionsTable
-                        [service]="transactionService"
+                        [transactionService]="transactionService"
                         [screenSize]="screenSize"
                         (onBack)="onCloseTransactionView($event)"
                     ></app-transaction-table>

@@ -1,6 +1,36 @@
-<div class="workspace--style" (click)="handleClick($event)">
-    <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+<div
+    class="workspace--style"
+    (click)="handleClick($event)"
+>
+    <div class="surface-ground px-1 py-1 md:px-3 lg:px-3">
         <div class="grid">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="p-3 flex align-items-center">
+                        <!-- Image -->
+                        <img
+                            [src]="assetView.coinFullInfo['image']['small'] || assetView.coinFullInfo['image']['large']"
+                            alt="img-thumbnail"
+                            style="height:36px;width:36px;"
+                        />
+
+                        <!-- Name -->
+                        <span class="ws-title-label">
+                            {{assetView.coinFullInfo['name']}}</span>
+                    </div>
+                    <div class="p-3 flex align-items-center">
+                        <span class="text-700">
+                            <span class="ws-caption-label-special">Current Price:</span>
+                        </span>
+                        <div class="p-2 border-round ml-auto">
+                            <span class="ws-caption-label-data">
+                                {{assetView.coinFullInfo['market_data']['current_price']['usd'] |
+                            currency:'USD':'$':'1.1-12'}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-12 lg:col-6 xl:col-3">
                 <div class="surface-card shadow-2 border-round">
                     <div class="p-3 flex align-items-start">
@@ -9,6 +39,7 @@
                         </span>
 
                         <div class="p-2 border-round ml-auto">
+                            <!-- Balance -->
                             <span class="ws-caption-label-data">
                                 {{ assetView.balance |
                             currency:'USD':'$':'1.2-2'}}

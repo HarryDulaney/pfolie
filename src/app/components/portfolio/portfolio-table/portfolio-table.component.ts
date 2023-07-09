@@ -286,8 +286,8 @@ export class PortfolioTableComponent implements OnInit, OnDestroy {
     this.onRowAddInit(id);
   }
 
-  onOpenTransactions(view: OwnedAssetView, rowIndex: number, event) {
-    this.onEdit.emit({ view: view, rowIndex: rowIndex, event: event });
+  onOpenTransactions(rowIndex: number, event) {
+    this.onEdit.emit({ view: this.view[rowIndex], rowIndex: rowIndex, event: event });
     this.cd.markForCheck();
   }
 

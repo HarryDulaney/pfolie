@@ -125,10 +125,10 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
       ).subscribe({
         next: (data) => {
           if (data) {
-            if ((data.isCreated || data.isRefreshed) &&
+            if ((data.isCreated || data.isRefreshRequired) &&
               this.viewType === Const.PORTFOLIO_TRANSACTION_VIEW) {
               data.isCreated = false;
-              data.isRefreshed = false;
+              data.isRefreshRequired = false;
               this.onCloseTransactionView(new Event('click'));
             }
             this.isMain = data.isMain;
