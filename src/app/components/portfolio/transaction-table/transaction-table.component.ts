@@ -43,7 +43,7 @@ import { CalendarModule } from 'primeng/calendar';
   ]
 })
 export class TransactionTableComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
-  @Input('service') transactionService!: TransactionService;
+  @Input() transactionService!: TransactionService;
   @Input('screenSize') screenSize: string;
 
   @ViewChild('table') table: Table;

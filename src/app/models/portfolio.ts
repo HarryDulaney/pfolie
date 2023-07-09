@@ -132,7 +132,7 @@ export class Portfolio {
     portfolioData: PortfolioData = new PortfolioData([]);
     isNew: boolean = false;
     isCreated?: boolean = false;
-    isRefreshed?: boolean = false;
+    isRefreshRequired?: boolean = false;
 
     constructor() { }
 

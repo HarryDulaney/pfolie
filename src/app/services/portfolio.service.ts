@@ -175,7 +175,7 @@ export class PortfolioService {
   }
 
   saveCurrent() {
-    return this.save(this.current);
+    return this.save(this.currentPortfolio);
   }
 
   saveAs(portfolio: Portfolio): Observable<any> {
@@ -227,7 +227,7 @@ export class PortfolioService {
     let updated = this.update(asset);
     this.publishPortfolioChange(asset);
     this.save(updated).then(() => {
-      this.updateCalculatedHoldings(this.portfolio.getValue());
+      this.updateCalculatedHoldings(this.current);
       this.toast.showSuccessToast('Updated: ' + ownedAsset.id + ".");
     });
   }
