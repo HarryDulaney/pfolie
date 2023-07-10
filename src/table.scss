@@ -35,7 +35,7 @@
     .p-datatable .p-datatable-tbody > tr {
         background: transparent !important;
         font-size: 0.8rem !important;
-
+        padding: 0.3rem 0.3rem !important;
         font-weight: bold;
     }
 
@@ -101,8 +101,27 @@
 .p-datatable .p-datatable-thead > tr > th {
     padding: 0.2rem 0.2rem !important;
     font-size: 0.8rem !important;
-
     font-weight: bold;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.2rem 0.2rem !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.2rem 0.2rem !important;
+}
+
+:host ::ng-deep .p-calendar .p-inputtext {
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+    max-height: 2rem !important;
+}
+
+:host ::ng-deep .p-fluid .p-inputtext {
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+    max-height: 2rem !important;
 }
 
 .p-datatable .p-datatable-footer {
