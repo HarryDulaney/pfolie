@@ -11,29 +11,29 @@ import { take, takeUntil, tap } from 'rxjs/operators';
 import { forkJoin, Observable, of, Subject } from 'rxjs';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { BasicCoinInfoStore } from 'src/app/store/global/basic-coins.store';
-import { SparklineComponent } from '../../charts/sparkline/sparkline.component';
-import { DeltaIcon } from '../../shared/change-icon/delta.component';
+import { SparklineComponent } from '../charts/sparkline/sparkline.component';
+import { DeltaIcon } from '../shared/change-icon/delta.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
-import { AssetSearchSelect } from '../../shared/search-select/search-select.component';
+import { AssetSearchSelect } from '../shared/search-select/search-select.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScreenService } from 'src/app/services/screen.service';
 import { ThemeService } from 'src/app/services/theme.service';
-import { WatchListService } from '../../../services/watchlist.service';
+import { WatchListService } from '../../services/watchlist.service';
 import { Router } from '@angular/router';
-import * as Const from '../../../constants';
+import * as Const from '../../constants';
 import { UserService } from 'src/app/services/user.service';
 import { AppEvent } from 'src/app/models/events';
 import { TooltipOptions } from 'primeng/tooltip';
 import { ToolbarComponent } from 'src/app/components/shared/toolbar/toolbar.component';
-import { ToolbarService } from '../../shared/toolbar/toolbar.service';
+import { ToolbarService } from '../shared/toolbar/toolbar.service';
 
 
 @Component({
-  selector: 'app-tracking',
-  templateUrl: './tracking.component.html',
-  styleUrls: ['./tracking.component.scss'],
+  selector: 'app-watchlist',
+  templateUrl: './watchlist.component.html',
+  styleUrls: ['./watchlist.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     DatePipe,
@@ -56,7 +56,7 @@ import { ToolbarService } from '../../shared/toolbar/toolbar.service';
     CurrencyPipe,
     DatePipe]
 })
-export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
+export class WatchListComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('trackedAssetTable') trackedAssetTable: Table;
   @ViewChild('assetSearchDialog') assetSearchDialog!: Dialog;
   @ViewChild(AssetSearchSelect) assetSelectionList: AssetSearchSelect;
@@ -68,8 +68,6 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   chartData: any;
   chartOptions: any;
   percentFormat: string = '1.2-6';
-  renamePortfolioFormGroup: UntypedFormGroup;
-  currentDate: Date = new Date();
   showAssetSearchDialog: boolean;
   destroySubject$ = new Subject();
   loadingIcon = 'pi pi-spin pi-spinner';
@@ -239,13 +237,13 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
   toolbarMenuItems(watchList: WatchList): MenuItem[] {
     return [{
       label: 'Watchlist',
-      icon: 'fa fa-bolt',
+      icon: 'fa fa-eye',
       items: [
         {
           label: watchList.isMain ? 'Unset as Main' : 'Set as Main',
           tooltipOptions: watchList.isMain ?
-            { tooltipLabel: 'Unset this as your default watchlist', tooltipPosition: 'right' } :
-            { tooltipLabel: 'Make this your default watchlist', tooltipPosition: 'right' },
+            { tooltipLabel: 'Unset this as your default watchlist', tooltipPosition: 'right', life: 5000, showDelay: 2000 } :
+            { tooltipLabel: 'Make this your default watchlist', tooltipPosition: 'right', life: 5000, showDelay: 2000 },
           icon: 'fa-solid fa-star',
           command: watchList.isMain ? (event) => {
             this.handleUnAssignMain(event, this.watchListService.current);
@@ -254,7 +252,7 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }, {
           label: 'Delete',
-          tooltipOptions: { tooltipLabel: 'Delete this watchlist', tooltipPosition: 'right' },
+          tooltipOptions: { tooltipLabel: 'Delete this watchlist', tooltipPosition: 'right', life: 5000, showDelay: 2000 },
           icon: 'pi pi-trash',
           command: (event) => {
             this.handleDeleteWatchListEvent(event, this.watchListService.current);
@@ -266,7 +264,7 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
       icon: 'fa fa-pen-square',
       items: [
         {
-          label: 'Add New', tooltipOptions: { tooltipLabel: 'Add a new asset to watchlist', tooltipPosition: 'right' },
+          label: 'Add New', tooltipOptions: { tooltipLabel: 'Add a new asset to watchlist', tooltipPosition: 'right', life: 5000, showDelay: 2000 },
           icon: 'pi pi-plus',
           command: (event) => {
             this.showAssetSearchContainer(new MouseEvent('click'));
@@ -469,7 +467,7 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   handleDeleteWatchListEvent(event: any, watchList: WatchList) {
-    let subscription = this.watchListService.toast.showUserPromptToast('Are you sure you want to delete ' + watchList.name + ' ?', 'Confirm Delete')
+    let subscription = this.watchListService.toast.showUserPromptToast('Are you sure you want to delete ' + watchList.watchListName + ' ?', 'Confirm Delete')
       .subscribe({
         next: (result) => {
           if (result) {
@@ -501,7 +499,7 @@ export class TrackingComponent implements OnInit, OnDestroy, AfterViewInit {
 
             })
           } else {
-            this.watchListService.toast.showErrorToast(this.watchListService.current.name + ' was not deleted.');
+            this.watchListService.toast.showErrorToast(this.watchListService.current.watchListName + ' was not deleted.');
           }
         },
         complete: () => subscription.unsubscribe(),

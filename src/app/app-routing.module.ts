@@ -6,7 +6,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NewsComponent } from './components/news/news.component';
 import { PortfolioComponent } from './components/portfolio/portfolio.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
-import { TrackingComponent } from './components/portfolio/tracking/tracking.component';
+import { WatchListComponent } from './components/watchlist/watchlist.component';
 import { authGuard } from './guards/guards';
 
 
@@ -20,7 +20,7 @@ const appRoutes: Routes = [
   },
   {
     path: 'watch-list',
-    component: TrackingComponent,
+    component: WatchListComponent,
     canActivate: [authGuard],
   },
   { path: 'news', component: NewsComponent },

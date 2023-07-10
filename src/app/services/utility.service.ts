@@ -143,5 +143,10 @@ export class UtilityService {
     }
 
 
+    public static getCurrentDate(): Date {
+        return new Date(Date.now());
+    }
+
+
 }
 

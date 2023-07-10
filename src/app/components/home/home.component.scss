@@ -9,6 +9,14 @@ mat-toolbar {
   z-index: 1000;
 }
 
+a:hover {
+  color: var(--menu-item-hover) !important;
+}
+
+li a:hover {
+  color: var(--menu-item-hover) !important;
+}
+
 :host ::ng-deep .p-sidebar-right {
   z-index: 1111111 !important;
   top: 64px !important;

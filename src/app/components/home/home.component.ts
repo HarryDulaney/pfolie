@@ -99,8 +99,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   searchForm: UntypedFormGroup;
   toast: Toast;
   private user: firebase.User = null;
-  private readonly issuesLink = PROJECT_LINKS.ISSUES;
-  private readonly aboutPageLink = PROJECT_LINKS.ABOUT;
   private basicPortfolios: PortfolioMeta[] = [];
   private basicWatchlists: WatchListMeta[] = [];
   private filteredCoinsStore: ListStore<BasicCoin> = new ListStore<BasicCoin>([]);
@@ -488,7 +486,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         {
           label: 'Privacy Policy',
-          icon: 'pi pi-fw pi-info-circle',
+          icon: 'fa fa-fw fa-lock',
           command: (event) => {
             this.privacyPolicy();
           }
@@ -514,18 +512,24 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         items: [this.addSignedOutWatchListMenuItem()],
       },
       {
-        label: 'Help',
-        icon: 'pi pi-fw pi-question',
+        label: 'About',
+        icon: 'pi pi-fw pi-info-circle',
         items: [
           {
-            label: 'About',
+            label: 'Project Info',
             icon: 'pi pi-external-link',
-            url: this.aboutPageLink
+            url: PROJECT_LINKS.ABOUT
+          },
+          {
+            label: 'Fork Me',
+            tooltip: 'Fork Me On Github',
+            icon: 'fa-solid fa-code-branch',
+            url: PROJECT_LINKS.SOURCE_CODE
           },
           {
             label: 'Report A Bug',
             icon: 'fa-solid fa-bug',
-            url: this.issuesLink
+            url: PROJECT_LINKS.ISSUES
           }
         ]
       }
@@ -574,7 +578,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           {
             label: 'Privacy Policy',
-            icon: 'pi pi-fw pi-info-circle',
+            icon: 'fa fa-fw fa-lock',
             command: (event) => {
               this.privacyPolicy();
             }
@@ -608,19 +612,25 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         items: this.buildWatchListNavItems(basicWatchlists),
       },
       {
-        label: 'Help',
-        icon: 'pi pi-fw pi-question',
+        label: 'About',
+        icon: 'pi pi-fw pi-info-circle',
         expanded: true,
         items: [
           {
-            label: 'About',
+            label: 'Project Info',
             icon: 'pi pi-external-link',
-            url: this.aboutPageLink
+            url: PROJECT_LINKS.ABOUT
+          },
+          {
+            label: 'Fork Me',
+            tooltip: 'Fork Me On Github',
+            icon: 'fa-solid fa-code-branch',
+            url: PROJECT_LINKS.SOURCE_CODE
           },
           {
             label: 'Report A Bug',
-            icon: 'fa fa-bug',
-            url: this.issuesLink
+            icon: 'fa-solid fa-bug',
+            url: PROJECT_LINKS.ISSUES
           }
         ]
       }
@@ -718,7 +728,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           {
             label: 'Privacy Policy',
-            icon: 'pi pi-fw pi-info-circle',
+            icon: 'fa fa-fw fa-lock',
             command: (event) => {
               this.privacyPolicy();
             }
@@ -752,19 +762,24 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         items: this.buildWatchListNavItems(basicWatchlists),
       },
       {
-        label: 'Help',
-        icon: 'pi pi-fw pi-question',
+        label: 'About',
+        icon: 'pi pi-fw pi-info-circle',
         expanded: true,
         items: [
           {
-            label: 'About',
+            label: 'Project Info',
             icon: 'pi pi-external-link',
-            url: this.aboutPageLink
+            url: PROJECT_LINKS.ABOUT
+          },
+          {
+            label: 'Fork Me',
+            icon: 'pi pi-fw pi-github',
+            url: PROJECT_LINKS.SOURCE_CODE
           },
           {
             label: 'Report A Bug',
             icon: 'fa fa-bug',
-            url: this.issuesLink
+            url: PROJECT_LINKS.ISSUES
           }
         ]
       }
