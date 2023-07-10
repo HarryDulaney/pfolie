@@ -62,6 +62,13 @@
     }
 }
 
+.empty-table-message {
+    white-space: nowrap !important;
+    font-size: large !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
 .table-action-btn {
     color: var (--text-color) !important;
     font-weight: bold !important;
@@ -73,6 +80,10 @@
     font-size: 0.8rem !important;
 
     font-weight: bold;
+}
+
+.table-options-panel {
+    background: #000000 !important;
 }
 
 .mdc-button__label {

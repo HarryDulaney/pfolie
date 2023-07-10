@@ -136,8 +136,9 @@ export const API_ROUTES = {
 }
 
 export const PROJECT_LINKS = {
-  CONTACT: 'https://harrydulaney.com',
-  ABOUT: 'https://github.com/HarryDulaney/pfolie',
+  CONTACT: 'https://harrydulaney.com/contact',
+  ABOUT: 'https://github.com/HarryDulaney/pfolie#readme',
+  SOURCE_CODE: 'https://github.com/HarryDulaney/pfolie',
   ISSUES: 'https://github.com/HarryDulaney/pfolie/issues'
 }
 
