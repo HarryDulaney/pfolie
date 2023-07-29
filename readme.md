@@ -4,6 +4,7 @@
     <img src="img/pfolie-logo-1-white.png" alt="Logo" width="210" height="140">
   </a>
 </div>
+
 <div align="center">
 
 ### **[Pfolie.com](https://pfolie.com) is a suite of web-based investment and financial portfolio tools. Pfolie provides a portal for investors to interact with real-time data about financial markets through a flexible next generation analytics dashboard. The current focus is on cryptocurrency price and market sentiment but tools for traditional financial markets are in development.**
@@ -11,6 +12,7 @@
 </div>
 
 ----
+
 ## **Build With:**
 - #### Angular 15+
 - #### Node.js
@@ -30,6 +32,9 @@ ____
  - #### News from multiple sources
  - #### Article reader
 ____
+
+<div align="center">
+
 ### **Beautiful analytics dashboard**
  ![](.attachments/images/readme-pic-1.png)
 
@@ -67,13 +72,15 @@ ____
   ![](.attachments/images/multiple-portfolios.png)
 
   ----
+
  ## **Awesome mobile experience** 
+
+ </div>
  <div align="center">
     <img src="./.attachments/images/mobile-friendly.png" width="210" height="340">
     <img src="./.attachments/images/mobile-friendly.png" width="210" height="340">
     <img src="./.attachments/images/mobile-friendly.png" width="210" height="340">
 </div>
-<div align="center">
 
 ----
 ### Trending articles multiple news sources
@@ -83,7 +90,6 @@ ____
 ## License
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
-
 ----
 
 ## **Development**:
@@ -110,5 +116,3 @@ ____
       - **NG_APP_CG_API_KEY**=
 ## **Run Local (Starts API and Front-end)**
  - **npm run start:local:all**
-
-
