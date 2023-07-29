@@ -1,7 +1,7 @@
 
 <div align="center">
   <a href="https://github.com/harrydulaney/pfolie">
-    <img src="img/pfolie-logo-1-white.png" alt="Logo" width="120" height="80">
+    <img src="img/pfolie-logo-1-white.png" alt="Logo" width="210" height="140">
   </a>
 </div>
 <div align="center">
@@ -30,29 +30,56 @@ ____
  - #### News from multiple sources
  - #### Article reader
 ____
-### **Beautiful Analytics Dashboard** ![](.attachments/images/readme-pic-1.png)
+### **Beautiful analytics dashboard**
+ ![](.attachments/images/readme-pic-1.png)
+
+![](.attachments/images/top-crypto-by-market-cap.png)
+
+![](.attachments/images/top-trending.png)
 ----
 ### **Quick Search** ![](.attachments/images/readme-pic-quick-search.png)
 
 ----
-### **Real-Time Price and Market data** ![](.attachments/images/readme-pic-3.png)
-----
-### **Historical Price and asset metadata**
+### **Real-Time price and volume charts** 
+![](.attachments/images/readme-pic-3.png)
+
+![](.attachments/images/volume-charts.png)
 ----
 
-### **Create a Watchlist and Track Assets**
-----
- ## **Build and Track your Portfolio** 
- ### **Build** 
-### **Track**
+#### Full Screen Price +  Volume Charts + Market Share Charts
+![](.attachments/images/Full-screen-price-charts.png)
 
-### **Your Portfolio** 
-
+![](.attachments/images/Full-screen-market-charts.png)
 ----
 
-## Aggregated Market News and Sentiment
-### Multiple News Sources ![](.attachments/images/readme-news.png)
+### **Create multiple watchlists**
+![](.attachments/images/watch-list-preview.png)
 ----
+ ## **Build and track your portfolio** 
+ ![](.attachments/images/build-your-portfolio.png)
+
+ ![](.attachments/images/build-your-portfolio-action.png)
+
+ ![](.attachments/images/edit-transations.png)
+
+----
+ ## **Manage multiple portfolios** 
+  ![](.attachments/images/multiple-portfolios.png)
+
+  ----
+ ## **Awesome mobile experience** 
+ <div align="center">
+    <img src="./.attachments/images/mobile-friendly.png" width="210" height="340">
+    <img src="./.attachments/images/mobile-friendly.png" width="210" height="340">
+    <img src="./.attachments/images/mobile-friendly.png" width="210" height="340">
+</div>
+<div align="center">
+
+----
+### Trending articles multiple news sources
+![](.attachments/images/readme-news.png)
+----
+
 ## License
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
