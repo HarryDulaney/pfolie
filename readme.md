@@ -7,7 +7,7 @@
 
 <div align="center">
 
-### **[Pfolie.com](https://pfolie.com) is a suite of web-based investment and financial portfolio tools. Pfolie provides a portal for investors to interact with real-time data about financial markets through a flexible next generation analytics dashboard. The current focus is on cryptocurrency price and market sentiment but tools for traditional financial markets are in development.**
+### Pfolie is a suite of web-based investment and financial portfolio tools. Pfolie provides a portal for investors to interact with real-time data about financial markets through a flexible next generation analytics dashboard. The current focus is on cryptocurrency price and market sentiment but tools for traditional financial markets are in development.**
 
 </div>
 
