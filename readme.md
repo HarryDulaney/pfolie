@@ -1,16 +1,17 @@
 
 <div align="center">
   <a href="https://github.com/harrydulaney/pfolie">
-    <img src="img/pfolie-logo-1-white.png" alt="Logo" width="210" height="140">
+    <img src="img/pfolie-logo-1-white.png" alt="Logo" width="180" height="115">
   </a>
 </div>
 
 <div align="center">
-
+  
 ### Pfolie is a suite of web-based investment and financial portfolio tools. Pfolie provides a portal for investors to interact with real-time data about financial markets through a flexible next generation analytics dashboard. The current focus is on cryptocurrency price and market sentiment but tools for traditional financial markets are in development.**
-
 </div>
 
+![](.attachments/images/readme-pic-1.png)
+ 
 ----
 
 ## **Build With:**
@@ -36,7 +37,7 @@ ____
 <div align="center">
 
 ### **Beautiful analytics dashboard**
- ![](.attachments/images/readme-pic-1.png)
+![](.attachments/images/readme-pic-1.png)
 
 ![](.attachments/images/top-crypto-by-market-cap.png)
 
