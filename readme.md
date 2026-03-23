@@ -6,6 +6,8 @@
 </div>
 
 <div align="center">
+
+### Please message me if you are interested in managing this repo. As is, unfortunately often the case, I have not had the bandwidth to keep it updated and build out new features as I would have liked too. I don't have an experience level requirement for this,just a passion and interest level requirement.
   
 ### Pfolie is a suite of web-based investment and financial portfolio tools. Pfolie provides a portal for investors to interact with real-time data about financial markets through a flexible next generation analytics dashboard. The current focus is on cryptocurrency price and market sentiment but tools for traditional financial markets are in development.**
 </div>
